@@ -1993,14 +1993,16 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
     dassert(pPlayer != NULL);
     if (pPlayer->damageControl[nDamageType])
         return 0;
-    if (gGameOptions.bDamageInvul && !VanillaMode() && !DemoRecordStatus() && ((nDamageType == kDamageBullet) || (nDamageType == kDamageSpirit) || (nDamageType == kDamageTesla))) // only apply logic to NPCs and bullet/spirit/tesla damage
+    if (gGameOptions.bDamageInvul && !VanillaMode() && !DemoRecordStatus()) // if invul timer option is active
     {
-        if ((pPlayer->invulTime != gFrameClock) && (pPlayer->invulTime > gFrameClock - (11*(5-gGameOptions.nDifficulty)))) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
+        if ((nDamageType == kDamageBullet) || (nDamageType == kDamageSpirit) || (nDamageType == kDamageTesla)) // only apply invulnerability for bullet/spirit/tesla damage
         {
-            return 0;
+            if ((pPlayer->invulTime != gFrameClock) && (pPlayer->invulTime > gFrameClock - (11*(5-gGameOptions.nDifficulty)))) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
+                return 0;
         }
+        if (nDamageType != kDamageBurn) // do not update the invul timer on burn damage
+            pPlayer->invulTime = (int)gFrameClock;
     }
-    pPlayer->invulTime = (int)gFrameClock;
     nDamage = playerDamageArmor(pPlayer, nDamageType, nDamage);
     pPlayer->painEffect = ClipHigh(pPlayer->painEffect+(nDamage>>3), 600);
 
