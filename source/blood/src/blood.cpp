@@ -602,6 +602,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.weaponsV10x = gWeaponsV10x;
+        gGameOptions.bDamageInvul = gDamageInvul;
         ///////
     }
     else if (gGameOptions.nGameType > 0 && !(gGameOptions.uGameFlags&1))
@@ -623,6 +624,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.weaponsV10x = gPacketStartGame.weaponsV10x;
+        gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         ///////
 
         gBlueFlagDropped = false;
@@ -790,6 +792,7 @@ void StartNetworkLevel(void)
         
         ///////
         gGameOptions.weaponsV10x = gPacketStartGame.weaponsV10x;
+        gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         ///////
 
         gBlueFlagDropped = false;
@@ -1641,7 +1644,7 @@ int app_main(int argc, char const * const * argv)
     char *const p = strtok(setupFileName, ".");
 
     if (!p || !Bstrcmp(SetupFilename, SETUPFILENAME))
-        Bsprintf(buffer, "settings.cfg");
+        Bsprintf(buffer, "settingsnotblood.cfg");
     else
         Bsprintf(buffer, "%s_settings.cfg", p);
 

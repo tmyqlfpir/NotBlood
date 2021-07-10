@@ -174,7 +174,8 @@ struct PLAYER
     //int               at342;
     //int               at346;
     int                 voodooTarget;
-    int                 voodooTargets;  // --> useless
+    //int               voodooTargets;  // --> useless
+    int                 invulTime;
     int                 voodooVar1;     // --> useless
     int                 vodooVar2;      // --> useless
     int                 flickerEffect;

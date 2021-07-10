@@ -95,6 +95,7 @@ extern int32_t gDeliriumBlur;
 
 ///////
 extern int gWeaponsV10x;
+extern int gDamageInvul;
 //////
 
 int  CONFIG_ReadSetup(void);

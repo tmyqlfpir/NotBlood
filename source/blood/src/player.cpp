@@ -729,7 +729,8 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->spin = 0;
     pPlayer->posture = 0;
     pPlayer->voodooTarget = -1;
-    pPlayer->voodooTargets = 0;
+    //pPlayer->voodooTargets = 0;
+    pPlayer->invulTime = 0;
     pPlayer->voodooVar1 = 0;
     pPlayer->vodooVar2 = 0;
     playerResetInertia(pPlayer);
@@ -1992,6 +1993,14 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
     dassert(pPlayer != NULL);
     if (pPlayer->damageControl[nDamageType])
         return 0;
+    if (gGameOptions.bDamageInvul && !VanillaMode() && !DemoRecordStatus() && ((nDamageType == kDamageBullet) || (nDamageType == kDamageSpirit) || (nDamageType == kDamageTesla))) // only apply logic to NPCs and bullet/spirit/tesla damage
+    {
+        if ((pPlayer->invulTime != gFrameClock) && (pPlayer->invulTime > gFrameClock - (11*(5-gGameOptions.nDifficulty)))) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
+        {
+            return 0;
+        }
+    }
+    pPlayer->invulTime = (int)gFrameClock;
     nDamage = playerDamageArmor(pPlayer, nDamageType, nDamage);
     pPlayer->painEffect = ClipHigh(pPlayer->painEffect+(nDamage>>3), 600);
 
@@ -2068,7 +2077,8 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         pPlayer->qavLoop = 0;
         pPlayer->curWeapon = 0;
         pPlayer->fraggerId = nSource;
-        pPlayer->voodooTargets = 0;
+        //pPlayer->voodooTargets = 0;
+        pPlayer->invulTime = 0;
         if (nDamageType == kDamageExplode && nDamage < (9<<4))
             nDamageType = kDamageFall;
         switch (nDamageType)
@@ -2169,7 +2179,7 @@ void sub_41250(PLAYER *pPlayer)
     int dz = pPlayer->zWeapon-pPlayer->pSprite->z;
     if (UseAmmo(pPlayer, 9, 0) < 8)
     {
-        pPlayer->voodooTargets = 0;
+        //pPlayer->voodooTargets = 0;
         return;
     }
     for (int i = 0; i < 4; i++)
@@ -2179,7 +2189,7 @@ void sub_41250(PLAYER *pPlayer)
         int ang2 = (pPlayer->voodooVar1+2048-pPlayer->vodooVar2)&2047;
         actFireVector(pPlayer->pSprite, 0, dz, Cos(ang2)>>16, Sin(ang2)>>16, v4, kVectorVoodoo10);
     }
-    pPlayer->voodooTargets = ClipLow(pPlayer->voodooTargets-1, 0);
+    //pPlayer->voodooTargets = ClipLow(pPlayer->voodooTargets-1, 0);
 }
 
 void playerLandingSound(PLAYER *pPlayer)

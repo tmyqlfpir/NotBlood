@@ -114,6 +114,7 @@ int32_t gDeliriumBlur;
 
 //////////
 int gWeaponsV10x;
+int gDamageInvul;
 /////////
 
 int32_t CONFIG_FunctionNameToNum(const char *func)
@@ -405,6 +406,9 @@ void CONFIG_SetDefaults(void)
     gAutoAim = 1;
     gWeaponSwitch = 0;
 
+    gDamageInvul = 1;
+    gWeaponsV10x = 0;
+
     Bstrcpy(szPlayerName, "Player");
 
     Bstrcpy(CommbatMacro[0], "I love the smell of napalm...");
@@ -668,6 +672,7 @@ int CONFIG_ReadSetup(void)
     // Nuke: make cvar
     ///////
     SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsV10x", &gWeaponsV10x);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "DamageInvul", &gDamageInvul);
     ///////
 
     char commmacro[] = "CommbatMacro# ";
@@ -961,6 +966,7 @@ void CONFIG_WriteSetup(uint32_t flags)
 
     ///////
     SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsV10x", gWeaponsV10x, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "DamageInvul", gDamageInvul, FALSE, FALSE);
     ///////
     
     SCRIPT_Save(scripthandle, SetupFilename);

@@ -76,6 +76,7 @@ struct PKT_STARTGAME {
     int unk;
     char userMap, userMapName[BMAX_PATH];
     int weaponsV10x;
+    bool bDamageInvul;
     bool bFriendlyFire;
     bool bKeepKeysOnRespawn;
 };

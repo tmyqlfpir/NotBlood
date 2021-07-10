@@ -5951,8 +5951,8 @@ void actProcessSprites(void)
             if (IsPlayerSprite(pSprite))
             {
                 PLAYER *pPlayer = &gPlayer[pSprite->type-kDudePlayer1];
-                if (pPlayer->voodooTargets)
-                    sub_41250(pPlayer);
+                //if (pPlayer->voodooTargets)
+                    //sub_41250(pPlayer);
                 if (pPlayer->hand && Chance(0x8000))
                     actDamageSprite(nSprite, pSprite, kDamageDrown, 12);
                 if (pPlayer->isUnderwater)
