@@ -317,7 +317,7 @@ void CONFIG_SetDefaults(void)
     MouseDeadZone   = 0;
     MusicToggle     = 1;
     MusicRestartsOnLoadToggle = 0;
-    MusicVolume     = 195;
+    MusicVolume     = 192;
     NumBits         = 16;
     NumChannels     = 2;
 #ifdef ASS_REVERSESTEREO
@@ -376,19 +376,19 @@ void CONFIG_SetDefaults(void)
     //ud.weaponsway             = 1;
     //ud.weaponswitch           = 3;  // new+empty
     gFov = 90;
-    gCenterHoriz = 0;
+    gCenterHoriz = 1;
     gDeliriumBlur = 1;
     gViewSize = 2;
     gTurnSpeed = 92;
     gDetail = 4;
-    gAutoRun = 0;
+    gAutoRun = 1;
     gViewInterpolate = 1;
     gViewHBobbing = 1;
     gViewVBobbing = 1;
     gFollowMap = 1;
     gOverlayMap = 0;
     gRotateMap = 0;
-    gAimReticle = 0;
+    gAimReticle = 1;
     gSlopeTilting = 0;
     gMessageState = 1;
     gMessageCount = 4;
@@ -397,13 +397,13 @@ void CONFIG_SetDefaults(void)
     gbAdultContent = 0;
     gDoppler = 1;
     gShowPlayerNames = 0;
-    gShowWeapon = 0;
+    gShowWeapon = 2;
     gzAdultPassword[0] = 0;
 
     gMouseAimingFlipped = 0;
     gMouseAim = 1;
     gAutoAim = 1;
-    gWeaponSwitch = 1;
+    gWeaponSwitch = 0;
 
     Bstrcpy(szPlayerName, "Player");
 
@@ -766,7 +766,7 @@ void CONFIG_WriteSettings(void) // save binds and aliases to <cfgname>_settings.
     char filename[BMAX_PATH];
 
     if (!Bstrcmp(SetupFilename, SETUPFILENAME))
-        Bsprintf(filename, "settings.cfg");
+        Bsprintf(filename, "settingsnotblood.cfg");
     else
         Bsprintf(filename, "%s_settings.cfg", strtok(ptr, "."));
 
