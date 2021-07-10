@@ -1,5 +1,5 @@
 # NotBlood
-A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-engineer port NBlood.
+A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-engineer port NBlood
 
 New features include:
 * Difficulty based invulnerability timer for bullet/spirit/tesla damage
