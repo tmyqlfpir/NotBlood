@@ -51,7 +51,7 @@ void clearGrpNamePtr(void)
 
 const char *G_DefaultGrpFile(void)
 {
-    return "nblood.pk3";
+    return "notblood.pk3";
 }
 
 const char *G_DefaultDefFile(void)
@@ -319,8 +319,8 @@ void G_AddSearchPaths(void)
 
     Bfree(homepath);
 
-    addsearchpath("/usr/share/games/nblood");
-    addsearchpath("/usr/local/share/games/nblood");
+    addsearchpath("/usr/share/games/notblood");
+    addsearchpath("/usr/local/share/games/notblood");
 #elif defined EDUKE32_OSX
     char buf[BMAX_PATH];
     int32_t i;
@@ -338,7 +338,7 @@ void G_AddSearchPaths(void)
 
     for (i = 0; i < 2; i++)
     {
-        Bsnprintf(buf, sizeof(buf), "%s/NBlood", support[i]);
+        Bsnprintf(buf, sizeof(buf), "%s/NotBlood", support[i]);
         addsearchpath(buf);
     }
 

@@ -31,11 +31,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 extern int g_useCwd;
 #ifndef APPNAME
-#define APPNAME "NBlood"
+#define APPNAME "NotBlood"
 #endif
 
 #ifndef APPBASENAME
-#define APPBASENAME "nblood"
+#define APPBASENAME "notblood"
 #endif
 
 #define BLOODWIDESCREENDEF "blood_widescreen.def"
