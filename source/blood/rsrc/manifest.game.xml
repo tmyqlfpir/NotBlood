@@ -9,10 +9,10 @@
   <assemblyIdentity
       version="1.0.0.0"
       processorArchitecture="*"
-      name="NBlood"
+      name="NotBlood"
       type="win32"
 />
-  <description>NBlood</description>
+  <description>NotBlood</description>
   <dependency>
     <dependentAssembly>
       <assemblyIdentity
