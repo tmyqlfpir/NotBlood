@@ -55,6 +55,7 @@ struct GAMEOPTIONS {
     int nItemRespawnTime;
     int nSpecialRespawnTime;
     int weaponsV10x;
+    bool bQuadDamagePowerup;
     bool bDamageInvul;
     bool bFriendlyFire;
     bool bKeepKeysOnRespawn;

@@ -82,7 +82,7 @@ POWERUPINFO gPowerUpInfo[kMaxPowerUps] = {
     { 825, 1, 3600, 432000 },   // 14: V death mask (invulnerability)
     { 827, 0, 3600, 432000 },   // 15: V jump boots
     { 828, 0, 3600, 432000 },   // 16: X raven flight
-    { 829, 0, 3600, 1728000 },  // 17: V guns akimbo
+    { 829, 0, 3600, 1728000 },  // 17: V guns akimbo/quad damage
     { 830, 0, 3600, 432000 },   // 18: V diving suit
     { 831, 0, 3600, 432000 },   // 19: V gas mask
     { -1, 0, 3600, 432000 },    // 20: X clone
@@ -267,8 +267,12 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
 {
     if (powerupCheck(pPlayer, nPowerUp) > 0 && gPowerUpInfo[nPowerUp].pickupOnce)
         return 0;
-    if (!pPlayer->pwUpTime[nPowerUp])
-        pPlayer->pwUpTime[nPowerUp] = gPowerUpInfo[nPowerUp].bonusTime;
+    if (!pPlayer->pwUpTime[nPowerUp]) {
+        if ((nPowerUp == kPwUpTwoGuns) && (gGameOptions.nGameType > 1) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if picked up quad damage in bloodbath/teams
+            pPlayer->pwUpTime[nPowerUp] = 2500; // set to 25 seconds
+        else
+            pPlayer->pwUpTime[nPowerUp] = gPowerUpInfo[nPowerUp].bonusTime;
+    }
     int nPack = powerupToPackItem(nPowerUp);
     if (nPack >= 0)
         pPlayer->packSlots[nPack].isActive = 1;
@@ -322,6 +326,8 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
             pPlayer->damageControl[1]++;
             break;
         case kItemTwoGuns:
+            if (gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is active, do not switch weapon
+                break;
             pPlayer->input.newWeapon = pPlayer->curWeapon;
             WeaponRaise(pPlayer);
             break;
@@ -373,6 +379,8 @@ void powerupDeactivate(PLAYER *pPlayer, int nPowerUp)
             pPlayer->damageControl[1]--;
             break;
         case kItemTwoGuns:
+            if (gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is active, do not switch weapon
+                break;
             pPlayer->input.newWeapon = pPlayer->curWeapon;
             WeaponRaise(pPlayer);
             break;
@@ -1174,7 +1182,12 @@ void PickUp(PLAYER *pPlayer, spritetype *pSprite)
 
     if (nType >= kItemBase && nType <= kItemMax) {
         pickedUp = PickupItem(pPlayer, pSprite);
-        if (pickedUp && customMsg == -1) sprintf(buffer, "Picked up %s", gItemText[nType - kItemBase]);
+        if (pickedUp && customMsg == -1) {
+            if ((nType - kItemBase == 17) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // replace guns akimbo pickup text
+                sprintf(buffer, "Picked up Quad Damage");
+            else
+                sprintf(buffer, "Picked up %s", gItemText[nType - kItemBase]);
+        }
     
     } else if (nType >= kItemAmmoBase && nType < kItemAmmoMax) {
         pickedUp = PickupAmmo(pPlayer, pSprite);

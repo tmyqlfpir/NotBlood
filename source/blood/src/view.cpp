@@ -1292,11 +1292,13 @@ void viewDrawPowerUps(PLAYER* pPlayer)
     if (!gPowerupDuration)
         return;
 
+    short int akimboQuadDamagePicnum = gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
+
     POWERUPDISPLAY powerups[nPowerUps];
     powerups[0] = { gPowerUpInfo[kPwUpShadowCloak].picnum,  0.4f, 0, pPlayer->pwUpTime[kPwUpShadowCloak] }; // Invisibility
     powerups[1] = { gPowerUpInfo[kPwUpReflectShots].picnum, 0.4f, 5, pPlayer->pwUpTime[kPwUpReflectShots] }; // Reflects enemy shots
     powerups[2] = { gPowerUpInfo[kPwUpDeathMask].picnum, 0.3f, 9, pPlayer->pwUpTime[kPwUpDeathMask] }; // Invulnerability
-    powerups[3] = { gPowerUpInfo[kPwUpTwoGuns].picnum, 0.3f, 5, pPlayer->pwUpTime[kPwUpTwoGuns] }; // Guns Akimbo
+    powerups[3] = { akimboQuadDamagePicnum, 0.3f, 5, pPlayer->pwUpTime[kPwUpTwoGuns] }; // Guns Akimbo/Quad Damage
     powerups[4] = { gPowerUpInfo[kPwUpShadowCloakUseless].picnum, 0.4f, 9, pPlayer->pwUpTime[kPwUpShadowCloakUseless] }; // Does nothing, only appears at near the end of Cryptic Passage's Lost Monastery (CP04)
 
     // Not in official maps, but custom maps can use them

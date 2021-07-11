@@ -3519,6 +3519,11 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
     PLAYER *pSourcePlayer = NULL;
     if (IsPlayerSprite(&sprite[nSource])) pSourcePlayer = &gPlayer[sprite[nSource].type - kDudePlayer1];
     if (!gGameOptions.bFriendlyFire && IsTargetTeammate(pSourcePlayer, pSprite)) return 0;
+    if (gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus())
+    {
+        if (IsPlayerSprite(&sprite[nSource]) && (&sprite[nSource] != pSprite) && powerupCheck(pSourcePlayer, kPwUpTwoGuns)) // if quad damage is active
+            damage *= 2;
+    }
     
     switch (pSprite->statnum) {
         case kStatDude: {
@@ -6729,9 +6734,27 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
             y -= mulscale(a5, 112, 14);
             z -= mulscale(a6, 112<<4, 14);
             int shift = 4;
+            int boost = 1;
+            int boostz = 1;
+            DAMAGE_TYPE dmgType = pVectorData->dmgType;
             if (vectorType == kVectorTine && !IsPlayerSprite(pSprite))
                 shift = 3;
-            actDamageSprite(nShooter, pSprite, pVectorData->dmgType, pVectorData->dmg<<shift);
+            if (IsPlayerSprite(pShooter) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus())
+            {
+                PLAYER *pPlayer = &gPlayer[pShooter->type - kDudePlayer1];
+                if (powerupCheck(pPlayer, kPwUpTwoGuns)) // if quad is active, increase pushback and do random explosive damage for hitscan weapons
+                {
+                    shift = 2;
+                    boost = 2;
+                    boostz = 4;
+                    if ((dmgType == kDamageBullet) && !Random(10))
+                    {
+                        dmgType = kDamageExplode;
+                        shift = 4;
+                    }
+                }
+            }
+            actDamageSprite(nShooter, pSprite, dmgType, pVectorData->dmg<<shift);
             int nXSprite = pSprite->extra;
             if (nXSprite > 0)
             {
@@ -6745,9 +6768,9 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                 if (t > 0 && pVectorData->impulse)
                 {
                     int t2 = divscale(pVectorData->impulse, t, 8);
-                    xvel[nSprite] += mulscale16(a4, t2);
-                    yvel[nSprite] += mulscale16(a5, t2);
-                    zvel[nSprite] += mulscale16(a6, t2);
+                    xvel[nSprite] += mulscale16(a4, t2) * boost;
+                    yvel[nSprite] += mulscale16(a5, t2) * boost;
+                    zvel[nSprite] += mulscale16(a6, t2) * boostz;
                 }
                 if (pVectorData->burnTime)
                 {
@@ -6775,9 +6798,9 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                 if (t > 0 && pVectorData->impulse)
                 {
                     int t2 = divscale(pVectorData->impulse, t, 8);
-                    xvel[nSprite] += mulscale16(a4, t2);
-                    yvel[nSprite] += mulscale16(a5, t2);
-                    zvel[nSprite] += mulscale16(a6, t2);
+                    xvel[nSprite] += mulscale16(a4, t2) * boost;
+                    yvel[nSprite] += mulscale16(a5, t2) * boost;
+                    zvel[nSprite] += mulscale16(a6, t2) * boostz;
                 }
                 if (pVectorData->burnTime)
                 {
@@ -6832,9 +6855,9 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                 int nIndex = debrisGetIndex(pSprite->index);
                 if (nIndex != -1 && (xsprite[pSprite->extra].physAttr & kPhysDebrisVector)) {
                     int impulse = divscale(pVectorData->impulse, ClipLow(gSpriteMass[pSprite->extra].mass, 10), 6);
-                    xvel[nSprite] += mulscale16(a4, impulse);
-                    yvel[nSprite] += mulscale16(a5, impulse);
-                    zvel[nSprite] += mulscale16(a6, impulse);
+                    xvel[nSprite] += mulscale16(a4, impulse) * boost;
+                    yvel[nSprite] += mulscale16(a5, impulse) * boost;
+                    zvel[nSprite] += mulscale16(a6, impulse) * boostz;
 
                     if (pVectorData->burnTime != 0) {
                         if (!xsprite[nXSprite].burnTime) evPost(nSprite, 3, 0, kCallbackFXFlameLick);

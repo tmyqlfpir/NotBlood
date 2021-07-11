@@ -57,6 +57,7 @@ void SetShowPlayerNames(CGameMenuItemZBool *);
 void SetShowWeapons(CGameMenuItemZCycle *);
 
 void SetWeaponsV10X(CGameMenuItemZBool*);
+void SetQuadDamagePowerup(CGameMenuItemZBool*);
 void SetDamageInvul(CGameMenuItemZBool*);
 
 void SetSlopeTilting(CGameMenuItemZBool *);
@@ -313,19 +314,20 @@ CGameMenuItemTitle itemNetStartUserMapTitle("USER MAP", 1, 160, 20, 2038);
 CGameMenuFileSelect menuMultiUserMap("", 3, 0, 0, 0, "./", "*.map", zUserMapName);
 
 CGameMenuItemTitle itemNetStartTitle("MULTIPLAYER", 1, 160, 20, 2038);
-CGameMenuItemZCycle itemNetStart1("GAME:", 3, 66, 40, 180, 0, 0, zNetGameTypes, 3, 0);
-CGameMenuItemZCycle itemNetStart2("EPISODE:", 3, 66, 50, 180, 0, SetupNetLevels, NULL, 0, 0);
-CGameMenuItemZCycle itemNetStart3("LEVEL:", 3, 66, 60, 180, 0, NULL, NULL, 0, 0);
-CGameMenuItemZCycle itemNetStart4("DIFFICULTY:", 3, 66, 70, 180, 0, 0, zDiffStrings, 5, 0);
-CGameMenuItemZCycle itemNetStart5("MONSTERS:", 3, 66, 80, 180, 0, 0, zMonsterStrings, 3, 0);
-CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 90, 180, 0, 0, zWeaponStrings, 4, 0);
-CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 100, 180, 0, 0, zItemStrings, 3, 0);
-CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 110, 180, true, 0, NULL, NULL);
-CGameMenuItemZBool itemNetStart9("KEEP KEYS ON RESPAWN:", 3, 66, 120, 180, false, 0, NULL, NULL);
-CGameMenuItemZBool itemNetStart10("V1.0x WEAPONS BALANCE:", 3, 66, 130, 180, false, 0, NULL, NULL);
-CGameMenuItemZBool itemNetStart11("HITSCAN DAMAGE INVULNERABILITY", 3, 66, 140, 180, false, 0, NULL, NULL);
-CGameMenuItemChain itemNetStart12("USER MAP", 3, 66, 150, 180, 0, &menuMultiUserMaps, 0, NULL, 0);
-CGameMenuItemChain itemNetStart13("START GAME", 1, 66, 165, 280, 0, 0, -1, StartNetGame, 0);
+CGameMenuItemZCycle itemNetStart1("GAME:", 3, 66, 35, 180, 0, 0, zNetGameTypes, 3, 0);
+CGameMenuItemZCycle itemNetStart2("EPISODE:", 3, 66, 45, 180, 0, SetupNetLevels, NULL, 0, 0);
+CGameMenuItemZCycle itemNetStart3("LEVEL:", 3, 66, 55, 180, 0, NULL, NULL, 0, 0);
+CGameMenuItemZCycle itemNetStart4("DIFFICULTY:", 3, 66, 65, 180, 0, 0, zDiffStrings, 5, 0);
+CGameMenuItemZCycle itemNetStart5("MONSTERS:", 3, 66, 75, 180, 0, 0, zMonsterStrings, 3, 0);
+CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrings, 4, 0);
+CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
+CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
+CGameMenuItemZBool itemNetStart9("KEEP KEYS ON RESPAWN:", 3, 66, 115, 180, false, 0, NULL, NULL);
+CGameMenuItemZBool itemNetStart10("V1.0x WEAPONS BALANCE:", 3, 66, 125, 180, false, 0, NULL, NULL);
+CGameMenuItemZBool itemNetStart11("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 135, 180, false, 0, NULL, NULL);
+CGameMenuItemZBool itemNetStart12("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 145, 180, false, 0, NULL, NULL);
+CGameMenuItemChain itemNetStart13("USER MAP", 3, 66, 155, 180, 0, &menuMultiUserMaps, 0, NULL, 0);
+CGameMenuItemChain itemNetStart14("START GAME", 1, 66, 172, 280, 0, 0, -1, StartNetGame, 0);
 
 CGameMenuItemText itemLoadingText("LOADING...", 1, 160, 100, 1);
 
@@ -432,7 +434,8 @@ CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
 
 ///////////////
 CGameMenuItemZBool itemOptionsGameBoolWeaponsV10X("V1.0x WEAPONS BALANCE:", 3, 66, 130, 180, gWeaponsV10x, SetWeaponsV10X, NULL, NULL);
-CGameMenuItemZBool itemOptionsGameBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 140, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
+CGameMenuItemZBool itemOptionsGameBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 140, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
+CGameMenuItemZBool itemOptionsGameBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 150, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
 ///////////////////
 
 CGameMenuItemZBool itemOptionsGameBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 60, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
@@ -948,6 +951,7 @@ void SetupNetStartMenu(void)
     menuNetStart.Add(&itemNetStart11, false);
     menuNetStart.Add(&itemNetStart12, false);
     menuNetStart.Add(&itemNetStart13, false);
+    menuNetStart.Add(&itemNetStart14, false);
     menuMultiUserMaps.Add(&itemNetStartUserMapTitle, true);
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
     itemNetStart1.SetTextIndex(1);
@@ -1162,6 +1166,7 @@ void SetupOptionsMenu(void)
     //////////////////////
     if (gGameOptions.nGameType == 0) {
         menuOptionsGame.Add(&itemOptionsGameBoolWeaponsV10X, false);
+        menuOptionsGame.Add(&itemOptionsGameBoolQuadDamagePowerup, true);
         menuOptionsGame.Add(&itemOptionsGameBoolDamageInvul, true);
     }
     /////////////////////
@@ -1178,6 +1183,7 @@ void SetupOptionsMenu(void)
 
     ///////
     itemOptionsGameBoolWeaponsV10X.at20 = gWeaponsV10x;
+    itemOptionsGameBoolQuadDamagePowerup.at20 = gQuadDamagePowerup;
     itemOptionsGameBoolDamageInvul.at20 = gDamageInvul;
     ///////
 
@@ -1449,9 +1455,20 @@ void SetWeaponsV10X(CGameMenuItemZBool* pItem)
     }
 }
 
+void SetQuadDamagePowerup(CGameMenuItemZBool* pItem)
+{
+    if (gGameOptions.nGameType == 0) {
+        gQuadDamagePowerup = pItem->at20;
+        gGameOptions.bQuadDamagePowerup = pItem->at20;
+    }
+}
+
 void SetDamageInvul(CGameMenuItemZBool* pItem)
 {
-    gDamageInvul = pItem->at20;
+    if (gGameOptions.nGameType == 0) {
+        gDamageInvul = pItem->at20;
+        gGameOptions.bDamageInvul = pItem->at20;
+    }
 }
 ////
 
@@ -2253,7 +2270,8 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.bKeepKeysOnRespawn = itemNetStart9.at20;
     ////
     gPacketStartGame.weaponsV10x = itemNetStart10.at20;
-    gPacketStartGame.bDamageInvul = itemNetStart11.at20;
+    gPacketStartGame.bQuadDamagePowerup = itemNetStart11.at20;
+    gPacketStartGame.bDamageInvul = itemNetStart12.at20;
     ////
     gPacketStartGame.unk = 0;
     Bstrncpy(gPacketStartGame.userMapName, zUserMapName, Bstrlen(zUserMapName));

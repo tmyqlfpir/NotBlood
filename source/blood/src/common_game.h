@@ -244,7 +244,7 @@ enum {
     kItemShadowCloak = 113, // ltdInvisibility
     kItemDeathMask = 114, // invulnerability
     kItemJumpBoots = 115,
-    kItemTwoGuns = 117,
+    kItemTwoGuns = 117, // guns akimbo/quad damage
     kItemDivingSuit = 118,
     kItemGasMask = 119,
     kItemCrystalBall = 121,

@@ -1120,6 +1120,8 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         pSprite->flags = B_LITTLE16(pSprite->hitag);
         pSprite->extra = B_LITTLE16(pSprite->extra);
 #endif
+        if ((pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
+            pSprite->picnum = 30703;
         InsertSpriteSect(i, sprite[i].sectnum);
         InsertSpriteStat(i, sprite[i].statnum);
         Numsprites++;

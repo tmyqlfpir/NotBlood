@@ -95,6 +95,7 @@ extern int32_t gDeliriumBlur;
 
 ///////
 extern int gWeaponsV10x;
+extern int gQuadDamagePowerup;
 extern int gDamageInvul;
 //////
 

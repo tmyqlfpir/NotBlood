@@ -602,6 +602,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.weaponsV10x = gWeaponsV10x;
+        gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         ///////
     }
@@ -624,6 +625,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.weaponsV10x = gPacketStartGame.weaponsV10x;
+        gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         ///////
 
@@ -792,6 +794,7 @@ void StartNetworkLevel(void)
         
         ///////
         gGameOptions.weaponsV10x = gPacketStartGame.weaponsV10x;
+        gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         ///////
 
