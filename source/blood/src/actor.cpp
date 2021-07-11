@@ -4388,16 +4388,36 @@ int MoveThing(spritetype *pSprite)
         short bakCstat = pSprite->cstat;
         pSprite->cstat &= ~257;
         bool tinyHitbox = false;
-        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
+        int tinyWalldist;
+        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1) && (pSprite->type != kThingNapalmBall)) // if not in demo/vanilla mode, and sprite has a owner (and isn't napalm's alt fireball)
         {
             if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
             {
                 int tempxyz[3] = {pSprite->x, pSprite->y, pSprite->z};
                 ClipMove(&tempxyz[0], &tempxyz[1], &tempxyz[2], &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, pSprite->clipdist<<2, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
-                tinyHitbox = nSector != -1; // use a small hitbox if the sprite collided with a wall
+                if (nSector != -1) // use a small hitbox if the sprite collided with a wall
+                {
+                    tinyHitbox = true;
+                    switch (pSprite->type)
+                    {
+                    case kThingArmedTNTBundle:
+                    case kThingArmedProxBomb:
+                    case kThingArmedRemoteBomb:
+                    case kThingArmedSpray:
+                        tinyWalldist = min(pSprite->clipdist<<2, 42);
+                        break;
+                    case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
+                    case kMissileFlareAlt:
+                        tinyWalldist = min(pSprite->clipdist<<2, 8);
+                        break;
+                    default:
+                        tinyWalldist = min(pSprite->clipdist<<2, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
+                        break;
+                    }
+                }
             }
         }
-        v8 = gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, !tinyHitbox ? pSprite->clipdist<<2 : 1, !tinyHitbox ? (pSprite->z-top)/4 : 1, !tinyHitbox ? (bottom-pSprite->z)/4 : 1, CLIPMASK0);
+        v8 = gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, !tinyHitbox ? pSprite->clipdist<<2 : tinyWalldist, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
         pSprite->cstat = bakCstat;
         dassert(nSector >= 0);
         if (pSprite->sectnum != nSector)
@@ -4592,16 +4612,36 @@ void MoveDude(spritetype *pSprite)
             short bakCstat = pSprite->cstat;
             pSprite->cstat &= ~257;
             bool tinyHitbox = false;
-            if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
+            int tinyWalldist;
+            if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1) && (pSprite->type != kThingNapalmBall)) // if not in demo/vanilla mode, and sprite has a owner (and isn't napalm's alt fireball)
             {
                 if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
                 {
                     int tempxyz[3] = {pSprite->x, pSprite->y, pSprite->z};
                     ClipMove(&tempxyz[0], &tempxyz[1], &tempxyz[2], &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, tz, bz, CLIPMASK0);
-                    tinyHitbox = nSector != -1; // use a small hitbox if the sprite collided with a wall
+                    if (nSector != -1) // use a small hitbox if the sprite collided with a wall
+                    {
+                        tinyHitbox = true;
+                        switch (pSprite->type)
+                        {
+                        case kThingArmedTNTBundle:
+                        case kThingArmedProxBomb:
+                        case kThingArmedRemoteBomb:
+                        case kThingArmedSpray:
+                            tinyWalldist = min(wd, 42);
+                            break;
+                        case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
+                        case kMissileFlareAlt:
+                            tinyWalldist = min(wd, 8);
+                            break;
+                        default:
+                            tinyWalldist = min(wd, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
+                            break;
+                        }
+                    }
                 }
             }
-            gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, !tinyHitbox ? wd : 1, !tinyHitbox ? tz : 1, !tinyHitbox ? bz : 1, CLIPMASK0);
+            gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, !tinyHitbox ? wd : tinyWalldist, tz, bz, CLIPMASK0);
             if (nSector == -1)
             {
                 nSector = pSprite->sectnum;
@@ -5176,16 +5216,36 @@ int MoveMissile(spritetype *pSprite)
         int nSector2 = pSprite->sectnum;
         clipmoveboxtracenum = 1;
         bool tinyHitbox = false;
-        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
+        int tinyWalldist;
+        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1) && (pSprite->type != kThingNapalmBall)) // if not in demo/vanilla mode, and sprite has a owner (and isn't napalm's alt fireball)
         {
             if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
             {
                 int tempxyz[3] = {x, y, z};
                 ClipMove(&tempxyz[0], &tempxyz[1], &tempxyz[2], &nSector2, vx, vy, pSprite->clipdist<<2, (z-top)/4, (bottom-z)/4, CLIPMASK0);
-                tinyHitbox = nSector2 != -1; // use a small hitbox if the sprite collided with a wall
+                if (nSector2 != -1) // use a small hitbox if the sprite collided with a wall
+                {
+                    tinyHitbox = true;
+                    switch (pSprite->type)
+                    {
+                    case kThingArmedTNTBundle:
+                    case kThingArmedProxBomb:
+                    case kThingArmedRemoteBomb:
+                    case kThingArmedSpray:
+                        tinyWalldist = min(pSprite->clipdist<<2, 42);
+                        break;
+                    case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
+                    case kMissileFlareAlt:
+                        tinyWalldist = min(pSprite->clipdist<<2, 8);
+                        break;
+                    default:
+                        tinyWalldist = min(pSprite->clipdist<<2, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
+                        break;
+                    }
+                }
             }
         }
-        int vdx = ClipMove(&x, &y, &z, &nSector2, vx, vy, !tinyHitbox ? pSprite->clipdist<<2 : 1, !tinyHitbox ? (z-top)/4 : 1, !tinyHitbox ? (bottom-z)/4 : 1, CLIPMASK0);
+        int vdx = ClipMove(&x, &y, &z, &nSector2, vx, vy, !tinyHitbox ? pSprite->clipdist<<2 : tinyWalldist, (z-top)/4, (bottom-z)/4, CLIPMASK0);
         clipmoveboxtracenum = 3;
         short nSector = nSector2;
         if (nSector2 < 0)
