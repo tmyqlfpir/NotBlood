@@ -3,7 +3,7 @@ A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-en
 
 New features include:
 * Difficulty based invulnerability timer for bullet/spirit/tesla damage
-* More forgiving hitbox size when testing wall collision for player spawned projectiles
+* More forgiving hitbox size when testing wall collision for player spawned projectiles ([before](https://files.catbox.moe/3peiru.mp4)/[after](https://files.catbox.moe/zso8g4.mp4))
 * Optional quad damage replacement for guns akimbo powerup
 * Throwable lifeleech alt fire (like TNT) and cheat (big bertha)
 * Mirror mode
