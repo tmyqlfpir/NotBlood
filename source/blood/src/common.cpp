@@ -242,6 +242,7 @@ void G_LoadGroups(int32_t autoload)
     }
 
     loaddefinitions_game(BLOODWIDESCREENDEF, TRUE);
+    loaddefinitions_game(NOTBLOODDEF, TRUE);
     loaddefinitions_game(G_DefFile(), TRUE);
 
     struct strllist *s;

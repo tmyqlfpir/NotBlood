@@ -409,7 +409,7 @@ void CONFIG_SetDefaults(void)
     gWeaponSwitch = 0;
 
     gDamageInvul = 1;
-    gQuadDamagePowerup = 1;
+    gQuadDamagePowerup = 0;
     gWeaponsV10x = 0;
 
     Bstrcpy(szPlayerName, "Player");

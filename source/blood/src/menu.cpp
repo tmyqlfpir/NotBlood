@@ -1168,7 +1168,7 @@ void SetupOptionsMenu(void)
     //////////////////////
     if (gGameOptions.nGameType == 0) {
         menuOptionsGame.Add(&itemOptionsGameBoolWeaponsV10X, false);
-        menuOptionsGame.Add(&itemOptionsGameBoolQuadDamagePowerup, true);
+        menuOptionsGame.Add(&itemOptionsGameBoolQuadDamagePowerup, false);
         menuOptionsGame.Add(&itemOptionsGameBoolDamageInvul, true);
     }
     /////////////////////

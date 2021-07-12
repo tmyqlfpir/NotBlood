@@ -39,6 +39,7 @@ extern int g_useCwd;
 #endif
 
 #define BLOODWIDESCREENDEF "blood_widescreen.def"
+#define NOTBLOODDEF "notblood.def"
 
 #define BYTEVERSION 103
 #define EXEVERSION 101

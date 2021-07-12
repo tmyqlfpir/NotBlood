@@ -1184,12 +1184,12 @@ int32_t polymost_voxdraw(voxmodel_t *m, tspriteptr_t const tspr)
 //    glPushAttrib(GL_POLYGON_BIT);
 
     if ((grhalfxdown10x >= 0) ^ ((globalorientation&8) != 0) ^ ((globalorientation&4) != 0))
-        glFrontFace(!r_mirrormode ? GL_CW : GL_CCW);
+        glFrontFace(GL_CW);
     else
-        glFrontFace(!r_mirrormode ? GL_CW : GL_CCW);
+        glFrontFace(GL_CCW);
 
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    glCullFace(!r_mirrormode ? GL_BACK : GL_FRONT);
 
     float pc[4];
 

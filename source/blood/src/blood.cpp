@@ -1695,6 +1695,8 @@ int app_main(int argc, char const * const * argv)
 
     loaddefinitionsfile(BLOODWIDESCREENDEF);
     loaddefinitions_game(BLOODWIDESCREENDEF, FALSE);
+    loaddefinitionsfile(NOTBLOODDEF);
+    loaddefinitions_game(NOTBLOODDEF, FALSE);
 
     const char *defsfile = G_DefFile();
     uint32_t stime = timerGetTicks();
