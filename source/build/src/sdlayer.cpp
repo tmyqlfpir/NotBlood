@@ -1806,6 +1806,44 @@ void videoBeginDrawing(void)
     }
 }
 
+//
+// mirrorDrawing() -- mirrors the current framebuffer
+//
+void videoMirrorDrawing(void)
+{
+    uint8_t *curFrame;
+    vec2_t screenxy;
+#ifdef USE_OPENGL
+    if (!nogl)
+    {
+        curFrame = (uint8_t *)glsurface_getBuffer();
+        screenxy = glsurface_getBufferResolution();
+    }
+    else
+#endif
+    {
+        curFrame = (uint8_t *)softsurface_getBuffer();
+        screenxy = softsurface_getBufferResolution();
+    }
+    if (!curFrame)
+        return;
+
+    const int bufferSize = screenxy.x * screenxy.y;
+    uint8_t *tempFrame = (uint8_t *)Xmalloc(bufferSize);
+    if (!tempFrame)
+        return;
+    Bmemcpy(tempFrame, (void *)curFrame, bufferSize);
+
+    for (int y = 0; y < screenxy.y; y++)
+    {
+        const int curLine = y*screenxy.x;
+        for (int x = 0; x < screenxy.x; x++)
+        {
+            curFrame[curLine+x] = tempFrame[curLine+((screenxy.x-1)-x)];
+        }
+    }
+    Bfree(tempFrame);
+}
 
 //
 // enddrawing() -- unlocks the framebuffer

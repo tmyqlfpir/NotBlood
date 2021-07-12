@@ -83,6 +83,7 @@ extern int32_t gMouseAimingFlipped;
 extern int32_t gRunKeyMode;
 extern bool gNoClip;
 extern bool gInfiniteAmmo;
+extern bool gLifeleechAltRnd;
 extern bool gFullMap;
 extern hashtable_t h_gamefuncs;
 extern int32_t gUpscaleFactor;

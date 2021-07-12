@@ -4184,6 +4184,13 @@ void ProcessTouchObjects(spritetype *pSprite, int nXSprite)
             #endif
             
             switch (pSprite2->type) {
+                case kThingDroppedLifeLeech:
+                    if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't allow player to kick around lifeleech
+                        break;
+                    sfxPlay3DSound(pSprite->x, pSprite->y, pSprite->z, 816 + Random(2), pSprite->sectnum);
+                    actKickObject(pSprite, pSprite2);
+                    zvel[pSprite2->index] >>= 1; // reduce height by half
+                    break;
                 case kThingKickablePail:
                     actKickObject(pSprite, pSprite2);
                     break;
@@ -4394,7 +4401,7 @@ int MoveThing(spritetype *pSprite)
         pSprite->cstat &= ~257;
         bool tinyHitbox = false;
         int tinyWalldist;
-        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1) && (pSprite->type != kThingNapalmBall)) // if not in demo/vanilla mode, and sprite has a owner (and isn't napalm's alt fireball)
+        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
         {
             if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
             {
@@ -4409,14 +4416,21 @@ int MoveThing(spritetype *pSprite)
                     case kThingArmedProxBomb:
                     case kThingArmedRemoteBomb:
                     case kThingArmedSpray:
-                        tinyWalldist = min(pSprite->clipdist<<2, 42);
+                    case kMissileFlameSpray:
+                        tinyWalldist = min(pSprite->clipdist<<2, 48);
                         break;
                     case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
                     case kMissileFlareAlt:
                         tinyWalldist = min(pSprite->clipdist<<2, 8);
                         break;
-                    default:
+                    case kMissileFireballNapam:
+                    case kMissileTeslaRegular:
+                    case kMissileTeslaAlt:
+                    case kMissileLifeLeechRegular:
                         tinyWalldist = min(pSprite->clipdist<<2, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
+                        break;
+                    default: // unexpected sprite, don't use small hitbox
+                        tinyHitbox = false;
                         break;
                     }
                 }
@@ -4512,6 +4526,12 @@ int MoveThing(spritetype *pSprite)
                         sfxPlay3DSound(pSprite, 607, 0, 0);
                         actDamageSprite(-1, pSprite, kDamageFall, 80);
                     }
+                    break;
+                case kThingDroppedLifeLeech:
+                    if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't play lifeleech sfx
+                        break;
+                    if (klabs(zvel[nSprite]) > 0x80000)
+                        sfxPlay3DSound(pSprite->x, pSprite->y, pSprite->z, 816 + Random(2), pSprite->sectnum);
                     break;
                 case kThingKickablePail:
                     if (klabs(zvel[nSprite]) > 0x80000)
@@ -4618,7 +4638,7 @@ void MoveDude(spritetype *pSprite)
             pSprite->cstat &= ~257;
             bool tinyHitbox = false;
             int tinyWalldist;
-            if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1) && (pSprite->type != kThingNapalmBall)) // if not in demo/vanilla mode, and sprite has a owner (and isn't napalm's alt fireball)
+            if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
             {
                 if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
                 {
@@ -4633,14 +4653,21 @@ void MoveDude(spritetype *pSprite)
                         case kThingArmedProxBomb:
                         case kThingArmedRemoteBomb:
                         case kThingArmedSpray:
-                            tinyWalldist = min(wd, 42);
+                        case kMissileFlameSpray:
+                            tinyWalldist = min(wd, 48);
                             break;
                         case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
                         case kMissileFlareAlt:
                             tinyWalldist = min(wd, 8);
                             break;
-                        default:
+                        case kMissileFireballNapam:
+                        case kMissileTeslaRegular:
+                        case kMissileTeslaAlt:
+                        case kMissileLifeLeechRegular:
                             tinyWalldist = min(wd, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
+                            break;
+                        default: // unexpected sprite, don't use small hitbox
+                            tinyHitbox = false;
                             break;
                         }
                     }
@@ -5222,7 +5249,7 @@ int MoveMissile(spritetype *pSprite)
         clipmoveboxtracenum = 1;
         bool tinyHitbox = false;
         int tinyWalldist;
-        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1) && (pSprite->type != kThingNapalmBall)) // if not in demo/vanilla mode, and sprite has a owner (and isn't napalm's alt fireball)
+        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
         {
             if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
             {
@@ -5237,14 +5264,21 @@ int MoveMissile(spritetype *pSprite)
                     case kThingArmedProxBomb:
                     case kThingArmedRemoteBomb:
                     case kThingArmedSpray:
-                        tinyWalldist = min(pSprite->clipdist<<2, 42);
+                    case kMissileFlameSpray:
+                        tinyWalldist = min(pSprite->clipdist<<2, 48);
                         break;
                     case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
                     case kMissileFlareAlt:
                         tinyWalldist = min(pSprite->clipdist<<2, 8);
                         break;
-                    default:
+                    case kMissileFireballNapam:
+                    case kMissileTeslaRegular:
+                    case kMissileTeslaAlt:
+                    case kMissileLifeLeechRegular:
                         tinyWalldist = min(pSprite->clipdist<<2, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
+                        break;
+                    default: // unexpected sprite, don't use small hitbox
+                        tinyHitbox = false;
                         break;
                     }
                 }

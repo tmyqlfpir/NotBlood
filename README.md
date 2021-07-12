@@ -5,6 +5,8 @@ New features include:
 * Difficulty based invulnerability timer for bullet/spirit/tesla damage
 * More forgiving hitbox size when testing wall collision for player spawned projectiles
 * Optional quad damage replacement for guns akimbo powerup
+* Throwable lifeleech alt fire (like TNT) and cheat (big bertha)
+* Mirror mode
 
 ### Installing
 1. Extract NotBlood to a new directory

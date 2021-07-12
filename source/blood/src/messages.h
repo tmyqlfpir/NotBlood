@@ -140,6 +140,7 @@ public:
         kCheatLieberMan,
         kCheatSpielberg,
         kCheatCalgon,
+        kCheatBigBertha,
         kCheatMax
     };
     struct CHEATINFO

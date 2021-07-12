@@ -1483,6 +1483,12 @@ static void resizeglcheck(void)
     m[2][2] = (farclip + nearclip) / (farclip - nearclip);
     m[2][3] = 1.f;
     m[3][2] = -(2.f * farclip * nearclip) / (farclip - nearclip);
+    if (r_mirrormode) // mirror mode, invert eye matrix
+    {
+        m[0][0] = -m[0][0];
+        m[1][0] = -m[1][0];
+        m[2][0] = -m[2][0];
+    }
     glLoadMatrixf(&m[0][0]);
 
     glMatrixMode(GL_MODELVIEW);

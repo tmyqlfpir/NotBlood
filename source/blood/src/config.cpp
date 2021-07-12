@@ -103,6 +103,7 @@ int32_t gMouseAimingFlipped;
 int32_t gRunKeyMode;
 bool gNoClip;
 bool gInfiniteAmmo;
+bool gLifeleechAltRnd;
 bool gFullMap;
 int32_t gUpscaleFactor;
 int32_t gLevelStats;

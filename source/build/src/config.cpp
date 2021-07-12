@@ -412,6 +412,8 @@ int32_t writesetup(const char *fn)
 #endif
              "; Use new aspect determination code? (classic/Polymost)\n"
              "r_usenewaspect = %d ;;\n"
+             "; Mirror output display (classic/Polymost)\n"
+             "r_mirrormode = %d ;;\n"
 #ifndef RENDERTYPEWIN
              "; Screen aspect for fullscreen, in the form WWHH (e.g. 1609 for 16:9).\n"
              "; A value of 0 means to assume that the pixel aspect is square.\n"

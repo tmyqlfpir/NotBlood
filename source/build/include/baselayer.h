@@ -49,6 +49,7 @@ extern int32_t r_usenewaspect, newaspect_enable;
 extern int32_t r_fpgrouscan;
 extern int32_t setaspect_new_use_dimen;
 extern uint32_t r_screenxy;
+extern int32_t r_mirrormode;
 extern int32_t xres, yres, bpp, fullscreen, bytesperline;
 extern double refreshfreq;
 extern intptr_t frameplace;
@@ -64,6 +65,7 @@ int32_t videoCheckMode(int32_t *x, int32_t *y, int32_t c, int32_t fs, int32_t fo
 int32_t videoSetMode(int32_t x, int32_t y, int32_t c, int32_t fs);
 void    videoGetModes(void);
 void    videoResetMode(void);
+void    videoMirrorDrawing(void);
 void    videoEndDrawing(void);
 void    videoShowFrame(int32_t);
 int32_t videoUpdatePalette(int32_t start, int32_t num);

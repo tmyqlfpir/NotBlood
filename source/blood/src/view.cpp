@@ -3600,7 +3600,10 @@ RORHACK:
                     nAng = 512 - nAng;
                 }
                 int nScale = dmulscale32(Cos(nAng), 262144, Sin(nAng), 163840)>>tiltcs;
-                rotatesprite(160<<16, 100<<16, nScale, v78+512, TILTBUFFER, 0, 0, vrc, gViewX0, gViewY0, gViewX1, gViewY1);
+                if (!r_mirrormode)
+                    rotatesprite(160<<16, 100<<16, nScale, v78+512, TILTBUFFER, 0, 0, vrc, gViewX0, gViewY0, gViewX1, gViewY1);
+                else // mirror mode, invert blur effect x coords
+                    rotatesprite(160<<16, 100<<16, nScale, v78+512, TILTBUFFER, 0, 0, vrc, -gViewX0, gViewY0, -gViewX1, gViewY1);
             }
 #ifdef USE_OPENGL
             else
@@ -3622,6 +3625,9 @@ RORHACK:
             }
 #endif
         }
+
+        if (videoGetRenderMode() == REND_CLASSIC && r_mirrormode) // mirror framebuffer for classic renderer
+            videoMirrorDrawing();
 
         bDeliriumOld = bDelirium && gDeliriumBlur;
 
