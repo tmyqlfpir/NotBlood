@@ -57,6 +57,7 @@ void SetShowPlayerNames(CGameMenuItemZBool *);
 void SetShowWeapons(CGameMenuItemZCycle *);
 
 void SetWeaponsV10X(CGameMenuItemZBool*);
+void SetAutosaveMode(CGameMenuItemZCycle*);
 void SetQuadDamagePowerup(CGameMenuItemZBool*);
 void SetDamageInvul(CGameMenuItemZBool*);
 void SetRandomizerMode(CGameMenuItemZCycle*);
@@ -103,10 +104,12 @@ char strRestoreGameStrings[][16] =
     "<Empty>",
     "<Empty>",
     "<Empty>",
+    "<Empty>",
 };
 
 char restoreGameDifficulty[] = 
 {
+    2,
     2,
     2,
     2,
@@ -168,6 +171,12 @@ const char *pzShowWeaponStrings[] = {
     "OFF",
     "SPRITE",
     "VOXEL"
+};
+
+const char *pzAutosaveModeStrings[] = {
+    "OFF",
+    "ON",
+    "DISABLE MANUAL SAVING+ON",
 };
 
 const char *pzRandomizerModeStrings[] = {
@@ -318,6 +327,7 @@ CGameMenuItemZEditBitmap itemLoadGame7(NULL, 3, 20, 120, 320, strRestoreGameStri
 CGameMenuItemZEditBitmap itemLoadGame8(NULL, 3, 20, 130, 320, strRestoreGameStrings[7], 16, 1, LoadGame, 7);
 CGameMenuItemZEditBitmap itemLoadGame9(NULL, 3, 20, 140, 320, strRestoreGameStrings[8], 16, 1, LoadGame, 8);
 CGameMenuItemZEditBitmap itemLoadGame10(NULL, 3, 20, 150, 320, strRestoreGameStrings[9], 16, 1, LoadGame, 9);
+CGameMenuItemZEditBitmap itemLoadGameAutosave(NULL, 3, 20, 170, 320, strRestoreGameStrings[AUTOSAVESLOT], 16, 1, LoadGame, AUTOSAVESLOT);
 CGameMenuItemBitmapLS itemLoadGamePic(NULL, 3, 0, 0, 2518);
 
 CGameMenu menuMultiUserMaps;
@@ -447,20 +457,21 @@ void SetWeaponSwitch(CGameMenuItemZCycle *pItem);
 CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
 
 ///////////////
-CGameMenuItemZBool itemOptionsGameBoolWeaponsV10X("V1.0x WEAPONS BALANCE:", 3, 66, 120, 180, gWeaponsV10x, SetWeaponsV10X, NULL, NULL);
-CGameMenuItemZBool itemOptionsGameBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 140, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
-CGameMenuItemZBool itemOptionsGameBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 150, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameRandomizerMode("RANDOMIZER MODE:", 3, 66, 160, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), NULL);
-CGameMenuItemZEdit itemOptionsGameRandomizerSeed("RANDOMIZER SEED:", 3, 66, 170, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
+CGameMenuItemZBool itemOptionsGameBoolWeaponsV10X("V1.0x WEAPONS BALANCE:", 3, 66, 115, 180, gWeaponsV10x, SetWeaponsV10X, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 135, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), NULL);
+CGameMenuItemZBool itemOptionsGameBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 145, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
+CGameMenuItemZBool itemOptionsGameBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 155, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameRandomizerMode("RANDOMIZER MODE:", 3, 66, 165, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), NULL);
+CGameMenuItemZEdit itemOptionsGameRandomizerSeed("RANDOMIZER SEED:", 3, 66, 175, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
-CGameMenuItemZBool itemOptionsGameBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 50, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameShowWeapons("SHOW WEAPONS:", 3, 66, 60, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
-CGameMenuItemZBool itemOptionsGameBoolSlopeTilting("SLOPE TILTING:", 3, 66, 70, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
-CGameMenuItemZBool itemOptionsGameBoolViewBobbing("VIEW BOBBING:", 3, 66, 80, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
-CGameMenuItemZBool itemOptionsGameBoolViewSwaying("VIEW SWAYING:", 3, 66, 90, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 100, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
-CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 110, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
+CGameMenuItemZBool itemOptionsGameBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 45, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameShowWeapons("SHOW WEAPONS:", 3, 66, 55, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
+CGameMenuItemZBool itemOptionsGameBoolSlopeTilting("SLOPE TILTING:", 3, 66, 65, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
+CGameMenuItemZBool itemOptionsGameBoolViewBobbing("VIEW BOBBING:", 3, 66, 75, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
+CGameMenuItemZBool itemOptionsGameBoolViewSwaying("VIEW SWAYING:", 3, 66, 85, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 95, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
+CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 105, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
 //CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 120, 320, 1, &menuParentalLock, -1, NULL, 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
@@ -944,6 +955,7 @@ void SetupMainMenuWithSave(void)
     menuMainWithSave.Add(&itemMainSave8, false);
     menuMainWithSave.Add(&itemBloodQAV, false);
 
+    itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
     itemMainSave3.bDisableForNet = 1;
     itemMainSave4.bDisableForNet = 1;
     itemMainSave5.bDisableForNet = 1;
@@ -1056,6 +1068,7 @@ void SetupLoadGameMenu(void)
     menuLoadGame.Add(&itemLoadGame8, false);
     menuLoadGame.Add(&itemLoadGame9, false);
     menuLoadGame.Add(&itemLoadGame10, false);
+    menuLoadGame.Add(&itemLoadGameAutosave, false);
     menuLoadGame.Add(&itemLoadGamePic, false);
     itemLoadGame1.at35 = 0;
     itemLoadGame2.at35 = 0;
@@ -1067,6 +1080,7 @@ void SetupLoadGameMenu(void)
     itemLoadGame8.at35 = 0;
     itemLoadGame9.at35 = 0;
     itemLoadGame10.at35 = 0;
+    itemLoadGameAutosave.at35 = 0;
     itemLoadGame1.at2c = &itemLoadGamePic;
     itemLoadGame2.at2c = &itemLoadGamePic;
     itemLoadGame3.at2c = &itemLoadGamePic;
@@ -1077,6 +1091,7 @@ void SetupLoadGameMenu(void)
     itemLoadGame8.at2c = &itemLoadGamePic;
     itemLoadGame9.at2c = &itemLoadGamePic;
     itemLoadGame10.at2c = &itemLoadGamePic;
+    itemLoadGameAutosave.at2c = &itemLoadGamePic;
     menuLoadGame.Add(&itemBloodQAV, false);
 }
 
@@ -1189,16 +1204,17 @@ void SetupOptionsMenu(void)
 
     //////////////////////
     menuOptionsGame.Add(&itemOptionsGameBoolWeaponsV10X, false);
+    menuOptionsGame.Add(&itemOptionsGameAutosaveMode, false);
     menuOptionsGame.Add(&itemOptionsGameBoolQuadDamagePowerup, false);
     menuOptionsGame.Add(&itemOptionsGameBoolDamageInvul, false);
     menuOptionsGame.Add(&itemOptionsGameRandomizerMode, false);
     menuOptionsGame.Add(&itemOptionsGameRandomizerSeed, false);
     itemOptionsGameBoolWeaponsV10X.bDisableForNet = 1;
+    itemOptionsGameAutosaveMode.bDisableForNet = 1;
     itemOptionsGameBoolQuadDamagePowerup.bDisableForNet = 1;
     itemOptionsGameBoolDamageInvul.bDisableForNet = 1;
     itemOptionsGameRandomizerMode.bDisableForNet = 1;
     itemOptionsGameRandomizerSeed.bDisableForNet = 1;
-    Bstrncpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(szRandomizerSeedMenu));
     /////////////////////
 
     //menuOptionsGame.Add(&itemOptionsGameChainParentalLock, false);
@@ -1213,9 +1229,11 @@ void SetupOptionsMenu(void)
 
     ///////
     itemOptionsGameBoolWeaponsV10X.at20 = gWeaponsV10x;
+    itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
     itemOptionsGameBoolQuadDamagePowerup.at20 = gQuadDamagePowerup;
     itemOptionsGameBoolDamageInvul.at20 = gDamageInvul;
     itemOptionsGameRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
+    Bstrncpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(szRandomizerSeedMenu));
     ///////
 
     menuOptionsDisplay.Add(&itemOptionsDisplayTitle, false);
@@ -1490,6 +1508,13 @@ void SetWeaponsV10X(CGameMenuItemZBool* pItem)
     } else {
         pItem->at20 = gWeaponsV10x;
     }
+}
+
+void SetAutosaveMode(CGameMenuItemZCycle *pItem)
+{
+    gAutosave = pItem->m_nFocus % ARRAY_SSIZE(pzAutosaveModeStrings);
+
+    itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
 }
 
 void SetQuadDamagePowerup(CGameMenuItemZBool* pItem)
@@ -2243,6 +2268,7 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     gSaveGameNum = nSlot;
     LoadSave::SaveGame(strSaveGameName);
     gQuickSaveSlot = nSlot;
+    gQuickLoadSlot = nSlot;
     gGameMenuMgr.Deactivate();
     viewSetMessage("Game saved");
 }
@@ -2268,8 +2294,27 @@ void QuickSaveGame(void)
     gGameOptions.picEntry = gSavedOffset;
     gSaveGameOptions[gQuickSaveSlot] = gGameOptions;
     UpdateSavedInfo(gQuickSaveSlot);
+    gQuickLoadSlot = gQuickSaveSlot;
     gGameMenuMgr.Deactivate();
     viewSetMessage("Game saved");
+}
+
+void AutosaveGame(bool printMessage)
+{
+    char strSaveGameName[BMAX_PATH];
+    if (gGameOptions.nGameType > 0 || !gGameStarted)
+        return;
+    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave.sav", AUTOSAVESLOT);
+    strcpy(strRestoreGameStrings[AUTOSAVESLOT], "autosave");
+    strcpy(gGameOptions.szUserGameName, "autosave");
+    sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
+    restoreGameDifficulty[AUTOSAVESLOT] = gGameOptions.nDifficulty;
+    gGameOptions.nSaveGameSlot = AUTOSAVESLOT;
+    LoadSave::SaveGame(strSaveGameName);
+    if (printMessage)
+        viewSetMessage("Autosaved...");
+    gQuickLoadSlot = AUTOSAVESLOT;
+    gAutosaveInCurLevel = true;
 }
 
 void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
@@ -2279,7 +2324,10 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     int nSlot = pItem->at28;
     if (gGameOptions.nGameType > 0)
         return;
-    G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot);
+    if (nSlot != AUTOSAVESLOT)
+        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot);
+    else
+        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave.sav");
     if (!testkopen(strLoadGameName, 0))
         return;
     viewLoadingScreen(2518, "Loading", "Loading Saved Game", strRestoreGameStrings[nSlot]);
@@ -2287,6 +2335,7 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();
     gQuickLoadSlot = nSlot;
+    gAutosaveInCurLevel = false;
 }
 
 void QuickLoadGame(void)
@@ -2294,13 +2343,17 @@ void QuickLoadGame(void)
     char strLoadGameName[BMAX_PATH];
     if (gGameOptions.nGameType > 0)
         return;
-    G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot);
+    if (gQuickLoadSlot != AUTOSAVESLOT)
+        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot);
+    else
+        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave.sav");
     if (!testkopen(strLoadGameName, 0))
         return;
     viewLoadingScreen(2518, "Loading", "Loading Saved Game", strRestoreGameStrings[gQuickLoadSlot]);
     videoNextPage();
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();
+    gAutosaveInCurLevel = false;
 }
 
 void SetupLevelMenuItem(int nEpisode)

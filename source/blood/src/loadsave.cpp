@@ -47,8 +47,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "nnexts.h"
 #endif
 
-GAMEOPTIONS gSaveGameOptions[10];
-char *gSaveGamePic[10];
+GAMEOPTIONS gSaveGameOptions[11];
+char *gSaveGamePic[11];
 unsigned int gSavedOffset = 0;
 
 unsigned int dword_27AA38 = 0;

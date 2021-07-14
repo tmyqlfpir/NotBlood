@@ -58,4 +58,5 @@ void drawLoadingScreen(void);
 void SetupMenus(void);
 void UpdateNetworkMenus(void);
 void QuickSaveGame(void);
+void AutosaveGame(bool printMessage);
 void QuickLoadGame(void);

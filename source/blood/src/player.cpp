@@ -1081,6 +1081,8 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             if (pPlayer->hasKey[pItem->type-99]) return 0;
             pPlayer->hasKey[pItem->type-99] = 1;
             pickupSnd = 781;
+            if (gAutosave > 0 && gGameOptions.nGameType == 0) // if autosave is on and not currently in multiplayer, autosave on key pickup
+                gDoQuickSave = 3;
             break;
         case kItemHealthMedPouch:
         case kItemHealthLifeEssense:
@@ -1387,6 +1389,11 @@ void ProcessInput(PLAYER *pPlayer)
                 {
                     if (gDemo.at0)
                         gDemo.Close();
+                    else if(DoRestoreSave()) // attempt to load last save, if fail then restart on current level
+                    {
+                        pInput->keyFlags.restart = 0;
+                        return;
+                    }
                     pInput->keyFlags.restart = 1;
                 }
                 else

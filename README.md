@@ -7,6 +7,7 @@ New features include:
 * Optional quad damage replacement for guns akimbo powerup
 * Throwable lifeleech alt fire (like TNT) and cheat (big bertha)
 * Randomize mode for enemies/pickups (with multiplayer support)
+* Autosaving on collecting keys and start of level
 * Mirror mode
 
 ### Installing

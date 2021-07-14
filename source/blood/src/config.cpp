@@ -115,6 +115,8 @@ int32_t gDeliriumBlur;
 
 //////////
 int gWeaponsV10x;
+int gAutosave;
+bool gAutosaveInCurLevel;
 int gQuadDamagePowerup;
 int gDamageInvul;
 int gRandomizerMode;
@@ -411,6 +413,8 @@ void CONFIG_SetDefaults(void)
     gWeaponSwitch = 0;
 
     gWeaponsV10x = 0;
+    gAutosave = 1;
+    gAutosaveInCurLevel = false;
     gQuadDamagePowerup = 0;
     gDamageInvul = 1;
     gRandomizerMode = 0;
@@ -679,6 +683,7 @@ int CONFIG_ReadSetup(void)
     // Nuke: make cvar
     ///////
     SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsV10x", &gWeaponsV10x);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "Autosave", &gAutosave);
     SCRIPT_GetNumber(scripthandle, "Game Options", "QuadDamagePowerup", &gQuadDamagePowerup);
     SCRIPT_GetNumber(scripthandle, "Game Options", "DamageInvul", &gDamageInvul);
     SCRIPT_GetNumber(scripthandle, "Game Options", "RandomizerMode", &gRandomizerMode);
@@ -981,6 +986,7 @@ void CONFIG_WriteSetup(uint32_t flags)
 
     ///////
     SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsV10x", gWeaponsV10x, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "Autosave", gAutosave, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "QuadDamagePowerup", gQuadDamagePowerup, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "DamageInvul", gDamageInvul, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "RandomizerMode", gRandomizerMode, FALSE, FALSE);
