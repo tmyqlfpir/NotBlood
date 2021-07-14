@@ -671,9 +671,10 @@ static uint32_t curRandomizerSeed = 0;
 
 void dbRandomizerModeInit(void)
 {
+    static bool calledSrand = false;
+    bool emptySeed = (gGameOptions.szRandomizerSeed[0] == '\0');
     curRandomizerSeed = 0;
-    bool emptySeed = gGameOptions.szRandomizerSeed[0] == '\0';
-    bool calledSrand = false;
+
     if (emptySeed && !VanillaMode() && !DemoRecordStatus() && (gGameOptions.nGameType == 0)) // if seed is empty and in singleplayer, generate a new one
     {
         if (!calledSrand) // only call this once
