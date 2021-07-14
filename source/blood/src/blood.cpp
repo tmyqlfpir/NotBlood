@@ -780,7 +780,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     gGameStarted = 1;
     ready2send = 1;
     gAutosaveInCurLevel = false;
-    if (gAutosave && !gDemo.at1 && gGameOptions.nGameType == 0) // if autosave is on, demo isn't active and not in multiplayer session
+    if (!gDemo.at1 && gGameOptions.nGameType == 0) // if demo isn't active and not in multiplayer session
         AutosaveGame(false); // create autosave at start of the level
 }
 
