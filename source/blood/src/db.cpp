@@ -681,7 +681,7 @@ void dbRandomizerModeInit(void)
             srand(time(NULL));
         curRandomizerSeed = rand();
     }
-    else for (int i = 0; i < sizeof(gGameOptions.szRandomizerSeed); i++)
+    else for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++)
     {
         if (gGameOptions.szRandomizerSeed[i] == '\0')
             break;

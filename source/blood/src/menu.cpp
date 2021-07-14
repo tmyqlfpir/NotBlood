@@ -2304,7 +2304,7 @@ void AutosaveGame(bool printMessage)
     char strSaveGameName[BMAX_PATH];
     if (gGameOptions.nGameType > 0 || !gGameStarted)
         return;
-    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave.sav", AUTOSAVESLOT);
+    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave.sav");
     strcpy(strRestoreGameStrings[AUTOSAVESLOT], "autosave");
     strcpy(gGameOptions.szUserGameName, "autosave");
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);

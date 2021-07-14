@@ -1094,6 +1094,11 @@ void ProcessFrame(void)
         if (gPlayer[i].input.keyFlags.restart)
         {
             gPlayer[i].input.keyFlags.restart = 0;
+            if ((gGameOptions.nGameType == 0) && (numplayers == 1)) // if not in multiplayer session
+            {
+                if (DoRestoreSave()) // attempt to load last save, if fail then restart current level
+                    return;
+            }
             levelRestart();
             return;
         }

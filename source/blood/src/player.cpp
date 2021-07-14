@@ -1389,11 +1389,6 @@ void ProcessInput(PLAYER *pPlayer)
                 {
                     if (gDemo.at0)
                         gDemo.Close();
-                    else if(DoRestoreSave()) // attempt to load last save, if fail then restart on current level
-                    {
-                        pInput->keyFlags.restart = 0;
-                        return;
-                    }
                     pInput->keyFlags.restart = 1;
                 }
                 else
