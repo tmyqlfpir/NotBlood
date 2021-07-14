@@ -117,6 +117,8 @@ int32_t gDeliriumBlur;
 int gWeaponsV10x;
 int gQuadDamagePowerup;
 int gDamageInvul;
+int gRandomizerMode;
+char gzRandomizerSeed[9];
 /////////
 
 int32_t CONFIG_FunctionNameToNum(const char *func)
@@ -314,7 +316,7 @@ void CONFIG_SetDefaults(void)
 
     //ud.config.AmbienceToggle  = 1;
     //ud.config.AutoAim         = 1;
-    CheckForUpdates = 1;
+    CheckForUpdates = 0;
     FXVolume        = 255;
     MouseBias       = 0;
     MouseDeadZone   = 0;
@@ -408,9 +410,11 @@ void CONFIG_SetDefaults(void)
     gAutoAim = 1;
     gWeaponSwitch = 0;
 
-    gDamageInvul = 1;
-    gQuadDamagePowerup = 0;
     gWeaponsV10x = 0;
+    gQuadDamagePowerup = 0;
+    gDamageInvul = 1;
+    gRandomizerMode = 0;
+    Bmemset(gzRandomizerSeed, 0, sizeof(gzRandomizerSeed));
 
     Bstrcpy(szPlayerName, "Player");
 
@@ -677,6 +681,13 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsV10x", &gWeaponsV10x);
     SCRIPT_GetNumber(scripthandle, "Game Options", "QuadDamagePowerup", &gQuadDamagePowerup);
     SCRIPT_GetNumber(scripthandle, "Game Options", "DamageInvul", &gDamageInvul);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "RandomizerMode", &gRandomizerMode);
+
+    Bmemset(tempbuf, 0, sizeof(tempbuf));
+    Bmemset(gzRandomizerSeed, 0, sizeof(gzRandomizerSeed));
+    SCRIPT_GetString(scripthandle, "Game Options", "RandomizerSeed", &tempbuf[0]);
+    Bstrncpyz(gzRandomizerSeed, tempbuf, sizeof(gzRandomizerSeed));
+    gzRandomizerSeed[sizeof(gzRandomizerSeed)-1] = '\0';
     ///////
 
     char commmacro[] = "CommbatMacro# ";
@@ -972,6 +983,9 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsV10x", gWeaponsV10x, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "QuadDamagePowerup", gQuadDamagePowerup, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "DamageInvul", gDamageInvul, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "RandomizerMode", gRandomizerMode, FALSE, FALSE);
+    gzRandomizerSeed[sizeof(gzRandomizerSeed)-1] = '\0';
+    SCRIPT_PutString(scripthandle, "Game Options", "RandomizerSeed", &gzRandomizerSeed[0]);
     ///////
     
     SCRIPT_Save(scripthandle, SetupFilename);

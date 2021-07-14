@@ -57,6 +57,8 @@ struct GAMEOPTIONS {
     int weaponsV10x;
     bool bQuadDamagePowerup;
     bool bDamageInvul;
+    char nRandomizerMode;
+    char szRandomizerSeed[9];
     bool bFriendlyFire;
     bool bKeepKeysOnRespawn;
     char szUserMap[BMAX_PATH];

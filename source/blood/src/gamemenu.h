@@ -107,6 +107,7 @@ public:
     unsigned int bCanSelect : 1;
     unsigned int bEnable : 1;
     unsigned int bNoDraw : 1;
+    unsigned int bDisableForNet : 1;
     CGameMenuItem();
     virtual ~CGameMenuItem();
     virtual void Draw(void) = 0;

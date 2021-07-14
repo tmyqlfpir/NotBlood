@@ -1183,7 +1183,7 @@ void PickUp(PLAYER *pPlayer, spritetype *pSprite)
     if (nType >= kItemBase && nType <= kItemMax) {
         pickedUp = PickupItem(pPlayer, pSprite);
         if (pickedUp && customMsg == -1) {
-            if ((nType - kItemBase == 17) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // replace guns akimbo pickup text
+            if ((nType == kItemTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // replace guns akimbo pickup text
                 sprintf(buffer, "Picked up Quad Damage");
             else
                 sprintf(buffer, "Picked up %s", gItemText[nType - kItemBase]);

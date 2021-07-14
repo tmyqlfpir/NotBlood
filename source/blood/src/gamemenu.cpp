@@ -340,7 +340,7 @@ void CGameMenu::Draw(void)
     {
         if (pItemList[i]->pPreDrawCallback)
             pItemList[i]->pPreDrawCallback(pItemList[i]);
-        if (i == m_nFocus || (i != m_nFocus && !pItemList[i]->bNoDraw))
+        if ((i == m_nFocus || (i != m_nFocus && !pItemList[i]->bNoDraw)) && !(gNetPlayers > 1 && pItemList[i]->bDisableForNet))
             pItemList[i]->Draw();
     }
 }
@@ -394,7 +394,7 @@ void CGameMenu::SetFocusItem(CGameMenuItem *pItem)
 bool CGameMenu::CanSelectItem(int nItem)
 {
     dassert(nItem >= 0 && nItem < m_nItems && nItem < kMaxGameMenuItems);
-    return pItemList[nItem]->bCanSelect && pItemList[nItem]->bEnable;
+    return pItemList[nItem]->bCanSelect && pItemList[nItem]->bEnable && !(gNetPlayers > 1 && pItemList[nItem]->bDisableForNet);
 }
 
 void CGameMenu::FocusPrevItem(void)
@@ -449,6 +449,7 @@ CGameMenuItem::CGameMenuItem()
     m_nFont = -1;
     pMenu = NULL;
     bNoDraw = 0;
+    bDisableForNet = 0;
     pPreDrawCallback = NULL;
 }
 

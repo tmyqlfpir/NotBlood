@@ -2472,7 +2472,7 @@ void actInit(bool bSaveLoad) {
     for (int nSprite = headspritestat[kStatItem]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
         switch (sprite[nSprite].type) {
             case kItemWeaponVoodooDoll:
-                sprite[nSprite].type = kAmmoItemVoodooDoll;
+                sprite[nSprite].type = kItemAmmoVoodooDoll;
                 break;
         }
     }

@@ -71,7 +71,7 @@ extern int gNetPort;
 
 struct PKT_STARTGAME {
     short version;
-    char gameType, difficulty, monsterSettings, weaponSettings, itemSettings, respawnSettings;
+    char gameType, difficulty, monsterSettings, weaponSettings, itemSettings, respawnSettings, randomizerMode;
     char episodeId, levelId;
     int unk;
     char userMap, userMapName[BMAX_PATH];
@@ -80,6 +80,7 @@ struct PKT_STARTGAME {
     bool bDamageInvul;
     bool bFriendlyFire;
     bool bKeepKeysOnRespawn;
+    char szRandomizerSeed[9];
 };
 
 extern PKT_STARTGAME gPacketStartGame;

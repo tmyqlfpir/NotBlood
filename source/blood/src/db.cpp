@@ -667,6 +667,353 @@ void PropagateMarkerReferences(void)
     }
 }
 
+static uint32_t curRandomizerSeed = 0;
+
+void dbRandomizerModeInit(void)
+{
+    curRandomizerSeed = 0;
+    bool emptySeed = gGameOptions.szRandomizerSeed[0] == '\0';
+    bool calledSrand = false;
+    if (emptySeed && !VanillaMode() && !DemoRecordStatus() && (gGameOptions.nGameType == 0)) // if seed is empty and in singleplayer, generate a new one
+    {
+        if (!calledSrand) // only call this once
+            srand(time(NULL));
+        curRandomizerSeed = rand();
+    }
+    else for (int i = 0; i < sizeof(gGameOptions.szRandomizerSeed); i++)
+    {
+        if (gGameOptions.szRandomizerSeed[i] == '\0')
+            break;
+        curRandomizerSeed += ~(toupper(gGameOptions.szRandomizerSeed[i]));
+    }
+}
+
+int dbRandomizerModeGen(void)
+{
+	curRandomizerSeed = (214013 * curRandomizerSeed + 2531011);
+	return (curRandomizerSeed >> 16) & 0x7FFF;
+}
+
+void dbRandomizerMode(spritetype *pSprite)
+{
+    if (gGameOptions.nDifficulty <= 2) // don't always replace enemies/pickups
+    {
+        if (!(dbRandomizerModeGen() % 2)) return;
+    }
+    else if (gGameOptions.nDifficulty == 3) // well done
+    {
+        if (!(dbRandomizerModeGen() % 4)) return;
+    }
+    else // extra crispy
+    {
+        if (!(dbRandomizerModeGen() % 5)) return;
+    }
+
+    if ((gGameOptions.nRandomizerMode == 1) || (gGameOptions.nRandomizerMode == 3)) // if enemies or enemies+weapons mode, randomize enemy
+    {
+        switch (pSprite->type)
+        {
+        case kDudeInnocent:
+        {
+            const int enemiesrng[] = {kDudeBat, kDudeRat, kDudeZombieAxeNormal, kDudeGillBeast, kDudeHand, kDudeCultistShotgunProne};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeBat:
+        {
+            const int enemiesrng[] = {kDudeRat, kDudeZombieAxeLaying, kDudeHand, kDudeInnocent, kDudeCultistTNT, kDudePhantasm};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeRat:
+        {
+            const int enemiesrng[] = {kDudeBat, kDudeZombieAxeBuried, kDudeHand, kDudeTinyCaleb, kDudeSpiderBrown, kDudeSpiderRed};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeZombieAxeBuried:
+        {
+            const int enemiesrng[] = {kDudeSpiderRed, kDudeZombieAxeLaying, kDudeGillBeast, kDudeZombieButcher, kDudeCultistShotgun, kDudeCultistTommy, kDudeCultistTNT};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeZombieAxeLaying:
+        {
+            const int enemiesrng[] = {kDudeSpiderRed, kDudeZombieAxeBuried, kDudeGillBeast, kDudeZombieButcher, kDudeCultistShotgunProne, kDudeCultistTNT};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeZombieAxeNormal:
+        {
+            const int enemiesrng[] = {kDudeZombieAxeBuried, kDudeZombieAxeLaying, kDudeGillBeast, kDudeZombieButcher, kDudeCultistShotgun, kDudeCultistTommy, kDudeTinyCaleb, kDudeCultistTNT};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeBoneEel:
+        {
+            const int enemiesrng[] = {kDudeZombieAxeNormal, kDudeGillBeast, kDudeHand, kDudeCultistShotgunProne, kDudeInnocent, kDudeCultistTNT};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeGillBeast:
+        {
+            const int enemiesrng[] = {kDudeZombieAxeNormal, kDudeZombieAxeLaying, kDudeZombieButcher, kDudeCultistShotgun, kDudeCultistTommy, kDudeCultistTNT, kDudeGargoyleFlesh, kDudeCultistShotgunProne, kDudeCultistTesla};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeZombieButcher:
+        {
+            const int enemiesrng[] = {kDudeZombieAxeNormal, kDudeZombieAxeLaying, kDudeGillBeast, kDudeCultistShotgun, kDudeCultistTommy, kDudeCultistTNT, kDudeGargoyleFlesh, kDudePhantasm, kDudeCultistShotgunProne, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeSpiderBlack:
+        {
+            const int enemiesrng[] = {kDudeCultistTNT, kDudeGargoyleFlesh, kDudeCultistShotgunProne, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla, kDudeSpiderMother};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeSpiderBrown:
+        case kDudeSpiderRed:
+        {
+            const int enemiesrng[] = {kDudeHand, kDudeTinyCaleb, kDudeCultistTNT, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistShotgunProne};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudePhantasm:
+        {
+            const int enemiesrng[] = {kDudeBat, kDudeHellHound, kDudeZombieButcher, kDudeCultistTNT, kDudeCultistTommyProne, kDudeGillBeast};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeHand:
+        case kDudeTinyCaleb:
+        {
+            const int enemiesrng[] = {kDudeSpiderBrown, kDudeSpiderRed, kDudeCultistTNT, kDudePhantasm, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistShotgunProne, kDudeGillBeast, kDudeZombieAxeLaying};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeTentacleGreen:
+        case kDudeTentacleFire:
+        {
+            const int enemiesrng[] = {kDudePodFire, kDudePodGreen, kDudeCultistShotgunProne, kDudeCultistTommyProne, kDudeZombieAxeBuried};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeCultistShotgun:
+        case kDudeCultistTommy:
+        {
+            const int enemiesrng[] = {kDudeInnocent, kDudeZombieAxeBuried, kDudeZombieAxeNormal, kDudeGillBeast, kDudeZombieButcher, kDudeCultistTNT, kDudeCultistShotgun, kDudeCultistShotgunProne, kDudeCultistTommyProne};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeCultistShotgunProne:
+        case kDudeCultistTommyProne:
+        {
+            const int enemiesrng[] = {kDudeGillBeast, kDudeZombieButcher, kDudeSpiderBlack, kDudeCultistShotgun, kDudeCultistTommy, kDudeCultistTNT, kDudeHellHound, kDudeCultistTesla};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeCultistTNT:
+        {
+            const int enemiesrng[] = {kDudeZombieAxeNormal, kDudeGillBeast, kDudeZombieButcher, kDudeCultistTommy, kDudeCultistShotgunProne, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeGargoyleFlesh:
+        {
+            const int enemiesrng[] = {kDudeBat, kDudeCultistTNT, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeHellHound:
+        {
+            const int enemiesrng[] = {kDudeCultistTNT, kDudeCultistTommyProne, kDudeCultistTesla, kDudeGargoyleFlesh};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeCultistTesla:
+        {
+            const int enemiesrng[] = {kDudeCultistTesla, kDudeCultistTesla, kDudeCultistTesla, kDudeGargoyleStone, kDudeCerberusOneHead, kDudeCultistTommyProne, kDudeCultistTNT};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        case kDudeCerberusOneHead:
+        case kDudeCerberusTwoHead:
+        {
+            const int enemiesrng[] = {kDudeCerberusTwoHead, kDudeGargoyleStone, kDudeTchernobog, kDudeHellHound, kDudeBeast};
+            pSprite->type = enemiesrng[dbRandomizerModeGen() % ARRAY_SSIZE(enemiesrng)];
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    if (gGameOptions.nRandomizerMode >= 2) // if pickups or enemies+pickups mode, randomize pickup
+    {
+        switch (pSprite->type)
+        {
+        case kItemWeaponFlarePistol:
+        {
+            const int pickupsrngtype[] = {kItemWeaponSprayCan, kItemWeaponTommygun, kItemWeaponTNT, kItemHealthLifeEssense};
+            const int pickupsrngpicnum[] = {618, 558, 589, 2169};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemWeaponSawedoff:
+        {
+            const int pickupsrngtype[] = {kItemWeaponTommygun, kItemWeaponSprayCan, kItemAmmoTNTBox};
+            const int pickupsrngpicnum[] = {558, 618, 809};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemWeaponTommygun:
+        {
+            const int pickupsrngtype[] = {kItemWeaponSawedoff, kItemWeaponFlarePistol, kItemAmmoTNTBox};
+            const int pickupsrngpicnum[] = {559, 524, 809};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemAmmoTNTBox:
+        {
+            const int pickupsrngtype[] = {kItemWeaponSprayCan, kItemAmmoRemoteBombBundle, kItemAmmoTNTBundle, kItemAmmoTNTBox};
+            const int pickupsrngpicnum[] = {618, 810, 589, 809};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemWeaponTNT:
+        case kItemAmmoTNTBundle:
+        case kItemAmmoProxBombBundle:
+        case kItemAmmoRemoteBombBundle:
+        {
+            const int pickupsrngtype[] = {kItemWeaponSprayCan, kItemAmmoSawedoffFew, kItemAmmoTommygunFew};
+            const int pickupsrngpicnum[] = {618, 619, 813};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemWeaponSprayCan:
+        {
+            const int pickupsrngtype[] = {kItemAmmoSawedoffFew, kItemAmmoTommygunFew};
+            const int pickupsrngpicnum[] = {619, 813};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemWeaponVoodooDoll:
+        case kItemAmmoTrappedSoul:
+        {
+            const int pickupsrngtype[] = {kItemWeaponLifeLeech, kItemWeaponNapalmLauncher, kItemWeaponSawedoff, kItemHealthLifeSeed, kItemTwoGuns, kItemReflectShots, kItemWeaponTeslaCannon};
+            const int pickupsrngpicnum[] = {800, 526, 559, 2433, 829, 2428, 539};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemWeaponTeslaCannon:
+        {
+            const int pickupsrngtype[] = {kItemWeaponTommygun, kItemHealthLifeSeed, kItemShadowCloak, kItemReflectShots, kItemWeaponVoodooDoll};
+            const int pickupsrngpicnum[] = {558, 2433, 896, 2428, 525};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemWeaponNapalmLauncher:
+        case kItemWeaponLifeLeech:
+        case kItemArmorSuper:
+        {
+            const int pickupsrngtype[] = {kItemTwoGuns, kItemReflectShots, kItemWeaponVoodooDoll};
+            const int pickupsrngpicnum[] = {829, 2428, 525};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemHealthDoctorBag:
+        {
+            const int pickupsrngtype[] = {kItemHealthLifeEssense, kItemHealthLifeSeed, kItemAmmoSawedoffBox, kItemWeaponTeslaCannon};
+            const int pickupsrngpicnum[] = {2169, 2433, 812, 539};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemAmmoFlares:
+        {
+            const int pickupsrngtype[] = {kItemWeaponSprayCan, kItemAmmoRemoteBombBundle, kItemAmmoTNTBundle, kItemWeaponSprayCan, kItemAmmoTNTBundle, kItemAmmoGasolineCan};
+            const int pickupsrngpicnum[] = {619, 810, 589, 619, 589, 801};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemAmmoSawedoffBox:
+        {
+            const int pickupsrngtype[] = {kItemAmmoTeslaCharge, kItemWeaponSawedoff, kItemAmmoTommygunFew};
+            const int pickupsrngpicnum[] = {548, 559, 813};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemAmmoSawedoffFew:
+        {
+            const int pickupsrngtype[] = {kItemAmmoRemoteBombBundle, kItemAmmoTeslaCharge, kItemAmmoTommygunFew};
+            const int pickupsrngpicnum[] = {810, 548, 813};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemAmmoTommygunFew:
+        {
+            const int pickupsrngtype[] = {kItemAmmoRemoteBombBundle, kItemAmmoTNTBundle, kItemAmmoSawedoffFew};
+            const int pickupsrngpicnum[] = {810, 589, 619};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemArmorBasic:
+        case kItemArmorBody:
+        case kItemArmorFire:
+        case kItemArmorSpirit:
+        case kItemBeastVision:
+        {
+            const int pickupsrngtype[] = {kItemArmorBasic, kItemArmorBody, kItemArmorFire, kItemArmorSpirit, kItemArmorSuper, kItemHealthLifeEssense, kItemHealthLifeSeed, kItemTwoGuns, kItemReflectShots, kItemShadowCloak, kItemHealthDoctorBag};
+            const int pickupsrngpicnum[] = {2628, 2586, 2578, 2602, 2594, 2169, 2433, 829, 2428, 896, 519};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        case kItemTwoGuns:
+        case kItemReflectShots:
+        {
+            const int pickupsrngtype[] = {kItemTwoGuns, kItemReflectShots};
+            const int pickupsrngpicnum[] = {829, 2428};
+            const int rng = dbRandomizerModeGen() % ARRAY_SSIZE(pickupsrngtype);
+            pSprite->type = pickupsrngtype[rng];
+            pSprite->picnum = pickupsrngpicnum[rng];
+            break;
+        }
+        default:
+            break;
+        }
+    }
+}
+
 bool byte_1A76C6, byte_1A76C7, byte_1A76C8;
 
 MAPHEADER2 byte_19AE44;
@@ -869,6 +1216,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
     numsectors = mapHeader.at1f;
     numwalls = mapHeader.at21;
     dbInit();
+    dbRandomizerModeInit(); // seed enemy/pickup randomizer
     if (byte_1A76C8)
     {
         IOBuffer1.Read(&byte_19AE44, 128);
@@ -1120,6 +1468,8 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         pSprite->flags = B_LITTLE16(pSprite->hitag);
         pSprite->extra = B_LITTLE16(pSprite->extra);
 #endif
+        if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus()) // randomize enemy/pickups
+            dbRandomizerMode(pSprite);
         if ((pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
             pSprite->picnum = 30703;
         InsertSpriteSect(i, sprite[i].sectnum);

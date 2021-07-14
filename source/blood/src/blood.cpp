@@ -602,8 +602,10 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.weaponsV10x = gWeaponsV10x;
-        gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
+        gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
+        gGameOptions.nRandomizerMode = gRandomizerMode;
+        Bstrncpyz(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         ///////
     }
     else if (gGameOptions.nGameType > 0 && !(gGameOptions.uGameFlags&1))
@@ -625,12 +627,16 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.weaponsV10x = gPacketStartGame.weaponsV10x;
-        gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
+        gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
+        gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
+        Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         ///////
 
         gBlueFlagDropped = false;
         gRedFlagDropped = false;
+        gView = gMe;
+        gViewIndex = myconnectindex;
     }
     if (gameOptions->uGameFlags&1)
     {
@@ -794,12 +800,16 @@ void StartNetworkLevel(void)
         
         ///////
         gGameOptions.weaponsV10x = gPacketStartGame.weaponsV10x;
-        gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
+        gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
+        gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
+        Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         ///////
 
         gBlueFlagDropped = false;
         gRedFlagDropped = false;
+        gView = gMe;
+        gViewIndex = myconnectindex;
 
         if (gPacketStartGame.userMap)
             levelAddUserMap(gPacketStartGame.userMapName);
@@ -883,6 +893,8 @@ void LocalKeys(void)
     if (gDoQuickSave)
     {
         keyFlushScans();
+        if (gGameOptions.nGameType > 0)
+            return;
         switch (gDoQuickSave)
         {
         case 1:
@@ -965,7 +977,8 @@ void LocalKeys(void)
             return;
         case sc_F6:
             keyFlushScans();
-            DoQuickSave();
+            if (gGameOptions.nGameType == 0)
+                DoQuickSave();
             break;
         case sc_F8:
             keyFlushScans();
@@ -974,7 +987,8 @@ void LocalKeys(void)
             return;
         case sc_F9:
             keyFlushScans();
-            DoQuickLoad();
+            if (gGameOptions.nGameType == 0)
+                DoQuickLoad();
             break;
         case sc_F10:
             keyFlushScans();
@@ -1854,7 +1868,8 @@ RESTART:
             if (bDraw)
             {
                 videoClearScreen(0);
-                rotatesprite(160<<16,100<<16,65536,0,2518,0,0,0x4a,0,0,xdim-1,ydim-1);
+                if (numplayers == 1) // do not render for multiplayer menu
+                    rotatesprite(160<<16,100<<16,65536,0,2518,0,0,0x4a,0,0,xdim-1,ydim-1);
             }
             if (gQuitRequest && !gQuitGame)
                 netBroadcastMyLogoff(gQuitRequest == 2);
