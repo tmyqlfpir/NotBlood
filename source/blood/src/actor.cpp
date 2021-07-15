@@ -5850,6 +5850,9 @@ void actProcessSprites(void)
                             int speed = approxDist(xvel[pSprite->index], yvel[pSprite->index]);
                             speed = min(mulscale30r(speed, 0x10000), 127);
                             actDamageSprite(nOwner, pObject, (speed < 110) ? kDamageFall : kDamageExplode, speed * 10);
+                            xvel[pObject->index] = xvel[pSprite->index] >> 2; // push enemy back
+                            yvel[pObject->index] = yvel[pSprite->index] >> 2;
+                            yvel[pObject->index] += 58254;
                             xvel[pSprite->index] = -xvel[pSprite->index] >> 2; // invert direction and slow down
                             yvel[pSprite->index] = -yvel[pSprite->index] >> 2;
                             const int gibsfx[] = {315, 316, 318, 319, 497};
