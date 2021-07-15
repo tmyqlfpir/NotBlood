@@ -485,7 +485,7 @@ void ctrlGetInput(void)
     if (r_mirrormode) // mirror mode, invert mouse
         info.mousex = -info.mousex;
     if (BUTTON(gamefunc_Strafe))
-        input.strafe -= info.mousex;
+        input.strafe -= !r_mirrormode ? info.mousex : -info.mousex;
     else
         input.q16turn = fix16_sadd(input.q16turn, fix16_sdiv(fix16_from_int(info.mousex), F16(32)));
 
