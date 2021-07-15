@@ -3804,7 +3804,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                 if (!VanillaMode() && !DemoRecordStatus() && (gGameOptions.nGameType == 0)) // if not in demo/vanilla mode and in singleplayer, increase the damage for lifeleech
                 {
                     if (!IsPlayerSprite(&sprite[pSpriteHit->index])) // target is not a player, do extra damage
-                        nDamage <<= 2;
+                        nDamage *= 3;
                 }
                 actDamageSprite(nOwner, pSpriteHit, kDamageSpirit, nDamage);
             }
@@ -5855,9 +5855,11 @@ void actProcessSprites(void)
                             yvel[pObject->index] += 58254;
                             xvel[pSprite->index] = -xvel[pSprite->index] >> 2; // invert direction and slow down
                             yvel[pSprite->index] = -yvel[pSprite->index] >> 2;
-                            const int gibsfx[] = {315, 316, 318, 319, 497};
-                            if (speed < 110) // if power throw, play meaty gib sfx
-                                sfxPlay3DSound(pSprite, gibsfx[Random(5)], 0, 0);
+                            if (speed > 110) // if power throw, play meaty gib sfx
+                            {
+                                const int sfxrng[] = {318, 319, 497, 507};
+                                sfxPlay3DSound(pSprite, sfxrng[Random(4)], 0, 0);
+                            }
                             else
                                 sfxPlay3DSound(pSprite, 357, 0, 0);
                             break;

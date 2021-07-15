@@ -679,7 +679,7 @@ void dbRandomizerModeInit(void)
     {
         if (gGameOptions.nGameType > 0) // if in multiplayer, use a failsafe seed
         {
-            curRandomizerSeed = 0xB100D;
+            curRandomizerSeed = 0x12345678;
         }
         else // in singleplayer
         {
