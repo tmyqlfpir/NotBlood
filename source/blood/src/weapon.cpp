@@ -1685,7 +1685,7 @@ void FireNapalm(int nTrigger, PLAYER *pPlayer)
         offset = 50;
         break;
     }
-    playerFireMissile(pPlayer, offset, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapam);
+    playerFireMissile(pPlayer, offset, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
     sfxPlay3DSound(pSprite, 480, 2, 0);
     UseAmmo(pPlayer, 4, 1);
     pPlayer->flashEffect = 1;
@@ -1695,8 +1695,8 @@ void FireNapalm2(int nTrigger, PLAYER *pPlayer)
 {
     UNREFERENCED_PARAMETER(nTrigger);
     spritetype *pSprite = pPlayer->pSprite;
-    playerFireMissile(pPlayer, -120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapam);
-    playerFireMissile(pPlayer, 120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapam);
+    playerFireMissile(pPlayer, -120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
+    playerFireMissile(pPlayer, 120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
     sfxPlay3DSound(pSprite, 480, 2, 0);
     UseAmmo(pPlayer, 4, 2);
     pPlayer->flashEffect = 1;
@@ -1755,6 +1755,12 @@ void AltFireLifeLeech(int nTrigger, PLAYER *pPlayer)
     {
         pMissile->cstat |= 4096;
         XSPRITE *pXSprite = &xsprite[pMissile->extra];
+        if (!gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus()) // if not v1.0x version/demo/vanilla mode, lower overall lifeleech health from 150: 75 + (player's hp / 2)
+        {
+            pXSprite->health = (75 + (pPlayer->pXSprite->health >> 5)) << 4;
+            if (pXSprite->health > (150 << 4)) // don't go above original health value (possible with life seed)
+                pXSprite->health = (150 << 4);
+        }
         pXSprite->Push = 1;
         pXSprite->Proximity = 1;
         pXSprite->DudeLockout = 1;

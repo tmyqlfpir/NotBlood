@@ -5,8 +5,9 @@ New features include:
 * Difficulty based invulnerability timer for bullet/spirit/tesla damage
 * More forgiving hitbox size when testing wall collision for player spawned projectiles ([before](https://files.catbox.moe/3peiru.mp4)/[after](https://files.catbox.moe/zso8g4.mp4))
 * Optional quad damage replacement for guns akimbo powerup
-* Throwable lifeleech alt fire (like TNT) and cheat (big bertha)
-* Randomize mode for enemies/pickups (with multiplayer support)
+* Throwable lifeleech alt fire and cheat (big bertha)
+* Increased enemy damage for lifeleech's sentry mode
+* Randomize mode for enemies and pickups (multiplayer supported)
 * Autosaving on collecting keys and start of level
 * Mirror mode
 

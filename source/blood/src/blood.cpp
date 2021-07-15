@@ -193,7 +193,7 @@ void ShutDown(void)
     // PORT_TODO: Check argument
     if (syncstate)
         printf("A packet was lost! (syncstate)\n");
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < 12; i++)
     {
         if (gSaveGamePic[i])
             Resource::Free(gSaveGamePic[i]);
@@ -581,6 +581,8 @@ int16_t startang, startsectnum;
 
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
+    const bool triggerAutosave = !gDemo.at0 && !gDemo.at1 && (gGameOptions.nGameType == 0) && // if demo isn't active and not in multiplayer session and we switched to new level
+    ((gMusicPrevLoadedEpisode != gGameOptions.nEpisode) || (gMusicPrevLoadedLevel != gGameOptions.nLevel));
     EndLevel();
     gInput = {};
     gStartNewGame = 0;
@@ -780,8 +782,8 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     gGameStarted = 1;
     ready2send = 1;
     gAutosaveInCurLevel = false;
-    if (!gDemo.at1 && gGameOptions.nGameType == 0) // if demo isn't active and not in multiplayer session
-        AutosaveGame(false); // create autosave at start of the level
+    if (triggerAutosave)
+        AutosaveGame(true); // create autosave at start of the new level
 }
 
 void StartNetworkLevel(void)
@@ -841,7 +843,7 @@ static void DoQuickLoad(void)
         }
         else if (gAutosave == 2) // if quicksave slot is not set, and autosave mode set to disable manual saving, load autosave
         {
-            gQuickLoadSlot = AUTOSAVESLOT;
+            gQuickLoadSlot = AUTOSAVESLOT_START;
             QuickLoadGame();
             return;
         }
@@ -855,7 +857,7 @@ static void DoQuickSave(void)
     {
         if (gAutosave == 2) // if autosave mode set to disable manual saving
         {
-            viewSetMessage("Quicksaving is disabled!");
+            viewSetMessage("Quicksaving is locked!");
             viewSetMessage("Change autosave settings to save...");
             return;
         }
@@ -885,7 +887,7 @@ int DoRestoreSave(void)
     }
     else if (gAutosaveInCurLevel) // if quicksave slot is not set, and autosave mode set to disable manual saving, load autosave
     {
-        gQuickLoadSlot = AUTOSAVESLOT;
+        gQuickLoadSlot = AUTOSAVESLOT_START;
         QuickLoadGame();
         return 1;
     }
@@ -943,7 +945,7 @@ void LocalKeys(void)
             DoQuickLoad();
             break;
         case 3:
-            AutosaveGame(true);
+            AutosaveGame(false);
             break;
         }
         gDoQuickSave = 0;
@@ -1003,7 +1005,7 @@ void LocalKeys(void)
                 gGameMenuMgr.Push(&menuSaveGame,-1);
             else if (gAutosave == 2 && gGameOptions.nGameType == 0) // if autosave mode set to disable manual saving and not currently in multiplayer
             {
-                viewSetMessage("Saving is disabled!");
+                viewSetMessage("Saving is locked!");
                 viewSetMessage("Change autosave settings to save...");
             }
             break;
@@ -1091,15 +1093,15 @@ void ProcessFrame(void)
                 return;
             }
         }
-        if (gPlayer[i].input.keyFlags.restart)
+        if (gPlayer[i].input.keyFlags.restart) // if restart requested from ProcessInput()
         {
             gPlayer[i].input.keyFlags.restart = 0;
-            if ((gGameOptions.nGameType == 0) && (numplayers == 1)) // if not in multiplayer session
+            if (gPlayer[i].input.keyFlags.action && gGameOptions.nGameType == 0 && numplayers == 1) // if pressed action key and not in multiplayer session
             {
                 if (DoRestoreSave()) // attempt to load last save, if fail then restart current level
                     return;
             }
-            levelRestart();
+            levelRestart(); // pitchfork restart
             return;
         }
         if (gPlayer[i].input.keyFlags.pause)

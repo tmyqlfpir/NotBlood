@@ -9764,7 +9764,12 @@ int32_t polymost_printtext256(int32_t xpos, int32_t ypos, int16_t col, int16_t b
 
     polymost_usePaletteIndexing(false);
 
+    const int32_t r_mirrormode_temp = r_mirrormode; // disable mirror mode for polymostSet2dView
+    r_mirrormode = 0;
     polymostSet2dView();	// disables blending, texturing, and depth testing
+    r_mirrormode = r_mirrormode_temp;
+    if (r_mirrormode) // set flag so polymost_fillpolygon() will recall polymostSet2dView and setup mirror view
+        polymost2d = 0;
 
     glDisable(GL_ALPHA_TEST);
     glDepthMask(GL_FALSE);	// disable writing to the z-buffer

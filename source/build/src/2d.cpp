@@ -1594,7 +1594,10 @@ void polymostSet2dView(void)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, xdim, ydim, 0, -1, 1);
+    if (!r_mirrormode)
+        glOrtho(0, xdim, ydim, 0, -1, 1);
+    else // mirror mode, invert 2d view
+        glOrtho(xdim, 0, ydim, 0, -1, 1);
 
     if (videoGetRenderMode() == REND_POLYMER)
     {

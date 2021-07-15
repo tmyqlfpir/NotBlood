@@ -24,7 +24,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <stdio.h>
 #include "levels.h"
 
-#define AUTOSAVESLOT 10
+#define AUTOSAVESLOT_START 10
+#define AUTOSAVESLOT_KEY (AUTOSAVESLOT_START+1)
 
 class LoadSave {
 public:
@@ -55,7 +56,7 @@ public:
 
 extern unsigned int gSavedOffset;
 extern GAMEOPTIONS gSaveGameOptions[];
-extern char *gSaveGamePic[11];
+extern char *gSaveGamePic[12];
 void UpdateSavedInfo(int nSlot);
 void LoadSavedInfo(void);
 void LoadSaveSetup(void);

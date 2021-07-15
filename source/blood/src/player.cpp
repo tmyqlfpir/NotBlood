@@ -1371,7 +1371,7 @@ void ProcessInput(PLAYER *pPlayer)
         }
         if (pPlayer->curWeapon)
             pInput->newWeapon = pPlayer->curWeapon;
-        if (pInput->keyFlags.action)
+        if (pInput->keyFlags.action || pInput->keyFlags.useItem)
         {
             if (bSeqStat)
             {
@@ -1385,15 +1385,17 @@ void ProcessInput(PLAYER *pPlayer)
                 actPostSprite(pPlayer->nSprite, kStatThing);
                 seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
                 playerReset(pPlayer);
-                if (gGameOptions.nGameType == 0 && numplayers == 1)
+                if (gGameOptions.nGameType == 0 && numplayers == 1) // if singleplayer
                 {
                     if (gDemo.at0)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
+                    return; // return so ProcessFrame() can restart singleplayer
                 }
                 else
                     playerStart(pPlayer->nPlayer);
             }
+            pInput->keyFlags.useItem = 0;
             pInput->keyFlags.action = 0;
         }
         return;
@@ -2015,7 +2017,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
             if ((pPlayer->invulTime != gFrameClock) && (pPlayer->invulTime > gFrameClock - (11*(5-gGameOptions.nDifficulty)))) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
                 return 0;
         }
-        if (nDamageType != kDamageBurn) // do not update the invul timer on burn damage
+        if ((nDamageType != kDamageBurn) || (nDamageType != kDamageDrown)) // do not update the invul timer on burn or drown damage
             pPlayer->invulTime = (int)gFrameClock;
     }
     nDamage = playerDamageArmor(pPlayer, nDamageType, nDamage);
@@ -2149,6 +2151,10 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         FragPlayer(pPlayer, nSource);
         trTriggerSprite(nSprite, pXSprite, kCmdOff);
 
+        if (gGameOptions.nGameType == 0 && numplayers == 1 && pPlayer->pXSprite->health <= 0 && !VanillaMode() && !DemoRecordStatus()) // if died in singleplayer and not playing demo
+        {
+            viewSetMessage("press \"use\" to load last save or press \"enter\" to restart level"); // string borrowed from bloodgdx (thank you M210)
+        }
         #ifdef NOONE_EXTENSIONS
         // allow drop items and keys in multiplayer
         if (gModernMap && gGameOptions.nGameType != 0 && pPlayer->pXSprite->health <= 0) {

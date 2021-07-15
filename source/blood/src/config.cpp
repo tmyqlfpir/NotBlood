@@ -413,7 +413,7 @@ void CONFIG_SetDefaults(void)
     gWeaponSwitch = 0;
 
     gWeaponsV10x = 0;
-    gAutosave = 1;
+    gAutosave = 0;
     gAutosaveInCurLevel = false;
     gQuadDamagePowerup = 0;
     gDamageInvul = 1;

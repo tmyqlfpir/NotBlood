@@ -105,10 +105,12 @@ char strRestoreGameStrings[][16] =
     "<Empty>",
     "<Empty>",
     "<Empty>",
+    "<Empty>",
 };
 
 char restoreGameDifficulty[] = 
 {
+    2,
     2,
     2,
     2,
@@ -174,9 +176,9 @@ const char *pzShowWeaponStrings[] = {
 };
 
 const char *pzAutosaveModeStrings[] = {
-    "OFF",
-    "ON",
-    "DISABLE MANUAL SAVING+ON",
+    "NEW LEVEL",
+    "KEYS+NEW LEVEL",
+    "ONLY KEYS+NEW LEVEL",
 };
 
 const char *pzRandomizerModeStrings[] = {
@@ -327,7 +329,8 @@ CGameMenuItemZEditBitmap itemLoadGame7(NULL, 3, 20, 120, 320, strRestoreGameStri
 CGameMenuItemZEditBitmap itemLoadGame8(NULL, 3, 20, 130, 320, strRestoreGameStrings[7], 16, 1, LoadGame, 7);
 CGameMenuItemZEditBitmap itemLoadGame9(NULL, 3, 20, 140, 320, strRestoreGameStrings[8], 16, 1, LoadGame, 8);
 CGameMenuItemZEditBitmap itemLoadGame10(NULL, 3, 20, 150, 320, strRestoreGameStrings[9], 16, 1, LoadGame, 9);
-CGameMenuItemZEditBitmap itemLoadGameAutosave(NULL, 3, 20, 170, 320, strRestoreGameStrings[AUTOSAVESLOT], 16, 1, LoadGame, AUTOSAVESLOT);
+CGameMenuItemZEditBitmap itemLoadGameAutosaveStart(NULL, 3, 20, 170, 320, strRestoreGameStrings[AUTOSAVESLOT_START], 16, 1, LoadGame, AUTOSAVESLOT_START);
+CGameMenuItemZEditBitmap itemLoadGameAutosaveKey(NULL, 3, 20, 180, 320, strRestoreGameStrings[AUTOSAVESLOT_KEY], 16, 1, LoadGame, AUTOSAVESLOT_KEY);
 CGameMenuItemBitmapLS itemLoadGamePic(NULL, 3, 0, 0, 2518);
 
 CGameMenu menuMultiUserMaps;
@@ -1068,7 +1071,8 @@ void SetupLoadGameMenu(void)
     menuLoadGame.Add(&itemLoadGame8, false);
     menuLoadGame.Add(&itemLoadGame9, false);
     menuLoadGame.Add(&itemLoadGame10, false);
-    menuLoadGame.Add(&itemLoadGameAutosave, false);
+    menuLoadGame.Add(&itemLoadGameAutosaveStart, false);
+    menuLoadGame.Add(&itemLoadGameAutosaveKey, false);
     menuLoadGame.Add(&itemLoadGamePic, false);
     itemLoadGame1.at35 = 0;
     itemLoadGame2.at35 = 0;
@@ -1080,7 +1084,8 @@ void SetupLoadGameMenu(void)
     itemLoadGame8.at35 = 0;
     itemLoadGame9.at35 = 0;
     itemLoadGame10.at35 = 0;
-    itemLoadGameAutosave.at35 = 0;
+    itemLoadGameAutosaveStart.at35 = 0;
+    itemLoadGameAutosaveKey.at35 = 0;
     itemLoadGame1.at2c = &itemLoadGamePic;
     itemLoadGame2.at2c = &itemLoadGamePic;
     itemLoadGame3.at2c = &itemLoadGamePic;
@@ -1091,7 +1096,8 @@ void SetupLoadGameMenu(void)
     itemLoadGame8.at2c = &itemLoadGamePic;
     itemLoadGame9.at2c = &itemLoadGamePic;
     itemLoadGame10.at2c = &itemLoadGamePic;
-    itemLoadGameAutosave.at2c = &itemLoadGamePic;
+    itemLoadGameAutosaveStart.at2c = &itemLoadGamePic;
+    itemLoadGameAutosaveKey.at2c = &itemLoadGamePic;
     menuLoadGame.Add(&itemBloodQAV, false);
 }
 
@@ -2299,21 +2305,67 @@ void QuickSaveGame(void)
     viewSetMessage("Game saved");
 }
 
-void AutosaveGame(bool printMessage)
+void AutosaveGame(bool levelStartSave)
 {
     char strSaveGameName[BMAX_PATH];
+    int nSlot = levelStartSave ? AUTOSAVESLOT_START : AUTOSAVESLOT_KEY;
     if (gGameOptions.nGameType > 0 || !gGameStarted)
         return;
-    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave.sav");
-    strcpy(strRestoreGameStrings[AUTOSAVESLOT], "autosave");
-    strcpy(gGameOptions.szUserGameName, "autosave");
+    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot - AUTOSAVESLOT_START);
+    sprintf(strRestoreGameStrings[nSlot], "%s %s", levelGetFilename(gGameOptions.nEpisode, gGameOptions.nLevel), nSlot == AUTOSAVESLOT_START ? "start": "key");
+    sprintf(gGameOptions.szUserGameName, "autosave %s", levelGetFilename(gGameOptions.nEpisode, gGameOptions.nLevel), nSlot == AUTOSAVESLOT_START ? "start": "key");
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
-    restoreGameDifficulty[AUTOSAVESLOT] = gGameOptions.nDifficulty;
-    gGameOptions.nSaveGameSlot = AUTOSAVESLOT;
+    restoreGameDifficulty[nSlot] = gGameOptions.nDifficulty;
+    gGameOptions.nSaveGameSlot = nSlot;
+    const PLAYER playerTemp = *gMe; // temp player struct while we make autosaving a little more easier (blood is stressful enough already)
+    if (!levelStartSave && (gMe->throwTime || gMe->throwPower || gMe->fuseTime || gMe->qavCallback != -1)) // if key save, check if player has a volatile weapon out
+    {
+        bool resetWeaponState = false;
+        switch (gMe->curWeapon) // set weapon state to something safe
+        {
+        case 6: // dynamite
+            gMe->weaponQav = 20;
+            gMe->weaponState = 0;
+            resetWeaponState = true;
+            break;
+        case 7: // spray can
+            gMe->weaponQav = 9;
+            gMe->weaponState = 3;
+            resetWeaponState = true;
+            break;
+        case 11: // proximity
+            gMe->weaponQav = 27;
+            gMe->weaponState = 7;
+            resetWeaponState = true;
+            break;
+        case 12: // remote
+            gMe->weaponQav = 36;
+            gMe->weaponState = 10;
+            resetWeaponState = true;
+            break;
+        case 9: // life leech
+            gMe->weaponQav = 112;
+            gMe->weaponState = 2;
+            resetWeaponState = true;
+            break;
+        default:
+            break;
+        }
+        if (resetWeaponState)
+        {
+            gMe->qavCallback = -1;
+            gMe->weaponTimer = 0;
+            gMe->fuseTime = 0;
+            gMe->throwTime = 0;
+            gMe->throwPower = 0;
+            gMe->qavLoop = 0;
+        }
+    }
     LoadSave::SaveGame(strSaveGameName);
-    if (printMessage)
+    *gMe = playerTemp; // restore current player struct
+    if (!levelStartSave) // only print autosave message on key saves
         viewSetMessage("Autosaved...");
-    gQuickLoadSlot = AUTOSAVESLOT;
+    gQuickLoadSlot = nSlot;
     gAutosaveInCurLevel = true;
 }
 
@@ -2324,10 +2376,10 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     int nSlot = pItem->at28;
     if (gGameOptions.nGameType > 0)
         return;
-    if (nSlot != AUTOSAVESLOT)
+    if (nSlot < AUTOSAVESLOT_START)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot);
     else
-        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave.sav");
+        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot == AUTOSAVESLOT_START ? 0 : 1);
     if (!testkopen(strLoadGameName, 0))
         return;
     viewLoadingScreen(2518, "Loading", "Loading Saved Game", strRestoreGameStrings[nSlot]);
@@ -2343,10 +2395,10 @@ void QuickLoadGame(void)
     char strLoadGameName[BMAX_PATH];
     if (gGameOptions.nGameType > 0)
         return;
-    if (gQuickLoadSlot != AUTOSAVESLOT)
+    if (gQuickLoadSlot < AUTOSAVESLOT_START)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot);
     else
-        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave.sav");
+        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", gQuickLoadSlot == AUTOSAVESLOT_START ? 0 : 1);
     if (!testkopen(strLoadGameName, 0))
         return;
     viewLoadingScreen(2518, "Loading", "Loading Saved Game", strRestoreGameStrings[gQuickLoadSlot]);

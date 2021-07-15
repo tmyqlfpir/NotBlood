@@ -355,7 +355,7 @@ enum {
     kMissilePukeGreen = 309,
     kMissileUnused = 310,
     kMissileArcGargoyle = 311,
-    kMissileFireballNapam = 312,
+    kMissileFireballNapalm = 312,
     kMissileFireballCerberus = 313,
     kMissileFireballTchernobog = 314,
     kMissileLifeLeechRegular = 315,

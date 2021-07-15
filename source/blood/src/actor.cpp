@@ -3801,12 +3801,17 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                 int nOwner = actSpriteOwnerToSpriteId(pMissile);
                 int nDmgMul = (pMissile->type == kMissileLifeLeechAltSmall) ? 6 : 3;
                 int nDamage = (nDmgMul+Random(nDmgMul))<<4;
+                if (!VanillaMode() && !DemoRecordStatus() && (gGameOptions.nGameType == 0)) // if not in demo/vanilla mode and in singleplayer, increase the damage for lifeleech
+                {
+                    if (!IsPlayerSprite(&sprite[pSpriteHit->index])) // target is not a player, do extra damage
+                        nDamage <<= 2;
+                }
                 actDamageSprite(nOwner, pSpriteHit, kDamageSpirit, nDamage);
             }
             actPostSprite(pMissile->index, kStatFree);
             break;
         case kMissileFireball:
-        case kMissileFireballNapam:
+        case kMissileFireballNapalm:
             if (hitCode == 3 && pSpriteHit && (pThingInfo || pDudeInfo))
             {
                 if (pThingInfo && pSpriteHit->type == kThingTNTBarrel && pXSpriteHit->burnTime == 0)
@@ -4184,13 +4189,6 @@ void ProcessTouchObjects(spritetype *pSprite, int nXSprite)
             #endif
             
             switch (pSprite2->type) {
-                case kThingDroppedLifeLeech:
-                    if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't allow player to kick around lifeleech
-                        break;
-                    sfxPlay3DSound(pSprite->x, pSprite->y, pSprite->z, 816 + Random(2), pSprite->sectnum);
-                    actKickObject(pSprite, pSprite2);
-                    zvel[pSprite2->index] >>= 1; // reduce height by half
-                    break;
                 case kThingKickablePail:
                     actKickObject(pSprite, pSprite2);
                     break;
@@ -4423,9 +4421,8 @@ int MoveThing(spritetype *pSprite)
                     case kMissileFlareAlt:
                         tinyWalldist = min(pSprite->clipdist<<2, 8);
                         break;
-                    case kMissileFireballNapam:
+                    case kMissileFireballNapalm:
                     case kMissileTeslaRegular:
-                    case kMissileTeslaAlt:
                     case kMissileLifeLeechRegular:
                         tinyWalldist = min(pSprite->clipdist<<2, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
                         break;
@@ -4446,11 +4443,51 @@ int MoveThing(spritetype *pSprite)
         }
         if ((gSpriteHit[nXSprite].hit&0xc000) == 0x8000) {
             int nHitWall = gSpriteHit[nXSprite].hit&0x3fff;
-            actWallBounceVector((int*)&xvel[nSprite], (int*)&yvel[nSprite], nHitWall, pThingInfo->elastic);
+            bool bounce = true;
+            if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) { // if not in demo/vanilla mode, and sprite has a owner
+                if ((wall[nHitWall].nextsector != -1) && IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) { // if sprite didn't hit a wall, and sprite is player owned/spawned
+                    switch (pSprite->type) {
+                        case kThingArmedTNTBundle: // filter out these sprites
+                        case kThingArmedProxBomb:
+                        case kThingArmedRemoteBomb:
+                        case kThingArmedSpray:
+                        case kThingNapalmBall:
+                        case kThingDroppedLifeLeech:
+                        {
+                            int32_t fz, cz;
+                            getzsofslope(wall[nHitWall].nextsector, pSprite->x, pSprite->y, &cz, &fz);
+                            if (!(pSprite->z <= cz || pSprite->z >= fz)) { // if sprite didn't hit the ceiling/floor
+                                walltype *pWall = &wall[nHitWall];
+                                if (pWall->extra > 0) {
+                                    XWALL *pXWall = &xwall[pWall->extra];
+                                    if (pXWall->triggerVector) { // break tile (glass, etc)
+                                        trTriggerWall(nHitWall, pXWall, kCmdWallImpact);
+                                        bounce = false;
+                                        xvel[nSprite] >>= 1; // reduce speed by half
+                                        yvel[nSprite] >>= 1;
+                                        zvel[nSprite] += 58254;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                }
+            }
+            if (bounce)
+                actWallBounceVector((int*)&xvel[nSprite], (int*)&yvel[nSprite], nHitWall, pThingInfo->elastic);
             switch (pSprite->type) {
                 case kThingZombieHead:
                     sfxPlay3DSound(pSprite, 607, 0, 0);
                     actDamageSprite(-1, pSprite, kDamageFall, 80);
+                    break;
+                case kThingDroppedLifeLeech:
+                    if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't play lifeleech sfx on wall bounce
+                        break;
+                    if (klabs(zvel[nSprite]) > 0x20000)
+                        sfxPlay3DSound(pSprite, 816 + Random(2), 0, 0);
                     break;
                 case kThingKickablePail:
                     sfxPlay3DSound(pSprite, 374, 0, 0);
@@ -4528,10 +4565,10 @@ int MoveThing(spritetype *pSprite)
                     }
                     break;
                 case kThingDroppedLifeLeech:
-                    if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't play lifeleech sfx
+                    if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't play lifeleech sfx on floor bounce
                         break;
-                    if (klabs(zvel[nSprite]) > 0x80000)
-                        sfxPlay3DSound(pSprite->x, pSprite->y, pSprite->z, 816 + Random(2), pSprite->sectnum);
+                    if (klabs(zvel[nSprite]) > 0x40000)
+                        sfxPlay3DSound(pSprite, 816 + Random(2), 0, 0);
                     break;
                 case kThingKickablePail:
                     if (klabs(zvel[nSprite]) > 0x80000)
@@ -4660,9 +4697,8 @@ void MoveDude(spritetype *pSprite)
                         case kMissileFlareAlt:
                             tinyWalldist = min(wd, 8);
                             break;
-                        case kMissileFireballNapam:
+                        case kMissileFireballNapalm:
                         case kMissileTeslaRegular:
-                        case kMissileTeslaAlt:
                         case kMissileLifeLeechRegular:
                             tinyWalldist = min(wd, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
                             break;
@@ -5271,9 +5307,8 @@ int MoveMissile(spritetype *pSprite)
                     case kMissileFlareAlt:
                         tinyWalldist = min(pSprite->clipdist<<2, 8);
                         break;
-                    case kMissileFireballNapam:
+                    case kMissileFireballNapalm:
                     case kMissileTeslaRegular:
-                    case kMissileTeslaAlt:
                     case kMissileLifeLeechRegular:
                         tinyWalldist = min(pSprite->clipdist<<2, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
                         break;
@@ -5397,7 +5432,7 @@ void actExplodeSprite(spritetype *pSprite)
 
     switch (pSprite->type)
     {
-    case kMissileFireballNapam:
+    case kMissileFireballNapalm:
         nType = kExplosionNapalm;
         seqSpawn(4, 3, nXSprite, -1);
         if (Chance(0x8000))
@@ -5796,6 +5831,32 @@ void actProcessSprites(void)
                             dassert(nObject >= 0 && nObject < kMaxSprites);
                             int UNUSED(nOwner) = actSpriteOwnerToSpriteId(pSprite);
                             actExplodeSprite(pSprite);
+                            break;
+                        }
+                        case kThingDroppedLifeLeech:
+                        {
+                            if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't allow player to kill enemies with thrown lifeleech
+                                break;
+                            int nObject = hit & 0x3fff;
+                            if (((hit & 0xc000) != 0xc000) || (nObject < 0 || nObject >= 4096))
+                                break;
+                            dassert(nObject >= 0 && nObject < kMaxSprites);
+                            spritetype *pObject = &sprite[nObject];
+                            if (pObject->type < kDudeBase || pObject->type >= kDudeMax) // only apply this for active enemies
+                                break;
+                            const int nOwner = actSpriteOwnerToSpriteId(pSprite);
+                            if (nOwner == nObject)
+                                break;
+                            int speed = approxDist(xvel[pSprite->index], yvel[pSprite->index]);
+                            speed = min(mulscale30r(speed, 0x10000), 127);
+                            actDamageSprite(nOwner, pObject, (speed < 110) ? kDamageFall : kDamageExplode, speed * 10);
+                            xvel[pSprite->index] = -xvel[pSprite->index] >> 2; // invert direction and slow down
+                            yvel[pSprite->index] = -yvel[pSprite->index] >> 2;
+                            const int gibsfx[] = {315, 316, 318, 319, 497};
+                            if (speed < 110) // if power throw, play meaty gib sfx
+                                sfxPlay3DSound(pSprite, gibsfx[Random(5)], 0, 0);
+                            else
+                                sfxPlay3DSound(pSprite, 357, 0, 0);
                             break;
                         }
                         }
@@ -6519,7 +6580,7 @@ void actBuildMissile(spritetype* pMissile, int nXSprite, int nSprite) {
             seqSpawn(2, 3, nXSprite, -1);
             sfxPlay3DSound(pMissile, 493, 0, 0);
             break;
-        case kMissileFireballNapam:
+        case kMissileFireballNapalm:
             seqSpawn(61, 3, nXSprite, nNapalmClient);
             sfxPlay3DSound(pMissile, 441, 0, 0);
             break;
