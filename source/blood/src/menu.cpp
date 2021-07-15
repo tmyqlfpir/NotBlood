@@ -2313,7 +2313,7 @@ void AutosaveGame(bool levelStartSave)
         return;
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot - AUTOSAVESLOT_START);
     sprintf(strRestoreGameStrings[nSlot], "%s %s", levelGetFilename(gGameOptions.nEpisode, gGameOptions.nLevel), nSlot == AUTOSAVESLOT_START ? "start": "key");
-    sprintf(gGameOptions.szUserGameName, "autosave %s", levelGetFilename(gGameOptions.nEpisode, gGameOptions.nLevel), nSlot == AUTOSAVESLOT_START ? "start": "key");
+    sprintf(gGameOptions.szUserGameName, "%s %s", levelGetFilename(gGameOptions.nEpisode, gGameOptions.nLevel), nSlot == AUTOSAVESLOT_START ? "start": "key");
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     restoreGameDifficulty[nSlot] = gGameOptions.nDifficulty;
     gGameOptions.nSaveGameSlot = nSlot;
