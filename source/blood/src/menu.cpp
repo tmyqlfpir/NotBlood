@@ -351,7 +351,7 @@ CGameMenuItemZBool itemNetStart9("KEEP KEYS ON RESPAWN:", 3, 66, 115, 180, false
 CGameMenuItemZBool itemNetStart10("V1.0x WEAPONS BALANCE:", 3, 66, 125, 180, false, 0, NULL, NULL);
 CGameMenuItemZBool itemNetStart11("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 135, 180, false, 0, NULL, NULL);
 CGameMenuItemZBool itemNetStart12("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 145, 180, false, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetStart13("RANDOMIZER MODE:", 3, 66, 155, 180, 0, 0, pzRandomizerModeStrings,  ARRAY_SSIZE(pzRandomizerModeStrings), NULL);
+CGameMenuItemZCycle itemNetStart13("RANDOMIZER MODE:", 3, 66, 155, 180, 0, 0, pzRandomizerModeStrings,  ARRAY_SSIZE(pzRandomizerModeStrings), 0);
 CGameMenuItemZEdit itemNetStart14("RANDOMIZER SEED:", 3, 66, 165, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 CGameMenuItemChain itemNetStart15("USER MAP", 3, 66, 178, 180, 0, &menuMultiUserMaps, 0, NULL, 0);
 CGameMenuItemChain itemNetStart16("START GAME", 3, 66, 188, 280, 0, 0, -1, StartNetGame, 0);
@@ -461,10 +461,10 @@ CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
 
 ///////////////
 CGameMenuItemZBool itemOptionsGameBoolWeaponsV10X("V1.0x WEAPONS BALANCE:", 3, 66, 115, 180, gWeaponsV10x, SetWeaponsV10X, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 135, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), NULL);
+CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 135, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
 CGameMenuItemZBool itemOptionsGameBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 145, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
 CGameMenuItemZBool itemOptionsGameBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 155, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameRandomizerMode("RANDOMIZER MODE:", 3, 66, 165, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), NULL);
+CGameMenuItemZCycle itemOptionsGameRandomizerMode("RANDOMIZER MODE:", 3, 66, 165, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
 CGameMenuItemZEdit itemOptionsGameRandomizerSeed("RANDOMIZER SEED:", 3, 66, 175, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
@@ -1554,6 +1554,7 @@ void SetRandomizerMode(CGameMenuItemZCycle *pItem)
 
 void SetRandomizerSeed(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
 {
+    UNREFERENCED_PARAMETER(pItem);
     UNREFERENCED_PARAMETER(pEvent);
     Bstrncpy(gzRandomizerSeed, szRandomizerSeedMenu, sizeof(gzRandomizerSeed));
 }
@@ -2035,6 +2036,7 @@ void UpdateNumVoices(CGameMenuItemSlider *pItem)
 
 void UpdateMusicDevice(CGameMenuItemZCycle *pItem)
 {
+    UNREFERENCED_PARAMETER(pItem);
     itemOptionsSoundSF2Bank.bEnable = 0;
     itemOptionsSoundSF2Bank.bNoDraw = 1;
     switch (nMusicDeviceValues[itemOptionsSoundMusicDevice.m_nFocus])
@@ -2321,6 +2323,7 @@ void AutosaveGame(bool levelStartSave)
     if (!levelStartSave && (gMe->throwTime || gMe->throwPower || gMe->fuseTime || gMe->qavCallback != -1)) // if key save, check if player has a volatile weapon out
     {
         bool resetWeaponState = false;
+        gMe->invulTime = (int)gFrameClock; // in case they get hitscanned right after loading
         switch (gMe->curWeapon) // set weapon state to something safe
         {
         case 6: // dynamite

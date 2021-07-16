@@ -345,11 +345,11 @@ USE_OPENGL := 1
 NOONE_EXTENSIONS ?= 1
 
 # Library toggles
-HAVE_GTK2 := 1
-USE_LIBVPX ?= 1
-HAVE_VORBIS := 1
-HAVE_FLAC := 1
-HAVE_XMP := 1
+HAVE_GTK2 := 0
+USE_LIBVPX ?= 0
+HAVE_VORBIS := 0
+HAVE_FLAC := 0
+HAVE_XMP := 0
 RENDERTYPE := SDL
 SDL_TARGET := 2
 USE_PHYSFS := 0
@@ -990,7 +990,7 @@ else ifeq ($(PLATFORM),SUNOS)
 else ifeq ($(PLATFORM),WII)
     LIBS += -laesnd_tueidj -lfat -lwiiuse -lbte -lwiikeyboard -logc
 else ifeq ($(SUBPLATFORM),LINUX)
-    LIBS += -lrt
+    LIBS += -lrt -lasound
     ifneq ($(findstring armv6,$(IMPLICIT_ARCH))$(findstring armv7,$(IMPLICIT_ARCH))$(findstring aarch64,$(IMPLICIT_ARCH)),)
         LIBS += -latomic
     endif
