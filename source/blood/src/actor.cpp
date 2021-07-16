@@ -4410,10 +4410,6 @@ int MoveThing(spritetype *pSprite)
                     tinyHitbox = true;
                     switch (pSprite->type)
                     {
-                    case kThingArmedTNTBundle:
-                    case kThingArmedProxBomb:
-                    case kThingArmedRemoteBomb:
-                    case kThingArmedSpray:
                     case kMissileFlameSpray:
                         tinyWalldist = min(pSprite->clipdist<<2, 48);
                         break;
@@ -4421,6 +4417,10 @@ int MoveThing(spritetype *pSprite)
                     case kMissileFlareAlt:
                         tinyWalldist = min(pSprite->clipdist<<2, 8);
                         break;
+                    case kThingArmedTNTBundle:
+                    case kThingArmedProxBomb:
+                    case kThingArmedRemoteBomb:
+                    case kThingArmedSpray:
                     case kMissileFireballNapalm:
                     case kMissileTeslaRegular:
                     case kMissileLifeLeechRegular:
@@ -4686,10 +4686,6 @@ void MoveDude(spritetype *pSprite)
                         tinyHitbox = true;
                         switch (pSprite->type)
                         {
-                        case kThingArmedTNTBundle:
-                        case kThingArmedProxBomb:
-                        case kThingArmedRemoteBomb:
-                        case kThingArmedSpray:
                         case kMissileFlameSpray:
                             tinyWalldist = min(wd, 48);
                             break;
@@ -4697,6 +4693,10 @@ void MoveDude(spritetype *pSprite)
                         case kMissileFlareAlt:
                             tinyWalldist = min(wd, 8);
                             break;
+                        case kThingArmedTNTBundle:
+                        case kThingArmedProxBomb:
+                        case kThingArmedRemoteBomb:
+                        case kThingArmedSpray:
                         case kMissileFireballNapalm:
                         case kMissileTeslaRegular:
                         case kMissileLifeLeechRegular:
@@ -5296,10 +5296,6 @@ int MoveMissile(spritetype *pSprite)
                     tinyHitbox = true;
                     switch (pSprite->type)
                     {
-                    case kThingArmedTNTBundle:
-                    case kThingArmedProxBomb:
-                    case kThingArmedRemoteBomb:
-                    case kThingArmedSpray:
                     case kMissileFlameSpray:
                         tinyWalldist = min(pSprite->clipdist<<2, 48);
                         break;
@@ -5307,6 +5303,10 @@ int MoveMissile(spritetype *pSprite)
                     case kMissileFlareAlt:
                         tinyWalldist = min(pSprite->clipdist<<2, 8);
                         break;
+                    case kThingArmedTNTBundle:
+                    case kThingArmedProxBomb:
+                    case kThingArmedRemoteBomb:
+                    case kThingArmedSpray:
                     case kMissileFireballNapalm:
                     case kMissileTeslaRegular:
                     case kMissileLifeLeechRegular:
@@ -5845,23 +5845,28 @@ void actProcessSprites(void)
                             if (pObject->type < kDudeBase || pObject->type >= kDudeMax) // only apply this for active enemies
                                 break;
                             const int nOwner = actSpriteOwnerToSpriteId(pSprite);
-                            if (nOwner == nObject)
+                            if (nOwner == nObject) // stop hitting yourself
                                 break;
                             int speed = approxDist(xvel[pSprite->index], yvel[pSprite->index]);
-                            speed = min(mulscale30r(speed, 0x10000), 127);
-                            actDamageSprite(nOwner, pObject, (speed < 110) ? kDamageFall : kDamageExplode, speed * 10);
+                            speed = min(mulscale30r(speed, 0x10000), 125); // clamp values to a reasonable value
+                            if (speed < 5) // you're too slow!
+                                break;
+                            actDamageSprite(nOwner, pObject, (speed < 110) ? kDamageFall : kDamageExplode, speed * 12);
                             xvel[pObject->index] = xvel[pSprite->index] >> 2; // push enemy back
                             yvel[pObject->index] = yvel[pSprite->index] >> 2;
                             yvel[pObject->index] += 58254;
                             xvel[pSprite->index] = -xvel[pSprite->index] >> 2; // invert direction and slow down
                             yvel[pSprite->index] = -yvel[pSprite->index] >> 2;
-                            if (speed > 110) // if power throw, play meaty gib sfx
+                            if (pObject->extra > 0) // if object has extra
                             {
-                                const int sfxrng[] = {318, 319, 497, 507};
-                                sfxPlay3DSound(pSprite, sfxrng[Random(4)], 0, 0);
+                                XSPRITE *pXObject = &xsprite[pObject->extra];
+                                if (pXObject->health <= 0) // if killed enemy, play meaty sfx
+                                {
+                                    sfxPlay3DSound(pSprite, 318 + Random(1), 0, 0);
+                                    break;
+                                }
                             }
-                            else
-                                sfxPlay3DSound(pSprite, 357, 0, 0);
+                            sfxPlay3DSound(pSprite, 357, 0, 0); // zombie head sfx
                             break;
                         }
                         }
