@@ -983,7 +983,7 @@ void LocalKeys(void)
             break;
         case sc_Escape:
             keyFlushScans();
-            if (gGameStarted && gPlayer[myconnectindex].pXSprite->health != 0)
+            if (gGameStarted && (gPlayer[myconnectindex].pXSprite->health != 0 || gGameOptions.nGameType > 0))
             {
                 if (!gGameMenuMgr.m_bActive)
                     gGameMenuMgr.Push(&menuMainWithSave,-1);
