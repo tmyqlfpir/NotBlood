@@ -114,7 +114,7 @@ int32_t gCenterHoriz;
 int32_t gDeliriumBlur;
 
 //////////
-int gWeaponsV10x;
+int gWeaponsVer;
 int gAutosave;
 bool gAutosaveInCurLevel;
 int gQuadDamagePowerup;
@@ -412,7 +412,7 @@ void CONFIG_SetDefaults(void)
     gAutoAim = 1;
     gWeaponSwitch = 0;
 
-    gWeaponsV10x = 0;
+    gWeaponsVer = 0;
     gAutosave = 0;
     gAutosaveInCurLevel = false;
     gQuadDamagePowerup = 0;
@@ -682,7 +682,7 @@ int CONFIG_ReadSetup(void)
 
     // Nuke: make cvar
     ///////
-    SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsV10x", &gWeaponsV10x);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsVer", &gWeaponsVer);
     SCRIPT_GetNumber(scripthandle, "Game Options", "Autosave", &gAutosave);
     SCRIPT_GetNumber(scripthandle, "Game Options", "QuadDamagePowerup", &gQuadDamagePowerup);
     SCRIPT_GetNumber(scripthandle, "Game Options", "DamageInvul", &gDamageInvul);
@@ -985,7 +985,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     }
 
     ///////
-    SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsV10x", gWeaponsV10x, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsVer", gWeaponsVer, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "Autosave", gAutosave, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "QuadDamagePowerup", gQuadDamagePowerup, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "DamageInvul", gDamageInvul, FALSE, FALSE);

@@ -75,7 +75,7 @@ struct PKT_STARTGAME {
     char episodeId, levelId;
     int unk;
     char userMap, userMapName[BMAX_PATH];
-    int weaponsV10x;
+    int nWeaponsVer;
     bool bQuadDamagePowerup;
     bool bDamageInvul;
     bool bFriendlyFire;

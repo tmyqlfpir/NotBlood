@@ -295,7 +295,7 @@ void LifeLeechOperate(spritetype *pSprite, XSPRITE *pXSprite, EVENT event)
                         {
                             pMissile->owner = pSprite->owner;
                             pXSprite->stateTimer = 1;
-                            if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, reduce the firing rate of the lifeleech
+                            if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, reduce the firing rate of the lifeleech
                                 pXSprite->stateTimer = 3;
                             evPost(pSprite->index, 3, t2, kCallbackLeechStateTimer);
                             pXSprite->data3 = ClipLow(pXSprite->data3-1, 0);

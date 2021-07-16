@@ -95,7 +95,7 @@ extern int32_t gCenterHoriz;
 extern int32_t gDeliriumBlur;
 
 ///////
-extern int gWeaponsV10x;
+extern int gWeaponsVer;
 extern int gAutosave;
 extern bool gAutosaveInCurLevel;
 extern int gQuadDamagePowerup;

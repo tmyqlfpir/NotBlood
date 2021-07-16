@@ -56,7 +56,7 @@ void SetCenterHoriz(CGameMenuItemZBool *);
 void SetShowPlayerNames(CGameMenuItemZBool *);
 void SetShowWeapons(CGameMenuItemZCycle *);
 
-void SetWeaponsV10X(CGameMenuItemZBool*);
+void SetWeaponsVer(CGameMenuItemZCycle*);
 void SetAutosaveMode(CGameMenuItemZCycle*);
 void SetQuadDamagePowerup(CGameMenuItemZBool*);
 void SetDamageInvul(CGameMenuItemZBool*);
@@ -175,17 +175,23 @@ const char *pzShowWeaponStrings[] = {
     "VOXEL"
 };
 
+const char *pzWeaponsVersionStrings[] = {
+    "NotBlood",
+    "NBlood",
+    "V1.0x",
+};
+
 const char *pzAutosaveModeStrings[] = {
-    "NEW LEVEL",
-    "KEYS+NEW LEVEL",
-    "ONLY KEYS+NEW LEVEL",
+    "New Level",
+    "Keys+New Level",
+    "Only Keys+New Level",
 };
 
 const char *pzRandomizerModeStrings[] = {
-    "OFF",
-    "ENEMIES",
-    "PICKUPS",
-    "ENEMIES+PICKUPS",
+    "Off",
+    "Enemies",
+    "Pickups",
+    "Enemies+Pickups",
 };
 
 char zUserMapName[BMAX_PATH];
@@ -348,10 +354,10 @@ CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrin
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
 CGameMenuItemZBool itemNetStart9("KEEP KEYS ON RESPAWN:", 3, 66, 115, 180, false, 0, NULL, NULL);
-CGameMenuItemZBool itemNetStart10("V1.0x WEAPONS BALANCE:", 3, 66, 125, 180, false, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetStart10("WEAPON BEHAVIOR:", 3, 66, 125, 180, 0, 0, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZBool itemNetStart11("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 135, 180, false, 0, NULL, NULL);
 CGameMenuItemZBool itemNetStart12("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 145, 180, false, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetStart13("RANDOMIZER MODE:", 3, 66, 155, 180, 0, 0, pzRandomizerModeStrings,  ARRAY_SSIZE(pzRandomizerModeStrings), 0);
+CGameMenuItemZCycle itemNetStart13("RANDOMIZER MODE:", 3, 66, 155, 180, 0, 0, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
 CGameMenuItemZEdit itemNetStart14("RANDOMIZER SEED:", 3, 66, 165, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 CGameMenuItemChain itemNetStart15("USER MAP", 3, 66, 178, 180, 0, &menuMultiUserMaps, 0, NULL, 0);
 CGameMenuItemChain itemNetStart16("START GAME", 3, 66, 188, 280, 0, 0, -1, StartNetGame, 0);
@@ -460,7 +466,7 @@ void SetWeaponSwitch(CGameMenuItemZCycle *pItem);
 CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
 
 ///////////////
-CGameMenuItemZBool itemOptionsGameBoolWeaponsV10X("V1.0x WEAPONS BALANCE:", 3, 66, 115, 180, gWeaponsV10x, SetWeaponsV10X, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 135, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
 CGameMenuItemZBool itemOptionsGameBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 145, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
 CGameMenuItemZBool itemOptionsGameBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 155, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
@@ -1209,13 +1215,13 @@ void SetupOptionsMenu(void)
     menuOptionsGame.Add(&itemOptionsGameWeaponSwitch, false);
 
     //////////////////////
-    menuOptionsGame.Add(&itemOptionsGameBoolWeaponsV10X, false);
+    menuOptionsGame.Add(&itemOptionsGameWeaponsVer, false);
     menuOptionsGame.Add(&itemOptionsGameAutosaveMode, false);
     menuOptionsGame.Add(&itemOptionsGameBoolQuadDamagePowerup, false);
     menuOptionsGame.Add(&itemOptionsGameBoolDamageInvul, false);
     menuOptionsGame.Add(&itemOptionsGameRandomizerMode, false);
     menuOptionsGame.Add(&itemOptionsGameRandomizerSeed, false);
-    itemOptionsGameBoolWeaponsV10X.bDisableForNet = 1;
+    itemOptionsGameWeaponsVer.bDisableForNet = 1;
     itemOptionsGameAutosaveMode.bDisableForNet = 1;
     itemOptionsGameBoolQuadDamagePowerup.bDisableForNet = 1;
     itemOptionsGameBoolDamageInvul.bDisableForNet = 1;
@@ -1234,7 +1240,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameWeaponSwitch.m_nFocus = (gWeaponSwitch&1) ? ((gWeaponSwitch&2) ? 1 : 2) : 0;
 
     ///////
-    itemOptionsGameBoolWeaponsV10X.at20 = gWeaponsV10x;
+    itemOptionsGameWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
     itemOptionsGameBoolQuadDamagePowerup.at20 = gQuadDamagePowerup;
     itemOptionsGameBoolDamageInvul.at20 = gDamageInvul;
@@ -1504,15 +1510,13 @@ void ResetKeysClassic(CGameMenuItemChain *)
 }
 
 ////
-void SetWeaponsV10X(CGameMenuItemZBool* pItem)
+void SetWeaponsVer(CGameMenuItemZCycle* pItem)
 {
     if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
-        gWeaponsV10x = pItem->at20;
-        gGameOptions.weaponsV10x = pItem->at20;
-    } else if (numplayers != 1) {
-        pItem->at20 = gPacketStartGame.weaponsV10x;
+        gWeaponsVer = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
+        gGameOptions.nWeaponsVer = gWeaponsVer;
     } else {
-        pItem->at20 = gWeaponsV10x;
+        pItem->m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     }
 }
 
@@ -2445,11 +2449,13 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.bFriendlyFire = itemNetStart8.at20;
     gPacketStartGame.bKeepKeysOnRespawn = itemNetStart9.at20;
     ////
-    gPacketStartGame.weaponsV10x = itemNetStart10.at20;
+    gPacketStartGame.nWeaponsVer = itemNetStart10.m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
     gPacketStartGame.bQuadDamagePowerup = itemNetStart11.at20;
     gPacketStartGame.bDamageInvul = itemNetStart12.at20;
     gPacketStartGame.randomizerMode = itemNetStart13.m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
-    Bmemcpy(gPacketStartGame.szRandomizerSeed, gzRandomizerSeed, sizeof(gPacketStartGame.szRandomizerSeed));
+    Bmemcpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
+    if (gPacketStartGame.szRandomizerSeed[0] == '\0') // if no seed entered, generate new one before sending packet
+        sprintf(gPacketStartGame.szRandomizerSeed, "%08X", wrand());
     ////
     gPacketStartGame.unk = 0;
     Bstrncpy(gPacketStartGame.userMapName, zUserMapName, sizeof(zUserMapName));

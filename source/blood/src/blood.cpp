@@ -603,7 +603,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             levelPlayIntroScene(gGameOptions.nEpisode);
 
         ///////
-        gGameOptions.weaponsV10x = gWeaponsV10x;
+        gGameOptions.nWeaponsVer = gWeaponsVer;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.nRandomizerMode = gRandomizerMode;
@@ -628,7 +628,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
 
         ///////
-        gGameOptions.weaponsV10x = gPacketStartGame.weaponsV10x;
+        gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
@@ -804,7 +804,7 @@ void StartNetworkLevel(void)
         gGameOptions.bKeepKeysOnRespawn = gPacketStartGame.bKeepKeysOnRespawn;
         
         ///////
-        gGameOptions.weaponsV10x = gPacketStartGame.weaponsV10x;
+        gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
@@ -2785,6 +2785,18 @@ bool DemoRecordStatus(void) {
 
 bool VanillaMode() {
     return gDemo.m_bLegacy && gDemo.at1;
+}
+
+bool WeaponsNotBlood(void) {
+    return gGameOptions.nWeaponsVer == 0; // notblood's enhanced weapon behavior
+}
+
+bool WeaponsNBlood(void) {
+    return gGameOptions.nWeaponsVer == 1; // nblood's original weapon behavior
+}
+
+bool WeaponsV10x(void) {
+    return gGameOptions.nWeaponsVer == 2; // V1.0x style weapon behavior
 }
 
 bool fileExistsRFF(int id, const char *ext) {

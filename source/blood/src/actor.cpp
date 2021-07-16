@@ -3737,7 +3737,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                     actBurnSprite(pMissile->owner, pXSpriteHit, 360);
 
                 // by NoOne: make Life Leech heal user, just like it was in 1.0x versions
-                if (gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus() && pDudeInfo != NULL) {
+                if (WeaponsV10x() && !VanillaMode() && !DemoRecordStatus() && pDudeInfo != NULL) {
                     spritetype* pSource = &sprite[nOwner];
                     XSPRITE* pXSource = (pSource->extra >= 0) ? &xsprite[pSource->extra] : NULL;
 
@@ -3801,7 +3801,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                 int nOwner = actSpriteOwnerToSpriteId(pMissile);
                 int nDmgMul = (pMissile->type == kMissileLifeLeechAltSmall) ? 6 : 3;
                 int nDamage = (nDmgMul+Random(nDmgMul))<<4;
-                if (!VanillaMode() && !DemoRecordStatus() && (gGameOptions.nGameType == 0)) // if not in demo/vanilla mode and in singleplayer, increase the damage for lifeleech
+                if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, increase the damage for lifeleech
                 {
                     if (!IsPlayerSprite(&sprite[pSpriteHit->index])) // target is not a player, do extra damage
                         nDamage *= 3;
@@ -3838,7 +3838,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                     sub_2A620(nOwner, pMissile->x, pMissile->y, pMissile->z, pMissile->sectnum, 16, 20, 10, kDamageBullet, 6, 480, 0, 0);
 
                     // by NoOne: allow additional bullet damage for Flare Gun
-                    if (gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus()) {
+                    if (WeaponsV10x() && !VanillaMode() && !DemoRecordStatus()) {
                         int nDamage = (20 + Random(10)) << 4;
                         actDamageSprite(nOwner, pSpriteHit, kDamageBullet, nDamage);
                     }
@@ -4399,7 +4399,7 @@ int MoveThing(spritetype *pSprite)
         pSprite->cstat &= ~257;
         bool tinyHitbox = false;
         int tinyWalldist;
-        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
+        if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
         {
             if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
             {
@@ -4444,7 +4444,7 @@ int MoveThing(spritetype *pSprite)
         if ((gSpriteHit[nXSprite].hit&0xc000) == 0x8000) {
             int nHitWall = gSpriteHit[nXSprite].hit&0x3fff;
             bool bounce = true;
-            if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) { // if not in demo/vanilla mode, and sprite has a owner
+            if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) { // if not in demo/vanilla mode, and sprite has a owner
                 if ((wall[nHitWall].nextsector != -1) && IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) { // if sprite didn't hit a wall, and sprite is player owned/spawned
                     switch (pSprite->type) {
                         case kThingArmedTNTBundle: // filter out these sprites
@@ -4484,7 +4484,7 @@ int MoveThing(spritetype *pSprite)
                     actDamageSprite(-1, pSprite, kDamageFall, 80);
                     break;
                 case kThingDroppedLifeLeech:
-                    if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't play lifeleech sfx on wall bounce
+                    if (!WeaponsNotBlood() || VanillaMode() || DemoRecordStatus()) // if in demo/vanilla mode, don't play lifeleech sfx on wall bounce
                         break;
                     if (klabs(zvel[nSprite]) > 0x20000)
                         sfxPlay3DSound(pSprite, 816 + Random(2), 0, 0);
@@ -4565,7 +4565,7 @@ int MoveThing(spritetype *pSprite)
                     }
                     break;
                 case kThingDroppedLifeLeech:
-                    if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't play lifeleech sfx on floor bounce
+                    if (!WeaponsNotBlood() || VanillaMode() || DemoRecordStatus()) // if in demo/vanilla mode, don't play lifeleech sfx on floor bounce
                         break;
                     if (klabs(zvel[nSprite]) > 0x40000)
                         sfxPlay3DSound(pSprite, 816 + Random(2), 0, 0);
@@ -4675,7 +4675,7 @@ void MoveDude(spritetype *pSprite)
             pSprite->cstat &= ~257;
             bool tinyHitbox = false;
             int tinyWalldist;
-            if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
+            if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
             {
                 if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
                 {
@@ -5285,7 +5285,7 @@ int MoveMissile(spritetype *pSprite)
         clipmoveboxtracenum = 1;
         bool tinyHitbox = false;
         int tinyWalldist;
-        if (!VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
+        if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
         {
             if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
             {
@@ -5835,7 +5835,7 @@ void actProcessSprites(void)
                         }
                         case kThingDroppedLifeLeech:
                         {
-                            if (gGameOptions.weaponsV10x || VanillaMode() || DemoRecordStatus()) // if in v1.0x version/demo/vanilla mode, don't allow player to kill enemies with thrown lifeleech
+                            if (!WeaponsNotBlood() || VanillaMode() || DemoRecordStatus()) // if in demo/vanilla mode, don't allow player to kill enemies with thrown lifeleech
                                 break;
                             int nObject = hit & 0x3fff;
                             if (((hit & 0xc000) != 0xc000) || (nObject < 0 || nObject >= 4096))

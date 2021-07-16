@@ -1526,7 +1526,7 @@ void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
 
         // by NoOne: trying to simulate v1.0x voodoo here.
         // dunno how exactly it works, but at least it not spend all the ammo on alt fire
-        if (gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus()) {
+        if (WeaponsV10x() && !VanillaMode() && !DemoRecordStatus()) {
             int nCount = ClipHigh(pPlayer->ammoCount[9], pPlayer->aimTargetsCount);
             if (nCount > 0)
             {
@@ -1748,14 +1748,14 @@ void AltFireLifeLeech(int nTrigger, PLAYER *pPlayer)
     UNREFERENCED_PARAMETER(nTrigger);
     sfxPlay3DSound(pPlayer->pSprite, 455, 2, 0);
     int nSpeed = 0x19999;
-    if (!gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus()) // if not v1.0x version/demo/vanilla mode, use player throwpower as speed
+    if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, use player throwpower as speed
         nSpeed = mulscale16(pPlayer->throwPower, 0x177777)+0x66666;
     spritetype *pMissile = playerFireThing(pPlayer, 0, -4730, kThingDroppedLifeLeech, nSpeed);
     if (pMissile)
     {
         pMissile->cstat |= 4096;
         XSPRITE *pXSprite = &xsprite[pMissile->extra];
-        if (!gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus()) // if not v1.0x version/demo/vanilla mode, lower overall lifeleech health from 150: 75 + (player's hp / 2)
+        if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, lower overall lifeleech health from 150: 75 + (player's hp / 2)
         {
             pXSprite->health = (75 + (pPlayer->pXSprite->health >> 5)) << 4;
             if (pXSprite->health > (150 << 4)) // don't go above original health value (possible with life seed)
@@ -2162,7 +2162,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             return;
         break;
     case 9:
-        if (!gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus()) // if v1.0x version/demo/vanilla mode, allow player to charge up throw like tnt
+        if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, allow player to charge up throw like tnt
             ThrowLifeLeech(pPlayer);
         break;
     }
@@ -2413,7 +2413,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             }
             break;
         case 3:
-            if (powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is active, do not reload shotgun
+            if (powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if quad damage is active, do not reload shotgun
             {
                 pPlayer->weaponState = 2;
                 StartQAV(pPlayer, 55, nClientFireShotgun, 0);
@@ -2560,7 +2560,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             }
             break;
         case 3:
-            if (powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is active, do not reload shotgun
+            if (powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if quad damage is active, do not reload shotgun
             {
                 pPlayer->weaponState = 2;
                 StartQAV(pPlayer, 56, nClientFireShotgun, 0);
@@ -2619,10 +2619,10 @@ void WeaponProcess(PLAYER *pPlayer) {
         case 5:
             if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
                 // by NoOne: allow napalm launcher alt fire act like in v1.0x versions
-                if (gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus()) StartQAV(pPlayer, 123, nClientFireNapalm2, 0);
+                if (WeaponsV10x() && !VanillaMode() && !DemoRecordStatus()) StartQAV(pPlayer, 123, nClientFireNapalm2, 0);
                 else StartQAV(pPlayer, 122, nClientAltFireNapalm, 0);
             else
-                StartQAV(pPlayer, 91, (gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus()) ? nClientFireNapalm : nClientAltFireNapalm, 0);
+                StartQAV(pPlayer, 91, (WeaponsV10x() && !VanillaMode() && !DemoRecordStatus()) ? nClientFireNapalm : nClientAltFireNapalm, 0);
             return;
         case 2:
             if (CheckAmmo(pPlayer, 1, 8))
@@ -2641,7 +2641,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             }
             return;
         case 9:
-            if (!gGameOptions.weaponsV10x && !VanillaMode() && !DemoRecordStatus()) // if v1.0x version/demo/vanilla mode, allow player to charge up throw like tnt
+            if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, allow player to throw lifeleech like tnt
             {
                 pPlayer->weaponTimer = 1;
                 pPlayer->qavLoop = 0;
