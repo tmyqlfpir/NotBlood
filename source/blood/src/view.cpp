@@ -2339,6 +2339,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->shade = pTSprite->shade;
         pNSprite->xrepeat = 32;
         pNSprite->yrepeat = 32;
+        pNSprite->ang = (gView->pSprite->ang + 512) & 2047; // always face viewer
         const int nVoxel = voxelIndex[nTile];
         if (gShowWeapon == 2 && usevoxels && gDetail >= 4 && videoGetRenderMode() != REND_POLYMER && nVoxel != -1)
         {
@@ -2349,10 +2350,31 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             const int lifeLeech = 9;
             if (pPlayer->curWeapon == lifeLeech)
             {
-                pNSprite->x -=  mulscale30(128, Cos(pNSprite->ang));
-                pNSprite->y -= mulscale30(128, Sin(pNSprite->ang));
+                pNSprite->x +=  mulscale30(128, Cos(gView->pSprite->ang));
+                pNSprite->y += mulscale30(128, Sin(gView->pSprite->ang));
+                pNSprite->ang = (gView->pSprite->ang + 1024) & 2047; // make lifeleech always face viewer like sprite
             }
         }
+        break;
+    }
+    case kViewEffectTwoGuns:
+    {
+        dassert(pTSprite->type >= kDudePlayer1 && pTSprite->type <= kDudePlayer8);
+        PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
+        short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
+        if (nTile < 0) break;
+        auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
+        pNSprite->x = pTSprite->x;
+        pNSprite->y = pTSprite->y;
+        int heightOffset = 36;
+        if (pPlayer->curWeapon > 1) // if player has a weapon icon, offset icon so guns akimbo/quad damage icon hovers above weapon
+            heightOffset += 12;
+        pNSprite->z = pTSprite->z-(heightOffset<<8);
+        pNSprite->picnum = nTile;
+        pNSprite->shade = pTSprite->shade;
+        pNSprite->xrepeat = 32;
+        pNSprite->yrepeat = 32;
+        pNSprite->ang = (gView->pSprite->ang + 512) & 2047; // always face viewer
         break;
     }
     }
@@ -2725,6 +2747,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     pTSprite->pal = 5;
                 } else if (powerupCheck(pPlayer, kPwUpDoppleganger)) {
                     pTSprite->pal = 11+(gView->teamId&3);
+                    if (gGameOptions.nGameType == 3) pTSprite->pal = (gView->teamId & 1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
                 }
                 
                 if (powerupCheck(pPlayer, kPwUpReflectShots)) {
@@ -2733,8 +2756,9 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 
                 if (gShowWeapon && gGameOptions.nGameType > 0 && gView) {
                     viewAddEffect(nTSprite, kViewEffectShowWeapon);
+                    if (powerupCheck(pPlayer, kPwUpTwoGuns)) viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active and not in singleplayer
                 }
-                
+
                 if (pPlayer->flashEffect && (gView != pPlayer || gViewPos != VIEWPOS_0)) {
                     auto pNTSprite = viewAddEffect(nTSprite, kViewEffectShoot);
                     if (pNTSprite) {
@@ -2744,8 +2768,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                         pNTSprite->z = pPlayer->pSprite->z-pPosture->xOffset;
                     }
                 }
-                
-                if (pPlayer->hasFlag > 0 && gGameOptions.nGameType == 3) {
+
+                if (pPlayer->hasFlag > 0 && gGameOptions.nGameType == 3) { // if teams mode and has flag
                     if (pPlayer->hasFlag&1)  {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
                         if (pNTSprite)
@@ -3346,7 +3370,7 @@ void viewDrawScreen(void)
             {
                 cZ += v8c;
             }
-            if (gSlopeTilting)
+            if (gSlopeTilting || VanillaMode())
             {
                 q16horiz += q16slopehoriz;
             }

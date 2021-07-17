@@ -669,13 +669,17 @@ void PropagateMarkerReferences(void)
 
 static uint32_t curRandomizerSeed = 0;
 
+int dbRandomizerRNG(void)
+{
+	curRandomizerSeed = (214013 * curRandomizerSeed + 2531011);
+	return (curRandomizerSeed >> 16) & 0x7FFF;
+}
+
 void dbRandomizerModeInit(void)
 {
-    static bool calledSrand = false;
-    bool emptySeed = (gGameOptions.szRandomizerSeed[0] == '\0');
-    curRandomizerSeed = 0;
+    static bool calledwrand = false;
 
-    if (emptySeed) // if seed is empty, generate a new one
+    if (gGameOptions.szRandomizerSeed[0] == '\0') // if seed is empty, generate a new one
     {
         if (gGameOptions.nGameType > 0) // if in multiplayer, use a failsafe seed
         {
@@ -683,24 +687,22 @@ void dbRandomizerModeInit(void)
         }
         else // in singleplayer
         {
-            if (!calledSrand) // only call this once
-                srand(time(NULL));
-            curRandomizerSeed = rand();
-            calledSrand = true;
+            if (!calledwrand) // only call this once
+                curRandomizerSeed = wrand();
+            curRandomizerSeed = dbRandomizerRNG();
+            calledwrand = true;
         }
     }
-    else for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++)
+    else
     {
-        if (gGameOptions.szRandomizerSeed[i] == '\0')
-            break;
-        curRandomizerSeed += ~(toupper(gGameOptions.szRandomizerSeed[i]));
+        curRandomizerSeed = 0;
+        for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++)
+        {
+            if (gGameOptions.szRandomizerSeed[i] == '\0')
+                break;
+            curRandomizerSeed += ~(toupper(gGameOptions.szRandomizerSeed[i]));
+        }
     }
-}
-
-int dbRandomizerRNG(void)
-{
-	curRandomizerSeed = (214013 * curRandomizerSeed + 2531011);
-	return (curRandomizerSeed >> 16) & 0x7FFF;
 }
 
 void dbRandomizerMode(spritetype *pSprite)
@@ -718,7 +720,7 @@ void dbRandomizerMode(spritetype *pSprite)
         if (!(dbRandomizerRNG() % 5)) return;
     }
 
-    if ((gGameOptions.nRandomizerMode == 1) || (gGameOptions.nRandomizerMode == 3)) // if enemies or enemies+weapons mode, randomize enemy
+    if (gGameOptions.nRandomizerMode & 1) // if enemies or enemies+weapons mode, randomize enemy
     {
         switch (pSprite->type)
         {
@@ -1271,7 +1273,8 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
     numsectors = mapHeader.at1f;
     numwalls = mapHeader.at21;
     dbInit();
-    dbRandomizerModeInit(); // seed enemy/pickup randomizer
+    if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus())
+        dbRandomizerModeInit(); // seed enemy/pickup randomizer
     if (byte_1A76C8)
     {
         IOBuffer1.Read(&byte_19AE44, 128);

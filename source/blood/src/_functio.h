@@ -147,7 +147,7 @@ const char keydefaults[NUMGAMEFUNCTIONS*2][MAXGAMEFUNCLEN] =
    "'", "",
    ";", "",
    "ScrLck", "",
-   "Y", "",
+   "", "",
    "B", "",
    "C", "",
    "J", "",

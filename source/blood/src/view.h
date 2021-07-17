@@ -49,6 +49,7 @@ enum VIEW_EFFECT {
     kViewEffectFlag,
     kViewEffectBigFlag,
     kViewEffectAtom,
+    kViewEffectTwoGuns,
 #ifdef NOONE_EXTENSIONS
     kViewEffectSpotProgress,
 #endif
