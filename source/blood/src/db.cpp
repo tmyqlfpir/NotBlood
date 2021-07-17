@@ -961,7 +961,7 @@ void dbRandomizerMode(spritetype *pSprite)
         case kItemAmmoFlares:
         {
             const int pickupsrngtype[] = {kItemAmmoSprayCan, kItemAmmoRemoteBombBundle, kItemAmmoTNTBundle, kItemAmmoSprayCan, kItemAmmoTNTBox, kItemAmmoGasolineCan};
-            const int pickupsrngpicnum[] = {618, 810, 589, 618, 589, 801};
+            const int pickupsrngpicnum[] = {618, 810, 589, 618, 809, 801};
             const int rng = dbRandomizerRNG() % ARRAY_SSIZE(pickupsrngtype);
             pSprite->type = pickupsrngtype[rng];
             pSprite->picnum = pickupsrngpicnum[rng];
