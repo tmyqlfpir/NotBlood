@@ -3,12 +3,16 @@ A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-en
 
 New features include:
 * Difficulty based invulnerability timer for bullet/spirit/tesla damage
-* More forgiving hitbox size when testing wall collision for player spawned projectiles ([before](https://files.catbox.moe/3peiru.mp4)/[after](https://files.catbox.moe/zso8g4.mp4))
-* Optional quad damage replacement for guns akimbo powerup
-* Throwable lifeleech alt fire and cheat (big bertha)
+* Smaller hitboxes for player projectiles ([before](https://files.catbox.moe/3peiru.mp4)/[after](https://files.catbox.moe/zso8g4.mp4))
+* Raytrace collision logic for player projectiles ([before](https://files.catbox.moe/ojy0t6.mp4)/[after](https://files.catbox.moe/ha5hke.mp4))
+* Proximity radius damage logic for player explosions ([before](https://files.catbox.moe/ojy0t6.mp4)/[after](https://files.catbox.moe/yyaja7.mp4))
+* Quad damage replacement for guns akimbo powerup
+* Throwable lifeleech alt fire and cheat 'big bertha'
 * Increased enemy damage for lifeleech's sentry mode
 * Randomize mode for enemies and pickups (multiplayer supported)
 * Autosaving on collecting keys and start of level
+* Reflection sphere will reflect tesla fire
+* New enhancements menu under game options
 * Mirror mode
 
 ### Installing
