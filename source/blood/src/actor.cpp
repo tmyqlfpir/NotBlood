@@ -4472,7 +4472,7 @@ int MoveThing(spritetype *pSprite)
         int wd = pSprite->clipdist<<2;
         short bakCstat = pSprite->cstat;
         pSprite->cstat &= ~257;
-        if(NotBloodAdjustHitbox(pSprite, top, bottom) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        if(NotBloodAdjustHitbox(pSprite, top, bottom, wd) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
             wd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
             v8 = gSpriteHit[nXSprite].hit = ClipMoveHack(pSprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
@@ -5296,7 +5296,7 @@ int MoveMissile(spritetype *pSprite)
         int nSector2 = pSprite->sectnum;
         clipmoveboxtracenum = 1;
         int vdx;
-        if(NotBloodAdjustHitbox(pSprite, top, bottom) && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        if(NotBloodAdjustHitbox(pSprite, top, bottom, wd) && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
             wd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
             vdx = ClipMoveHack(pSprite, &x, &y, &z, &nSector2, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
