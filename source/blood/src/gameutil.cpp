@@ -820,10 +820,9 @@ unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSec
     short updSect = *nSector;
     short origSect = updSect;
     unsigned int nRes = clipmove_old((int32_t*)x, (int32_t*)y, (int32_t*)z, &updSect, xv<<14, yv<<14, wd, cd, fd, nMask);
-    if (updSect == -1) // clipped out of bounds, restore to original sector and position
+    if (updSect == -1) // clipped out of bounds, restore position
     {
         *x = origX; *y = origY; *z = origZ;
-        //*nSector = origSect;
     }
     else
     {
@@ -833,19 +832,24 @@ unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSec
         return nRes;
 
     // we didn't hit shit, let's raycast and try again
+    const int distClipmove = approxDist(klabs(origX-*x), klabs(origY-*y));
     vec3_t pos = {origX, origY, origZ};
     hitdata_t hitData;
     hitData.pos = pos;
     hitscangoal.x = hitscangoal.y = 0x1ffffff;
-    hitscan(&pos, origSect, Cos(pSprite->ang)>>16, Sin(pSprite->ang)>>16, divscale(klabs(*z-origZ), approxDist(*x-origX, *y-origY), 10), &hitData, nMask);
+    if (distClipmove)
+    {
+        hitscangoal.x = pSprite->x+mulscale30(distClipmove<<4, Cos(pSprite->ang));
+        hitscangoal.y = pSprite->y+mulscale30(distClipmove<<4, Sin(pSprite->ang));
+    }
+    hitscan(&pos, origSect, Cos(pSprite->ang)>>16, Sin(pSprite->ang)>>16, 0, &hitData, nMask);
     if (hitData.sprite >= kMaxSprites || hitData.wall >= kMaxWalls || hitData.sect >= kMaxSectors)
     {
         *x = origX; *y = origY; *z = origZ;
         if (hitData.sect >= 0)
             *nSector = hitData.sect;
     }
-    const int distRay = approxDist(hitData.pos.x-origX, hitData.pos.y-origY);
-    const int distClipmove = approxDist(*x-origX, *y-origY);
+    const int distRay = approxDist(klabs(origX-hitData.pos.x), klabs(origY-hitData.pos.y));
     if ((updSect == -1) || ((distRay < distClipmove) && (hitData.sprite >= 0 || hitData.wall >= 0))) // did we hit something, and was it a sprite/wall, or we're just floating in zero-g and we should update the sector and fake a wall hit
     {
         *x = hitData.pos.x;
@@ -853,9 +857,9 @@ unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSec
         *z = hitData.pos.z;
         *nSector = hitData.sect;   
         if (hitData.sprite >= 0)
-            nRes = (hitData.sprite & 0x3FFF) | 0xC000;
+            nRes = (hitData.sprite & 0x3FFF) | 0x8000;
         else
-            nRes = (hitData.wall & 0x3FFF) | 0x8000;
+            nRes = (hitData.wall & 0x3FFF) | 0xC000;
     }
     if (*nSector == -1) // if sector still failed, restore and pray to the build gods that everything will work out
     {

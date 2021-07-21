@@ -816,6 +816,17 @@ inline int approxDist(int dx, int dy)
     return dx+dy;
 }
 
+inline int approxDist3D(int x1, int y1, int z1, int x2, int y2, int z2)
+{
+    int dx = x1-x2;
+    int dy = y1-y2;
+    int dz = z1-z2;
+    dx >>= 4;
+    dy >>= 4;
+    dz >>= 8;
+    return ksqrt(dx*dx+dy*dy+dz*dz);
+}
+
 class Rect {
 public:
     int x0, y0, x1, y1;

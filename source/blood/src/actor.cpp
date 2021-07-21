@@ -4410,12 +4410,11 @@ void actAirDrag(spritetype *pSprite, int a2)
     zvel[pSprite->index] -= mulscale16(zvel[pSprite->index], a2);
 }
 
-int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom)
+static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int walldist)
 {
     dassert(pSprite != NULL);
     int nOwner = pSprite->owner;
     int nSprite = pSprite->index;
-    int walldist = pSprite->clipdist<<2;
     if (!gGameOptions.bProjectileBehavior || nOwner == -1) // if projectile behavior is set to original, or sprite has no owner
         return 0;
 
@@ -4449,7 +4448,7 @@ int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom)
             walldist = min(walldist, 64); // unless sprite is less than 48 units, clamp at 48 units
             break;
         default: // unexpected sprite, don't use small hitbox
-            break;
+            return 0;
         }
     }
     return walldist;
@@ -4475,7 +4474,7 @@ int MoveThing(spritetype *pSprite)
         pSprite->cstat &= ~257;
         if(NotBloodAdjustHitbox(pSprite, top, bottom) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
-            wd = NotBloodAdjustHitbox(pSprite, top, bottom);
+            wd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
             v8 = gSpriteHit[nXSprite].hit = ClipMoveHack(pSprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
         }
         else
@@ -5299,7 +5298,7 @@ int MoveMissile(spritetype *pSprite)
         int vdx;
         if(NotBloodAdjustHitbox(pSprite, top, bottom) && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
-            wd = NotBloodAdjustHitbox(pSprite, top, bottom);
+            wd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
             vdx = ClipMoveHack(pSprite, &x, &y, &z, &nSector2, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
         }
         else
