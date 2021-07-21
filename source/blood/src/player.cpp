@@ -268,10 +268,10 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
     if (powerupCheck(pPlayer, nPowerUp) > 0 && gPowerUpInfo[nPowerUp].pickupOnce)
         return 0;
     if (!pPlayer->pwUpTime[nPowerUp]) {
+        int bonusTime = gPowerUpInfo[nPowerUp].bonusTime;
         if ((nPowerUp == kPwUpTwoGuns) && (gGameOptions.nGameType > 1) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if picked up quad damage in bloodbath/teams
-            pPlayer->pwUpTime[nPowerUp] = 2500; // set to 25 seconds
-        else
-            pPlayer->pwUpTime[nPowerUp] = gPowerUpInfo[nPowerUp].bonusTime;
+            bonusTime = 2500; // set to 25 seconds
+        pPlayer->pwUpTime[nPowerUp] = bonusTime;
     }
     int nPack = powerupToPackItem(nPowerUp);
     if (nPack >= 0)
@@ -2018,7 +2018,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
             if ((pPlayer->invulTime != gFrameClock) && (pPlayer->invulTime > gFrameClock - (11*(5-gGameOptions.nDifficulty)))) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
                 return 0;
         }
-        if ((nDamageType != kDamageBurn) || (nDamageType != kDamageDrown)) // do not update the invul timer on burn or drown damage
+        if ((nDamageType != kDamageBurn) && (nDamageType != kDamageDrown)) // do not update the invul timer on burn or drown damage
             pPlayer->invulTime = (int)gFrameClock;
     }
     nDamage = playerDamageArmor(pPlayer, nDamageType, nDamage);

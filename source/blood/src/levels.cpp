@@ -45,7 +45,39 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 GAMEOPTIONS gGameOptions;
 
 GAMEOPTIONS gSingleGameOptions = {
-    0, 2, 0, 0, "", "", 2, "", "", 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 3600, 1800, 1800, 7200, 0, 0, 1, 0, "", 0, 1, ""
+    0,     // char nGameType;
+    2,     // char nDifficulty;
+    0,     // int nEpisode;
+    0,     // int nLevel;
+    "",    // char zLevelName[BMAX_PATH];
+    "",    // char zLevelSong[BMAX_PATH];
+    2,     // int nTrackNumber;
+    "",    // char szSaveGameName[BMAX_PATH];
+    "",    // char szUserGameName[BMAX_PATH];
+    0,     // short nSaveGameSlot;
+    0,     // int picEntry;
+    0,     // unsigned int uMapCRC;
+    1,     // char nMonsterSettings;
+    0,     // int uGameFlags;
+    0,     // int uNetGameFlags;
+    0,     // char nWeaponSettings;
+    0,     // char nItemSettings;
+    0,     // char nRespawnSettings;
+    2,     // char nTeamSettings;
+    3600,  // int nMonsterRespawnTime;
+    1800,  // int nWeaponRespawnTime;
+    1800,  // int nItemRespawnTime;
+    7200,  // int nSpecialRespawnTime;
+    0,     // int nWeaponsVer;
+    0,     // bool bQuadDamagePowerup;
+    1,     // bool bDamageInvul;
+    0,     // bool bExplosionBehavior;
+    0,     // bool bProjectileBehavior;
+    0,     // char nRandomizerMode;
+    "",    // char szRandomizerSeed[9];
+    0,     // bool bFriendlyFire;
+    1,     // bool bKeepKeysOnRespawn;
+    "",    // char szUserMap[BMAX_PATH];
 };
 
 EPISODEINFO gEpisodeInfo[kMaxEpisodes+1];
@@ -411,6 +443,17 @@ void LevelsLoadSave::Load(void)
     Read(&gNextLevel, sizeof(gNextLevel));
     Read(&gGameOptions, sizeof(gGameOptions));
     Read(&gGameStarted, sizeof(gGameStarted));
+
+    if (gGameOptions.nGameType == 0) // if not multiplayer, update the game options by loading the current set settings
+    {
+        gGameOptions.nWeaponsVer = gWeaponsVer;
+        gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
+        gGameOptions.bDamageInvul = gDamageInvul;
+        gGameOptions.bExplosionBehavior = gExplosionBehavior;
+        gGameOptions.bProjectileBehavior = gProjectileBehavior;
+        gGameOptions.nRandomizerMode = gRandomizerMode;
+        Bmemcpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
+    }
 }
 
 void LevelsLoadSave::Save(void)

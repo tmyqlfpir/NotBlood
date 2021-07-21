@@ -677,23 +677,24 @@ int dbRandomizerRNG(void)
 
 void dbRandomizerModeInit(void)
 {
-    static bool calledwrand = false;
+    static bool genseed = false;
 
     if (gGameOptions.szRandomizerSeed[0] == '\0') // if seed is empty, generate a new one
     {
         if (gGameOptions.nGameType > 0) // if in multiplayer, use a failsafe seed
         {
-            curRandomizerSeed = 0x12345678;
+            curRandomizerSeed = 0x12345678; // use a failsafe seed
+            genseed = false;
         }
         else // in singleplayer
         {
-            if (!calledwrand) // only call this once
+            if (!genseed) // only call this once
                 curRandomizerSeed = wrand();
             curRandomizerSeed = dbRandomizerRNG();
-            calledwrand = true;
+            genseed = true;
         }
     }
-    else
+    else // use seed
     {
         curRandomizerSeed = 0;
         for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++)
@@ -707,6 +708,15 @@ void dbRandomizerModeInit(void)
 
 void dbRandomizerMode(spritetype *pSprite)
 {
+    if ((gGameOptions.nRandomizerMode >= 2) && (pSprite->type == kItemBeastVision)) // always replace beast vision if pickups or enemies+pickups mode
+    {
+        const int pickupsrngtype[] = {kItemArmorBasic, kItemArmorBody, kItemArmorFire, kItemWeaponFlarePistol, kItemWeaponSawedoff, kItemWeaponTommygun, kItemAmmoTNTBox, kItemAmmoSawedoffBox, kItemAmmoTommygunDrum};
+        const int pickupsrngpicnum[] = {2628, 2586, 2578, 524, 559, 558, 809, 812, 817};
+        const int rng = dbRandomizerRNG() % ARRAY_SSIZE(pickupsrngtype);
+        pSprite->type = pickupsrngtype[rng];
+        pSprite->picnum = pickupsrngpicnum[rng];
+    }
+
     if (gGameOptions.nDifficulty <= 2) // don't always replace enemies/pickups
     {
         if (!(dbRandomizerRNG() % 2)) return;
@@ -1000,7 +1010,6 @@ void dbRandomizerMode(spritetype *pSprite)
         case kItemArmorBody:
         case kItemArmorFire:
         case kItemArmorSpirit:
-        case kItemBeastVision:
         {
             const int pickupsrngtype[] = {kItemArmorBasic, kItemArmorBody, kItemArmorFire, kItemArmorSpirit, kItemArmorSuper, kItemHealthLifeEssense, kItemHealthLifeSeed, kItemTwoGuns, kItemReflectShots, kItemShadowCloak, kItemHealthDoctorBag};
             const int pickupsrngpicnum[] = {2628, 2586, 2578, 2602, 2594, 2169, 2433, 829, 2428, 896, 519};

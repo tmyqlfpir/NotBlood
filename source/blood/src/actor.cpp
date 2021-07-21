@@ -2439,6 +2439,21 @@ int actOwnerIdToSpriteId(int nSprite)
     return nSprite;
 }
 
+bool actSpriteOwnerIsPlayer(spritetype *pSprite)
+{
+    dassert(pSprite != NULL);
+    if (pSprite->owner == -1)
+        return false;
+    return (pSprite->owner & kMaxSprites);
+}
+
+bool actSpriteIdIsPlayer(int nSprite)
+{
+    if (nSprite == -1)
+        return false;
+    return (nSprite & kMaxSprites);
+}
+
 bool actTypeInSector(int nSector, int nType)
 {
     for (int nSprite = headspritesect[nSector]; nSprite >= 0; nSprite = nextspritestat[nSprite])
@@ -3963,6 +3978,21 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
             }
             break;
         case kMissileTeslaRegular:
+            if (hitCode == 3 && pSpriteHit)
+            {
+                spritetype *pObject = &sprite[gHitInfo.hitsprite];
+                if (WeaponsNotBlood() && IsPlayerSprite(pObject) && !VanillaMode() && !DemoRecordStatus()) // if in demo/vanilla mode, and player was shot, reflect back tesla projectile
+                {
+                    if (powerupCheck(&gPlayer[pObject->type - kDudePlayer1], kPwUpReflectShots))
+                    {
+                        xvel[pMissile->index] = -xvel[pMissile->index]; // return to sender
+                        yvel[pMissile->index] = -yvel[pMissile->index];
+                        zvel[pMissile->index] = -zvel[pMissile->index];
+                        pMissile->owner = pObject->index; // set projectile owner as player with reflective shot
+                        break;
+                    }
+                }
+            }
             sfxKill3DSound(pMissile, -1, -1);
             sfxPlay3DSound(pMissile->x, pMissile->y, pMissile->z, 518, pMissile->sectnum);
             GibSprite(pMissile, (hitCode == 2) ? GIBTYPE_23 : GIBTYPE_22, NULL, NULL);
@@ -4380,6 +4410,51 @@ void actAirDrag(spritetype *pSprite, int a2)
     zvel[pSprite->index] -= mulscale16(zvel[pSprite->index], a2);
 }
 
+int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom)
+{
+    dassert(pSprite != NULL);
+    int nOwner = pSprite->owner;
+    int nSprite = pSprite->index;
+    int walldist = pSprite->clipdist<<2;
+    if (!gGameOptions.bProjectileBehavior || nOwner == -1) // if projectile behavior is set to original, or sprite has no owner
+        return 0;
+
+    if (!actSpriteIdIsPlayer(nOwner)) // if sprite is not player owned/spawned
+        return 0;
+
+    dassert(nSprite >= 0 && nSprite < kMaxSprites);
+    vec3_t tempxyz = {pSprite->x, pSprite->y, pSprite->z};
+    int tempsec = pSprite->sectnum;
+    const int moved = ClipMove(&tempxyz.x, &tempxyz.y, &tempxyz.z, &tempsec, xvel[nSprite]>>12, yvel[nSprite]>>12, walldist, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
+    if ((moved & 0xc000) == 0x8000) // use a small hitbox if the sprite collided with a wall
+    {
+        switch (pSprite->type)
+        {
+        case kMissileFlameSpray:
+            walldist = min(walldist, 32);
+            break;
+        case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
+        case kMissileFlareAlt:
+            walldist = min(walldist, 8);
+            break;
+        case kThingArmedTNTBundle:
+        case kThingArmedProxBomb:
+        case kThingArmedRemoteBomb:
+        case kThingArmedSpray:
+            walldist = min(walldist, 32);
+            break;
+        case kMissileFireballNapalm:
+        case kMissileTeslaRegular:
+        case kMissileLifeLeechRegular:
+            walldist = min(walldist, 64); // unless sprite is less than 48 units, clamp at 48 units
+            break;
+        default: // unexpected sprite, don't use small hitbox
+            break;
+        }
+    }
+    return walldist;
+}
+
 int MoveThing(spritetype *pSprite)
 {
     int nXSprite = pSprite->extra;
@@ -4395,45 +4470,18 @@ int MoveThing(spritetype *pSprite)
     GetSpriteExtents(pSprite, &top, &bottom);
     if (xvel[nSprite] || yvel[nSprite])
     {
+        int wd = pSprite->clipdist<<2;
         short bakCstat = pSprite->cstat;
         pSprite->cstat &= ~257;
-        bool tinyHitbox = false;
-        int tinyWalldist;
-        if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
+        if(NotBloodAdjustHitbox(pSprite, top, bottom) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
-            if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
-            {
-                int tempxyz[3] = {pSprite->x, pSprite->y, pSprite->z};
-                ClipMove(&tempxyz[0], &tempxyz[1], &tempxyz[2], &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, pSprite->clipdist<<2, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
-                if (nSector != -1) // use a small hitbox if the sprite collided with a wall
-                {
-                    tinyHitbox = true;
-                    switch (pSprite->type)
-                    {
-                    case kMissileFlameSpray:
-                        tinyWalldist = min(pSprite->clipdist<<2, 48);
-                        break;
-                    case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
-                    case kMissileFlareAlt:
-                        tinyWalldist = min(pSprite->clipdist<<2, 8);
-                        break;
-                    case kThingArmedTNTBundle:
-                    case kThingArmedProxBomb:
-                    case kThingArmedRemoteBomb:
-                    case kThingArmedSpray:
-                    case kMissileFireballNapalm:
-                    case kMissileTeslaRegular:
-                    case kMissileLifeLeechRegular:
-                        tinyWalldist = min(pSprite->clipdist<<2, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
-                        break;
-                    default: // unexpected sprite, don't use small hitbox
-                        tinyHitbox = false;
-                        break;
-                    }
-                }
-            }
+            wd = NotBloodAdjustHitbox(pSprite, top, bottom);
+            v8 = gSpriteHit[nXSprite].hit = ClipMoveHack(pSprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
         }
-        v8 = gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, !tinyHitbox ? pSprite->clipdist<<2 : tinyWalldist, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
+        else
+        {
+            v8 = gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
+        }
         pSprite->cstat = bakCstat;
         dassert(nSector >= 0);
         if (pSprite->sectnum != nSector)
@@ -4445,7 +4493,7 @@ int MoveThing(spritetype *pSprite)
             int nHitWall = gSpriteHit[nXSprite].hit&0x3fff;
             bool bounce = true;
             if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) { // if not in demo/vanilla mode, and sprite has a owner
-                if ((wall[nHitWall].nextsector != -1) && IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) { // if sprite didn't hit a wall, and sprite is player owned/spawned
+                if ((wall[nHitWall].nextsector != -1) && actSpriteOwnerIsPlayer(pSprite)) { // if sprite didn't hit a wall, and sprite is player owned/spawned
                     switch (pSprite->type) {
                         case kThingArmedTNTBundle: // filter out these sprites
                         case kThingArmedProxBomb:
@@ -4673,43 +4721,7 @@ void MoveDude(spritetype *pSprite)
         {
             short bakCstat = pSprite->cstat;
             pSprite->cstat &= ~257;
-            bool tinyHitbox = false;
-            int tinyWalldist;
-            if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
-            {
-                if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
-                {
-                    int tempxyz[3] = {pSprite->x, pSprite->y, pSprite->z};
-                    ClipMove(&tempxyz[0], &tempxyz[1], &tempxyz[2], &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, tz, bz, CLIPMASK0);
-                    if (nSector != -1) // use a small hitbox if the sprite collided with a wall
-                    {
-                        tinyHitbox = true;
-                        switch (pSprite->type)
-                        {
-                        case kMissileFlameSpray:
-                            tinyWalldist = min(wd, 48);
-                            break;
-                        case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
-                        case kMissileFlareAlt:
-                            tinyWalldist = min(wd, 8);
-                            break;
-                        case kThingArmedTNTBundle:
-                        case kThingArmedProxBomb:
-                        case kThingArmedRemoteBomb:
-                        case kThingArmedSpray:
-                        case kMissileFireballNapalm:
-                        case kMissileTeslaRegular:
-                        case kMissileLifeLeechRegular:
-                            tinyWalldist = min(wd, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
-                            break;
-                        default: // unexpected sprite, don't use small hitbox
-                            tinyHitbox = false;
-                            break;
-                        }
-                    }
-                }
-            }
-            gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, !tinyHitbox ? wd : tinyWalldist, tz, bz, CLIPMASK0);
+            gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, tz, bz, CLIPMASK0);
             if (nSector == -1)
             {
                 nSector = pSprite->sectnum;
@@ -5281,45 +5293,19 @@ int MoveMissile(spritetype *pSprite)
         int x = pSprite->x;
         int y = pSprite->y;
         int z = pSprite->z;
+        int wd = pSprite->clipdist<<2;
         int nSector2 = pSprite->sectnum;
         clipmoveboxtracenum = 1;
-        bool tinyHitbox = false;
-        int tinyWalldist;
-        if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) // if not in demo/vanilla mode, and sprite has a owner
+        int vdx;
+        if(NotBloodAdjustHitbox(pSprite, top, bottom) && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
-            if (IsPlayerSprite(&sprite[actSpriteOwnerToSpriteId(pSprite)])) // if sprite is player owned/spawned, check if sprite hit a wall
-            {
-                int tempxyz[3] = {x, y, z};
-                ClipMove(&tempxyz[0], &tempxyz[1], &tempxyz[2], &nSector2, vx, vy, pSprite->clipdist<<2, (z-top)/4, (bottom-z)/4, CLIPMASK0);
-                if (nSector2 != -1) // use a small hitbox if the sprite collided with a wall
-                {
-                    tinyHitbox = true;
-                    switch (pSprite->type)
-                    {
-                    case kMissileFlameSpray:
-                        tinyWalldist = min(pSprite->clipdist<<2, 48);
-                        break;
-                    case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
-                    case kMissileFlareAlt:
-                        tinyWalldist = min(pSprite->clipdist<<2, 8);
-                        break;
-                    case kThingArmedTNTBundle:
-                    case kThingArmedProxBomb:
-                    case kThingArmedRemoteBomb:
-                    case kThingArmedSpray:
-                    case kMissileFireballNapalm:
-                    case kMissileTeslaRegular:
-                    case kMissileLifeLeechRegular:
-                        tinyWalldist = min(pSprite->clipdist<<2, 64); // unless sprite is less than 64 units, clamp at 64 units (anything lower will have undesirable effects with explodable walls)
-                        break;
-                    default: // unexpected sprite, don't use small hitbox
-                        tinyHitbox = false;
-                        break;
-                    }
-                }
-            }
+            wd = NotBloodAdjustHitbox(pSprite, top, bottom);
+            vdx = ClipMoveHack(pSprite, &x, &y, &z, &nSector2, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
         }
-        int vdx = ClipMove(&x, &y, &z, &nSector2, vx, vy, !tinyHitbox ? pSprite->clipdist<<2 : tinyWalldist, (z-top)/4, (bottom-z)/4, CLIPMASK0);
+        else
+        {
+            vdx = ClipMove(&x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
+        }
         clipmoveboxtracenum = 3;
         short nSector = nSector2;
         if (nSector2 < 0)
@@ -5888,7 +5874,7 @@ void actProcessSprites(void)
     }
     for (nSprite = headspritestat[kStatExplosion]; nSprite >= 0; nSprite = nextspritestat[nSprite])
     {
-        char v24c[(kMaxSectors+7)>>3];
+        char spriteExp[(kMaxSectors+7)>>3];
         spritetype *pSprite = &sprite[nSprite];
 
         if (pSprite->flags & 32)
@@ -5915,7 +5901,7 @@ void actProcessSprites(void)
             radius = pXSprite->data4;
         #endif
         
-        GetClosestSpriteSectors(nSector, x, y, radius, gAffectedSectors, v24c, gAffectedXWalls);
+        GetClosestSpriteSectors(nSector, x, y, radius, gAffectedSectors, spriteExp, gAffectedXWalls);
         
         for (int i = 0; i < kMaxXWalls; i++)
         {
@@ -5925,14 +5911,21 @@ void actProcessSprites(void)
             XWALL *pXWall = &xwall[wall[nWall].extra];
             trTriggerWall(nWall, pXWall, kCmdWallImpact);
         }
-        
+
+        // GetClosestSpriteSectors() has issues checking some sectors due to the way it's written (97' optimization?)
+        // example: throwing dynamite at the first doors of E1M2 while standing on the rotating platform
+        // if new explosions behavior is on bypass checking spriteExp array
+        // this will fix the issue of dynamite not working with some sectors, as well as some other edge cases
+        const bool bypassSpriteExpCheck = gGameOptions.bExplosionBehavior && actSpriteIdIsPlayer(pSprite->owner) && !VanillaMode() && !DemoRecordStatus();
+
         for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
         {
             spritetype *pDude = &sprite[nSprite2];
 
             if (pDude->flags & 32)
                 continue;
-            if (TestBitString(v24c, pDude->sectnum))
+
+            if (TestBitString(spriteExp, pDude->sectnum) || bypassSpriteExpCheck)
             {
                 if (pXSprite->data1 && CheckProximity(pDude, x, y, z, nSector, radius))
                 {
@@ -5961,7 +5954,7 @@ void actProcessSprites(void)
 
             if (pThing->flags & 32)
                 continue;
-            if (TestBitString(v24c, pThing->sectnum))
+            if (TestBitString(spriteExp, pThing->sectnum) || bypassSpriteExpCheck)
             {
                 if (pXSprite->data1 && CheckProximity(pThing, x, y, z, nSector, radius))
                 {
@@ -6005,7 +5998,7 @@ void actProcessSprites(void)
                         continue;
 
                     spritetype* pDebris = &sprite[gPhysSpritesList[i]];
-                    if (!TestBitString(v24c, pDebris->sectnum) || !CheckProximity(pDebris, x, y, z, nSector, radius)) continue;
+                    if (!TestBitString(spriteExp, pDebris->sectnum) || !CheckProximity(pDebris, x, y, z, nSector, radius)) continue;
                     else debrisConcuss(nOwner, i, x, y, z, pExplodeInfo->dmgType);
                 }
             }
@@ -6018,7 +6011,7 @@ void actProcessSprites(void)
                         continue;
 
                     spritetype* pImpact = &sprite[gImpactSpritesList[i]]; XSPRITE* pXImpact = &xsprite[pImpact->extra];
-                    if (/*pXImpact->state == pXImpact->restState ||*/ !TestBitString(v24c, pImpact->sectnum) || !CheckProximity(pImpact, x, y, z, nSector, radius))
+                    if (/*pXImpact->state == pXImpact->restState ||*/ !TestBitString(spriteExp, pImpact->sectnum) || !CheckProximity(pImpact, x, y, z, nSector, radius))
                         continue;
                     
                     trTriggerSprite(pImpact->index, pXImpact, kCmdSpriteImpact);

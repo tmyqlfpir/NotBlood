@@ -218,6 +218,8 @@ int actSpriteOwnerToSpriteId(spritetype *pSprite);
 void actPropagateSpriteOwner(spritetype *pTarget, spritetype *pSource);
 int actSpriteIdToOwnerId(int nSprite);
 int actOwnerIdToSpriteId(int nSprite);
+bool actSpriteOwnerIsPlayer(spritetype *pSprite);
+bool actSpriteIdIsPlayer(int nSprite);
 bool actTypeInSector(int nSector, int nType);
 void actAllocateSpares(void);
 void actInit(bool bSaveLoad);

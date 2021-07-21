@@ -582,7 +582,7 @@ int16_t startang, startsectnum;
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
     const bool triggerAutosave = !gDemo.at0 && !gDemo.at1 && (gGameOptions.nGameType == 0) && // if demo isn't active and not in multiplayer session and we switched to new level
-    ((gMusicPrevLoadedEpisode != gGameOptions.nEpisode) || (gMusicPrevLoadedLevel != gGameOptions.nLevel));
+    (gGameOptions.nLevel > 0) && ((gMusicPrevLoadedEpisode != gGameOptions.nEpisode) || (gMusicPrevLoadedLevel != gGameOptions.nLevel));
     EndLevel();
     gInput = {};
     gStartNewGame = 0;
@@ -604,8 +604,10 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.nWeaponsVer = gWeaponsVer;
-        gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
+        gGameOptions.bDamageInvul = gDamageInvul;
+        gGameOptions.bExplosionBehavior = gExplosionBehavior;
+        gGameOptions.bProjectileBehavior = gProjectileBehavior;
         gGameOptions.nRandomizerMode = gRandomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         ///////
@@ -629,8 +631,10 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
-        gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
+        gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
+        gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
+        gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         ///////
@@ -805,8 +809,10 @@ void StartNetworkLevel(void)
         
         ///////
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
-        gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
+        gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
+        gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
+        gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         ///////

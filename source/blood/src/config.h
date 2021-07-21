@@ -100,6 +100,8 @@ extern int gAutosave;
 extern bool gAutosaveInCurLevel;
 extern int gQuadDamagePowerup;
 extern int gDamageInvul;
+extern int gExplosionBehavior;
+extern int gProjectileBehavior;
 extern int gRandomizerMode;
 extern char gzRandomizerSeed[9];
 //////

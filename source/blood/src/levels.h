@@ -57,6 +57,8 @@ struct GAMEOPTIONS {
     int nWeaponsVer;
     bool bQuadDamagePowerup;
     bool bDamageInvul;
+    bool bExplosionBehavior;
+    bool bProjectileBehavior;
     char nRandomizerMode;
     char szRandomizerSeed[9];
     bool bFriendlyFire;

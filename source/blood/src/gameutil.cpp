@@ -198,6 +198,7 @@ bool CheckProximityWall(int nWall, int x, int y, int nDist)
     int y1 = wall[nWall].y;
     int x2 = wall[wall[nWall].point2].x;
     int y2 = wall[wall[nWall].point2].y;
+
     nDist <<= 4;
     if (x1 < x2)
     {
@@ -803,6 +804,63 @@ unsigned int ClipMove(int *x, int *y, int *z, int *nSector, int xv, int yv, int 
     else
     {
         *nSector = bakSect;
+    }
+    return nRes;
+}
+
+unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask)
+{
+    // while this function may look as hideous as any build engine internals, it's been carefully setup like a stack of cards
+    // do not touch unless you know what you're doing, or are severely drunk
+    // good levels to test with, the train doors on E1M2 while standing on the rotating platform, and the first breakable cave wall of CPE1M1
+    dassert(pSprite != NULL);
+    int origX = *x;
+    int origY = *y;
+    int origZ = *z;
+    short updSect = *nSector;
+    short origSect = updSect;
+    unsigned int nRes = clipmove_old((int32_t*)x, (int32_t*)y, (int32_t*)z, &updSect, xv<<14, yv<<14, wd, cd, fd, nMask);
+    if (updSect == -1) // clipped out of bounds, restore to original sector and position
+    {
+        *x = origX; *y = origY; *z = origZ;
+        //*nSector = origSect;
+    }
+    else
+    {
+        *nSector = updSect;
+    }
+    if (nRes > 0) // got a hit, return
+        return nRes;
+
+    // we didn't hit shit, let's raycast and try again
+    vec3_t pos = {origX, origY, origZ};
+    hitdata_t hitData;
+    hitData.pos = pos;
+    hitscangoal.x = hitscangoal.y = 0x1ffffff;
+    hitscan(&pos, origSect, Cos(pSprite->ang)>>16, Sin(pSprite->ang)>>16, divscale(klabs(*z-origZ), approxDist(*x-origX, *y-origY), 10), &hitData, nMask);
+    if (hitData.sprite >= kMaxSprites || hitData.wall >= kMaxWalls || hitData.sect >= kMaxSectors)
+    {
+        *x = origX; *y = origY; *z = origZ;
+        if (hitData.sect >= 0)
+            *nSector = hitData.sect;
+    }
+    const int distRay = approxDist(hitData.pos.x-origX, hitData.pos.y-origY);
+    const int distClipmove = approxDist(*x-origX, *y-origY);
+    if ((updSect == -1) || ((distRay < distClipmove) && (hitData.sprite >= 0 || hitData.wall >= 0))) // did we hit something, and was it a sprite/wall, or we're just floating in zero-g and we should update the sector and fake a wall hit
+    {
+        *x = hitData.pos.x;
+        *y = hitData.pos.y;
+        *z = hitData.pos.z;
+        *nSector = hitData.sect;   
+        if (hitData.sprite >= 0)
+            nRes = (hitData.sprite & 0x3FFF) | 0xC000;
+        else
+            nRes = (hitData.wall & 0x3FFF) | 0x8000;
+    }
+    if (*nSector == -1) // if sector still failed, restore and pray to the build gods that everything will work out
+    {
+        *x = origX; *y = origY; *z = origZ;
+        *nSector = origSect;
     }
     return nRes;
 }
