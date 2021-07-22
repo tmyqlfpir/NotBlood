@@ -4412,45 +4412,47 @@ void actAirDrag(spritetype *pSprite, int a2)
 
 static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int walldist)
 {
-    dassert(pSprite != NULL);
+    if (pSprite == NULL)
+        return 0;
     int nOwner = pSprite->owner;
     int nSprite = pSprite->index;
     if (!gGameOptions.bProjectileBehavior || nOwner == -1) // if projectile behavior is set to original, or sprite has no owner
         return 0;
-
     if (!actSpriteIdIsPlayer(nOwner)) // if sprite is not player owned/spawned
         return 0;
+    if (nSprite < 0 || nSprite >= kMaxSprites) // invalid sprite, don't bother processing
+        return 0;
 
-    dassert(nSprite >= 0 && nSprite < kMaxSprites);
+    int smallwd;
+    switch (pSprite->type)
+    {
+    case kMissileFlameSpray:
+        smallwd = min(walldist, 32);
+        break;
+    case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
+    case kMissileFlareAlt:
+        smallwd = min(walldist, 8);
+        break;
+    case kThingArmedTNTBundle:
+    case kThingArmedProxBomb:
+    case kThingArmedRemoteBomb:
+    case kThingArmedSpray:
+        smallwd = min(walldist, 28);
+        break;
+    case kMissileFireballNapalm:
+    case kMissileTeslaRegular:
+    case kMissileLifeLeechRegular:
+        smallwd = min(walldist, 48); // unless sprite is less than 48 units, clamp at 48 units
+        break;
+    default: // unexpected sprite, don't use small hitbox
+        return 0;
+    }
+
     vec3_t tempxyz = {pSprite->x, pSprite->y, pSprite->z};
     int tempsec = pSprite->sectnum;
     const int moved = ClipMove(&tempxyz.x, &tempxyz.y, &tempxyz.z, &tempsec, xvel[nSprite]>>12, yvel[nSprite]>>12, walldist, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
     if ((moved & 0xc000) == 0x8000) // use a small hitbox if the sprite collided with a wall
-    {
-        switch (pSprite->type)
-        {
-        case kMissileFlameSpray:
-            walldist = min(walldist, 32);
-            break;
-        case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
-        case kMissileFlareAlt:
-            walldist = min(walldist, 8);
-            break;
-        case kThingArmedTNTBundle:
-        case kThingArmedProxBomb:
-        case kThingArmedRemoteBomb:
-        case kThingArmedSpray:
-            walldist = min(walldist, 32);
-            break;
-        case kMissileFireballNapalm:
-        case kMissileTeslaRegular:
-        case kMissileLifeLeechRegular:
-            walldist = min(walldist, 64); // unless sprite is less than 48 units, clamp at 48 units
-            break;
-        default: // unexpected sprite, don't use small hitbox
-            return 0;
-        }
-    }
+        return smallwd;
     return walldist;
 }
 
