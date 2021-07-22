@@ -1,3 +1,5 @@
+[![Build](https://github.com/carnivoroussociety/NotBlood/actions/workflows/build.yml/badge.svg)](https://github.com/carnivoroussociety/NotBlood/actions/workflows/build.yml) [![Build](https://github.com/carnivoroussociety/NotBlood/actions/workflows/download-badge.svg)](https://github.com/carnivoroussociety/NotBlood/releases)
+
 # NotBlood
 A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-engineer port NBlood
 
