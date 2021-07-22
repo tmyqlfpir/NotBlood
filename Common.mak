@@ -1,3 +1,4 @@
+
 # OS package maintainers: Please try invoking make with PACKAGE_REPOSITORY=1 to see if that meets your needs before patching out our optimizations entirely.
 PACKAGE_REPOSITORY ?= 0
 
@@ -989,7 +990,7 @@ else ifeq ($(PLATFORM),SUNOS)
 else ifeq ($(PLATFORM),WII)
     LIBS += -laesnd_tueidj -lfat -lwiiuse -lbte -lwiikeyboard -logc
 else ifeq ($(SUBPLATFORM),LINUX)
-    LIBS += -lrt -lasound -latomic
+    LIBS += -lrt -latomic
 endif
 
 ifeq (,$(filter $(PLATFORM),WINDOWS WII))

@@ -468,6 +468,36 @@ ifeq ($(RENDERTYPE),SDL)
     tools_targets += makesdlkeytrans
 endif
 
+
+#### Depends
+
+ifeq ($(SUBPLATFORM),LINUX)
+    LIBS += -lFLAC -lvorbisfile -lvorbis -logg -lasound
+endif
+
+ifeq ($(PLATFORM),BSD)
+    LIBS += -lFLAC -lvorbisfile -lvorbis -logg -lexecinfo
+endif
+
+ifeq ($(PLATFORM),DARWIN)
+    LIBS += -lFLAC -lvorbisfile -lvorbis -logg -lm \
+            -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,OpenGL \
+            -Wl,-framework,CoreMIDI -Wl,-framework,AudioUnit \
+            -Wl,-framework,AudioToolbox -Wl,-framework,IOKit -Wl,-framework,AGL
+    ifneq (00,$(DARWIN9)$(DARWIN10))
+        LIBS += -Wl,-framework,QuickTime -lm
+    endif
+endif
+
+ifeq ($(PLATFORM),WINDOWS)
+    LIBS += -lFLAC -lvorbisfile -lvorbis -logg -ldsound
+endif
+
+ifeq ($(PLATFORM),WII)
+    LIBS += -lvorbisidec
+endif
+
+
 #### Blood
 
 blood := blood
