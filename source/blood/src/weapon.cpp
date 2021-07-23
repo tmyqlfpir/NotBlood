@@ -1045,7 +1045,7 @@ void FirePitchfork(int, PLAYER *pPlayer)
                     sfxPlay3DSound(pPlayer->pSprite, 455, 1, 0);
             }
         }
-        if (gGameOptions.bQuadDamagePowerup)
+        if (gGameOptions.bQuadDamagePowerup && powerupCheck(pPlayer, kPwUpTwoGuns)) // if quad damage is active
         {
             if (WeaponsNotBlood() && (pPlayer->throwPower == 65536)) // if missile attack ready (maxed out power)
             {
@@ -1054,7 +1054,7 @@ void FirePitchfork(int, PLAYER *pPlayer)
                 pPlayer->flashEffect = 1;
                 return;
             }
-            if (powerupCheck(pPlayer, kPwUpTwoGuns)) // if quad damage is active
+            else
             {
                 n *= 4;
             }
