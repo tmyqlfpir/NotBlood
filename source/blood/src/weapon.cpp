@@ -1032,8 +1032,34 @@ void FirePitchfork(int, PLAYER *pPlayer)
     int r2 = Random2(2000);
     int r3 = Random2(2000);
     int n = 1;
-    if (powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is active
-        n *= 4;
+    if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode
+    {
+        if (WeaponsNotBlood()) // add charge up attack
+        {
+            r1 = r2 = 0; // remove random x/y rotation offset
+            if (pPlayer->weaponState >= 3) // if held and let go alt fire, use player throwpower as damage multiplier
+            {
+                int divPower = (pPlayer->throwPower >> 8) >> 6; // divide power into 4
+                n += divPower;
+                if (divPower > 1) // if above half way point, play sfx
+                    sfxPlay3DSound(pPlayer->pSprite, 455, 1, 0);
+            }
+        }
+        if (gGameOptions.bQuadDamagePowerup)
+        {
+            if (WeaponsNotBlood() && (pPlayer->throwPower == 65536)) // if missile attack ready (maxed out power)
+            {
+                playerFireMissile(pPlayer, -50, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
+                sfxPlay3DSound(pPlayer->pSprite, 480, 2, 0);
+                pPlayer->flashEffect = 1;
+                return;
+            }
+            if (powerupCheck(pPlayer, kPwUpTwoGuns)) // if quad damage is active
+            {
+                n *= 4;
+            }
+        }
+    }
     for (int j = 0; j < n; j++)
     {
         for (int i = 0; i < 4; i++)
@@ -2006,6 +2032,26 @@ char sub_4F3A0(PLAYER *pPlayer)
     return 0;
 }
 
+void ChargePitchfork(PLAYER *pPlayer)
+{
+    if (pPlayer->weaponState < 3)
+        return;
+    pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,180), 65536);
+    if ((pPlayer->weaponState == 3) && (pPlayer->throwPower == 65536) && powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup) // if maxed throwing power and quad damage is active
+    {
+        sfxPlay3DSound(pPlayer->pSprite, 361, 1, 0); // flame sfx
+        sfxPlay3DSound(pPlayer->pSprite, 2200, 2, 0); // pod hit sfx
+        pPlayer->weaponState = 4; // ready up missile attack
+    }
+    if (!pPlayer->input.buttonFlags.shoot2)
+    {
+        StartQAV(pPlayer, 2, -1, 0);
+        FirePitchfork(1, pPlayer);
+        pPlayer->weaponState = 0;
+        pPlayer->throwPower = 0;
+    }
+}
+
 void ThrowLifeLeech(PLAYER *pPlayer)
 {
     if (pPlayer->weaponState != 3)
@@ -2164,6 +2210,10 @@ void WeaponProcess(PLAYER *pPlayer) {
     case 9:
         if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, allow player to charge up throw like tnt
             ThrowLifeLeech(pPlayer);
+        break;
+    case 1:
+        if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, allow player to charge up pitchfork attack
+            ChargePitchfork(pPlayer);
         break;
     }
     if (pPlayer->weaponTimer > 0)
@@ -2499,7 +2549,20 @@ void WeaponProcess(PLAYER *pPlayer) {
         switch (pPlayer->curWeapon)
         {
         case 1:
-            StartQAV(pPlayer, 2, nClientFirePitchfork, 0);
+            if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, allow player to charge up pitchfork attack
+            {
+                pPlayer->weaponTimer = 1;
+                pPlayer->qavLoop = 0;
+                if (pPlayer->weaponState >= 3)
+                    return;
+                pPlayer->weaponState = 3;
+                pPlayer->throwTime = (int)gFrameClock;
+                pPlayer->throwPower = 0;
+            }
+            else // default pitchfork attack
+            {
+                StartQAV(pPlayer, 2, nClientFirePitchfork, 0);
+            }
             return;
         case 7:
             switch (pPlayer->weaponState)

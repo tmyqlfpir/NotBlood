@@ -2396,6 +2396,11 @@ void AutosaveGame(bool levelStartSave)
         gMe->invulTime = (int)gFrameClock; // in case they get hitscanned right after loading
         switch (gMe->curWeapon) // set weapon state to something safe
         {
+        case 1: // dynamite
+            gMe->weaponQav = 1;
+            gMe->weaponState = 0;
+            resetWeaponState = true;
+            break;
         case 6: // dynamite
             gMe->weaponQav = 20;
             gMe->weaponState = 0;

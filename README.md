@@ -14,6 +14,7 @@ New features include:
 * Randomize mode for enemies and pickups (multiplayer supported)
 * Autosaving on collecting keys and start of level
 * Reflection sphere will reflect tesla fire
+* Charge up alt fire for pitchfork
 * New enhancements menu under game options
 * Mirror mode
 
