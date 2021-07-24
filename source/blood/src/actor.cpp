@@ -4427,7 +4427,7 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
     switch (pSprite->type)
     {
     case kMissileFlameSpray:
-        smallwd = min(walldist, 32);
+        smallwd = min(walldist, 42);
         break;
     case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
     case kMissileFlareAlt:
@@ -4437,7 +4437,7 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
     case kThingArmedProxBomb:
     case kThingArmedRemoteBomb:
     case kThingArmedSpray:
-        smallwd = min(walldist, 28);
+        smallwd = min(walldist, 32);
         break;
     case kMissileFireballNapalm:
     case kMissileTeslaRegular:

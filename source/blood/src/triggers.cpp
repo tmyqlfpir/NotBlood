@@ -283,7 +283,7 @@ void LifeLeechOperate(spritetype *pSprite, XSPRITE *pXSprite, EVENT event)
                         int tz = pTarget->z - (pTarget->yrepeat * pDudeInfo->aimHeight) * 4;
                         int dz = divscale(tz - top - 256, nDist, 10);
                         int nMissileType = kMissileLifeLeechAltNormal + (pXSprite->data3 ? 1 : 0);
-                        if (gLifeleechAltRnd && !VanillaMode() && !DemoRecordStatus()) // if random projectiles for lifeleech sentry mode flag is on and not in demo/vanilla mode
+                        if (gLifeleechRnd && !VanillaMode() && !DemoRecordStatus()) // if random projectiles for lifeleech flag is on and not in demo/vanilla mode
                             nMissileType = kMissileBase + Random(18);
                         int t2;
                         if (!pXSprite->data3)

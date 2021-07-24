@@ -141,6 +141,7 @@ public:
         kCheatSpielberg,
         kCheatCalgon,
         kCheatBigBertha,
+        kCheatQskfa,
         kCheatMax
     };
     struct CHEATINFO

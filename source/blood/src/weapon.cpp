@@ -1755,7 +1755,10 @@ void FireLifeLeech(int nTrigger, PLAYER *pPlayer)
     int r1 = Random2(2000);
     int r2 = Random2(2000);
     int r3 = Random2(1000);
-    spritetype *pMissile = playerFireMissile(pPlayer, 0, pPlayer->aim.dx+r1, pPlayer->aim.dy+r2, pPlayer->aim.dz+r3, kMissileLifeLeechRegular);
+    int nMissileType = kMissileLifeLeechRegular;
+    if (gLifeleechRnd && !VanillaMode() && !DemoRecordStatus()) // if random projectiles for lifeleech flag is on and not in demo/vanilla mode
+        nMissileType = kMissileBase + Random(18);
+    spritetype *pMissile = playerFireMissile(pPlayer, 0, pPlayer->aim.dx+r1, pPlayer->aim.dy+r2, pPlayer->aim.dz+r3, nMissileType);
     if (pMissile)
     {
         XSPRITE *pXSprite = &xsprite[pMissile->extra];
@@ -2549,20 +2552,28 @@ void WeaponProcess(PLAYER *pPlayer) {
         switch (pPlayer->curWeapon)
         {
         case 1:
-            if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, allow player to charge up pitchfork attack
+            if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode
             {
-                pPlayer->weaponTimer = 1;
-                pPlayer->qavLoop = 0;
-                if (pPlayer->weaponState >= 3)
+                if (gAlphaPitchfork) // if alpha pitchfork cheat is active
+                {
+                    StartQAV(pPlayer, 2, nClientFirePitchfork, 0); // default pitchfork attack
+                    playerFireMissile(pPlayer, -50, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireball);
+                    pPlayer->flashEffect = 1;
                     return;
-                pPlayer->weaponState = 3;
-                pPlayer->throwTime = (int)gFrameClock;
-                pPlayer->throwPower = 0;
+                }
+                else if (WeaponsNotBlood()) // allow player to charge up pitchfork attack
+                {
+                    pPlayer->weaponTimer = 1;
+                    pPlayer->qavLoop = 0;
+                    if (pPlayer->weaponState >= 3)
+                        return;
+                    pPlayer->weaponState = 3;
+                    pPlayer->throwTime = (int)gFrameClock;
+                    pPlayer->throwPower = 0;
+                    return;
+                }
             }
-            else // default pitchfork attack
-            {
-                StartQAV(pPlayer, 2, nClientFirePitchfork, 0);
-            }
+            StartQAV(pPlayer, 2, nClientFirePitchfork, 0); // default pitchfork attack
             return;
         case 7:
             switch (pPlayer->weaponState)

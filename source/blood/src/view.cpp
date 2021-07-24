@@ -1624,7 +1624,7 @@ void UpdateStatusBar(ClockTicks arg)
                 DrawStatMaskedSprite(2552+i, 260+10*i, 170, 0, 0, 512, (int)(65536*0.25));
         }
 
-        if (pPlayer->throwPower)
+        if (pPlayer->throwPower && pXSprite->health > 0)
             TileHGauge(2260, 124, 175-10, pPlayer->throwPower, 65536);
         else
             viewDrawPack(pPlayer, 166, 200-tilesiz[2201].y/2-30);
@@ -1633,7 +1633,7 @@ void UpdateStatusBar(ClockTicks arg)
     }
     else if (gViewSize <= 2)
     {
-        if (pPlayer->throwPower)
+        if (pPlayer->throwPower && pXSprite->health > 0)
             TileHGauge(2260, 124, 175, pPlayer->throwPower, 65536);
         else
             viewDrawPack(pPlayer, 166, 200-tilesiz[2201].y/2);
@@ -1776,7 +1776,7 @@ void UpdateStatusBar(ClockTicks arg)
         }
         DrawStatMaskedSprite(2202, 118, 185, pPlayer->isRunning ? 16 : 40);
         DrawStatMaskedSprite(2202, 201, 185, pPlayer->isRunning ? 16 : 40);
-        if (pPlayer->throwPower)
+        if (pPlayer->throwPower && pXSprite->health > 0)
         {
             TileHGauge(2260, 124, 175, pPlayer->throwPower, 65536);
         }

@@ -688,6 +688,7 @@ CCheatMgr::CHEATINFO CCheatMgr::s_CheatInfo[] = {
     {"HPPOJFT", kCheatGoonies, 0 }, // GOONIES (Enable full map. Displays the message "YOU HAVE THE MAP".)
     {"TQJFMCFSH", kCheatSpielberg, 1 }, // SPIELBERG (Disables all cheats. If number values corresponding to a level and episode number are entered after the cheat word (i.e. "spielberg 1 3" for Phantom Express), you will be spawned to said level and the game will begin recording a demo from your actions.)
     {"CJH!CFSUIB", kCheatBigBertha, 0 }, // BIG BERTHA (Enable/Disable random projectiles for lifeleech's sentry mode)
+    {"RTLGB", kCheatQskfa, 0 }, // QSKFA (Enable/Disable alpha pitchfork)
 };
 
 bool CCheatMgr::m_bPlayerCheated = false;
@@ -699,7 +700,7 @@ bool CCheatMgr::Check(char *pzString)
     Bstrupr(buffer);
     for (size_t i = 0; i < strlen(pzString); i++)
         buffer[i]++;
-    for (int i = 0; i < 37; i++)
+    for (int i = 0; i < 38; i++)
     {
         int nCheatLen = strlen(s_CheatInfo[i].pzString);
         if (s_CheatInfo[i].flags & 1)
@@ -900,8 +901,12 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         gMe->nextWeapon = 1;
         break;
     case kCheatBigBertha:
-        gLifeleechAltRnd = !gLifeleechAltRnd;
-        viewSetMessage(gLifeleechAltRnd ? "Big bertha lifeleech mode active!" : "Big bertha lifeleech mode disabled.");
+        gLifeleechRnd = !gLifeleechRnd;
+        viewSetMessage(gLifeleechRnd ? "Big bertha lifeleech mode activated!" : "Big bertha lifeleech mode deactived.");
+        break;
+    case kCheatQskfa:
+        gAlphaPitchfork = !gAlphaPitchfork;
+        viewSetMessage(gAlphaPitchfork ? "Q Studio's pitchfork activated!" : "Q Studio's pitchfork deactived.");
         break;
     default:
         break;
@@ -917,7 +922,7 @@ void CCheatMgr::sub_5BCF4(void)
     packClear(gMe);
     gInfiniteAmmo = 0;
     gFullMap = 0;
-    gLifeleechAltRnd = 0;
+    gLifeleechRnd = 0;
 }
 
 class MessagesLoadSave : public LoadSave

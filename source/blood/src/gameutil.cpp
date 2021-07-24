@@ -832,7 +832,7 @@ unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSec
         return nRes;
 
     // we didn't hit shit, let's raycast and try again
-    const int distClipmove = approxDist(klabs(origX-*x), klabs(origY-*y));
+    const int distClipmove = approxDist(origX-*x, origY-*y);
     vec3_t pos = {origX, origY, origZ};
     hitdata_t hitData;
     hitData.pos = pos;
@@ -849,13 +849,18 @@ unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSec
         if (hitData.sect >= 0)
             *nSector = hitData.sect;
     }
-    const int distRay = approxDist(klabs(origX-hitData.pos.x), klabs(origY-hitData.pos.y));
+    const int distRay = approxDist(origX-hitData.pos.x, origY-hitData.pos.y);
     if ((updSect == -1) || ((distRay < distClipmove) && (hitData.sprite >= 0 || hitData.wall >= 0))) // did we hit something, and was it a sprite/wall, or we're just floating in zero-g and we should update the sector and fake a wall hit
     {
-        *x = hitData.pos.x;
+        *x = hitData.pos.x; // set to raycast position
         *y = hitData.pos.y;
         *z = hitData.pos.z;
-        *nSector = hitData.sect;   
+        *nSector = hitData.sect;
+        if ((distRay - ((wd+8)<<1)) > 0) // if there is enough room to offset from ray's hit surface
+        {
+            *x -= mulscale30(wd+8, Cos(pSprite->ang)); // offset using walldist argument
+            *y -= mulscale30(wd+8, Sin(pSprite->ang));
+        }
         if (hitData.sprite >= 0)
             nRes = (hitData.sprite & 0x3FFF) | 0x8000;
         else
