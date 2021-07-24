@@ -1049,7 +1049,7 @@ void FirePitchfork(int, PLAYER *pPlayer)
         {
             if (WeaponsNotBlood() && (pPlayer->weaponState == 4) && (pPlayer->throwPower == 65536)) // if missile attack ready (maxed out power)
             {
-                playerFireMissile(pPlayer, -50, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
+                playerFireMissile(pPlayer, -50, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireball);
                 sfxPlay3DSound(pPlayer->pSprite, 480, 2, 0);
                 pPlayer->flashEffect = 1;
                 return;
@@ -2036,7 +2036,7 @@ void ChargePitchfork(PLAYER *pPlayer)
 {
     if (pPlayer->weaponState < 3)
         return;
-    pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,180), 65536);
+    pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,210), 65536);
     if ((pPlayer->weaponState == 3) && (pPlayer->throwPower == 65536) && powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup) // if maxed throwing power and quad damage is active
     {
         sfxPlay3DSound(pPlayer->pSprite, 361, 1, 0); // flame sfx
