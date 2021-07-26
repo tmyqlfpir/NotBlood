@@ -6038,7 +6038,7 @@ void actProcessSprites(void)
                     if (pImpact->extra <= 0)
                         continue;
                     XSPRITE* pXImpact = &xsprite[pImpact->extra];
-                    if (/*pXImpact->state == pXImpact->restState ||*/ !TestBitString(v24c, pImpact->sectnum) || !CheckProximity(pImpact, x, y, z, nSector, radius))
+                    if (/*pXImpact->state == pXImpact->restState ||*/ !TestBitString(spriteExp, pImpact->sectnum) || !CheckProximity(pImpact, x, y, z, nSector, radius))
                         continue;
                     
                     trTriggerSprite(pImpact->index, pXImpact, kCmdSpriteImpact);
