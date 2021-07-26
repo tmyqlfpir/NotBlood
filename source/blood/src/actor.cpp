@@ -4708,6 +4708,8 @@ void MoveDude(spritetype *pSprite)
     int tz = (pSprite->z-top)/4;
     int wd = pSprite->clipdist<<2;
     int nSector = pSprite->sectnum;
+    int nAiStateType = (pXSprite->aiState) ? pXSprite->aiState->stateType : -1;
+
     dassert(nSector >= 0 && nSector < kMaxSectors);
     if (xvel[nSprite] || yvel[nSprite])
     {
@@ -4924,6 +4926,7 @@ void MoveDude(spritetype *pSprite)
                 }
                 sfxPlay3DSound(pSprite, 721, -1, 0);
             } else {
+
                 switch (pSprite->type) {
                     case kDudeCultistTommy:
                     case kDudeCultistShotgun:
@@ -4937,6 +4940,11 @@ void MoveDude(spritetype *pSprite)
                         actKillDude(pSprite->index, pSprite, kDamageFall, 1000<<4);
                         break;
                 }
+
+                #ifdef NOONE_EXTENSIONS
+                if (IsDudeSprite(pSprite) && pXSprite->health > 0 && aiInPatrolState(nAiStateType))
+                    aiPatrolState(pSprite, kAiStatePatrolMoveL); // continue patrol when going from water
+                #endif
             }
             break;
         case kMarkerUpWater:
@@ -4954,10 +4962,12 @@ void MoveDude(spritetype *pSprite)
             {
                 #ifdef NOONE_EXTENSIONS
                 // look for palette in data2 of marker. If value <= 0, use default ones.
+                if (gModernMap) {
                 pPlayer->nWaterPal = 0;
                 int nXUpper = sprite[gUpperLink[nSector]].extra;
                 if (nXUpper >= 0)
                     pPlayer->nWaterPal = xsprite[nXUpper].data2;
+                }
                 #endif
 
                 pPlayer->posture = 1;
@@ -4968,6 +4978,7 @@ void MoveDude(spritetype *pSprite)
             }
             else
             {
+
                 switch (pSprite->type) {
                 case kDudeCultistTommy:
                 case kDudeCultistShotgun:
@@ -5026,13 +5037,25 @@ void MoveDude(spritetype *pSprite)
                 case kDudeBurningInnocent:
                     actKillDude(pSprite->index, pSprite, kDamageFall, 1000 << 4);
                     break;
-                #ifdef NOONE_EXTENSIONS
-                case kDudeModernCustom:
-                    evPost(nSprite, 3, 0, kCallbackEnemeyBubble);
-                    if (!canSwim(pSprite)) actKillDude(pSprite->index, pSprite, kDamageFall, 1000 << 4);
-                    break;
-                #endif
                 }
+
+                #ifdef NOONE_EXTENSIONS
+                if (gModernMap) {
+
+                    if (pSprite->type == kDudeModernCustom) {
+                        
+                        evPost(nSprite, 3, 0, kCallbackEnemeyBubble);
+                        if (!canSwim(pSprite))
+                            actKillDude(pSprite->index, pSprite, kDamageFall, 1000 << 4);
+
+                    }
+
+                    // continue patrol when fall into water
+                    if (IsDudeSprite(pSprite) && pXSprite->health > 0 && aiInPatrolState(nAiStateType))
+                        aiPatrolState(pSprite, kAiStatePatrolMoveW);
+
+                }
+                #endif
 
             }
             break;
@@ -6951,8 +6974,12 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
             #ifdef NOONE_EXTENSIONS
             // add impulse for sprites from physics list
             if (gPhysSpritesCount > 0 && pVectorData->impulse) {
-                int nIndex = debrisGetIndex(pSprite->index);
-                if (nIndex != -1 && (xsprite[pSprite->extra].physAttr & kPhysDebrisVector)) {
+                
+                if (xspriRangeIsFine(pSprite->extra)) {
+                    
+                    XSPRITE* pXSprite = &xsprite[pSprite->extra];
+                    if (pXSprite->physAttr & kPhysDebrisVector) {
+                        
                     int impulse = divscale(pVectorData->impulse, ClipLow(gSpriteMass[pSprite->extra].mass, 10), 6);
                     xvel[nSprite] += mulscale16(a4, impulse) * boost;
                     yvel[nSprite] += mulscale16(a5, impulse) * boost;
@@ -6963,10 +6990,18 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                         actBurnSprite(actSpriteIdToOwnerId(nShooter), &xsprite[nXSprite], pVectorData->burnTime);
                     }
 
-                    //if (pSprite->type >= kThingBase && pSprite->type < kThingMax)
-                        //changespritestat(pSprite->index, kStatThing);
-                        //actPostSprite(pSprite->index, kStatThing); // if it was a thing, return it's statnum back
+                        if (pSprite->type >= kThingBase && pSprite->type < kThingMax) {
+                            pSprite->statnum = kStatThing; // temporary change statnum property
+                            actDamageSprite(nShooter, pSprite, pVectorData->dmgType, pVectorData->dmg << 4);
+                            pSprite->statnum = kStatDecoration; // return statnum property back
                 }
+
+            }
+
+
+                }
+
+
             }
             #endif
             break;
@@ -6974,10 +7009,32 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
         }
     }
     dassert(nSurf < kSurfMax);
+#ifdef NOONE_EXTENSIONS
+    
+    // let the patrol enemies hear surface hit sounds!
+    
+    if (pVectorData->surfHit[nSurf].fx2 >= 0) {
+        
+        spritetype* pFX2 = gFX.fxSpawn(pVectorData->surfHit[nSurf].fx2, nSector, x, y, z, 0);
+        if (pFX2 && gModernMap)
+            actPropagateSpriteOwner(pFX2, pShooter);
+    }
+    
+    if (pVectorData->surfHit[nSurf].fx3 >= 0) {
+        
+        spritetype* pFX3 = gFX.fxSpawn(pVectorData->surfHit[nSurf].fx3, nSector, x, y, z, 0);
+        if (pFX3 && gModernMap)
+            actPropagateSpriteOwner(pFX3, pShooter);
+
+    }
+
+#else
     if (pVectorData->surfHit[nSurf].fx2 >= 0)
         gFX.fxSpawn(pVectorData->surfHit[nSurf].fx2, nSector, x, y, z, 0);
     if (pVectorData->surfHit[nSurf].fx3 >= 0)
         gFX.fxSpawn(pVectorData->surfHit[nSurf].fx3, nSector, x, y, z, 0);
+#endif
+
     if (pVectorData->surfHit[nSurf].fxSnd >= 0)
         sfxPlay3DSound(x, y, z, pVectorData->surfHit[nSurf].fxSnd, nSector);
 }
