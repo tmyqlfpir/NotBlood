@@ -61,6 +61,7 @@ struct GAMEOPTIONS {
     bool bProjectileBehavior;
     char nRandomizerMode;
     char szRandomizerSeed[9];
+    int nRandomizerCheat;
     bool bFriendlyFire;
     bool bKeepKeysOnRespawn;
     char szUserMap[BMAX_PATH];

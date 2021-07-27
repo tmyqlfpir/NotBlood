@@ -3534,10 +3534,19 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
     PLAYER *pSourcePlayer = NULL;
     if (IsPlayerSprite(&sprite[nSource])) pSourcePlayer = &gPlayer[sprite[nSource].type - kDudePlayer1];
     if (!gGameOptions.bFriendlyFire && IsTargetTeammate(pSourcePlayer, pSprite)) return 0;
-    if (gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus())
+    if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode
     {
-        if (IsPlayerSprite(&sprite[nSource]) && (&sprite[nSource] != pSprite) && powerupCheck(pSourcePlayer, kPwUpTwoGuns)) // if quad damage is active
-            damage *= 2;
+        if ((gGameOptions.nRandomizerCheat == 12) && IsPlayerSprite(pSprite) && !actSpriteIdIsPlayer(nSource)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
+        {
+            const int type = sprite[nSource].type;
+            if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))
+                gPlayer[pSprite->type - kDudePlayer1].pwUpTime[kPwUpDeliriumShroom] = gPowerUpInfo[kPwUpDeliriumShroom].bonusTime >> 1;
+        }
+        if (gGameOptions.bQuadDamagePowerup)
+        {
+            if (IsPlayerSprite(&sprite[nSource]) && (&sprite[nSource] != pSprite) && powerupCheck(pSourcePlayer, kPwUpTwoGuns)) // if quad damage is active
+                damage *= 2;
+        }
     }
     
     switch (pSprite->statnum) {
@@ -3981,7 +3990,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
             if (hitCode == 3 && pSpriteHit)
             {
                 spritetype *pObject = &sprite[gHitInfo.hitsprite];
-                if (WeaponsNotBlood() && IsPlayerSprite(pObject) && !VanillaMode() && !DemoRecordStatus()) // if in demo/vanilla mode, and player was shot, reflect back tesla projectile
+                if (WeaponsNotBlood() && IsPlayerSprite(pObject) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and player was shot, reflect back tesla projectile
                 {
                     if (powerupCheck(&gPlayer[pObject->type - kDudePlayer1], kPwUpReflectShots))
                     {

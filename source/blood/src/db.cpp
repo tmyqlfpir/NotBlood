@@ -677,32 +677,59 @@ int dbRandomizerRNG(void)
 
 void dbRandomizerModeInit(void)
 {
-    static bool genseed = false;
+    const char randomizerCheats[][sizeof(gzRandomizerSeed)] =
+    {
+        "AAAAAAAA", // ghosts only
+        "BUTCHERS", // fat zombos
+        "SOULSEEK", // hands only
+        "EPISODE6", // cultists only
+        "GARGOYLE", // gargoyles
+        "FLAMEDOG", // puppers only
+        "CAPYBARA", // rats only
+        "HURTSCAN", // shotgun/tommy gun because fuck you
+        "HUGEFISH", // gillbeasts only
+        "SHOCKING", // tesla cultists only
+        "CRUONITA", // bosses only
+        "BILLYRAY", // shotgun cultists only
+        "WEED420!", // cultists only but they're green and make you dizzy on damage
+    };
 
+    gGameOptions.nRandomizerCheat = -1;
     if (gGameOptions.szRandomizerSeed[0] == '\0') // if seed is empty, generate a new one
     {
         if (gGameOptions.nGameType > 0) // if in multiplayer, use a failsafe seed
-        {
-            curRandomizerSeed = 0x12345678; // use a failsafe seed
-            genseed = false;
-        }
+            curRandomizerSeed = 0xCA1EB666;
         else // in singleplayer
-        {
-            if (!genseed) // only call this once
-                curRandomizerSeed = wrand();
             curRandomizerSeed = dbRandomizerRNG();
-            genseed = true;
-        }
+        return;
     }
-    else // use seed
+
+    curRandomizerSeed = 0; // reset seed
+    for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++) // shitty seed system, but if it works for the N64's CIC then who am I to judge
     {
-        curRandomizerSeed = 0;
-        for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++)
+        if (gGameOptions.szRandomizerSeed[i] == '\0')
+            break;
+        curRandomizerSeed += ~(toupper(gGameOptions.szRandomizerSeed[i]));
+    }
+    for (int curCheat = 0; curCheat < (int)ARRAY_SSIZE(randomizerCheats); curCheat++) // compare seed against any cheat seed entries
+    {
+        for (int i = 0; i < (int)sizeof(gzRandomizerSeed); i++)
         {
-            if (gGameOptions.szRandomizerSeed[i] == '\0')
+            const char charSeed = toupper(gGameOptions.szRandomizerSeed[i]);
+            const char charSeedCheat = toupper(randomizerCheats[curCheat][i]);
+            if (charSeed != charSeedCheat) // if encountered a non-matching character, stop and check next entry
+            {
+                gGameOptions.nRandomizerCheat = -1;
                 break;
-            curRandomizerSeed += ~(toupper(gGameOptions.szRandomizerSeed[i]));
+            }
+            else if ((charSeedCheat == '\0') || ((i+1) == (int)sizeof(gzRandomizerSeed))) // if matched cheat seed completely and reached end of string
+            {
+                gGameOptions.nRandomizerCheat = curCheat; // set to seed cheat index
+                break;
+            }
         }
+        if (gGameOptions.nRandomizerCheat != -1) // if found a match, stop searching
+            break;
     }
 }
 
@@ -715,6 +742,74 @@ void dbRandomizerMode(spritetype *pSprite)
         const int rng = dbRandomizerRNG() % ARRAY_SSIZE(pickupsrngtype);
         pSprite->type = pickupsrngtype[rng];
         pSprite->picnum = pickupsrngpicnum[rng];
+    }
+
+    if (gGameOptions.nRandomizerCheat != -1) // if seed cheat is active, always replace enemy
+    {
+        const int type = pSprite->type;
+        if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother)) // filter problematic enemy types
+        {
+            switch (gGameOptions.nRandomizerCheat) // replace enemy according to cheat type
+            {
+            case  0: // "AAAAAAAA" - ghosts only
+                pSprite->type = kDudePhantasm;
+                return;
+            case  1: // "BUTCHERS" - fat zombos
+                pSprite->type = kDudeZombieButcher;
+                return;
+            case  2: // "SOULSEEK" - hands only
+                pSprite->type = kDudeHand;
+                return;
+            case  3: // "EPISODE6" - cultists only
+            {
+                const int enemiesrng[] = {kDudeCultistTommy, kDudeCultistShotgun, kDudeCultistTommyProne, kDudeCultistShotgunProne, kDudeCultistTesla, kDudeCultistTNT};
+                pSprite->type = enemiesrng[dbRandomizerRNG() % ARRAY_SSIZE(enemiesrng)];
+                return;
+            }
+            case  4: // "GARGOYLE" - gargoyles
+                pSprite->type = dbRandomizerRNG() % 20 ? kDudeGargoyleFlesh : kDudeGargoyleStone;
+                return;
+            case  5: // "FLAMEDOG" - puppers only
+                pSprite->type = dbRandomizerRNG() % 20 ? kDudeHellHound : kDudeCerberusOneHead;
+                return;
+            case  6: // "CAPYBARA" - rats only
+                pSprite->type = kDudeRat;
+                return;
+            case  7: // "HURTSCAN" - shotgun/tommy gun because fuck you
+            {
+                const int enemiesrng[] = {kDudeCultistTommy, kDudeCultistShotgun, kDudeCultistTommyProne, kDudeCultistShotgunProne};
+                pSprite->type = enemiesrng[dbRandomizerRNG() % ARRAY_SSIZE(enemiesrng)];
+                return;
+            }
+            case  8: // "HUGEFISH" - gillbeasts only
+                pSprite->type = kDudeGillBeast;
+                return;
+            case  9: // "SHOCKING" - tesla cultists only
+                pSprite->type = kDudeCultistTesla;
+                return;
+            case 10: // "CRUONITA" - bosses only
+            {
+                const int enemiesrng[] = {kDudeCultistBeast, kDudeTchernobog, kDudeCerberusTwoHead, kDudeSpiderMother, kDudeGargoyleStone};
+                pSprite->type = enemiesrng[dbRandomizerRNG() % ARRAY_SSIZE(enemiesrng)];
+                return;
+            }
+            case 11: // "BILLYRAY" - shotgun cultists only
+            {
+                const int enemiesrng[] = {kDudeCultistShotgun, kDudeCultistShotgunProne};
+                pSprite->type = enemiesrng[dbRandomizerRNG() % ARRAY_SSIZE(enemiesrng)];
+                return;
+            }
+            case 12: // "WEED420!" - cultists only but they're green and make you dizzy on damage
+            {
+                const int enemiesrng[] = {kDudeCultistShotgun, kDudeCultistShotgunProne, kDudeCultistTNT};
+                pSprite->type = enemiesrng[dbRandomizerRNG() % ARRAY_SSIZE(enemiesrng)];
+                pSprite->pal = 4; // DUDE WEED XDDD 420 bro
+                return;
+            }
+            default: // unknown cheat id, don't do anything
+                break;
+            }
+        }
     }
 
     if (gGameOptions.nDifficulty <= 2) // don't always replace enemies/pickups
@@ -1283,7 +1378,9 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
     numwalls = mapHeader.at21;
     dbInit();
     if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus())
+    {
         dbRandomizerModeInit(); // seed enemy/pickup randomizer
+    }
     if (byte_1A76C8)
     {
         IOBuffer1.Read(&byte_19AE44, 128);
@@ -1536,9 +1633,13 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         pSprite->extra = B_LITTLE16(pSprite->extra);
 #endif
         if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus()) // randomize enemy/pickups
+        {
             dbRandomizerMode(pSprite);
+        }
         if ((pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
+        {
             pSprite->picnum = 30703;
+        }
         InsertSpriteSect(i, sprite[i].sectnum);
         InsertSpriteStat(i, sprite[i].statnum);
         Numsprites++;

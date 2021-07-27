@@ -610,6 +610,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bProjectileBehavior = gProjectileBehavior;
         gGameOptions.nRandomizerMode = gRandomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
+        gGameOptions.nRandomizerCheat = -1;
         ///////
     }
     else if (gGameOptions.nGameType > 0 && !(gGameOptions.uGameFlags&1))
@@ -637,6 +638,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
+        gGameOptions.nRandomizerCheat = -1;
         ///////
 
         gBlueFlagDropped = false;
@@ -815,6 +817,7 @@ void StartNetworkLevel(void)
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
+        gGameOptions.nRandomizerCheat = -1;
         ///////
 
         gBlueFlagDropped = false;

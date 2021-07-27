@@ -474,7 +474,7 @@ const char *pzAutoAimStrings[] = {
 
 const char *pzWeaponInterpolateStrings[] = {
     "OFF",
-    "ONLY MOVEMENT",
+    "ONLY SWAYING",
     "ALL ANIMATION"
 };
 

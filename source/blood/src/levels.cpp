@@ -75,6 +75,7 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bProjectileBehavior;
     0,     // char nRandomizerMode;
     "",    // char szRandomizerSeed[9];
+    -1,    // int nRandomizerCheat;
     0,     // bool bFriendlyFire;
     1,     // bool bKeepKeysOnRespawn;
     "",    // char szUserMap[BMAX_PATH];

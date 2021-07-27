@@ -394,7 +394,7 @@ void CONFIG_SetDefaults(void)
     gDetail = 4;
     gAutoRun = 1;
     gViewInterpolate = 1;
-    gWeaponInterpolate = 1;
+    gWeaponInterpolate = 0;
     gViewHBobbing = 1;
     gViewVBobbing = 1;
     gFollowMap = 1;
