@@ -248,7 +248,7 @@ void WeaponDraw(PLAYER *pPlayer, int a2, int x, int y, int a5)
         v4 = pQAV->at10 - pPlayer->weaponTimer;
     pQAV->x = x;
     pQAV->y = y;
-    int flags = 2 | kQavOrientationQ16;
+    int flags = 2 | kQavOrientationQ16 | RS_LERP;
     int nInv = powerupCheck(pPlayer, kPwUpShadowCloak);
     if (nInv >= 120 * 8 || (nInv != 0 && ((int)totalclock & 32)))
     {
@@ -264,7 +264,7 @@ void WeaponDraw(PLAYER *pPlayer, int a2, int x, int y, int a5)
             a5 = kMediumGoo;
         }
     }
-    pQAV->Draw(v4, flags, a2, a5);
+    pQAV->Draw(v4, flags, a2, a5, W_WEAPON_START);
 }
 
 void WeaponPlay(PLAYER *pPlayer)

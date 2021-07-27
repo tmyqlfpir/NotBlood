@@ -3325,6 +3325,11 @@ void viewDrawScreen(void)
         CalcInterpolations();
     }
 
+    if (!gPaused && (!CGameMenuMgr::m_bActive || gGameOptions.nGameType != 0))
+        rotatespritesmoothratio = gInterpolate;
+    else
+        rotatespritesmoothratio = 65536;
+
     if (gViewMode == 3 || gViewMode == 4 || gOverlayMap)
     {
         DoSectorLighting();
