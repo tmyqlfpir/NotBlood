@@ -61,6 +61,7 @@ extern int32_t gAutoAim;
 extern int32_t gWeaponSwitch;
 extern int32_t gAutoRun;
 extern int32_t gViewInterpolate;
+extern int32_t gWeaponInterpolate;
 extern int32_t gViewHBobbing;
 extern int32_t gViewVBobbing;
 extern int32_t gFollowMap;

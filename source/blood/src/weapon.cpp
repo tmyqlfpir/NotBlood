@@ -249,6 +249,11 @@ void WeaponDraw(PLAYER *pPlayer, int a2, int x, int y, int a5)
     pQAV->x = x;
     pQAV->y = y;
     int flags = 2 | kQavOrientationQ16 | RS_LERP;
+    if (gWeaponInterpolate < 2) // if interpolate weapon animation is off, remove interpolation flag
+    {
+        flags &= ~RS_LERP;
+    }
+
     int nInv = powerupCheck(pPlayer, kPwUpShadowCloak);
     if (nInv >= 120 * 8 || (nInv != 0 && ((int)totalclock & 32)))
     {

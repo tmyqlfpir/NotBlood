@@ -81,6 +81,7 @@ int32_t gAutoAim;
 int32_t gWeaponSwitch;
 int32_t gAutoRun;
 int32_t gViewInterpolate;
+int32_t gWeaponInterpolate;
 int32_t gViewHBobbing;
 int32_t gViewVBobbing;
 int32_t gFollowMap;
@@ -393,6 +394,7 @@ void CONFIG_SetDefaults(void)
     gDetail = 4;
     gAutoRun = 1;
     gViewInterpolate = 1;
+    gWeaponInterpolate = 1;
     gViewHBobbing = 1;
     gViewVBobbing = 1;
     gFollowMap = 1;

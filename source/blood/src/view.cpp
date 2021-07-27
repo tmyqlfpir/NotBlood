@@ -3735,6 +3735,15 @@ RORHACK:
             {
                 rotatesprite(160<<16, defaultHoriz<<16, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
             }
+            if (gWeaponInterpolate == 0) // if interpolate weapon is off, crunchify the weapon positions
+            {
+                v4c >>= 8;
+                v4c <<= 8;
+                v48 >>= 8;
+                v48 <<= 8;
+                zDelta >>= 7;
+                zDelta <<= 7;
+            }
             cX = (v4c<<8)+(160<<16);
             cY = (v48<<8)+(220<<16)+(zDelta<<9);
             int nShade = sector[nSectnum].floorshade; int nPalette = 0;
