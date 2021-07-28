@@ -30,6 +30,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "scriplib.h"
 #include "renderlayer.h"
 #include "function.h"
+#include "music.h"
 #include "blood.h"
 #include "config.h"
 #include "gamedefs.h"
@@ -338,7 +339,8 @@ void CONFIG_SetDefaults(void)
     //ud.config.ShowWeapons     = 0;
     SoundToggle     = 1;
     CDAudioToggle = 0;
-    MusicDevice = ASS_AutoDetect;
+    MusicDevice = ASS_SF2;
+    Bstrcpy(SF2_BankFile, "notblood.sf2");
     //ud.config.VoiceToggle     = 5;  // bitfield, 1 = local, 2 = dummy, 4 = other players in DM
     useprecache     = 1;
     configversion          = 0;
