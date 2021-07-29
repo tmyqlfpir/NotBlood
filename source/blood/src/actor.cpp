@@ -3536,7 +3536,7 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
     if (!gGameOptions.bFriendlyFire && IsTargetTeammate(pSourcePlayer, pSprite)) return 0;
     if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode
     {
-        if ((gGameOptions.nRandomizerCheat == 12) && IsPlayerSprite(pSprite) && !actSpriteIdIsPlayer(nSource)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
+        if ((gGameOptions.nRandomizerCheat == 12) && IsPlayerSprite(pSprite) && !actSpriteIdIsPlayer(nSource) && (damageType != kDamageExplode)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
         {
             const int type = sprite[nSource].type;
             if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))

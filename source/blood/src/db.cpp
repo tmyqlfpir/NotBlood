@@ -704,13 +704,6 @@ void dbRandomizerModeInit(void)
         return;
     }
 
-    curRandomizerSeed = 0; // reset seed
-    for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++) // shitty seed system, but if it works for the N64's CIC then who am I to judge
-    {
-        if (gGameOptions.szRandomizerSeed[i] == '\0')
-            break;
-        curRandomizerSeed += ~(toupper(gGameOptions.szRandomizerSeed[i]));
-    }
     for (int curCheat = 0; curCheat < (int)ARRAY_SSIZE(randomizerCheats); curCheat++) // compare seed against any cheat seed entries
     {
         for (int i = 0; i < (int)sizeof(gzRandomizerSeed); i++)
@@ -731,10 +724,26 @@ void dbRandomizerModeInit(void)
         if (gGameOptions.nRandomizerCheat != -1) // if found a match, stop searching
             break;
     }
+
+    if ((gGameOptions.nRandomizerCheat != -1) && (gGameOptions.nGameType == 0)) // if seed cheat is active and in singleplayer
+        curRandomizerSeed = dbRandomizerRNG(curRandomizerSeed); // always re-roll random seed when cheat seed mode is active
+    else
+        curRandomizerSeed = 0; // reset seed
+    for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++) // shitty seed system, but if it works for the N64's CIC then who am I to judge
+    {
+        if (gGameOptions.szRandomizerSeed[i] == '\0')
+            break;
+        curRandomizerSeed += ~(toupper(gGameOptions.szRandomizerSeed[i]));
+    }
 }
 
 void dbRandomizerMode(spritetype *pSprite)
 {
+    if (pSprite == NULL) // invalid sprite, don't bother processing
+        return;
+    if ((pSprite->index < 0) || (pSprite->index >= kMaxSprites))
+        return;
+
     if ((gGameOptions.nRandomizerMode >= 2) && (pSprite->type == kItemBeastVision)) // always replace beast vision if pickups or enemies+pickups mode
     {
         const int pickupsrngtype[] = {kItemArmorBasic, kItemArmorBody, kItemArmorFire, kItemWeaponFlarePistol, kItemWeaponSawedoff, kItemWeaponTommygun, kItemAmmoTNTBox, kItemAmmoSawedoffBox, kItemAmmoTommygunDrum};

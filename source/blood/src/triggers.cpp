@@ -494,6 +494,9 @@ void OperateSprite(int nSprite, XSPRITE *pXSprite, EVENT event)
         if (gGameOptions.nMonsterSettings && pXSprite->data1 >= kDudeBase && pXSprite->data1 < kDudeMax) {
             spritetype* pSpawn = actSpawnDude(pSprite, pXSprite->data1, -1, 0);
             if (pSpawn) {
+                if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus()) { // randomize spawned enemy
+                    dbRandomizerMode(pSpawn);
+                }
                 XSPRITE *pXSpawn = &xsprite[pSpawn->extra];
                 gKillMgr.sub_263E0(1);
                 switch (pXSprite->data1) {
