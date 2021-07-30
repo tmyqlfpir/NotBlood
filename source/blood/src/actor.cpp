@@ -4502,8 +4502,8 @@ int MoveThing(spritetype *pSprite)
         if ((gSpriteHit[nXSprite].hit&0xc000) == 0x8000) {
             int nHitWall = gSpriteHit[nXSprite].hit&0x3fff;
             bool bounce = true;
-            if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus() && (pSprite->owner != -1)) { // if not in demo/vanilla mode, and sprite has a owner
-                if ((wall[nHitWall].nextsector != -1) && actSpriteOwnerIsPlayer(pSprite)) { // if sprite didn't hit a wall, and sprite is player owned/spawned
+            if (WeaponsNotBlood() && (wall[nHitWall].nextsector != -1) && !VanillaMode() && !DemoRecordStatus()) { // if not in demo/vanilla mode, and sprite didn't hit a solid wall
+                if (actSpriteOwnerIsPlayer(pSprite) || (pSprite->type == kThingZombieHead) || (pSprite->type == kThingKickablePail)) { // if sprite is owned by a player, or is a zombie head/metal pail
                     switch (pSprite->type) {
                         case kThingArmedTNTBundle: // filter out these sprites
                         case kThingArmedProxBomb:
@@ -4511,6 +4511,8 @@ int MoveThing(spritetype *pSprite)
                         case kThingArmedSpray:
                         case kThingNapalmBall:
                         case kThingDroppedLifeLeech:
+                        case kThingZombieHead:
+                        case kThingKickablePail:
                         {
                             int32_t fz, cz;
                             getzsofslope(wall[nHitWall].nextsector, pSprite->x, pSprite->y, &cz, &fz);
