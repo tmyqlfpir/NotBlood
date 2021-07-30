@@ -692,6 +692,7 @@ void dbRandomizerModeInit(void)
         "CRUONITA", // boss types only
         "BILLYRAY", // shotgun cultists only
         "WEED420!", // cultists only but they're green (and make you dizzy on damage)
+        "BRAAAINS", // zombies only
     };
 
     gGameOptions.nRandomizerCheat = -1;
@@ -762,62 +763,70 @@ void dbRandomizerMode(spritetype *pSprite)
             {
             case  0: // "AAAAAAAA" - phantoms only
                 pSprite->type = kDudePhantasm;
-                return;
+                break;
             case  1: // "BUTCHERS" - butchers only
                 pSprite->type = kDudeZombieButcher;
-                return;
+                break;
             case  2: // "SOULSEEK" - hands only
                 pSprite->type = kDudeHand;
-                return;
+                break;
             case  3: // "EPISODE6" - cultists only
             {
                 const int enemiesrng[] = {kDudeCultistTommy, kDudeCultistShotgun, kDudeCultistTommyProne, kDudeCultistShotgunProne, kDudeCultistTesla, kDudeCultistTNT};
                 pSprite->type = enemiesrng[dbRandomizerRNG(ARRAY_SSIZE(enemiesrng))];
-                return;
+                break;
             }
             case  4: // "GARGOYLE" - gargoyles only
                 pSprite->type = dbRandomizerRNG(20) ? kDudeGargoyleFlesh : kDudeGargoyleStone;
-                return;
+                break;
             case  5: // "FLAMEDOG" - hell hounds only
                 pSprite->type = dbRandomizerRNG(20) ? kDudeHellHound : kDudeCerberusOneHead;
-                return;
+                break;
             case  6: // "CAPYBARA" - rats only
                 pSprite->type = kDudeRat;
-                return;
+                break;
             case  7: // "HURTSCAN" - shotgun/tommy gun cultists only
             {
                 const int enemiesrng[] = {kDudeCultistTommy, kDudeCultistShotgun, kDudeCultistTommyProne, kDudeCultistShotgunProne};
                 pSprite->type = enemiesrng[dbRandomizerRNG(ARRAY_SSIZE(enemiesrng))];
-                return;
+                break;
             }
             case  8: // "HUGEFISH" - gill beasts only
                 pSprite->type = kDudeGillBeast;
-                return;
+                break;
             case  9: // "SHOCKING" - tesla cultists only
                 pSprite->type = kDudeCultistTesla;
-                return;
+                break;
             case 10: // "CRUONITA" - boss types only
             {
                 const int enemiesrng[] = {kDudeCultistBeast, kDudeTchernobog, kDudeCerberusTwoHead, kDudeSpiderMother, kDudeGargoyleStone};
                 pSprite->type = enemiesrng[dbRandomizerRNG(ARRAY_SSIZE(enemiesrng))];
-                return;
+                break;
             }
             case 11: // "BILLYRAY" - shotgun cultists only
             {
                 const int enemiesrng[] = {kDudeCultistShotgun, kDudeCultistShotgunProne};
                 pSprite->type = enemiesrng[dbRandomizerRNG(ARRAY_SSIZE(enemiesrng))];
-                return;
+                break;
             }
             case 12: // "WEED420!" - cultists only but they're green (and make you dizzy on damage)
             {
                 const int enemiesrng[] = {kDudeCultistShotgun, kDudeCultistShotgunProne, kDudeCultistTNT};
                 pSprite->type = enemiesrng[dbRandomizerRNG(ARRAY_SSIZE(enemiesrng))];
                 pSprite->pal = 4; // DUDE WEED XDDD 420 bro
-                return;
-            }
-            default: // unknown cheat id, don't do anything
                 break;
             }
+            case 13: // "BRAAAINS" - zombies only
+            {
+                const int enemiesrng[] = {kDudeZombieButcher, kDudeZombieAxeNormal, kDudeZombieAxeBuried, kDudeZombieAxeLaying};
+                pSprite->type = enemiesrng[dbRandomizerRNG(ARRAY_SSIZE(enemiesrng))];
+                break;
+            }
+            default: // unknown cheat id, don't do anything
+                initprintf("Error invalid cheat seed %s (%d)", gGameOptions.szRandomizerSeed, gGameOptions.nRandomizerCheat);
+                break;
+            }
+            return;
         }
     }
 

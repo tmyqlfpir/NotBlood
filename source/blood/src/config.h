@@ -86,6 +86,7 @@ extern bool gNoClip;
 extern bool gInfiniteAmmo;
 extern bool gLifeleechRnd;
 extern bool gAlphaPitchfork;
+extern bool gEnemyZoomies;
 extern bool gFullMap;
 extern hashtable_t h_gamefuncs;
 extern int32_t gUpscaleFactor;

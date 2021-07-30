@@ -107,6 +107,7 @@ bool gNoClip;
 bool gInfiniteAmmo;
 bool gLifeleechRnd;
 bool gAlphaPitchfork;
+bool gEnemyZoomies;
 bool gFullMap;
 int32_t gUpscaleFactor;
 int32_t gLevelStats;

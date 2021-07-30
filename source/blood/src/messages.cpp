@@ -689,6 +689,7 @@ CCheatMgr::CHEATINFO CCheatMgr::s_CheatInfo[] = {
     {"TQJFMCFSH", kCheatSpielberg, 1 }, // SPIELBERG (Disables all cheats. If number values corresponding to a level and episode number are entered after the cheat word (i.e. "spielberg 1 3" for Phantom Express), you will be spawned to said level and the game will begin recording a demo from your actions.)
     {"CJH!CFSUIB", kCheatBigBertha, 0 }, // BIG BERTHA (Enable/Disable random projectiles for lifeleech's sentry mode)
     {"RTLGB", kCheatQskfa, 0 }, // QSKFA (Enable/Disable alpha pitchfork)
+    {"[PPNJFT", kCheatZoomies, 0 }, // ZOOMIES (Enable/Disable enemy speed increase)
 };
 
 bool CCheatMgr::m_bPlayerCheated = false;
@@ -700,7 +701,7 @@ bool CCheatMgr::Check(char *pzString)
     Bstrupr(buffer);
     for (size_t i = 0; i < strlen(pzString); i++)
         buffer[i]++;
-    for (int i = 0; i < 38; i++)
+    for (int i = 0; i < 39; i++)
     {
         int nCheatLen = strlen(s_CheatInfo[i].pzString);
         if (s_CheatInfo[i].flags & 1)
@@ -908,6 +909,10 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         gAlphaPitchfork = !gAlphaPitchfork;
         viewSetMessage(gAlphaPitchfork ? "Q Studio's pitchfork activated!" : "Q Studio's pitchfork deactived.");
         break;
+    case kCheatZoomies:
+        gEnemyZoomies = !gEnemyZoomies;
+        viewSetMessage(gEnemyZoomies ? "Fast boys active!" : "Normal enemy speed, yawn.");
+        break;
     default:
         break;
     }
@@ -923,6 +928,8 @@ void CCheatMgr::sub_5BCF4(void)
     gInfiniteAmmo = 0;
     gFullMap = 0;
     gLifeleechRnd = 0;
+    gAlphaPitchfork = 0;
+    gEnemyZoomies = 0;
 }
 
 class MessagesLoadSave : public LoadSave

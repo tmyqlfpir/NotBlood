@@ -4722,10 +4722,12 @@ void MoveDude(spritetype *pSprite)
     dassert(nSector >= 0 && nSector < kMaxSectors);
     if (xvel[nSprite] || yvel[nSprite])
     {
+        int vx = xvel[nSprite]>>12;
+        int vy = yvel[nSprite]>>12;
         if (pPlayer && gNoClip)
         {
-            pSprite->x += xvel[nSprite]>>12;
-            pSprite->y += yvel[nSprite]>>12;
+            pSprite->x += vx;
+            pSprite->y += vy;
             if (!FindSector(pSprite->x, pSprite->y, &nSector))
                 nSector = pSprite->sectnum;
         }
@@ -4733,7 +4735,12 @@ void MoveDude(spritetype *pSprite)
         {
             short bakCstat = pSprite->cstat;
             pSprite->cstat &= ~257;
-            gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, tz, bz, CLIPMASK0);
+            if (gEnemyZoomies && !pPlayer && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and enemy zoomies cheat is active
+            {
+                vx <<= 1; // double enemy velocity
+                vy <<= 1;
+            }
+            gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, vx, vy, wd, tz, bz, CLIPMASK0);
             if (nSector == -1)
             {
                 nSector = pSprite->sectnum;
