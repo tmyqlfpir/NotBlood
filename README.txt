@@ -19,7 +19,8 @@ New features include:
 
 ### New cheats (press t in-game to type codes)
 * BIG BERTHA - Toggle randomized lifeleech projectiles (works for alt fire mode)
-* QSKFA - Toggle blood alpha alt fire missile
+* QSKFA - Toggle blood alpha alt fire missile for pitchfork
+* ZOOMIES - Toggle fast enemies
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only
@@ -35,6 +36,7 @@ New features include:
 * CRUONITA - Boss types only
 * BILLYRAY - Shotgun cultists only
 * WEED420! - Cultists only but they're green
+* BRAAAINS - Zombies only
 
 ### Installing
 1. Extract NotBlood to a new directory
