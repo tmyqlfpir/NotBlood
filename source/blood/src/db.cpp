@@ -817,11 +817,8 @@ void dbRandomizerMode(spritetype *pSprite)
                 break;
             }
             case 13: // "BRAAAINS" - zombies only
-            {
-                const int enemiesrng[] = {kDudeZombieButcher, kDudeZombieAxeNormal, kDudeZombieAxeBuried, kDudeZombieAxeLaying};
-                pSprite->type = enemiesrng[dbRandomizerRNG(ARRAY_SSIZE(enemiesrng))];
+                pSprite->type = kDudeZombieAxeNormal;
                 break;
-            }
             default: // unknown cheat id, don't do anything
                 initprintf("Error invalid cheat seed %s (%d)", gGameOptions.szRandomizerSeed, gGameOptions.nRandomizerCheat);
                 break;
