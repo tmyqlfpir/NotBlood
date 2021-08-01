@@ -813,6 +813,8 @@ unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSec
     // while this function may look as hideous as any build engine internals, it's been carefully setup like a stack of cards
     // do not touch unless you know what you're doing, or are severely drunk
     // good levels to test with, the train doors on E1M2 while standing on the rotating platform, and the first breakable cave wall of CPE1M1
+    if ((xv == 0) && (yv == 0)) // not moving, don't bother continuing
+        return 0;
     dassert(pSprite != NULL);
     int origX = *x;
     int origY = *y;
@@ -836,12 +838,8 @@ unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSec
     vec3_t pos = {origX, origY, origZ};
     hitdata_t hitData;
     hitData.pos = pos;
-    hitscangoal.x = hitscangoal.y = 0x1ffffff;
-    if (distClipmove)
-    {
-        hitscangoal.x = pSprite->x+mulscale30(distClipmove<<4, Cos(pSprite->ang));
-        hitscangoal.y = pSprite->y+mulscale30(distClipmove<<4, Sin(pSprite->ang));
-    }
+    hitscangoal.x = *x;
+    hitscangoal.y = *y;
     hitscan(&pos, origSect, Cos(pSprite->ang)>>16, Sin(pSprite->ang)>>16, 0, &hitData, nMask);
     if (hitData.sprite >= kMaxSprites || hitData.wall >= kMaxWalls || hitData.sect >= kMaxSectors)
     {

@@ -4440,7 +4440,7 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
         break;
     case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
     case kMissileFlareAlt:
-        smallwd = min(walldist, 8);
+        smallwd = min(walldist, 16);
         break;
     case kThingArmedTNTBundle:
     case kThingArmedProxBomb:
