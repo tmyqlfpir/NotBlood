@@ -255,6 +255,7 @@ void actAirDrag(spritetype *pSprite, int a2);
 int MoveThing(spritetype *pSprite);
 void MoveDude(spritetype *pSprite);
 int MoveMissile(spritetype *pSprite);
+void MoveMillileBullet(spritetype *pSprite);
 void actExplodeSprite(spritetype *pSprite);
 void actActivateGibObject(spritetype *pSprite, XSPRITE *pXSprite);
 bool IsUnderWater(spritetype *pSprite);

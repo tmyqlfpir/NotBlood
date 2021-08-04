@@ -608,6 +608,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;
         gGameOptions.bProjectileBehavior = gProjectileBehavior;
+        gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
         gGameOptions.nRandomizerMode = gRandomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         gGameOptions.nRandomizerCheat = -1;
@@ -636,6 +637,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
+        gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         gGameOptions.nRandomizerCheat = -1;
@@ -815,6 +817,7 @@ void StartNetworkLevel(void)
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
+        gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         gGameOptions.nRandomizerCheat = -1;

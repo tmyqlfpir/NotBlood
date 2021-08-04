@@ -361,7 +361,9 @@ enum {
     kMissileLifeLeechRegular = 315,
     kMissileLifeLeechAltNormal = 316,
     kMissileLifeLeechAltSmall = 317,
-    kMissileMax = 318,
+    kMissileShell = 318,
+    kMissileBullet = 319,
+    kMissileMax = 320,
 
     // things
     kThingBase = 400,

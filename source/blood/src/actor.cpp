@@ -1684,6 +1684,26 @@ MissileType missileInfo[] = {
         32,
         (char)-128,
         16,
+    },
+    // Shotgun shell projectile
+    {
+        30698, // use bullet sprite from TILES099.ART
+        (625)<<12,
+        0,
+        32,
+        32,
+        (char)-128,
+        8,
+    },
+    // Tommygun bullet projectile
+    {
+        30698, // use bullet sprite from TILES099.ART
+        (625)<<12,
+        0,
+        32,
+        32,
+        (char)-128,
+        8,
     }
 };
 
@@ -5342,7 +5362,7 @@ int MoveMissile(spritetype *pSprite)
         if(NotBloodAdjustHitbox(pSprite, top, bottom, wd) && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
             wd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
-            vdx = ClipMoveHack(pSprite, &x, &y, &z, &nSector2, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
+            vdx = ClipMoveHack(pSprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
         }
         else
         {
@@ -5445,6 +5465,377 @@ int MoveMissile(spritetype *pSprite)
     if (pOwner)
         pOwner->cstat = bakCstat;
     return vdi;
+}
+
+static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShooter, int a2, int a3, int a4, int a5, int a6, VECTOR_TYPE vectorType, int nRange)
+{
+    bool didHit = false;
+    int nShooter = -1;
+    if (pShooter)
+        nShooter = pShooter->index;
+    dassert(vectorType >= 0 && vectorType < kVectorMax);
+    VECTORDATA *pVectorData = &gVectorData[vectorType];
+    int hit = VectorScan(pSource, a2, a3, a4, a5, a6, nRange, 1);
+    if (hit == 3)
+    {
+        int nSprite = gHitInfo.hitsprite;
+        dassert(nSprite >= 0 && nSprite < kMaxSprites);
+        spritetype *pSprite = &sprite[nSprite];
+        if (pShooter && !gGameOptions.bFriendlyFire && IsTargetTeammate(pShooter, pSprite)) return true;
+        if (IsPlayerSprite(pSprite)) {
+            PLAYER *pPlayer = &gPlayer[pSprite->type-kDudePlayer1];
+            if (powerupCheck(pPlayer, kPwUpReflectShots))
+            {
+                xvel[pSource->index] = -xvel[pSource->index]; // return to sender
+                yvel[pSource->index] = -yvel[pSource->index];
+                zvel[pSource->index] = -zvel[pSource->index];
+                pSource->owner = pSprite->index; // set projectile owner as player with reflective shot
+                return false;
+            }
+        }
+    }
+    int x = gHitInfo.hitx-mulscale(a4, 16, 14);
+    int y = gHitInfo.hity-mulscale(a5, 16, 14);
+    int z = gHitInfo.hitz-mulscale(a6, 256, 14);
+    short nSector = gHitInfo.hitsect;
+    char nSurf = kSurfNone;
+    if (approxDist(gHitInfo.hitx-pSource->x, gHitInfo.hity-pSource->y) < nRange)
+    {
+        switch (hit)
+        {
+        case 1:
+        {
+            didHit = true;
+            int nSector = gHitInfo.hitsect;
+            if (sector[nSector].ceilingstat&1)
+                nSurf = kSurfNone;
+            else
+                nSurf = surfType[sector[nSector].ceilingpicnum];
+            break;
+        }
+        case 2:
+        {
+            didHit = true;
+            int nSector = gHitInfo.hitsect;
+            if (sector[nSector].floorstat&1)
+                nSurf = kSurfNone;
+            else
+                nSurf = surfType[sector[nSector].floorpicnum];
+            break;
+        }
+        case 0:
+        {
+            didHit = true;
+            int nWall = gHitInfo.hitwall;
+            dassert(nWall >= 0 && nWall < kMaxWalls);
+            nSurf = surfType[wall[nWall].picnum];
+            if (actCanSplatWall(nWall))
+            {
+                int x = gHitInfo.hitx-mulscale(a4, 16, 14);
+                int y = gHitInfo.hity-mulscale(a5, 16, 14);
+                int z = gHitInfo.hitz-mulscale(a6, 256, 14);
+                int nSurf = surfType[wall[nWall].picnum];
+                dassert(nSurf < kSurfMax);
+                if (pVectorData->surfHit[nSurf].fx1 >= 0)
+                {
+                    spritetype *pFX = gFX.fxSpawn(pVectorData->surfHit[nSurf].fx1, nSector, x, y, z, 0);
+                    if (pFX)
+                    {
+                        pFX->ang = (GetWallAngle(nWall)+512)&2047;
+                        pFX->cstat |= 16;
+                    }
+                }
+            }
+            break;
+        }
+        case 4:
+        {
+            didHit = true;
+            int nWall = gHitInfo.hitwall;
+            dassert(nWall >= 0 && nWall < kMaxWalls);
+            nSurf = surfType[wall[nWall].overpicnum];
+            int nXWall = wall[nWall].extra;
+            if (nXWall > 0)
+            {
+                XWALL *pXWall = &xwall[nXWall];
+                if (pXWall->triggerVector)
+                    trTriggerWall(nWall, pXWall, kCmdWallImpact);
+            }
+            break;
+        }
+        case 3:
+        {
+            didHit = true;
+            int nSprite = gHitInfo.hitsprite;
+            nSurf = surfType[sprite[nSprite].picnum];
+            dassert(nSprite >= 0 && nSprite < kMaxSprites);
+            spritetype *pSprite = &sprite[nSprite];
+            x -= mulscale(a4, 112, 14);
+            y -= mulscale(a5, 112, 14);
+            z -= mulscale(a6, 112<<4, 14);
+            int shift = 4;
+            int boost = 1;
+            int boostz = 1;
+            DAMAGE_TYPE dmgType = pVectorData->dmgType;
+            if (vectorType == kVectorTine && !IsPlayerSprite(pSprite))
+                shift = 3;
+            if (pShooter && IsPlayerSprite(pShooter) && gGameOptions.bQuadDamagePowerup)
+            {
+                PLAYER *pPlayer = &gPlayer[pShooter->type - kDudePlayer1];
+                if (powerupCheck(pPlayer, kPwUpTwoGuns)) // if quad is active, increase pushback and do random explosive damage for hitscan weapons
+                {
+                    shift = 2;
+                    boost = 2;
+                    boostz = 4;
+                    if ((dmgType == kDamageBullet) && !Random(10))
+                    {
+                        dmgType = kDamageExplode;
+                        shift = 4;
+                    }
+                }
+            }
+            actDamageSprite(nShooter, pSprite, dmgType, pVectorData->dmg<<shift);
+            int nXSprite = pSprite->extra;
+            if (nXSprite > 0)
+            {
+                XSPRITE *pXSprite = &xsprite[nXSprite];
+                if (pXSprite->Vector)
+                    trTriggerSprite(nSprite, pXSprite, kCmdSpriteImpact);
+            }
+            if (pSprite->statnum == kStatThing)
+            {
+                int t = thingInfo[pSprite->type-kThingBase].mass;
+                if (t > 0 && pVectorData->impulse)
+                {
+                    int t2 = divscale(pVectorData->impulse, t, 8);
+                    xvel[nSprite] += mulscale16(a4, t2) * boost;
+                    yvel[nSprite] += mulscale16(a5, t2) * boost;
+                    zvel[nSprite] += mulscale16(a6, t2) * boostz;
+                }
+                if (pVectorData->burnTime)
+                {
+                    XSPRITE *pXSprite = &xsprite[nXSprite];
+                    if (!pXSprite->burnTime)
+                        evPost(nSprite, 3, 0, kCallbackFXFlameLick);
+                    actBurnSprite(actSpriteIdToOwnerId(nShooter), pXSprite, pVectorData->burnTime);
+                }
+            }
+            if (pSprite->statnum == kStatDude)
+            {
+                int t = getDudeInfo(pSprite->type)->mass;
+                
+                #ifdef NOONE_EXTENSIONS
+                if (IsDudeSprite(pSprite)) {
+                    switch (pSprite->type) {
+                        case kDudeModernCustom:
+                        case kDudeModernCustomBurning:
+                            t = getSpriteMassBySize(pSprite);
+                            break;
+                    }
+                }
+                #endif
+
+                if (t > 0 && pVectorData->impulse)
+                {
+                    int t2 = divscale(pVectorData->impulse, t, 8);
+                    xvel[nSprite] += mulscale16(a4, t2) * boost;
+                    yvel[nSprite] += mulscale16(a5, t2) * boost;
+                    zvel[nSprite] += mulscale16(a6, t2) * boostz;
+                }
+                if (pVectorData->burnTime)
+                {
+                    XSPRITE *pXSprite = &xsprite[nXSprite];
+                    if (!pXSprite->burnTime)
+                        evPost(nSprite, 3, 0, kCallbackFXFlameLick);
+                    actBurnSprite(actSpriteIdToOwnerId(nShooter), pXSprite, pVectorData->burnTime);
+                }
+                if (Chance(pVectorData->fxChance))
+                {
+                    int t = gVectorData[19].maxDist;
+                    a4 += Random3(4000);
+                    a5 += Random3(4000);
+                    a6 += Random3(4000);
+                    if (HitScan(pSprite, gHitInfo.hitz, a4, a5, a6, CLIPMASK1, t) == 0)
+                    {
+                        if (approxDist(gHitInfo.hitx-pSprite->x, gHitInfo.hity-pSprite->y) <= t)
+                        {
+                            int nWall = gHitInfo.hitwall;
+                            int nSector = gHitInfo.hitsect;
+                            if (actCanSplatWall(nWall))
+                            {
+                                int x = gHitInfo.hitx - mulscale(a4, 16, 14);
+                                int y = gHitInfo.hity - mulscale(a5, 16, 14);
+                                int z = gHitInfo.hitz - mulscale(a6, 16<<4, 14);
+                                int nSurf = surfType[wall[nWall].picnum];
+                                VECTORDATA *pVectorData = &gVectorData[19];
+                                FX_ID t2 = pVectorData->surfHit[nSurf].fx2;
+                                FX_ID t3 = pVectorData->surfHit[nSurf].fx3;
+                                spritetype *pFX = NULL;
+                                if (t2 > FX_NONE && (t3 == FX_NONE || Chance(0x4000)))
+                                    pFX = gFX.fxSpawn(t2, nSector, x, y, z, 0);
+                                else if(t3 > FX_NONE)
+                                    pFX = gFX.fxSpawn(t3, nSector, x, y, z, 0);
+                                if (pFX)
+                                {
+                                    zvel[pFX->index] = 0x2222;
+                                    pFX->ang = (GetWallAngle(nWall)+512)&2047;
+                                    pFX->cstat |= 16;
+                                }
+                            }
+                        }
+                    }
+                }
+                for (int i = 0; i < pVectorData->bloodSplats; i++)
+                    if (Chance(pVectorData->splatChance))
+                        fxSpawnBlood(pSprite, pVectorData->dmg<<4);
+            }
+            #ifdef NOONE_EXTENSIONS
+            // add impulse for sprites from physics list
+            if (gPhysSpritesCount > 0 && pVectorData->impulse) {
+                
+                if (xspriRangeIsFine(pSprite->extra)) {
+                    
+                    XSPRITE* pXSprite = &xsprite[pSprite->extra];
+                    if (pXSprite->physAttr & kPhysDebrisVector) {
+                        
+                    int impulse = divscale(pVectorData->impulse, ClipLow(gSpriteMass[pSprite->extra].mass, 10), 6);
+                    xvel[nSprite] += mulscale16(a4, impulse) * boost;
+                    yvel[nSprite] += mulscale16(a5, impulse) * boost;
+                    zvel[nSprite] += mulscale16(a6, impulse) * boostz;
+
+                    if (pVectorData->burnTime != 0) {
+                        if (!xsprite[nXSprite].burnTime) evPost(nSprite, 3, 0, kCallbackFXFlameLick);
+                        actBurnSprite(actSpriteIdToOwnerId(nShooter), &xsprite[nXSprite], pVectorData->burnTime);
+                    }
+
+                        if (pSprite->type >= kThingBase && pSprite->type < kThingMax) {
+                            pSprite->statnum = kStatThing; // temporary change statnum property
+                            actDamageSprite(nShooter, pSprite, pVectorData->dmgType, pVectorData->dmg << 4);
+                            pSprite->statnum = kStatDecoration; // return statnum property back
+                }
+
+            }
+
+
+                }
+
+
+            }
+            #endif
+            break;
+        }
+        }
+    }
+    else
+        didHit = false;
+    dassert(nSurf < kSurfMax);
+#ifdef NOONE_EXTENSIONS
+    
+    // let the patrol enemies hear surface hit sounds!
+    
+    if (pVectorData->surfHit[nSurf].fx2 >= 0) {
+        
+        spritetype* pFX2 = gFX.fxSpawn(pVectorData->surfHit[nSurf].fx2, nSector, x, y, z, 0);
+        if (pFX2 && gModernMap && pShooter)
+            actPropagateSpriteOwner(pFX2, pShooter);
+    }
+    
+    if (pVectorData->surfHit[nSurf].fx3 >= 0) {
+        
+        spritetype* pFX3 = gFX.fxSpawn(pVectorData->surfHit[nSurf].fx3, nSector, x, y, z, 0);
+        if (pFX3 && gModernMap && pShooter)
+            actPropagateSpriteOwner(pFX3, pShooter);
+
+    }
+
+#else
+    if (pVectorData->surfHit[nSurf].fx2 >= 0)
+        gFX.fxSpawn(pVectorData->surfHit[nSurf].fx2, nSector, x, y, z, 0);
+    if (pVectorData->surfHit[nSurf].fx3 >= 0)
+        gFX.fxSpawn(pVectorData->surfHit[nSurf].fx3, nSector, x, y, z, 0);
+#endif
+
+    if (pVectorData->surfHit[nSurf].fxSnd >= 0)
+        sfxPlay3DSound(x, y, z, pVectorData->surfHit[nSurf].fxSnd, nSector);
+    return didHit;
+}
+
+void MoveMissileBullet(spritetype *pSprite)
+{
+    dassert(pSprite != NULL);
+    int nXSprite = pSprite->extra;
+    XSPRITE *pXSprite = &xsprite[nXSprite];
+    int nXMissile = pSprite->extra;
+    dassert(nXMissile > 0 && nXMissile < kMaxXSprites);
+    XSPRITE *pXMissile = &xsprite[pSprite->extra];
+    spritetype *pOwner = NULL;
+    int bakCstat = 0;
+    if (pSprite->owner >= 0)
+    {
+        int nOwner = actSpriteOwnerToSpriteId(pSprite);
+        pOwner = &sprite[nOwner];
+        if (IsDudeSprite(pOwner))
+        {
+            bakCstat = pOwner->cstat;
+            pOwner->cstat &= ~257;
+        }
+        else
+            pOwner = NULL;
+    }
+    int nSprite = pSprite->index;
+    int dx = Cos(pSprite->ang)>>16;
+    int dy = Sin(pSprite->ang)>>16;
+    int dz = (zvel[nSprite]>>7) - scale(0x100, zvel[nSprite], approxDist(Cos(pSprite->ang), Sin(pSprite->ang)));
+    VECTOR_TYPE nType = pSprite->type == kMissileShell ? kVectorShell : kVectorBullet;
+    int speed = missileInfo[pSprite->type - kMissileBase].velocity;
+    if (gGameOptions.nDifficulty < 3) // slow down by 75% if on lower difficulties
+        speed = (speed>>1) + (speed>>2);
+    const bool weHitSomething = MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, dx, dy, dz, nType, (speed>>12) + (speed>>13));
+    if (weHitSomething) // if bullet hit anything, delete sprite
+    {
+        seqKill(3, nXMissile);
+        actPostSprite(pSprite->index, kStatFree);
+    }
+    else // move missile and test for ceiling/floor
+    {
+        int vx = xvel[nSprite]>>12;
+        int vy = yvel[nSprite]>>12;
+        int vz = zvel[nSprite]>>8;
+        int top, bottom;
+        GetSpriteExtents(pSprite, &top, &bottom);
+        int nSector2 = pSprite->sectnum;
+        short nSector = nSector2;
+        pSprite->x += vx;
+        pSprite->y += vy;
+        if (!FindSector(pSprite->x, pSprite->y, &nSector2)) // if we're lost, just use the current sprite's sector and hope for the best
+            nSector2 = pSprite->sectnum;
+        nSector = nSector2;
+        int ceilZ, ceilHit, floorZ, floorHit;
+        GetZRangeAtXYZ(pSprite->x, pSprite->y, pSprite->z, nSector, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist<<2, CLIPMASK1);
+        GetSpriteExtents(pSprite, &top, &bottom);
+        top += vz;
+        bottom += vz;
+        if (bottom >= floorZ)
+        {
+            vz += floorZ-bottom;
+            zvel[nSprite] = 0x300000; // we're clipping into the floor, set vel so next tick we're guaranteed to collide
+        }
+        if (top <= ceilZ)
+        {
+            vz += ClipLow(ceilZ-top, 0);
+            zvel[nSprite] = -0x300000; // we're clipping into the ceiling, set vel so next tick we're guaranteed to collide
+        }
+        pSprite->z += vz;
+        updatesector(pSprite->x, pSprite->y, &nSector);
+        if (nSector >= 0 && nSector != pSprite->sectnum)
+        {
+            dassert(nSector >= 0 && nSector < kMaxSectors);
+            ChangeSpriteSect(nSprite, nSector);
+        }
+        CheckLink(pSprite);
+    }
+    if (pOwner)
+        pOwner->cstat = bakCstat;
 }
 
 void actExplodeSprite(spritetype *pSprite)
@@ -5910,9 +6301,16 @@ void actProcessSprites(void)
         if (pSprite->flags & 32)
             continue;
         viewBackupSpriteLoc(nSprite, pSprite);
-        int hit = MoveMissile(pSprite);
-        if (hit >= 0)
-            actImpactMissile(pSprite, hit);
+        if ((pSprite->type != kMissileShell) && (pSprite->type != kMissileBullet)) // if regular missile sprites
+        {
+            int hit = MoveMissile(pSprite);
+            if (hit >= 0)
+                actImpactMissile(pSprite, hit);
+        }
+        else // bullet projectile sprites
+        {
+            MoveMissileBullet(pSprite);
+        }
     }
     for (nSprite = headspritestat[kStatExplosion]; nSprite >= 0; nSprite = nextspritestat[nSprite])
     {
@@ -6591,6 +6989,16 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     zvel[nMissile] = mulscale(pMissileInfo->velocity, a6, 14);
     actPropagateSpriteOwner(pMissile, pSprite);
     pMissile->cstat |= 1;
+    if ((nType == kMissileShell) || (nType == kMissileBullet)) // do not set collisions on for bullet projectiles (so bullets will not collide with each other)
+    {
+        pMissile->cstat &= ~257;
+        if (gGameOptions.nDifficulty < 3) // slow down by 75% if on lower difficulties
+        {
+            xvel[nMissile] = (xvel[nMissile]>>1) + (xvel[nMissile]>>2);
+            yvel[nMissile] = (yvel[nMissile]>>1) + (yvel[nMissile]>>2);
+            zvel[nMissile] = (zvel[nMissile]>>1) + (zvel[nMissile]>>2);
+        }
+    }
     int nXSprite = pMissile->extra;
     dassert(nXSprite > 0 && nXSprite < kMaxXSprites);
     xsprite[nXSprite].target = -1;
@@ -6598,7 +7006,7 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
    
     actBuildMissile(pMissile, nXSprite, nSprite);
     
-    if (v4)
+    if (v4 && (nType != kMissileShell) && (nType != kMissileBullet))
     {
         actImpactMissile(pMissile, hit);
         pMissile = NULL;

@@ -59,6 +59,7 @@ struct GAMEOPTIONS {
     bool bDamageInvul;
     bool bExplosionBehavior;
     bool bProjectileBehavior;
+    bool bHitscanProjectiles;
     char nRandomizerMode;
     char szRandomizerSeed[9];
     int nRandomizerCheat;

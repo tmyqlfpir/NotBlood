@@ -1050,8 +1050,20 @@ void FirePitchfork(int, PLAYER *pPlayer)
                     sfxPlay3DSound(pPlayer->pSprite, 455, 1, 0);
             }
         }
-        if (gGameOptions.bQuadDamagePowerup && (powerupCheck(pPlayer, kPwUpTwoGuns))) // if quad damage is active
-            n *= 4;
+        if (gGameOptions.bQuadDamagePowerup) // if quad damage is active
+        {
+            if (WeaponsNotBlood() && (pPlayer->weaponState == 4) && (pPlayer->throwPower == 65536)) // if missile attack ready (maxed out power)
+            {
+                playerFireMissile(pPlayer, -50, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireball);
+                sfxPlay3DSound(pPlayer->pSprite, 480, 2, 0);
+                pPlayer->flashEffect = 1;
+                return;
+            }
+            if (powerupCheck(pPlayer, kPwUpTwoGuns))
+            {
+                n *= 4;
+            }
+        }
     }
     for (int j = 0; j < n; j++)
     {
@@ -2032,7 +2044,14 @@ void ChargePitchfork(PLAYER *pPlayer)
 {
     if (pPlayer->weaponState < 3)
         return;
-    pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,210), 65536);
+    const int chargeSpeed = powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup ? 240 : 210; // charge slower when quad damage is active (fireball alt fire attack)
+    pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime, chargeSpeed), 65536);
+    if ((pPlayer->weaponState == 3) && (pPlayer->throwPower == 65536) && powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup) // if maxed throwing power and quad damage is active
+    {
+        sfxPlay3DSound(pPlayer->pSprite, 361, 1, 0); // flame sfx
+        sfxPlay3DSound(pPlayer->pSprite, 2200, 2, 0); // pod hit sfx
+        pPlayer->weaponState = 4; // ready up missile attack (allow missile state to hold even after quad damage runs out)
+    }
     if (!pPlayer->input.buttonFlags.shoot2)
     {
         StartQAV(pPlayer, 2, -1, 0);

@@ -143,6 +143,7 @@ public:
         kCheatBigBertha,
         kCheatQskfa,
         kCheatZoomies,
+        kCheatNoU,
         kCheatMax
     };
     struct CHEATINFO

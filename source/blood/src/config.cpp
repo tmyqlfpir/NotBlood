@@ -125,6 +125,7 @@ int gQuadDamagePowerup;
 int gDamageInvul;
 int gExplosionBehavior;
 int gProjectileBehavior;
+int gHitscanProjectiles;
 int gRandomizerMode;
 char gzRandomizerSeed[9];
 /////////
@@ -427,6 +428,7 @@ void CONFIG_SetDefaults(void)
     gDamageInvul = 1;
     gExplosionBehavior = 0;
     gProjectileBehavior = 0;
+    gHitscanProjectiles = 0;
     gRandomizerMode = 0;
     Bmemset(gzRandomizerSeed, 0, sizeof(gzRandomizerSeed));
 
@@ -698,6 +700,7 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Game Options", "DamageInvul", &gDamageInvul);
     SCRIPT_GetNumber(scripthandle, "Game Options", "ExplosionsBehavior", &gExplosionBehavior);
     SCRIPT_GetNumber(scripthandle, "Game Options", "ProjectilesBehavior", &gProjectileBehavior);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "HitscanProjectiles", &gHitscanProjectiles);
     SCRIPT_GetNumber(scripthandle, "Game Options", "RandomizerMode", &gRandomizerMode);
 
     Bmemset(tempbuf, 0, sizeof(tempbuf));
@@ -1003,6 +1006,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Game Options", "DamageInvul", gDamageInvul, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "ExplosionsBehavior", gExplosionBehavior, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "ProjectilesBehavior", gProjectileBehavior, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "HitscanProjectiles", gHitscanProjectiles, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "RandomizerMode", gRandomizerMode, FALSE, FALSE);
     gzRandomizerSeed[sizeof(gzRandomizerSeed)-1] = '\0';
     SCRIPT_PutString(scripthandle, "Game Options", "RandomizerSeed", &gzRandomizerSeed[0]);

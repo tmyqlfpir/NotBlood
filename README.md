@@ -16,6 +16,7 @@ New features include:
 * Autosaving on collecting keys and start of level
 * Reflection sphere will reflect tesla fire
 * Charge up alt fire for pitchfork
+* Bullet projectiles for hitscan enemies
 * New enhancements menu under game options
 * Mirror mode
 

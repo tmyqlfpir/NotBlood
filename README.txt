@@ -14,6 +14,7 @@ New features include:
 * Autosaving on collecting keys and start of level
 * Reflection sphere will reflect tesla fire
 * Charge up alt fire for pitchfork
+* Bullet projectiles for hitscan enemies
 * New enhancements menu under game options
 * Mirror mode
 
@@ -21,6 +22,7 @@ New features include:
 * BIG BERTHA - Toggle randomized lifeleech projectiles (works for alt fire mode)
 * QSKFA - Toggle blood alpha alt fire missile for pitchfork
 * ZOOMIES - Toggle fast enemies
+* NO U - Activates reflect shots power-up
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only

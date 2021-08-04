@@ -80,6 +80,7 @@ struct PKT_STARTGAME {
     bool bDamageInvul;
     bool bExplosionBehavior;
     bool bProjectileBehavior;
+    bool bHitscanProjectiles;
     bool bFriendlyFire;
     bool bKeepKeysOnRespawn;
     char szRandomizerSeed[9];

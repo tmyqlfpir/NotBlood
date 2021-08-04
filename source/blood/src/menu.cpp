@@ -62,6 +62,7 @@ void SetQuadDamagePowerup(CGameMenuItemZBool*);
 void SetDamageInvul(CGameMenuItemZBool*);
 void SetExplosionBehavior(CGameMenuItemZCycle*);
 void SetProjectileBehavior(CGameMenuItemZCycle*);
+void SetHitscanProjectiles(CGameMenuItemZBool*);
 void SetRandomizerMode(CGameMenuItemZCycle*);
 void SetRandomizerSeed(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
 
@@ -378,8 +379,9 @@ CGameMenuItemZBool itemNetEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 
 CGameMenuItemZBool itemNetEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 80, 180, false, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 90, 180, 0, 0, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
 CGameMenuItemZCycle itemNetEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 100, 180, 0, 0, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
-CGameMenuItemZCycle itemNetEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 110, 180, 0, 0, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
-CGameMenuItemZEdit itemNetEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 120, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
+CGameMenuItemZBool itemNetEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 110, 180, false, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 120, 180, 0, 0, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
+CGameMenuItemZEdit itemNetEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 130, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
 CGameMenuItemText itemLoadingText("LOADING...", 1, 160, 100, 1);
@@ -501,8 +503,9 @@ CGameMenuItemZBool itemEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X 
 CGameMenuItemZBool itemEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 80, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
 CGameMenuItemZCycle itemEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 90, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
 CGameMenuItemZCycle itemEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 100, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
-CGameMenuItemZCycle itemEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 110, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
-CGameMenuItemZEdit itemEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 120, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
+CGameMenuItemZBool itemEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 110, 180, gHitscanProjectiles, SetHitscanProjectiles, NULL, NULL);
+CGameMenuItemZCycle itemEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 120, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
+CGameMenuItemZEdit itemEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 130, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
 CGameMenuItemZBool itemOptionsGameBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 50, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
@@ -1035,6 +1038,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolDamageInvul, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementExplosionBehavior, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementProjectileBehavior, false);
+    menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolHitscanProjectiles, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerMode, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerSeed, false);
     //////////////////////
@@ -1050,6 +1054,7 @@ void SetupNetStartMenu(void)
     itemNetEnhancementBoolDamageInvul.at20 = false;
     itemNetEnhancementExplosionBehavior.m_nFocus = 0;
     itemNetEnhancementProjectileBehavior.m_nFocus = 0;
+    itemNetEnhancementBoolHitscanProjectiles.at20 = false;
     itemNetEnhancementRandomizerMode.m_nFocus = 0;
     memset(szRandomizerSeedMenu, 0, sizeof(szRandomizerSeedMenu));
     ///////
@@ -1274,6 +1279,7 @@ void SetupOptionsMenu(void)
     menuOptionsGameEnhancements.Add(&itemEnhancementBoolDamageInvul, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementExplosionBehavior, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementProjectileBehavior, false);
+    menuOptionsGameEnhancements.Add(&itemEnhancementBoolHitscanProjectiles, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerMode, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerSeed, false);
     itemOptionsGameWeaponsVer.bDisableForNet = 1;
@@ -1300,6 +1306,7 @@ void SetupOptionsMenu(void)
     itemEnhancementBoolDamageInvul.at20 = gDamageInvul;
     itemEnhancementExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     itemEnhancementProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
+    itemEnhancementBoolHitscanProjectiles.at20 = gHitscanProjectiles;
     itemEnhancementRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bstrncpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(szRandomizerSeedMenu));
     ///////
@@ -1620,6 +1627,16 @@ void SetProjectileBehavior(CGameMenuItemZCycle *pItem)
         gGameOptions.bProjectileBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     } else {
         pItem->m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
+    }
+}
+
+void SetHitscanProjectiles(CGameMenuItemZBool *pItem)
+{
+    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+        gHitscanProjectiles = pItem->at20;
+        gGameOptions.bHitscanProjectiles = pItem->at20;
+    } else {
+        pItem->at20 = gHitscanProjectiles;
     }
 }
 
@@ -2540,6 +2557,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.bDamageInvul = itemNetEnhancementBoolDamageInvul.at20;
     gPacketStartGame.bExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     gPacketStartGame.bProjectileBehavior = itemNetEnhancementProjectileBehavior.m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
+    gPacketStartGame.bHitscanProjectiles = itemNetEnhancementBoolHitscanProjectiles.at20;
     gPacketStartGame.randomizerMode = itemNetEnhancementRandomizerMode.m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bmemcpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
     if (gPacketStartGame.szRandomizerSeed[0] == '\0') // if no seed entered, generate new one before sending packet
