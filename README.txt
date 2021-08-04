@@ -40,6 +40,12 @@ New features include:
 * WEED420! - Cultists only but they're green
 * BRAAAINS - Zombies only
 
+### Additional randomizer seed cheats (can softlock levels if enemies have keys)
+* GHSTBSTR - No phantoms
+* NOHANDS! - No hands
+* PESTCTRL - No rats/hands/spiders
+* IH8PETS! - No rats/hands/spiders/bats/hell hounds
+
 ### Installing
 1. Extract NotBlood to a new directory
 2. Copy the following files from Blood 1.21 to NotBlood folder:

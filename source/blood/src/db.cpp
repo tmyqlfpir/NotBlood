@@ -707,6 +707,10 @@ void dbRandomizerModeInit(void)
         "BILLYRAY", // shotgun cultists only
         "WEED420!", // cultists only but they're green (and make you dizzy on damage)
         "BRAAAINS", // zombies only
+        "GHSTBSTR", // no phantoms
+        "NOHANDS!", // no hands
+        "PESTCTRL", // no rats/hands/spiders
+        "IH8PETS!", // no rats/hands/spiders/bats/hell hounds
     };
 
     gGameOptions.nRandomizerCheat = -1;
@@ -835,9 +839,30 @@ void dbRandomizerMode(spritetype *pSprite)
             case 13: // "BRAAAINS" - zombies only
                 pSprite->type = kDudeZombieAxeNormal;
                 break;
-            default: // unknown cheat id, don't do anything
-                initprintf("Error invalid cheat seed %s (%d)\n", gGameOptions.szRandomizerSeed, gGameOptions.nRandomizerCheat);
+            case 14: // "GHSTBSTR" - no phantoms
+                if (pSprite->type == kDudePhantasm)
+                    pSprite->type = kDudeBase;
                 break;
+            case 15: // "NOHANDS!" - no hands
+                if (pSprite->type == kDudeHand)
+                    pSprite->type = kDudeBase;
+                break;
+            case 16: // "PESTCTRL" - no rats/hands/spiders
+                if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed))
+                    pSprite->type = kDudeBase;
+                break;
+            case 17: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
+                if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeBat) || (pSprite->type == kDudeHellHound))
+                    pSprite->type = kDudeBase;
+                break;
+            default: // unknown cheat id, don't do anything
+            {
+                static bool shownError = false;
+                if (!shownError) // only show once per session
+                    initprintf("Error invalid cheat seed %s (%d)\nAdd seed cheat effect to func dbRandomizerMode()\n\n", gGameOptions.szRandomizerSeed, gGameOptions.nRandomizerCheat);
+                shownError = true;
+                break;
+            }
             }
             return;
         }
@@ -1755,45 +1780,50 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
             pXSprite->height = bitReader.readUnsigned(16);
             pXSprite->stateTimer = bitReader.readUnsigned(16);
             pXSprite->aiState = NULL;
-            if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus() && (gGameOptions.nRandomizerCheat != -1) && !pXSprite->scale && !dbRandomizerRNGDudes(3)) // if not in demo/vanilla mode, and randomizer is on and random seed cheat is being used
+            if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and randomizer is on
             {
-                switch (pSprite->type) // make enemies randomly huge
+                const int curRandomCheat = gGameOptions.nRandomizerCheat;
+                const bool randomCheatActive = (curRandomCheat != -1) && ((curRandomCheat < 14) || (curRandomCheat > 17)); // only randomize enemy sizes if seed cheats are active, and seed cheats 14-17 are not active
+                if (randomCheatActive && !pXSprite->scale && !dbRandomizerRNGDudes(3)) // if random seed cheat is being used
                 {
-                    case kDudeRat:
-                        pXSprite->scale = clamp(dbRandomizerRNGDudes(2048-128)+128, 128, 2048);
-                        break;
-                    case kDudeHand:
-                        pXSprite->scale = clamp(dbRandomizerRNGDudes(1024-128)+128, 128, 1024);
-                        break;
-                    case kDudeHellHound:
-                        pXSprite->scale = clamp(dbRandomizerRNGDudes(512-128)+128, 128, 512);
-                        break;
-                    case kDudeCultistBeast: // boss types
-                    case kDudeTchernobog:
-                    case kDudeCerberusTwoHead:
-                    case kDudeCerberusOneHead:
-                    case kDudeSpiderMother:
-                    case kDudeGargoyleStone:
-                        pXSprite->scale = clamp(dbRandomizerRNGDudes(512-32)+32, 32, 512);
-                        break;
-                    case kDudeGargoyleFlesh:
-                        pXSprite->scale = clamp(dbRandomizerRNGDudes(512-32)+32, 32, 512);
-                        break;
-                    case kDudeCultistShotgun: // regular enemies
-                    case kDudeCultistTommy:
-                    case kDudeCultistTommyProne:
-                    case kDudeCultistShotgunProne:
-                        pXSprite->scale = clamp(dbRandomizerRNGDudes(384-128)+128, 128, 384);
-                        break;
-                    case kDudeCultistTNT:
-                        pXSprite->scale = clamp(dbRandomizerRNGDudes(384-96)+96, 96, 256);
-                        break;
-                    case kDudeZombieButcher:
-                    case kDudeGillBeast:
-                        pXSprite->scale = clamp(dbRandomizerRNGDudes(384-64)+64, 64, 384);
-                        break;
-                    default:
-                        break;
+                    switch (pSprite->type) // make enemies randomly huge
+                    {
+                        case kDudeRat:
+                            pXSprite->scale = clamp(dbRandomizerRNGDudes(2048-128)+128, 128, 2048);
+                            break;
+                        case kDudeHand:
+                            pXSprite->scale = clamp(dbRandomizerRNGDudes(1024-128)+128, 128, 1024);
+                            break;
+                        case kDudeHellHound:
+                            pXSprite->scale = clamp(dbRandomizerRNGDudes(512-128)+128, 128, 512);
+                            break;
+                        case kDudeCultistBeast: // boss types
+                        case kDudeTchernobog:
+                        case kDudeCerberusTwoHead:
+                        case kDudeCerberusOneHead:
+                        case kDudeSpiderMother:
+                        case kDudeGargoyleStone:
+                            pXSprite->scale = clamp(dbRandomizerRNGDudes(512-32)+32, 32, 512);
+                            break;
+                        case kDudeGargoyleFlesh:
+                            pXSprite->scale = clamp(dbRandomizerRNGDudes(512-32)+32, 32, 512);
+                            break;
+                        case kDudeCultistShotgun: // regular enemies
+                        case kDudeCultistTommy:
+                        case kDudeCultistTommyProne:
+                        case kDudeCultistShotgunProne:
+                            pXSprite->scale = clamp(dbRandomizerRNGDudes(384-128)+128, 128, 384);
+                            break;
+                        case kDudeCultistTNT:
+                            pXSprite->scale = clamp(dbRandomizerRNGDudes(384-96)+96, 96, 256);
+                            break;
+                        case kDudeZombieButcher:
+                        case kDudeGillBeast:
+                            pXSprite->scale = clamp(dbRandomizerRNGDudes(384-64)+64, 64, 384);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             bitReader.skipBits(32);
