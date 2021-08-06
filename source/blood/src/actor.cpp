@@ -6957,7 +6957,10 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     int clipdist = pMissileInfo->clipDist+pSprite->clipdist;
     x += mulscale28(clipdist, Cos(pSprite->ang));
     y += mulscale28(clipdist, Sin(pSprite->ang));
-    int hit = HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, CLIPMASK0, clipdist);
+    int nMask = CLIPMASK0;
+    if ((nType == kMissileShell) || (nType == kMissileBullet)) // if missile type is bullet projectile, use bullet mask
+        nMask = CLIPMASK1;
+    int hit = HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, nMask, clipdist);
     if (hit != -1)
     {
         if (hit == 3 || hit == 0)
@@ -6970,6 +6973,12 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
         {
             x = gHitInfo.hitx-mulscale28(pMissileInfo->clipDist<<1, Cos(pSprite->ang));
             y = gHitInfo.hity-mulscale28(pMissileInfo->clipDist<<1, Sin(pSprite->ang));
+        }
+        if ((nType == kMissileShell) || (nType == kMissileBullet))// if hit and missile type is bullet projectile
+        {
+            nType = kMissileBullet ? kVectorBullet : kVectorShell;
+            actFireVector(pSprite, a2, a3, a4, a5, a6, nType); // fire bullet like normal and return without spawning sprite
+            return NULL;
         }
     }
     spritetype *pMissile = actSpawnSprite(pSprite->sectnum, x, y, z, 5, 1);
@@ -7006,7 +7015,7 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
    
     actBuildMissile(pMissile, nXSprite, nSprite);
     
-    if (v4 && (nType != kMissileShell) && (nType != kMissileBullet))
+    if (v4)
     {
         actImpactMissile(pMissile, hit);
         pMissile = NULL;
