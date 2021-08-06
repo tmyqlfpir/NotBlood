@@ -709,6 +709,7 @@ void dbRandomizerModeInit(void)
         "BRAAAINS", // zombies only
         "GHSTBSTR", // no phantoms
         "NOHANDS!", // no hands
+        "SAFEWATR", // no hands/gill beasts
         "PESTCTRL", // no rats/hands/spiders
         "IH8PETS!", // no rats/hands/spiders/bats/hell hounds
     };
@@ -847,11 +848,15 @@ void dbRandomizerMode(spritetype *pSprite)
                 if (pSprite->type == kDudeHand)
                     pSprite->type = kDudeBase;
                 break;
-            case 16: // "PESTCTRL" - no rats/hands/spiders
+            case 16: // "SAFEWATR" - no hands/gill beasts
+                if ((pSprite->type == kDudeHand) || (pSprite->type == kDudeGillBeast))
+                    pSprite->type = kDudeBase;
+                break;
+            case 17: // "PESTCTRL" - no rats/hands/spiders
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed))
                     pSprite->type = kDudeBase;
                 break;
-            case 17: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
+            case 18: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeBat) || (pSprite->type == kDudeHellHound))
                     pSprite->type = kDudeBase;
                 break;

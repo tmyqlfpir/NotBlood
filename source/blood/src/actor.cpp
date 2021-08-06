@@ -2890,6 +2890,11 @@ spritetype *actDropItem(spritetype *pSprite, int nType)
         pSprite2->shade = pItem->shade;
         pSprite2->xrepeat = pItem->xrepeat;
         pSprite2->yrepeat = pItem->yrepeat;
+        if (gGameOptions.bQuadDamagePowerup && (nType == kItemTwoGuns) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and quad damage is enabled
+        {
+            if (pSprite2->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) // replace guns akimbo icon with quad damage icon from TILES099.ART
+                pSprite2->picnum = 30703;
+        }
     }
     return pSprite2;
 }
@@ -5782,13 +5787,14 @@ void MoveMissileBullet(spritetype *pSprite)
         else
             pOwner = NULL;
     }
+    const bool bulletIsUnderwater = spriteIsUnderwater(pSprite, false) && (gGameOptions.nDifficulty < 4); // bullet is underwater and difficulty isn't extra crispy
     int nSprite = pSprite->index;
     int dx = Cos(pSprite->ang)>>16;
     int dy = Sin(pSprite->ang)>>16;
     int dz = (zvel[nSprite]>>7) - scale(0x100, zvel[nSprite], approxDist(Cos(pSprite->ang), Sin(pSprite->ang)));
     VECTOR_TYPE nType = pSprite->type == kMissileShell ? kVectorShell : kVectorBullet;
     int speed = missileInfo[pSprite->type - kMissileBase].velocity;
-    if (gGameOptions.nDifficulty < 3) // slow down by 75% if on lower difficulties
+    if (gGameOptions.nDifficulty < 3 || bulletIsUnderwater) // if on lower difficulties or bullet is underwater, slow down by 75%
         speed = (speed>>1) + (speed>>2);
     const bool weHitSomething = MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, dx, dy, dz, nType, (speed>>12) + (speed>>13));
     if (weHitSomething) // if bullet hit anything, delete sprite
@@ -5805,6 +5811,12 @@ void MoveMissileBullet(spritetype *pSprite)
         GetSpriteExtents(pSprite, &top, &bottom);
         int nSector2 = pSprite->sectnum;
         short nSector = nSector2;
+        if (bulletIsUnderwater) // if bullet is underwater, slow down by 75%
+        {
+            vx = (vx>>1) + (vx>>2);
+            vy = (vy>>1) + (vy>>2);
+            vz = (vz>>1) + (vz>>2);
+        }
         pSprite->x += vx;
         pSprite->y += vy;
         if (!FindSector(pSprite->x, pSprite->y, &nSector2)) // if we're lost, just use the current sprite's sector and hope for the best
@@ -6957,10 +6969,7 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     int clipdist = pMissileInfo->clipDist+pSprite->clipdist;
     x += mulscale28(clipdist, Cos(pSprite->ang));
     y += mulscale28(clipdist, Sin(pSprite->ang));
-    int nMask = CLIPMASK0;
-    if ((nType == kMissileShell) || (nType == kMissileBullet)) // if missile type is bullet projectile, use bullet mask
-        nMask = CLIPMASK1;
-    int hit = HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, nMask, clipdist);
+    int hit = HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, CLIPMASK0, clipdist);
     if (hit != -1)
     {
         if (hit == 3 || hit == 0)
@@ -6973,11 +6982,6 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
         {
             x = gHitInfo.hitx-mulscale28(pMissileInfo->clipDist<<1, Cos(pSprite->ang));
             y = gHitInfo.hity-mulscale28(pMissileInfo->clipDist<<1, Sin(pSprite->ang));
-        }
-        if ((nType == kMissileShell) || (nType == kMissileBullet))// if hit and missile type is bullet projectile
-        {
-            actFireVector(pSprite, a2, a3, a4, a5, a6, nType == kMissileBullet ? kVectorBullet : kVectorShell); // fire bullet like normal and return without spawning sprite
-            return NULL;
         }
     }
     spritetype *pMissile = actSpawnSprite(pSprite->sectnum, x, y, z, 5, 1);
@@ -7014,7 +7018,7 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
    
     actBuildMissile(pMissile, nXSprite, nSprite);
     
-    if (v4)
+    if (v4 && (nType != kMissileShell) && (nType != kMissileBullet))
     {
         actImpactMissile(pMissile, hit);
         pMissile = NULL;
