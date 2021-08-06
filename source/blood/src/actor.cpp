@@ -6976,8 +6976,7 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
         }
         if ((nType == kMissileShell) || (nType == kMissileBullet))// if hit and missile type is bullet projectile
         {
-            nType = kMissileBullet ? kVectorBullet : kVectorShell;
-            actFireVector(pSprite, a2, a3, a4, a5, a6, nType); // fire bullet like normal and return without spawning sprite
+            actFireVector(pSprite, a2, a3, a4, a5, a6, nType == kMissileBullet ? kVectorBullet : kVectorShell); // fire bullet like normal and return without spawning sprite
             return NULL;
         }
     }
