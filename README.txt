@@ -43,6 +43,7 @@ New features include:
 ### Additional randomizer seed cheats (can softlock levels if enemies have keys)
 * GHSTBSTR - No phantoms
 * NOHANDS! - No hands
+* SAFEWATR - No hands/gill beasts
 * PESTCTRL - No rats/hands/spiders
 * IH8PETS! - No rats/hands/spiders/bats/hell hounds
 
