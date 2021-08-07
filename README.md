@@ -8,7 +8,7 @@ New features include:
 * Difficulty based invulnerability timer for bullet/spirit/tesla damage
 * Smaller hitboxes for player projectiles ([before](https://files.catbox.moe/3peiru.mp4)/[after](https://files.catbox.moe/zso8g4.mp4))
 * Raytrace collision logic for player projectiles ([before](https://files.catbox.moe/q37j7i.mp4)/[after](https://files.catbox.moe/dulij7.mp4))
-* Proximity radius damage logic for player explosions ([before](https://files.catbox.moe/ojy0t6.mp4)/[after](https://files.catbox.moe/yyaja7.mp4))
+* Proximity radius damage logic for player explosions ([before](https://files.catbox.moe/h6xcrg.mp4)/[after](https://files.catbox.moe/35e08d.mp4))
 * Quad damage replacement for guns akimbo powerup
 * Throwable lifeleech alt fire and cheat 'big bertha'
 * Increased enemy damage for lifeleech's sentry mode
