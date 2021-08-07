@@ -418,7 +418,7 @@ void CONFIG_SetDefaults(void)
 
     gMouseAimingFlipped = 0;
     gMouseAim = 1;
-    gAutoAim = 1;
+    gAutoAim = 2;
     gWeaponSwitch = 0;
 
     gWeaponsVer = 0;
@@ -426,8 +426,8 @@ void CONFIG_SetDefaults(void)
     gAutosaveInCurLevel = false;
     gQuadDamagePowerup = 0;
     gDamageInvul = 1;
-    gExplosionBehavior = 0;
-    gProjectileBehavior = 0;
+    gExplosionBehavior = 1;
+    gProjectileBehavior = 1;
     gHitscanProjectiles = 0;
     gRandomizerMode = 0;
     Bmemset(gzRandomizerSeed, 0, sizeof(gzRandomizerSeed));
