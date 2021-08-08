@@ -39,6 +39,7 @@ New features include:
 * BILLYRAY - Shotgun cultists only
 * WEED420! - Cultists only but they're green
 * BRAAAINS - Zombies only
+* SNEAKYFU - Proned shotgun/tommy gun cultists only
 
 ### Additional randomizer seed cheats (can softlock levels if enemies have keys)
 * GHSTBSTR - No phantoms

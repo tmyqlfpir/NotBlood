@@ -4450,7 +4450,7 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
         return 0;
     int nOwner = pSprite->owner;
     int nSprite = pSprite->index;
-    if (!gGameOptions.bProjectileBehavior || nOwner == -1) // if projectile behavior is set to original, or sprite has no owner
+    if (!gGameOptions.bProjectileBehavior || nOwner == -1 || VanillaMode() || DemoRecordStatus()) // if projectile behavior is set to original, or sprite has no owner, or in demo/vanilla mode
         return 0;
     if (!actSpriteIdIsPlayer(nOwner)) // if sprite is not player owned/spawned
         return 0;
@@ -4508,9 +4508,10 @@ int MoveThing(spritetype *pSprite)
         int wd = pSprite->clipdist<<2;
         short bakCstat = pSprite->cstat;
         pSprite->cstat &= ~257;
-        if(NotBloodAdjustHitbox(pSprite, top, bottom, wd) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
+        if(tinywd && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
-            wd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
+            wd = tinywd;
             v8 = gSpriteHit[nXSprite].hit = ClipMoveHack(pSprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
         }
         else
@@ -5364,9 +5365,10 @@ int MoveMissile(spritetype *pSprite)
         int nSector2 = pSprite->sectnum;
         clipmoveboxtracenum = 1;
         int vdx;
-        if(NotBloodAdjustHitbox(pSprite, top, bottom, wd) && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
+        if(tinywd && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
-            wd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
+            wd = tinywd;
             vdx = ClipMoveHack(pSprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
         }
         else
@@ -5788,29 +5790,23 @@ void MoveMissileBullet(spritetype *pSprite)
             pOwner = NULL;
     }
     const bool bulletIsUnderwater = spriteIsUnderwater(pSprite, false) && (gGameOptions.nDifficulty < 4); // bullet is underwater and difficulty isn't extra crispy
-    int nSprite = pSprite->index;
-    int dx = Cos(pSprite->ang)>>16;
-    int dy = Sin(pSprite->ang)>>16;
-    int dz = (zvel[nSprite]>>7) - scale(0x100, zvel[nSprite], approxDist(Cos(pSprite->ang), Sin(pSprite->ang)));
-    VECTOR_TYPE nType = pSprite->type == kMissileShell ? kVectorShell : kVectorBullet;
+    const int nSprite = pSprite->index;
+    const int dx = Cos(pSprite->ang)>>16;
+    const int dy = Sin(pSprite->ang)>>16;
+    int dz = zvel[nSprite]>>7;
+    const VECTOR_TYPE nType = pSprite->type == kMissileShell ? kVectorShell : kVectorBullet;
     int speed = missileInfo[pSprite->type - kMissileBase].velocity;
-    if (gGameOptions.nDifficulty < 3 || bulletIsUnderwater) // if on lower difficulties or bullet is underwater, slow down by 75%
+    if (gGameOptions.nDifficulty < 3) // if on lower difficulties, adjust hitscan range by 75%
         speed = (speed>>1) + (speed>>2);
-    const bool weHitSomething = MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, dx, dy, dz, nType, (speed>>12) + (speed>>13));
-    if (weHitSomething) // if bullet hit anything, delete sprite
-    {
-        seqKill(3, nXMissile);
-        actPostSprite(pSprite->index, kStatFree);
-    }
-    else // move missile and test for ceiling/floor
+    if (bulletIsUnderwater) // if bullet is underwater, adjust hitscan range by 75%
+        speed = (speed>>1) + (speed>>2);
+    bool weHitSomething = MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, dx, dy, dz, nType, (speed>>12) + (speed>>13));
+    while (!weHitSomething) // move missile and test for ceiling/floor
     {
         int vx = xvel[nSprite]>>12;
         int vy = yvel[nSprite]>>12;
         int vz = zvel[nSprite]>>8;
-        int top, bottom;
-        GetSpriteExtents(pSprite, &top, &bottom);
-        int nSector2 = pSprite->sectnum;
-        short nSector = nSector2;
+        int nSector = pSprite->sectnum;
         if (bulletIsUnderwater) // if bullet is underwater, slow down by 75%
         {
             vx = (vx>>1) + (vx>>2);
@@ -5819,32 +5815,61 @@ void MoveMissileBullet(spritetype *pSprite)
         }
         pSprite->x += vx;
         pSprite->y += vy;
-        if (!FindSector(pSprite->x, pSprite->y, &nSector2)) // if we're lost, just use the current sprite's sector and hope for the best
-            nSector2 = pSprite->sectnum;
-        nSector = nSector2;
-        int ceilZ, ceilHit, floorZ, floorHit;
-        GetZRangeAtXYZ(pSprite->x, pSprite->y, pSprite->z, nSector, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist<<2, CLIPMASK1);
-        GetSpriteExtents(pSprite, &top, &bottom);
-        top += vz;
-        bottom += vz;
-        if (bottom >= floorZ)
+        if (!FindSector(pSprite->x, pSprite->y, pSprite->z, &nSector)) // we couldn't find where we're supposed to be, just delete the sprite to be safe
         {
-            vz += floorZ-bottom;
-            zvel[nSprite] = 0x300000; // we're clipping into the floor, set vel so next tick we're guaranteed to collide
+            weHitSomething = true;
+            break;
         }
-        if (top <= ceilZ)
-        {
-            vz += ClipLow(ceilZ-top, 0);
-            zvel[nSprite] = -0x300000; // we're clipping into the ceiling, set vel so next tick we're guaranteed to collide
-        }
-        pSprite->z += vz;
-        updatesector(pSprite->x, pSprite->y, &nSector);
-        if (nSector >= 0 && nSector != pSprite->sectnum)
+        if (pSprite->sectnum != nSector) // if sector was updated, update sprite's sector
         {
             dassert(nSector >= 0 && nSector < kMaxSectors);
             ChangeSpriteSect(nSprite, nSector);
         }
+        int ceilZ, ceilHit, floorZ, floorHit;
+        GetZRange(pSprite, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist<<2, CLIPMASK0);
+        if (CheckLink(pSprite)) // check for ceiling/floor portals
+            GetZRange(pSprite, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist<<2, CLIPMASK0);
+        int top, bottom;
+        GetSpriteExtents(pSprite, &top, &bottom);
+        top += vz;
+        bottom += vz;
+        if (bottom >= floorZ) // we're clipping into the floor, so just delete the sprite
+        {
+            MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, 0, 0, -0x300000, nType, (speed>>12) + (speed>>13)); // shoot fake bullet towards the floor
+            weHitSomething = true;
+            break;
+        }
+        if (top <= ceilZ) // we're clipping into the ceiling, so just delete the sprite
+        {
+            MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, 0, 0, 0x300000, nType, (speed>>12) + (speed>>13)); // shoot fake bullet towards the ceiling
+            weHitSomething = true;
+            break;
+        }
+        pSprite->z += vz;
+        short nSectorShort = nSector;
+        updatesector(pSprite->x, pSprite->y, &nSectorShort);
+        if (nSector == -1) // if invalid sector, attempt to get back on the right track
+        {
+            nSector = pSprite->sectnum;
+            if (!FindSector(pSprite->x, pSprite->y, pSprite->z, &nSector)) // if somehow we ended up in a van down by the river, abort and delete the sprite
+            {
+                weHitSomething = true;
+                break;
+            }
+            nSectorShort = nSector;
+        }
+        if (nSectorShort != pSprite->sectnum) // if sector was updated, update sprite's sector
+        {
+            dassert(nSectorShort >= 0 && nSectorShort < kMaxSectors);
+            ChangeSpriteSect(nSprite, nSectorShort);
+        }
         CheckLink(pSprite);
+        break;
+    }
+    if (weHitSomething) // if bullet hit anything, delete sprite
+    {
+        seqKill(3, nXMissile);
+        actPostSprite(pSprite->index, kStatFree);
     }
     if (pOwner)
         pOwner->cstat = bakCstat;

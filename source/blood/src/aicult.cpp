@@ -112,14 +112,14 @@ static void TommySeqCallback(int, int nXSprite)
         spritetype *pTarget = &sprite[pXSprite->target];
         if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, calculate prediction for projectile
         {
-            int nDist = approxDist(dx, dy);
-            int test = approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y);
-            if (test < 1250) // target is very close, just use hitscan
+            const int nDiff = approxDist(dx, dy);
+            int nDist = clamp(approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y), 0, 20000);
+            if (nDist < 1250) // target is very close, just use hitscan
                 useProjectile = false;
             else
             {
-                dx += ((xvel[pTarget->index]+nDist)>>8)+((xvel[pTarget->index]+nDist)>>9)+((xvel[pTarget->index]+nDist)>>10);
-                dy += ((yvel[pTarget->index]+nDist)>>8)+((yvel[pTarget->index]+nDist)>>9)+((yvel[pTarget->index]+nDist)>>10);
+                dx += ((xvel[pTarget->index]+nDiff)>>8)+((xvel[pTarget->index]+nDiff)>>9)+((xvel[pTarget->index]+nDiff)>>10);
+                dy += ((yvel[pTarget->index]+nDiff)>>8)+((yvel[pTarget->index]+nDiff)>>9)+((yvel[pTarget->index]+nDiff)>>10);
             }
         }
     }
@@ -165,14 +165,14 @@ static void ShotSeqCallback(int, int nXSprite)
         spritetype *pTarget = &sprite[pXSprite->target];
         if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, calculate prediction for projectile
         {
-            int nDist = approxDist(dx, dy);
-            int test = approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y);
-            if (test < 1250) // target is very close, just use hitscan
+            const int nDiff = approxDist(dx, dy);
+            int nDist = clamp(approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y), 0, 20000);
+            if (nDist < 1250) // target is very close, just use hitscan
                 useProjectile = false;
             else
             {
-                dx += (xvel[pTarget->index]+nDist)>>7;
-                dy += (yvel[pTarget->index]+nDist)>>7;
+                dx += (xvel[pTarget->index]+nDiff)>>7;
+                dy += (yvel[pTarget->index]+nDiff)>>7;
             }
         }
     }
