@@ -171,8 +171,8 @@ static void ShotSeqCallback(int, int nXSprite)
                 useProjectile = false;
             else
             {
-                dx += (xvel[pTarget->index]+nDist)>>8;
-                dy += (yvel[pTarget->index]+nDist)>>8;
+                dx += (xvel[pTarget->index]+nDist)>>7;
+                dy += (yvel[pTarget->index]+nDist)>>7;
             }
         }
     }
