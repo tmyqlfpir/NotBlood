@@ -106,10 +106,27 @@ static void TommySeqCallback(int, int nXSprite)
     dx += Random3((5-gGameOptions.nDifficulty)*1000);
     dy += Random3((5-gGameOptions.nDifficulty)*1000);
     dz += Random3((5-gGameOptions.nDifficulty)*500);
-    if (gGameOptions.bHitscanProjectiles && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and enemy hitscan projectiles are enabled, spawn bullet projectile
-        actFireMissile(pSprite, 0, 0, dx, dy, dz, kMissileBullet);
-    else
+    bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode() && !DemoRecordStatus(); // if not in demo/vanilla mode, and enemy hitscan projectiles are enabled, spawn bullet projectile
+    if (useProjectile && (gGameOptions.nDifficulty > 2) && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if difficulty is above lightly broiled, and target is valid
+    {
+        spritetype *pTarget = &sprite[pXSprite->target];
+        if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, calculate prediction for projectile
+        {
+            int nDist = approxDist(dx, dy);
+            int test = approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y);
+            if (test < 1250) // target is very close, just use hitscan
+                useProjectile = false;
+            else
+            {
+                dx += ((xvel[pTarget->index]+nDist)>>8)+((xvel[pTarget->index]+nDist)>>9)+((xvel[pTarget->index]+nDist)>>10);
+                dy += ((yvel[pTarget->index]+nDist)>>8)+((yvel[pTarget->index]+nDist)>>9)+((yvel[pTarget->index]+nDist)>>10);
+            }
+        }
+    }
+    if (!useProjectile) // normal hitscan
         actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorBullet);
+    else // projectile
+        actFireMissile(pSprite, 0, 0, dx, dy, dz, kMissileBullet);
     sfxPlay3DSound(pSprite, 4001, -1, 0);
 }
 
@@ -142,15 +159,32 @@ static void ShotSeqCallback(int, int nXSprite)
     dx += Random2((5-gGameOptions.nDifficulty)*1000-500);
     dy += Random2((5-gGameOptions.nDifficulty)*1000-500);
     dz += Random2((5-gGameOptions.nDifficulty)*500);
+    bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode() && !DemoRecordStatus(); // if not in demo/vanilla mode, and enemy hitscan projectiles are enabled, spawn bullet projectile
+    if (useProjectile && (gGameOptions.nDifficulty > 2) && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if difficulty is above lightly broiled, and target is valid
+    {
+        spritetype *pTarget = &sprite[pXSprite->target];
+        if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, calculate prediction for projectile
+        {
+            int nDist = approxDist(dx, dy);
+            int test = approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y);
+            if (test < 1250) // target is very close, just use hitscan
+                useProjectile = false;
+            else
+            {
+                dx += (xvel[pTarget->index]+nDist)>>8;
+                dy += (yvel[pTarget->index]+nDist)>>8;
+            }
+        }
+    }
     for (int i = 0; i < 8; i++)
     {
         int r1 = Random3(500);
         int r2 = Random3(1000);
         int r3 = Random3(1000);
-        if (gGameOptions.bHitscanProjectiles && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and enemy hitscan projectiles are enabled, spawn bullet projectile
-            actFireMissile(pSprite, 0, 0, dx+r3, dy+r2, dz+r1, kMissileShell);
-        else
+        if (!useProjectile) // normal hitscan
             actFireVector(pSprite, 0, 0, dx+r3, dy+r2, dz+r1, kVectorShell);
+        else // projectile
+            actFireMissile(pSprite, 0, 0, dx+r3, dy+r2, dz+r1, kMissileShell);
     }
     if (Chance(0x8000))
         sfxPlay3DSound(pSprite, 1001, -1, 0);

@@ -1726,10 +1726,7 @@ int app_main(int argc, char const * const * argv)
     char *const setupFileName = Xstrdup(SetupFilename);
     char *const p = strtok(setupFileName, ".");
 
-    if (!p || !Bstrcmp(SetupFilename, SETUPFILENAME))
-        Bsprintf(buffer, "settingsnotblood.cfg");
-    else
-        Bsprintf(buffer, "%s_settings.cfg", p);
+    Bsprintf(buffer, "%s_cvars.cfg", APPBASENAME);
 
     Bfree(setupFileName);
 
