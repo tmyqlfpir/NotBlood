@@ -5,16 +5,16 @@ A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-en
 
 New features include:
 * Default midi uses the excellent [SC55 soundfont by trevor0402](https://github.com/trevor0402/SC55Soundfont)
-* Difficulty based invulnerability timer for bullet/spirit/tesla damage
+* Difficulty based invulnerability timer for player damage ([before](https://files.catbox.moe/ucs7gp.mp4)/[after](https://files.catbox.moe/8hyaqm.mp4))
 * Smaller hitboxes for player projectiles ([before](https://files.catbox.moe/3peiru.mp4)/[after](https://files.catbox.moe/zso8g4.mp4))
 * Raytrace collision logic for player projectiles ([before](https://files.catbox.moe/q37j7i.mp4)/[after](https://files.catbox.moe/dulij7.mp4))
 * Proximity radius damage logic for player explosions ([before](https://files.catbox.moe/h6xcrg.mp4)/[after](https://files.catbox.moe/35e08d.mp4))
 * Quad damage replacement for guns akimbo powerup
-* Throwable lifeleech alt fire and cheat 'big bertha'
 * Increased enemy damage for lifeleech's sentry mode
 * Randomize mode for enemies and pickups (multiplayer supported)
 * Autosaving on collecting keys and start of level
 * Reflection sphere will reflect tesla fire
+* Throwable lifeleech alt fire
 * Charge up alt fire for pitchfork
 * Bullet projectiles for hitscan enemies
 * New enhancements menu under game options
