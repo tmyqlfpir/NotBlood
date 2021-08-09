@@ -1795,7 +1795,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
             if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and randomizer is on
             {
                 const int curRandomCheat = gGameOptions.nRandomizerCheat;
-                const bool randomCheatActive = (curRandomCheat != -1) && ((curRandomCheat < 14) || (curRandomCheat > 17)); // only randomize enemy sizes if seed cheats are active, and seed cheats 14-17 are not active
+                const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 14); // only randomize enemy sizes if seed cheats 0-14 are active
                 if (randomCheatActive && !pXSprite->scale && !dbRandomizerRNGDudes(3)) // if random seed cheat is being used
                 {
                     switch (pSprite->type) // make enemies randomly huge

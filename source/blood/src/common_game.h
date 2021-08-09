@@ -86,7 +86,7 @@ void _consoleSysMsg(const char* pMessage, ...);
 #define kExplodeMax 8
 
 #define kLensSize 80
-#define kViewEffectMax 20
+#define kViewEffectMax 21
 
 #define kNoTile -1
 

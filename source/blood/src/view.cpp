@@ -2012,7 +2012,7 @@ template<typename T> tspritetype* viewInsertTSprite(int nSector, int nStatnum, T
 }
 
 int effectDetail[kViewEffectMax] = {
-    4, 4, 4, 4, 0, 0, 0, 0, 0, 1, 4, 4, 0, 0, 0, 1, 0, 0, 0
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 1, 4, 4, 0, 0, 0, 1, 0, 0, 0, 0
 };
 
 tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
