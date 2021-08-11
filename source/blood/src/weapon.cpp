@@ -132,7 +132,7 @@ void QAV::PlaySound3D(spritetype *pSprite, int nSound, int a3, int a4)
     sfxPlay3DSound(pSprite, nSound, a3, a4);
 }
 
-char sub_4B1A4(PLAYER *pPlayer)
+char checkFired6or7(PLAYER *pPlayer)
 {
     switch (pPlayer->curWeapon)
     {
@@ -162,7 +162,7 @@ char BannedUnderwater(int nWeapon)
     return nWeapon == 7 || nWeapon == 6;
 }
 
-char sub_4B1FC(PLAYER *pPlayer, int a2, int a3, int a4)
+char CheckNewWeapon(PLAYER *pPlayer, int a2, int a3, int a4)
 {
     if (gInfiniteAmmo)
         return 1;
@@ -635,7 +635,7 @@ void WeaponRaise(PLAYER *pPlayer)
 void WeaponLower(PLAYER *pPlayer)
 {
     dassert(pPlayer != NULL);
-    if (sub_4B1A4(pPlayer))
+    if (checkFired6or7(pPlayer))
         return;
     pPlayer->throwPower = 0;
     int prevState = pPlayer->weaponState;
@@ -716,20 +716,14 @@ void WeaponLower(PLAYER *pPlayer)
         switch (prevState)
         {
         case 1:
-            if (VanillaMode())
+            if (!VanillaMode() && (pPlayer->input.newWeapon == 7)) // do not put away lighter if TNT was selected while throwing a spray can
             {
-                StartQAV(pPlayer, 7, -1, 0);
+                pPlayer->weaponState = 2;
+                StartQAV(pPlayer, 17, -1, 0);
+                WeaponRaise(pPlayer);
+                return;
             }
-            else
-            {
-                if (pPlayer->input.newWeapon == 7)
-                {
-                    pPlayer->weaponState = 2;
-                    StartQAV(pPlayer, 17, -1, 0);
-                    WeaponRaise(pPlayer);
-                    return;
-                }
-            }
+            StartQAV(pPlayer, 7, -1, 0);
             break;
         case 2:
             WeaponRaise(pPlayer);
@@ -1849,7 +1843,7 @@ char gWeaponUpgrade[][13] = {
 char WeaponUpgrade(PLAYER *pPlayer, char newWeapon)
 {
     char weapon = pPlayer->curWeapon;
-    if (!sub_4B1A4(pPlayer) && (gProfile[pPlayer->nPlayer].nWeaponSwitch&1) && (gWeaponUpgrade[pPlayer->curWeapon][newWeapon] || (gProfile[pPlayer->nPlayer].nWeaponSwitch&2)))
+    if (!checkFired6or7(pPlayer) && (gProfile[pPlayer->nPlayer].nWeaponSwitch&1) && (gWeaponUpgrade[pPlayer->curWeapon][newWeapon] || (gProfile[pPlayer->nPlayer].nWeaponSwitch&2)))
         weapon = newWeapon;
     return weapon;
 }
@@ -1916,7 +1910,7 @@ char WeaponFindLoaded(PLAYER *pPlayer, int *a2)
             {
                 for (int j = 0; j < weaponModes[weapon].at0; j++)
                 {
-                    if (sub_4B1FC(pPlayer, weapon, weaponModes[weapon].at4, 1))
+                    if (CheckNewWeapon(pPlayer, weapon, weaponModes[weapon].at4, 1))
                     {
                         if (a2)
                             *a2 = j;
@@ -2160,7 +2154,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->curWeapon))
     {
-        if (sub_4B1A4(pPlayer))
+        if (checkFired6or7(pPlayer))
         {
             if (pPlayer->curWeapon == 7)
             {
@@ -2357,7 +2351,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             pPlayer->input.newWeapon = 0;
             return;
         }
-        if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !sub_4B1A4(pPlayer))
+        if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkFired6or7(pPlayer))
         {
             pPlayer->input.newWeapon = 0;
             return;
@@ -2375,7 +2369,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             }
             else
             {
-                if (sub_4B1FC(pPlayer, nWeapon, nAmmoType, 1))
+                if (CheckNewWeapon(pPlayer, nWeapon, nAmmoType, 1))
                     WeaponRaise(pPlayer);
                 else
                 {
@@ -2405,7 +2399,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         for (; i <= v4c; i++)
         {
             int v6c = (pPlayer->weaponMode[nWeapon]+i)%v4c;
-            if (sub_4B1FC(pPlayer, nWeapon, weaponModes[nWeapon].at4, 1))
+            if (CheckNewWeapon(pPlayer, nWeapon, weaponModes[nWeapon].at4, 1))
             {
                 WeaponLower(pPlayer);
                 pPlayer->weaponMode[nWeapon] = v6c;

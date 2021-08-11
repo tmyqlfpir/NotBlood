@@ -269,7 +269,7 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
         return 0;
     if (!pPlayer->pwUpTime[nPowerUp]) {
         int bonusTime = gPowerUpInfo[nPowerUp].bonusTime;
-        if ((nPowerUp == kPwUpTwoGuns) && (gGameOptions.nGameType > 1) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if picked up quad damage in bloodbath/teams
+        if ((nPowerUp == kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if picked up quad damage
             bonusTime = 2500; // set to 25 seconds
         pPlayer->pwUpTime[nPowerUp] = bonusTime;
     }
