@@ -192,13 +192,13 @@ char CheckAmmo(PLAYER *pPlayer, int a2, int a3)
     return pPlayer->ammoCount[a2] >= a3;
 }
 
-char sub_4B2C8(PLAYER *pPlayer, int a2, int a3)
+char checkAmmo2(PLAYER *pPlayer, int ammotype, int amount)
 {
     if (gInfiniteAmmo)
         return 1;
-    if (a2 == -1)
+    if (ammotype == -1)
         return 1;
-    return pPlayer->ammoCount[a2] >= a3;
+    return pPlayer->ammoCount[ammotype] >= amount;
 }
 
 void SpawnBulletEject(PLAYER *pPlayer, int a2, int a3)
@@ -512,7 +512,7 @@ void WeaponRaise(PLAYER *pPlayer)
         }
         break;
     case 6: // dynamite
-        if (gInfiniteAmmo || sub_4B2C8(pPlayer, 5, 1))
+        if (gInfiniteAmmo || checkAmmo2(pPlayer, 5, 1))
         {
             pPlayer->weaponState = 3;
             if (prevWeapon == 7)
@@ -522,14 +522,14 @@ void WeaponRaise(PLAYER *pPlayer)
         }
         break;
     case 11: // proximity
-        if (gInfiniteAmmo || sub_4B2C8(pPlayer, 10, 1))
+        if (gInfiniteAmmo || checkAmmo2(pPlayer, 10, 1))
         {
             pPlayer->weaponState = 7;
             StartQAV(pPlayer, 25, -1, 0);
         }
         break;
     case 12: // remote
-        if (gInfiniteAmmo || sub_4B2C8(pPlayer, 11, 1))
+        if (gInfiniteAmmo || checkAmmo2(pPlayer, 11, 1))
         {
             pPlayer->weaponState = 10;
             StartQAV(pPlayer, 31, -1, 0);
@@ -568,7 +568,7 @@ void WeaponRaise(PLAYER *pPlayer)
         }
         break;
     case 4: // tommy gun
-        if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 3, 2))
+        if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 3, 2))
         {
             pPlayer->weaponState = 1;
             StartQAV(pPlayer, 69, -1, 0);
@@ -580,14 +580,14 @@ void WeaponRaise(PLAYER *pPlayer)
         }
         break;
     case 10: // voodoo
-        if (gInfiniteAmmo || sub_4B2C8(pPlayer, 9, 1))
+        if (gInfiniteAmmo || checkAmmo2(pPlayer, 9, 1))
         {
             pPlayer->weaponState = 2;
             StartQAV(pPlayer, 100, -1, 0);
         }
         break;
     case 2: // flaregun
-        if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 1, 2))
+        if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 1, 2))
         {
             StartQAV(pPlayer, 45, -1, 0);
             pPlayer->weaponState = 3;
@@ -599,7 +599,7 @@ void WeaponRaise(PLAYER *pPlayer)
         }
         break;
     case 8: // tesla cannon
-        if (sub_4B2C8(pPlayer, 7, 1))
+        if (checkAmmo2(pPlayer, 7, 1))
         {
             pPlayer->weaponState = 2;
             if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
@@ -659,7 +659,7 @@ void WeaponLower(PLAYER *pPlayer)
             }
             else
             {
-                if (pPlayer->input.newWeapon == 6)
+                if (pPlayer->input.newWeapon == 6) // do not put away lighter if TNT was selected while throwing a spray can
                 {
                     pPlayer->weaponState = 2;
                     StartQAV(pPlayer, 11, -1, 0);
@@ -726,7 +726,7 @@ void WeaponLower(PLAYER *pPlayer)
         switch (prevState)
         {
         case 1:
-            if (!VanillaMode() && (pPlayer->input.newWeapon == 7)) // do not put away lighter if TNT was selected while throwing a spray can
+            if (!VanillaMode() && (pPlayer->input.newWeapon == 7)) // do not put away lighter after TNT is thrown if while throwing the weapon was switched already to spray
             {
                 pPlayer->weaponState = 2;
                 StartQAV(pPlayer, 17, -1, 0);
@@ -794,7 +794,7 @@ void WeaponLower(PLAYER *pPlayer)
         StartQAV(pPlayer, 109, -1, 0);
         break;
     case 8:
-        if (sub_4B2C8(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
+        if (checkAmmo2(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
             StartQAV(pPlayer, 88, -1, 0);
         else
             StartQAV(pPlayer, 81, -1, 0);
@@ -961,7 +961,7 @@ void WeaponUpdateState(PLAYER *pPlayer)
         }
         break;
     case 4:
-        if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 3, 2))
+        if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 3, 2))
         {
             pPlayer->weaponQav = 70;
             pPlayer->weaponState = 1;
@@ -975,7 +975,7 @@ void WeaponUpdateState(PLAYER *pPlayer)
     case 2:
         if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
         {
-            if (vb == 3 && sub_4B2C8(pPlayer, 1, 2))
+            if (vb == 3 && checkAmmo2(pPlayer, 1, 2))
                 pPlayer->weaponQav = 46;
             else
             {
@@ -996,7 +996,7 @@ void WeaponUpdateState(PLAYER *pPlayer)
         switch (vb)
         {
         case 2:
-            if (sub_4B2C8(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
+            if (checkAmmo2(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
                 pPlayer->weaponQav = 83;
             else
                 pPlayer->weaponQav = 75;
@@ -1414,7 +1414,7 @@ void AltFireSpread2(int nTrigger, PLAYER *pPlayer)
                 UseAmmo(pPlayer, pPlayer->weaponAmmo, 1);
         }
     }
-    else if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 3, 2))
+    else if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 3, 2))
     {
         int r1, r2, r3;
         r1 = Random3(300);
@@ -1450,7 +1450,7 @@ void AltFireSpread2(int nTrigger, PLAYER *pPlayer)
         UseAmmo(pPlayer, pPlayer->weaponAmmo, 1);
     }
     pPlayer->flashEffect = 1;
-    if (!sub_4B2C8(pPlayer, 3, 1))
+    if (!checkAmmo2(pPlayer, 3, 1))
     {
         WeaponLower(pPlayer);
         pPlayer->weaponState = -1;
@@ -1677,10 +1677,10 @@ void FireTesla(int nTrigger, PLAYER *pPlayer)
         nTrigger--;
         spritetype *pSprite = pPlayer->pSprite;
         TeslaMissile *pMissile = &teslaMissile[nTrigger];
-        if (!sub_4B2C8(pPlayer, 7, pMissile->at8))
+        if (!checkAmmo2(pPlayer, 7, pMissile->at8))
         {
             pMissile = &teslaMissile[0];
-            if (!sub_4B2C8(pPlayer, 7, pMissile->at8))
+            if (!checkAmmo2(pPlayer, 7, pMissile->at8))
             {
                 pPlayer->weaponState = -1;
                 pPlayer->weaponQav = 76;
@@ -1774,7 +1774,7 @@ void FireLifeLeech(int nTrigger, PLAYER *pPlayer)
         pXSprite->target = pPlayer->aimTarget;
         pMissile->ang = (nTrigger==2) ? 1024 : 0;
     }
-    if (sub_4B2C8(pPlayer, 8, 1))
+    if (checkAmmo2(pPlayer, 8, 1))
         UseAmmo(pPlayer, 8, 1);
     else
         actDamageSprite(pPlayer->nSprite, pPlayer->pSprite, kDamageSpirit, 16);
@@ -1879,7 +1879,7 @@ char WeaponFindNext(PLAYER *pPlayer, int *a2, char bDir)
             }
             else
             {
-                if (sub_4B2C8(pPlayer, weaponModes[weapon].at4, 1))
+                if (checkAmmo2(pPlayer, weaponModes[weapon].at4, 1))
                     break;
             }
         }
@@ -1935,7 +1935,7 @@ char WeaponFindLoaded(PLAYER *pPlayer, int *a2)
     return v4;
 }
 
-char sub_4F0E0(PLAYER *pPlayer)
+char processSprayCan(PLAYER *pPlayer)
 {
     switch (pPlayer->weaponState)
     {
@@ -1973,7 +1973,7 @@ char sub_4F0E0(PLAYER *pPlayer)
     return 0;
 }
 
-char sub_4F200(PLAYER *pPlayer)
+char processTNT(PLAYER *pPlayer)
 {
     switch (pPlayer->weaponState)
     {
@@ -2011,7 +2011,7 @@ char sub_4F200(PLAYER *pPlayer)
     return 0;
 }
 
-char sub_4F320(PLAYER *pPlayer)
+char processProxy(PLAYER *pPlayer)
 {
     switch (pPlayer->weaponState)
     {
@@ -2028,7 +2028,7 @@ char sub_4F320(PLAYER *pPlayer)
     return 0;
 }
 
-char sub_4F3A0(PLAYER *pPlayer)
+char processRemote(PLAYER *pPlayer)
 {
     switch (pPlayer->weaponState)
     {
@@ -2044,7 +2044,7 @@ char sub_4F3A0(PLAYER *pPlayer)
     return 0;
 }
 
-void ChargePitchfork(PLAYER *pPlayer)
+void processPitchfork(PLAYER *pPlayer)
 {
     if (pPlayer->weaponState < 3)
         return;
@@ -2065,14 +2065,14 @@ void ChargePitchfork(PLAYER *pPlayer)
     }
 }
 
-void ThrowLifeLeech(PLAYER *pPlayer)
+void processLifeLeech(PLAYER *pPlayer)
 {
     if (pPlayer->weaponState != 3)
         return;
     pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
     if (!pPlayer->input.buttonFlags.shoot2)
     {
-        if (gGameOptions.nGameType <= 1 && !sub_4B2C8(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
+        if (gGameOptions.nGameType <= 1 && !checkAmmo2(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
         {
             sfxPlay3DSound(pPlayer->pSprite, 494, 2, 0);
             StartQAV(pPlayer, 116, nClientFireLifeLeech, 0);
@@ -2088,7 +2088,7 @@ void ThrowLifeLeech(PLAYER *pPlayer)
     }
 }
 
-char sub_4F414(PLAYER *pPlayer)
+char processLeech(PLAYER *pPlayer)
 {
     switch (pPlayer->weaponState)
     {
@@ -2112,13 +2112,13 @@ char sub_4F414(PLAYER *pPlayer)
     return 0;
 }
 
-char sub_4F484(PLAYER *pPlayer)
+char processTesla(PLAYER *pPlayer)
 {
     switch (pPlayer->weaponState)
     {
     case 4:
         pPlayer->weaponState = 5;
-        if (sub_4B2C8(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
+        if (checkAmmo2(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
             StartQAV(pPlayer, 84, nClientFireTesla, 1);
         else
             StartQAV(pPlayer, 77, nClientFireTesla, 1);
@@ -2127,7 +2127,7 @@ char sub_4F484(PLAYER *pPlayer)
         if (!pPlayer->input.buttonFlags.shoot)
         {
             pPlayer->weaponState = 2;
-            if (sub_4B2C8(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
+            if (checkAmmo2(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
                 StartQAV(pPlayer, 87, -1, 0);
             else
                 StartQAV(pPlayer, 80, -1, 0);
@@ -2136,7 +2136,7 @@ char sub_4F484(PLAYER *pPlayer)
         break;
     case 7:
         pPlayer->weaponState = 2;
-        if (sub_4B2C8(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
+        if (checkAmmo2(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
             StartQAV(pPlayer, 87, -1, 0);
         else
             StartQAV(pPlayer, 80, -1, 0);
@@ -2205,28 +2205,28 @@ void WeaponProcess(PLAYER *pPlayer) {
     switch (pPlayer->curWeapon)
     {
     case 7:
-        if (sub_4F0E0(pPlayer))
+        if (processSprayCan(pPlayer))
             return;
         break;
     case 6:
-        if (sub_4F200(pPlayer))
+        if (processTNT(pPlayer))
             return;
         break;
     case 11:
-        if (sub_4F320(pPlayer))
+        if (processProxy(pPlayer))
             return;
         break;
     case 12:
-        if (sub_4F3A0(pPlayer))
+        if (processRemote(pPlayer))
             return;
         break;
     case 9:
         if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, allow player to charge up throw like tnt
-            ThrowLifeLeech(pPlayer);
+            processLifeLeech(pPlayer);
         break;
     case 1:
         if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, allow player to charge up pitchfork attack
-            ChargePitchfork(pPlayer);
+            processPitchfork(pPlayer);
         break;
     }
     if (pPlayer->weaponTimer > 0)
@@ -2236,11 +2236,11 @@ void WeaponProcess(PLAYER *pPlayer) {
     switch (pPlayer->curWeapon)
     {
     case 9:
-        if (sub_4F414(pPlayer))
+        if (processLeech(pPlayer))
             return;
         break;
     case 8:
-        if (sub_4F484(pPlayer))
+        if (processTesla(pPlayer))
             return;
         break;
     }
@@ -2327,33 +2327,42 @@ void WeaponProcess(PLAYER *pPlayer) {
         {
             if (pPlayer->curWeapon == 6)
             {
-                if (sub_4B2C8(pPlayer, 10, 1))
+                if (checkAmmo2(pPlayer, 10, 1))
                     pPlayer->input.newWeapon = 11;
-                else if (sub_4B2C8(pPlayer, 11, 1))
+                else if (checkAmmo2(pPlayer, 11, 1))
                     pPlayer->input.newWeapon = 12;
             }
             else if (pPlayer->curWeapon == 11)
             {
-                if (sub_4B2C8(pPlayer, 11, 1))
+                if (checkAmmo2(pPlayer, 11, 1))
                     pPlayer->input.newWeapon = 12;
-                else if (sub_4B2C8(pPlayer, 5, 1) && pPlayer->isUnderwater == 0)
+                else if (checkAmmo2(pPlayer, 5, 1) && pPlayer->isUnderwater == 0)
                     pPlayer->input.newWeapon = 6;
             }
             else if (pPlayer->curWeapon == 12)
             {
-                if (sub_4B2C8(pPlayer, 5, 1) && pPlayer->isUnderwater == 0)
+                if (checkAmmo2(pPlayer, 5, 1) && pPlayer->isUnderwater == 0)
                     pPlayer->input.newWeapon = 6;
-                else if (sub_4B2C8(pPlayer, 10, 1))
+                else if (checkAmmo2(pPlayer, 10, 1))
                     pPlayer->input.newWeapon = 11;
             }
             else
             {
-                if (sub_4B2C8(pPlayer, 5, 1) && pPlayer->isUnderwater == 0)
+                if (checkAmmo2(pPlayer, 5, 1) && pPlayer->isUnderwater == 0)
                     pPlayer->input.newWeapon = 6;
-                else if (sub_4B2C8(pPlayer, 10, 1))
+                else if (checkAmmo2(pPlayer, 10, 1))
                     pPlayer->input.newWeapon = 11;
-                else if (sub_4B2C8(pPlayer, 11, 1))
+                else if (checkAmmo2(pPlayer, 11, 1))
                     pPlayer->input.newWeapon = 12;
+            }
+        }
+        else if ((pPlayer->input.newWeapon == 7) && !VanillaMode() && !DemoRecordStatus())
+        {
+            if ((pPlayer->curWeapon == 7) && (pPlayer->weaponState == 2)) // fix spray can state glitch when switching from spray to tnt and back quickly
+            {
+                pPlayer->weaponState = 1;
+                pPlayer->input.newWeapon = 0;
+                return;
             }
         }
         if (pPlayer->pXSprite->health == 0 || pPlayer->hasWeapon[pPlayer->input.newWeapon] == 0)
@@ -2499,13 +2508,13 @@ void WeaponProcess(PLAYER *pPlayer) {
             }
             break;
         case 4:
-            if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 3, 2))
+            if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 3, 2))
                 StartQAV(pPlayer, 71, nClientFireTommy, 1);
             else
                 StartQAV(pPlayer, 66, nClientFireTommy, 1);
             return;
         case 2:
-            if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 1, 2))
+            if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 1, 2))
                 StartQAV(pPlayer, 48, nClientFireFlare, 0);
             else
                 StartQAV(pPlayer, 43, nClientFireFlare, 0);
@@ -2529,13 +2538,13 @@ void WeaponProcess(PLAYER *pPlayer) {
             {
             case 2:
                 pPlayer->weaponState = 4;
-                if (sub_4B2C8(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
+                if (checkAmmo2(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
                     StartQAV(pPlayer, 84, nClientFireTesla, 0);
                 else
                     StartQAV(pPlayer, 77, nClientFireTesla, 0);
                 return;
             case 5:
-                if (sub_4B2C8(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
+                if (checkAmmo2(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
                     StartQAV(pPlayer, 84, nClientFireTesla, 0);
                 else
                     StartQAV(pPlayer, 77, nClientFireTesla, 0);
@@ -2667,7 +2676,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             }
             break;
         case 4:
-            if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 3, 2))
+            if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 3, 2))
                 StartQAV(pPlayer, 73, nClientAltFireSpread2, 0);
             else
                 StartQAV(pPlayer, 67, nClientAltFireSpread2, 0);
@@ -2678,23 +2687,23 @@ void WeaponProcess(PLAYER *pPlayer) {
             return;
 #if 0
         case 2:
-            if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 1, 2))
+            if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 1, 2))
                 StartQAV(pPlayer, 48, nClientFireFlare, 0);
             else
                 StartQAV(pPlayer, 43, nClientFireFlare, 0);
             return;
 #endif
         case 8:
-            if (sub_4B2C8(pPlayer, 7, 35))
+            if (checkAmmo2(pPlayer, 7, 35))
             {
-                if (sub_4B2C8(pPlayer, 7, 70) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
+                if (checkAmmo2(pPlayer, 7, 70) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
                     StartQAV(pPlayer, 85, nClientFireTesla, 0);
                 else
                     StartQAV(pPlayer, 78, nClientFireTesla, 0);
             }
             else
             {
-                if (sub_4B2C8(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
+                if (checkAmmo2(pPlayer, 7, 10) && powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()))
                     StartQAV(pPlayer, 84, nClientFireTesla, 0);
                 else
                     StartQAV(pPlayer, 77, nClientFireTesla, 0);
@@ -2711,14 +2720,14 @@ void WeaponProcess(PLAYER *pPlayer) {
         case 2:
             if (CheckAmmo(pPlayer, 1, 8))
             {
-                if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 1, 16))
+                if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 1, 16))
                     StartQAV(pPlayer, 48, nClientAltFireFlare, 0);
                 else
                     StartQAV(pPlayer, 43, nClientAltFireFlare, 0);
             }
             else
             {
-                if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && sub_4B2C8(pPlayer, 1, 2))
+                if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode() || DemoRecordStatus()) && checkAmmo2(pPlayer, 1, 2))
                     StartQAV(pPlayer, 48, nClientFireFlare, 0);
                 else
                     StartQAV(pPlayer, 43, nClientFireFlare, 0);
@@ -2735,7 +2744,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 pPlayer->throwTime = (int)gFrameClock;
                 pPlayer->throwPower = 0;
             }
-            else if (gGameOptions.nGameType <= 1 && !sub_4B2C8(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
+            else if (gGameOptions.nGameType <= 1 && !checkAmmo2(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
             {
                 sfxPlay3DSound(pPlayer->pSprite, 494, 2, 0);
                 StartQAV(pPlayer, 116, nClientFireLifeLeech, 0);
