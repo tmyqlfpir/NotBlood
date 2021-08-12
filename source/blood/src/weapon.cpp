@@ -142,6 +142,10 @@ char checkFired6or7(PLAYER *pPlayer)
         case 5:
         case 6:
             return 1;
+        case 7:
+            if (VanillaMode() || DemoRecordStatus())
+                return 0;
+            return 1;
         }
         break;
     case 6:
@@ -709,6 +713,12 @@ void WeaponLower(PLAYER *pPlayer)
                 pPlayer->weaponState = 1;
                 StartQAV(pPlayer, 11, -1, 0);
             }
+            break;
+        case 7:
+            if (VanillaMode() || DemoRecordStatus() || (pPlayer->input.newWeapon != 0))
+                break;
+            pPlayer->weaponState = 1;
+            StartQAV(pPlayer, 11, -1, 0);
             break;
         }
         break;
