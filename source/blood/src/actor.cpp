@@ -5791,6 +5791,9 @@ void MoveMissileBullet(spritetype *pSprite)
     }
     const bool bulletIsUnderwater = spriteIsUnderwater(pSprite, false) && (gGameOptions.nDifficulty < 4); // bullet is underwater and difficulty isn't extra crispy
     const int nSprite = pSprite->index;
+    const int bakX = pSprite->x;
+    const int bakY = pSprite->y;
+    const int bakZ = pSprite->z;
     const int dx = Cos(pSprite->ang)>>16;
     const int dy = Sin(pSprite->ang)>>16;
     int dz = zvel[nSprite]>>7;
@@ -5820,7 +5823,9 @@ void MoveMissileBullet(spritetype *pSprite)
             weHitSomething = true;
             break;
         }
-        if (pSprite->sectnum != nSector) // if sector was updated, update sprite's sector
+        if (!cansee(bakX, bakY, bakZ, pSprite->sectnum, pSprite->x, pSprite->y, pSprite->z, nSector)) // if the new updated sector is broken (this will happen when there are shared sectors in the same XYZ location such as DWE2M8's skull key room)
+            nSector = pSprite->sectnum; // restore sector and hope that everything will work out
+        else if (pSprite->sectnum != nSector) // if sector was updated, update sprite's sector
         {
             dassert(nSector >= 0 && nSector < kMaxSectors);
             ChangeSpriteSect(nSprite, nSector);

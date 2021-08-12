@@ -166,7 +166,7 @@ char BannedUnderwater(int nWeapon)
     return nWeapon == 7 || nWeapon == 6;
 }
 
-char CheckNewWeapon(PLAYER *pPlayer, int a2, int a3, int a4)
+char CheckWeaponAmmo(PLAYER *pPlayer, int a2, int a3, int a4)
 {
     if (gInfiniteAmmo)
         return 1;
@@ -1920,7 +1920,7 @@ char WeaponFindLoaded(PLAYER *pPlayer, int *a2)
             {
                 for (int j = 0; j < weaponModes[weapon].at0; j++)
                 {
-                    if (CheckNewWeapon(pPlayer, weapon, weaponModes[weapon].at4, 1))
+                    if (CheckWeaponAmmo(pPlayer, weapon, weaponModes[weapon].at4, 1))
                     {
                         if (a2)
                             *a2 = j;
@@ -2379,7 +2379,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             }
             else
             {
-                if (CheckNewWeapon(pPlayer, nWeapon, nAmmoType, 1))
+                if (CheckWeaponAmmo(pPlayer, nWeapon, nAmmoType, 1))
                     WeaponRaise(pPlayer);
                 else
                 {
@@ -2409,7 +2409,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         for (; i <= v4c; i++)
         {
             int v6c = (pPlayer->weaponMode[nWeapon]+i)%v4c;
-            if (CheckNewWeapon(pPlayer, nWeapon, weaponModes[nWeapon].at4, 1))
+            if (CheckWeaponAmmo(pPlayer, nWeapon, weaponModes[nWeapon].at4, 1))
             {
                 WeaponLower(pPlayer);
                 pPlayer->weaponMode[nWeapon] = v6c;
