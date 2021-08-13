@@ -359,7 +359,7 @@ void CONFIG_SetDefaults(void)
     gLevelStats = 0;
     gPowerupDuration = 1;
     gShowMapTitle = 1;
-    gShowWeaponSelect = 1;
+    gShowWeaponSelect = 2;
     //ud.lockout                = 0;
     //ud.m_marker               = 1;
     //ud.maxautosaves           = 5;
