@@ -1359,12 +1359,12 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     const int curTime = gLevelTime, travelTime = 8, holdTime = 38, decayTime = 8;
     const float animPosMax = 25, animPosMin = -10, animPosRange = animPosMax + (-animPosMin);
     static int animClock = 0, animState = 0;
-    static float animPos = 0, animPosPrev = 0;
+    static float animPos = animPosMin, animPosPrev = 0;
     animPosPrev = animPos;
 
     if (!gShowWeaponSelect || (curTime < 50) || animState && ((animClock - (holdTime+decayTime) > curTime) || (animClock + (holdTime+decayTime) < curTime))) // if show weapon select is disabled, or player just started level, or the clock is impossibly far ahead (eg player quickloaded)
     {
-        animPos = 0; // reset animation state and return
+        animPos = animPosMin; // reset animation state and return
         animClock = curTime;
         animState = 0;
         return;
@@ -1375,7 +1375,8 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     case 0: // opening animation
     case 4: // finished state
     default:
-        animPos = 0;
+        animPos = animPosMin;
+        animPosPrev = animPos;
         animClock = curTime;
         animState = 0;
         if (pPlayer->input.newWeapon != 0) // player switched weapon, start weapon animation
@@ -1420,7 +1421,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         {
             animState = 4;
             animClock = curTime;
-            animPos = 0;
+            animPos = animPosMin;
         }
         break;
     }
