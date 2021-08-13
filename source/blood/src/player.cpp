@@ -764,6 +764,7 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->throwPower = 0;
     pPlayer->deathTime = 0;
     pPlayer->nextWeapon = 0;
+    pPlayer->lastWeapon = 0;
     xvel[pSprite->index] = yvel[pSprite->index] = zvel[pSprite->index] = 0;
     pInput->q16turn = 0;
     pInput->keyFlags.word = 0;
