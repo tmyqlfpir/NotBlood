@@ -483,8 +483,8 @@ const char *pzWeaponInterpolateStrings[] = {
 
 const char *pzWeaponSelectStrings[] = {
     "OFF",
-    "TOP",
-    "BOTTOM"
+    "BOTTOM",
+    "TOP"
 };
 
 const char *pzWeaponSwitchStrings[] = {

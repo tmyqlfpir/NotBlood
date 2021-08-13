@@ -1356,7 +1356,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         {-1, 0, 0x8000}, // NULL
     };
 
-    const int curTime = gLevelTime, travelTime = 8, holdTime = 38, decayTime = 7;
+    const int curTime = gLevelTime, travelTime = 8, holdTime = gShowWeaponSelectTime, decayTime = 7;
     const float animPosMax = 27, animPosMin = -10, animPosRange = animPosMax + (-animPosMin);
     static int animClock = 0, animState = 0;
     static float animPos = animPosMin, animPosPrev = 0;
@@ -1442,7 +1442,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     if (gViewSize > 2) // if full hud is displayed, bump up by a few pixels
         yPrimary += 12;
     int ySecondary = yPrimary;
-    if (gShowWeaponSelect == 2) // draw at the bottom instead
+    if (gShowWeaponSelect == 1) // draw at the bottom instead
         yPrimary = -yPrimary + 195, ySecondary = -ySecondary + 195;
     yPrimary += 6; // lower center icon
 
