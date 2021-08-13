@@ -2341,16 +2341,15 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (pPlayer->input.newWeapon)
     {
-        if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkFired6or7(pPlayer)) // skip banned weapons when underwater and using next/prev weapon key inputs
+        if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkFired6or7(pPlayer) && !VanillaMode() && !DemoRecordStatus()) // skip banned weapons when underwater and using next/prev weapon key inputs
         {
-            const bool next = oldKeyFlags.nextWeapon, prev = oldKeyFlags.prevWeapon;
-            if ((next || prev) && !VanillaMode() && !DemoRecordStatus()) // if player switched weapons
+            if (oldKeyFlags.nextWeapon || oldKeyFlags.prevWeapon) // if player switched weapons
             {
                 PLAYER tmpPlayer = *pPlayer;
                 tmpPlayer.curWeapon = pPlayer->input.newWeapon; // set current banned weapon to curweapon so WeaponFindNext() can find the next weapon
                 for (int i = 0; i < 3; i++) // attempt twice to find a new weapon
                 {
-                    tmpPlayer.curWeapon = WeaponFindNext(&tmpPlayer, NULL, next ? 1 : 0);
+                    tmpPlayer.curWeapon = WeaponFindNext(&tmpPlayer, NULL, (char)(oldKeyFlags.nextWeapon == 1));
                     if (!BannedUnderwater(tmpPlayer.curWeapon)) // if new weapon is not a banned weapon, set to new current weapon
                     {
                         pPlayer->input.newWeapon = tmpPlayer.curWeapon;
