@@ -18,6 +18,9 @@ New features include:
 * Charge up alt fire for pitchfork
 * Bullet projectiles for hitscan enemies
 * New enhancements menu under game options
+* New last weapon key binding (default Q)
+* Fixed buggy weapon switching behavior
+* Weapon selection bar [demo](https://files.catbox.moe/0zh37q.mp4)
 * Mirror mode
 
 ### Installing
