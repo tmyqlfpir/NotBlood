@@ -1356,7 +1356,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         {-1, 0, 0x8000}, // NULL
     };
 
-    const int curTime = gLevelTime, travelTime = 8, holdTime = 40, decayTime = 10;
+    const int curTime = gLevelTime, travelTime = 8, holdTime = 38, decayTime = 8;
     const float animPosMax = 25, animPosMin = -10, animPosRange = animPosMax + (-animPosMin);
     static int animClock = 0, animState = 0;
     static float animPos = 0, animPosPrev = 0;
@@ -1430,37 +1430,37 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     PLAYER tmpPlayer = *pPlayer;
     if (pPlayer->curWeapon == 0) // if we're switching between weapons, use the next weapon value
         tmpPlayer.curWeapon = pPlayer->input.newWeapon;
-    int t;
-    const char weaponPrev = clamp(WeaponFindNext(&tmpPlayer, &t, 0), 1, 12);
+    const char weaponPrev = clamp(WeaponFindNext(&tmpPlayer, NULL, 0), 1, 12);
     const char weaponCur = clamp(tmpPlayer.curWeapon, 0, 13);
-    const char weaponNext = clamp(WeaponFindNext(&tmpPlayer, &t, 1), 1, 12);
+    const char weaponNext = clamp(WeaponFindNext(&tmpPlayer, NULL, 1), 1, 12);
     const bool showThreeWeapons = (weaponPrev != weaponCur) && (weaponNext != weaponCur);
 
-    const int x = 640/3;
-    const int xoffset = 640/10;
-    int y = (int)((viewDrawParametricBlend(clamp(animPos, 0, 1)) * animPosRange) + animPosMin);
+    const int x = 640/4;
+    const int xoffset = 640/11;
+    int yPrimary = (int)((viewDrawParametricBlend(clamp(animPos, 0, 1) * 1.1f) * animPosRange) + animPosMin);
+    int ySecondary = yPrimary;
     if (gShowWeaponSelect == 2) // draw at the bottom instead
     {
-        y = -y + 200;
+        yPrimary = -yPrimary + 195, ySecondary = -ySecondary + 195;
         if (gViewSize > 2) // if full hud is displayed, bump up by a few pixels
-            y -= 25;
+            yPrimary -= 11, ySecondary -= 11;
     }
+    yPrimary += 6; // lower center icon
 
-    const int picnumPrev = weaponIcons[weaponPrev][0];
-    const int yPrev = y + weaponIcons[weaponPrev][1];
-    const int scalePrev = weaponIcons[weaponPrev][2];
     const int picnumCur = weaponIcons[weaponCur][0];
-    const int yCur = y + weaponIcons[weaponCur][1];
+    const int yCur = yPrimary + weaponIcons[weaponCur][1];
     const int scaleCur = weaponIcons[weaponCur][2];
-    const int picnumNext = weaponIcons[weaponNext][0];
-    const int yNext = y + weaponIcons[weaponNext][1];
-    const int scaleNext = weaponIcons[weaponNext][2];
-
-    DrawStatMaskedSprite(picnumCur, x, yCur, 0, 0, 256, scaleCur);
+    rotatesprite(x<<16, yCur<<16, scaleCur, 0, picnumCur, 0, 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
     if (showThreeWeapons)
     {
-        DrawStatMaskedSprite(picnumPrev, x-xoffset, yPrev, 0, 0, 256, scalePrev);
-        DrawStatMaskedSprite(picnumNext, x+xoffset, yNext, 0, 0, 256, scaleNext);
+        const int picnumPrev = weaponIcons[weaponPrev][0];
+        const int picnumNext = weaponIcons[weaponNext][0];
+        const int yPrev = ySecondary + weaponIcons[weaponPrev][1];
+        const int yNext = ySecondary + weaponIcons[weaponNext][1];
+        const int scalePrev = weaponIcons[weaponPrev][2];
+        const int scaleNext = weaponIcons[weaponNext][2];
+        rotatesprite((x-xoffset)<<16, yPrev<<16, scalePrev, 0, picnumPrev, 0, 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
+        rotatesprite((x+xoffset)<<16, yNext<<16, scaleNext, 0, picnumNext, 0, 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
     }
 }
 

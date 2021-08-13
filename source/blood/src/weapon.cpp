@@ -2259,6 +2259,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         pPlayer->input.keyFlags.nextWeapon = 0;
         pPlayer->input.keyFlags.prevWeapon = 0;
     }
+    const KEYFLAGS oldKeyFlags = pPlayer->input.keyFlags; // used to fix scroll issue for banned weapons 
     if (pPlayer->input.keyFlags.nextWeapon)
     {
         pPlayer->input.keyFlags.nextWeapon = 0;
@@ -2328,6 +2329,25 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (pPlayer->input.newWeapon)
     {
+        if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkFired6or7(pPlayer)) // skip banned weapons when underwater and using next/prev weapon key inputs
+        {
+            const bool next = oldKeyFlags.nextWeapon, prev = oldKeyFlags.prevWeapon;
+            if ((next || prev) && !VanillaMode() && !DemoRecordStatus()) // if player switched weapons
+            {
+                PLAYER tmpPlayer = *pPlayer;
+                tmpPlayer.curWeapon = pPlayer->input.newWeapon; // set current banned weapon to curweapon so WeaponFindNext() can find the next weapon
+                for (int i = 0; i < 3; i++) // attempt twice to find a new weapon
+                {
+                    tmpPlayer.curWeapon = WeaponFindNext(&tmpPlayer, NULL, next ? 1 : 0);
+                    if (!BannedUnderwater(tmpPlayer.curWeapon)) // if new weapon is not a banned weapon, set to new current weapon
+                    {
+                        pPlayer->input.newWeapon = tmpPlayer.curWeapon;
+                        pPlayer->weaponMode[pPlayer->input.newWeapon] = 0;
+                        break;
+                    }
+                }
+            }
+        }
         if (pPlayer->input.newWeapon == 6)
         {
             if (pPlayer->curWeapon == 6)
