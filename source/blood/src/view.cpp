@@ -1432,7 +1432,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         tmpPlayer.curWeapon = pPlayer->input.newWeapon;
     int t;
     const char weaponPrev = clamp(WeaponFindNext(&tmpPlayer, &t, 0), 1, 12);
-    const char weaponCur = tmpPlayer.curWeapon;
+    const char weaponCur = clamp(tmpPlayer.curWeapon, 0, 13);
     const char weaponNext = clamp(WeaponFindNext(&tmpPlayer, &t, 1), 1, 12);
     const bool showThreeWeapons = (weaponPrev != weaponCur) && (weaponNext != weaponCur);
 
