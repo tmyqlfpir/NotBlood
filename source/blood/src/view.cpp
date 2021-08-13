@@ -1330,6 +1330,140 @@ void viewDrawPowerUps(PLAYER* pPlayer)
     }
 }
 
+static float viewDrawParametricBlend(const float t)
+{
+    const float sqt = t * t;
+    return sqt / (2.0f * (sqt - t) + 1.0f);
+}
+
+void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
+{
+    const int weaponIcons[][3] =
+    {
+        {-1, 0, 0x8000}, // NULL
+        {3131, 0, 0x6000}, // 1: pitchfork
+        {524, 8, 0x8000}, // 2: flare gun
+        {559, 6, 0x8000}, // 3: shotgun
+        {558, 8, 0x8000}, // 4: tommy gun
+        {526, 2, 0x8000}, // 5: napalm launcher
+        {589, 8, 0xB000}, // 6: dynamite
+        {618, 9, 0x8000}, // 7: spray can
+        {539, 0, 0x8000}, // 8: tesla gun
+        {800, 0, 0x7000}, // 9: life leech
+        {525, 1, 0x8000}, // 10: voodoo doll
+        {811, 8, 0x8000}, // 11: proxy bomb
+        {810, 8, 0x8000}, // 12: remote bomb
+        {-1, 0, 0x8000}, // NULL
+    };
+
+    const int curTime = gLevelTime, travelTime = 8, holdTime = 40, decayTime = 10;
+    const float animPosMax = 25, animPosMin = -10, animPosRange = animPosMax + (-animPosMin);
+    static int animClock = 0, animState = 0;
+    static float animPos = 0, animPosPrev = 0;
+    animPosPrev = animPos;
+
+    if (!gShowWeaponSelect || (curTime < 50) || animState && ((animClock - (holdTime+decayTime) > curTime) || (animClock + (holdTime+decayTime) < curTime))) // if show weapon select is disabled, or player just started level, or the clock is impossibly far ahead (eg player quickloaded)
+    {
+        animPos = 0; // reset animation state and return
+        animClock = curTime;
+        animState = 0;
+        return;
+    }
+
+    switch (animState)
+    {
+    case 0: // opening animation
+    case 4: // finished state
+    default:
+        animPos = 0;
+        animClock = curTime;
+        animState = 0;
+        if (pPlayer->input.newWeapon != 0) // player switched weapon, start weapon animation
+        {
+            animState = 1;
+            break;
+        }
+        return;
+    case 1: // travel animation
+        animPos = (float)(curTime - animClock) / (float)travelTime;
+        if ((animClock + travelTime) <= curTime) // finish opening animation
+        {
+            animState = 2;
+            animClock = curTime;
+            animPos = 1;
+        }
+        break;
+    case 2: // idle animation
+        animPos = 1;
+        if (!pXSprite || pXSprite->health == 0) // player died, transition to closing
+        {
+            animState = 3;
+            animClock = curTime;
+        }
+        if (pPlayer->input.newWeapon != 0) // changed weapon, reset the clock
+            animClock = curTime;
+        if ((animClock + holdTime) <= curTime) // time's up, transition to closing
+        {
+            animState = 3;
+            animClock = curTime;
+        }
+        break;
+    case 3: // closing animation
+        if (pPlayer->input.newWeapon != 0) // changed weapon, set to opening state
+        {
+            animState = 1;
+            animClock = curTime - (int)(animPos * (float)travelTime);
+            break;
+        }
+        animPos = 1.f-((float)(curTime - animClock) / (float)decayTime);
+        if ((animClock + decayTime) <= curTime) // time's up, transition to closing
+        {
+            animState = 4;
+            animClock = curTime;
+            animPos = 0;
+        }
+        break;
+    }
+    if (gViewInterpolate)
+        animPos = (float)interpolate(animPosPrev * 10000, animPos * 10000, gInterpolate) / 10000.f;
+
+    PLAYER tmpPlayer = *pPlayer;
+    if (pPlayer->curWeapon == 0) // if we're switching between weapons, use the next weapon value
+        tmpPlayer.curWeapon = pPlayer->input.newWeapon;
+    int t;
+    const char weaponPrev = clamp(WeaponFindNext(&tmpPlayer, &t, 0), 1, 12);
+    const char weaponCur = tmpPlayer.curWeapon;
+    const char weaponNext = clamp(WeaponFindNext(&tmpPlayer, &t, 1), 1, 12);
+    const bool showThreeWeapons = (weaponPrev != weaponCur) && (weaponNext != weaponCur);
+
+    const int x = 640/3;
+    const int xoffset = 640/10;
+    int y = (int)((viewDrawParametricBlend(clamp(animPos, 0, 1)) * animPosRange) + animPosMin);
+    if (gShowWeaponSelect == 2) // draw at the bottom instead
+    {
+        y = -y + 200;
+        if (gViewSize > 2) // if full hud is displayed, bump up by a few pixels
+            y -= 25;
+    }
+
+    const int picnumPrev = weaponIcons[weaponPrev][0];
+    const int yPrev = y + weaponIcons[weaponPrev][1];
+    const int scalePrev = weaponIcons[weaponPrev][2];
+    const int picnumCur = weaponIcons[weaponCur][0];
+    const int yCur = y + weaponIcons[weaponCur][1];
+    const int scaleCur = weaponIcons[weaponCur][2];
+    const int picnumNext = weaponIcons[weaponNext][0];
+    const int yNext = y + weaponIcons[weaponNext][1];
+    const int scaleNext = weaponIcons[weaponNext][2];
+
+    DrawStatMaskedSprite(picnumCur, x, yCur, 0, 0, 256, scaleCur);
+    if (showThreeWeapons)
+    {
+        DrawStatMaskedSprite(picnumPrev, x-xoffset, yPrev, 0, 0, 256, scalePrev);
+        DrawStatMaskedSprite(picnumNext, x+xoffset, yNext, 0, 0, 256, scaleNext);
+    }
+}
+
 void viewDrawMapTitle(void)
 {
     if (!gShowMapTitle || gGameMenuMgr.m_bActive)
@@ -1582,6 +1716,8 @@ void UpdateStatusBar(ClockTicks arg)
         else
             nPalette = 10;
     }
+
+    viewDrawWeaponSelect(pPlayer, pXSprite);
 
     if (gViewSize < 0) return;
 

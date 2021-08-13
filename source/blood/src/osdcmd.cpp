@@ -1019,6 +1019,7 @@ int32_t registerosdcommands(void)
         { "hud_stats", "enable/disable level statistics display", (void *)&gLevelStats, CVAR_BOOL, 0, 1 },
         { "hud_powerupduration", "enable/disable displaying the remaining seconds for power-ups", (void *)&gPowerupDuration, CVAR_BOOL, 0, 1 },
         { "hud_showmaptitle", "enable/disable displaying the map title at the beginning of the maps", (void*)& gShowMapTitle, CVAR_BOOL, 0, 1 },
+        { "hud_showweaponselect", "enable/disable weapon select. (0: none, 1: top, 2: bottom)", (void*)& gShowWeaponSelect, CVAR_INT, 0, 2 },
 //        { "hud_textscale", "sets multiplayer chat message size", (void *)&ud.textscale, CVAR_INT, 100, 400 },
 //        { "hud_weaponscale","changes the weapon scale", (void *)&ud.weaponscale, CVAR_INT, 10, 100 },
 //        { "hud_statusbarmode", "change overlay mode of status bar", (void *)&ud.statusbarmode, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },

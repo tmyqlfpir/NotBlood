@@ -35,6 +35,7 @@ void WeaponDraw(PLAYER *pPlayer, int a2, int a3, int a4, int a5);
 void WeaponRaise(PLAYER *pPlayer);
 void WeaponLower(PLAYER *pPlayer);
 char WeaponUpgrade(PLAYER *pPlayer, char newWeapon);
+char WeaponFindNext(PLAYER *pPlayer, int *a2, char bDir);
 void WeaponProcess(PLAYER *pPlayer);
 void WeaponUpdateState(PLAYER* pPlayer);
 void sub_51340(spritetype *pMissile, int a2);

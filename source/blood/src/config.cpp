@@ -116,6 +116,7 @@ int32_t gShowMapTitle;
 int32_t gFov;
 int32_t gCenterHoriz;
 int32_t gDeliriumBlur;
+int32_t gShowWeaponSelect;
 
 //////////
 int gWeaponsVer;
@@ -358,6 +359,7 @@ void CONFIG_SetDefaults(void)
     gLevelStats = 0;
     gPowerupDuration = 1;
     gShowMapTitle = 1;
+    gShowWeaponSelect = 1;
     //ud.lockout                = 0;
     //ud.m_marker               = 1;
     //ud.maxautosaves           = 5;

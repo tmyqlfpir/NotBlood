@@ -86,6 +86,7 @@ void SetupLevelMenuItem(int);
 void SetupVideoModeMenu(CGameMenuItemChain *);
 void SetVideoMode(CGameMenuItemChain *);
 void SetWidescreen(CGameMenuItemZBool *);
+void SetWeaponSelectMode(CGameMenuItemZCycle *);
 void SetMirrorMode(CGameMenuItemZBool *);
 void SetFOV(CGameMenuItemSlider *);
 void UpdateVideoModeMenuFrameLimit(CGameMenuItemZCycle *pItem);
@@ -480,6 +481,12 @@ const char *pzWeaponInterpolateStrings[] = {
     "ALL ANIMATION"
 };
 
+const char *pzWeaponSelectStrings[] = {
+    "OFF",
+    "TOP",
+    "BOTTOM"
+};
+
 const char *pzWeaponSwitchStrings[] = {
     "NEVER",
     "IF NEW",
@@ -529,9 +536,10 @@ CGameMenuItemZBool itemOptionsDisplayBoolShowMapTitle("MAP TITLE:", 3, 66, 110, 
 CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 120, 180, gMessageState, SetMessages, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 130, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayBoolMirrorMode("MIRROR MODE:", 3, 66, 140, 180, r_mirrormode, SetMirrorMode, NULL, NULL);
-CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 150, 180, &gFov, 75, 140, 5, SetFOV, -1, -1, kMenuSliderValue);
+CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 150, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
+CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 160, 180, &gFov, 75, 140, 5, SetFOV, -1, -1, kMenuSliderValue);
 #ifdef USE_OPENGL
-CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 160, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
+CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 170, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
 #endif
 
 const char *pzRendererStrings[] = {
@@ -1322,6 +1330,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolMessages, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolWidescreen, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolMirrorMode, false);
+    menuOptionsDisplay.Add(&itemOptionsDisplayWeaponSelect, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayFOV, false);
 #ifdef USE_OPENGL
     menuOptionsDisplay.Add(&itemOptionsDisplayPolymost, false);
@@ -1335,6 +1344,7 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayBoolMessages.at20 = gMessageState;
     itemOptionsDisplayBoolWidescreen.at20 = r_usenewaspect;
     itemOptionsDisplayBoolMirrorMode.at20 = r_mirrormode;
+    itemOptionsDisplayWeaponSelect.m_nFocus = gShowWeaponSelect % ARRAY_SSIZE(pzWeaponSelectStrings);
 
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeTitle, false);
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeResolution, true);
@@ -1867,6 +1877,11 @@ void SetVideoMode(CGameMenuItemChain *pItem)
 void SetWidescreen(CGameMenuItemZBool *pItem)
 {
     r_usenewaspect = pItem->at20;
+}
+
+void SetWeaponSelectMode(CGameMenuItemZCycle *pItem)
+{
+    gShowWeaponSelect = pItem->m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
 }
 
 void SetMirrorMode(CGameMenuItemZBool *pItem)
