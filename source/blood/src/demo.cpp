@@ -564,6 +564,7 @@ void CDemo::ReadInput(int nCount)
             pInput->keyFlags.pause = bitReader.readBit();
             pInput->keyFlags.quit = bitReader.readBit();
             pInput->keyFlags.restart = bitReader.readBit();
+            pInput->keyFlags.lastWeapon = 0;
             bitReader.skipBits(17);
             pInput->useFlags.useBeastVision = bitReader.readBit();
             pInput->useFlags.useCrystalBall = bitReader.readBit();
@@ -614,6 +615,7 @@ void CDemo::ReadInput(int nCount)
             pInput->keyFlags.pause = bitReader.readBit();
             pInput->keyFlags.quit = bitReader.readBit();
             pInput->keyFlags.restart = bitReader.readBit();
+            pInput->keyFlags.lastWeapon = 0;
             pInput->useFlags.useBeastVision = bitReader.readBit();
             pInput->useFlags.useCrystalBall = bitReader.readBit();
             pInput->useFlags.useJumpBoots = bitReader.readBit();

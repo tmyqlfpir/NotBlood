@@ -127,6 +127,7 @@ struct PLAYER
     int                 damageControl[7];
     char                curWeapon;
     char                nextWeapon;
+    char                lastWeapon;
     int                 weaponTimer;
     int                 weaponState;
     int                 weaponAmmo;  //rename

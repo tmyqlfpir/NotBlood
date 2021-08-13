@@ -2259,7 +2259,19 @@ void WeaponProcess(PLAYER *pPlayer) {
         pPlayer->input.keyFlags.nextWeapon = 0;
         pPlayer->input.keyFlags.prevWeapon = 0;
     }
-    const KEYFLAGS oldKeyFlags = pPlayer->input.keyFlags; // used to fix scroll issue for banned weapons 
+    const KEYFLAGS oldKeyFlags = pPlayer->input.keyFlags; // used to fix next/prev weapon issue for banned weapons
+    if (pPlayer->input.keyFlags.lastWeapon)
+    {
+        pPlayer->input.keyFlags.lastWeapon = 0;
+        if ((pPlayer->lastWeapon > 0) && (pPlayer->lastWeapon < 13) && pPlayer->curWeapon && !VanillaMode() && !DemoRecordStatus())
+        {
+            pPlayer->input.keyFlags.nextWeapon = 0;
+            pPlayer->input.keyFlags.prevWeapon = 0;
+            pPlayer->nextWeapon = 0;
+            pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
+            pPlayer->input.newWeapon = pPlayer->lastWeapon;
+        }
+    }
     if (pPlayer->input.keyFlags.nextWeapon)
     {
         pPlayer->input.keyFlags.nextWeapon = 0;

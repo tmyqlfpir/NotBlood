@@ -297,6 +297,12 @@ void ctrlGetInput(void)
         gInput.keyFlags.prevWeapon = 1;
     }
 
+    if (BUTTON(gamefunc_Last_Weapon))
+    {
+        CONTROL_ClearButton(gamefunc_Last_Weapon);
+        gInput.keyFlags.lastWeapon = 1;
+    }
+
     if (BUTTON(gamefunc_Show_Opponents_Weapon))
     {
         CONTROL_ClearButton(gamefunc_Show_Opponents_Weapon);
