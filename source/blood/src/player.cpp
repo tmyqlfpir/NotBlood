@@ -1755,11 +1755,8 @@ void playerProcess(PLAYER *pPlayer)
     }
     const int prevWeapon = pPlayer->curWeapon;
     ProcessInput(pPlayer);
-    if (prevWeapon != pPlayer->curWeapon) // save current weapon to last weapon state on weapon change
-    {
-        if ((prevWeapon < 13) && (prevWeapon > 0))
-            pPlayer->lastWeapon = prevWeapon;
-    }
+    if (prevWeapon && !pPlayer->curWeapon) // save current weapon to last weapon state on weapon change
+        pPlayer->lastWeapon = prevWeapon;
     int nSpeed = approxDist(xvel[nSprite], yvel[nSprite]);
     pPlayer->zViewVel = interpolate(pPlayer->zViewVel, zvel[nSprite], 0x7000);
     int dz = pPlayer->pSprite->z-pPosture->eyeAboveZ-pPlayer->zView;

@@ -1356,8 +1356,8 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         {-1, 0, 0x8000}, // NULL
     };
 
-    const int curTime = gLevelTime, travelTime = 8, holdTime = gShowWeaponSelectTime, decayTime = 7;
-    const float animPosMax = 27, animPosMin = -10, animPosRange = animPosMax + (-animPosMin);
+    const int curTime = gLevelTime, travelTime = 7, holdTime = gShowWeaponSelectTime, decayTime = 6;
+    const float animPosMax = 24, animPosMin = -10, animPosRange = animPosMax + (-animPosMin);
     static int animClock = 0, animState = 0;
     static float animPos = animPosMin, animPosPrev = 0;
     animPosPrev = animPos;
@@ -1438,9 +1438,9 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
 
     const int x = 640/4;
     const int xoffset = 640/11;
-    int yPrimary = (int)((viewDrawParametricBlend(clamp(animPos, 0, 1) * 1.4f) * animPosRange) + animPosMin);
-    if (gViewSize > 2) // if full hud is displayed, bump up by a few pixels
-        yPrimary += 12;
+    int yPrimary = (int)((viewDrawParametricBlend(clamp(animPos, 0, 1) * 1.1f) * animPosRange) + animPosMin);
+    if ((gViewSize > 2) && (gShowWeaponSelect == 1)) // if full hud is displayed, bump up by a few pixels
+        yPrimary += 24;
     int ySecondary = yPrimary;
     if (gShowWeaponSelect == 1) // draw at the bottom instead
         yPrimary = -yPrimary + 195, ySecondary = -ySecondary + 195;
@@ -1449,7 +1449,9 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     const int picnumCur = weaponIcons[weaponCur][0];
     const int yCur = yPrimary + weaponIcons[weaponCur][1];
     const int scaleCur = weaponIcons[weaponCur][2];
-    rotatesprite(x<<16, yCur<<16, scaleCur, 0, picnumCur, 0, 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
+    DrawStatMaskedSprite(picnumCur, x, yCur, 256, 0, 0, scaleCur);
+    if (pPlayer->isUnderwater && BannedUnderwater(weaponCur)) // if current weapon is unavailable, draw cross over icon
+        DrawStatMaskedSprite(1142, x, yCur, 256, 5, 0, 0x2000);
     if (showThreeWeapons)
     {
         const int picnumPrev = weaponIcons[weaponPrev][0];
@@ -1458,8 +1460,12 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         const int yNext = ySecondary + weaponIcons[weaponNext][1];
         const int scalePrev = weaponIcons[weaponPrev][2];
         const int scaleNext = weaponIcons[weaponNext][2];
-        rotatesprite((x-xoffset)<<16, yPrev<<16, scalePrev, 0, picnumPrev, 0, 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
-        rotatesprite((x+xoffset)<<16, yNext<<16, scaleNext, 0, picnumNext, 0, 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
+        DrawStatMaskedSprite(picnumPrev, x-xoffset, yPrev, 256, 0, 0, scalePrev);
+        DrawStatMaskedSprite(picnumNext, x+xoffset, yNext, 256, 0, 0, scaleNext);
+        if (pPlayer->isUnderwater && BannedUnderwater(weaponPrev)) // if previous weapon is unavailable, draw cross over icon
+            DrawStatMaskedSprite(1142, x-xoffset, ySecondary, 256, 5, 0, 0x2000);
+        if (pPlayer->isUnderwater && BannedUnderwater(weaponNext)) // if next weapon is unavailable, draw cross over icon
+            DrawStatMaskedSprite(1142, x+xoffset, ySecondary, 256, 5, 0, 0x2000);
     }
 }
 
@@ -1716,9 +1722,9 @@ void UpdateStatusBar(ClockTicks arg)
             nPalette = 10;
     }
 
-    viewDrawWeaponSelect(pPlayer, pXSprite);
-
     if (gViewSize < 0) return;
+
+    viewDrawWeaponSelect(pPlayer, pXSprite);
 
     if (gViewSize == 1)
     {

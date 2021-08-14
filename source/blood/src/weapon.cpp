@@ -2260,6 +2260,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         pPlayer->input.keyFlags.prevWeapon = 0;
     }
     const KEYFLAGS oldKeyFlags = pPlayer->input.keyFlags; // used to fix next/prev weapon issue for banned weapons
+    bool lastWeaponPressed = false; // needed to bypass weapon cycle issues with tnt->remote->proxy
     if (pPlayer->input.keyFlags.lastWeapon)
     {
         pPlayer->input.keyFlags.lastWeapon = 0;
@@ -2270,6 +2271,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             pPlayer->nextWeapon = 0;
             pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
             pPlayer->input.newWeapon = pPlayer->lastWeapon;
+            lastWeaponPressed = true;
         }
     }
     if (pPlayer->input.keyFlags.nextWeapon)
@@ -2347,7 +2349,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             {
                 PLAYER tmpPlayer = *pPlayer;
                 tmpPlayer.curWeapon = pPlayer->input.newWeapon; // set current banned weapon to curweapon so WeaponFindNext() can find the next weapon
-                for (int i = 0; i < 3; i++) // attempt twice to find a new weapon
+                for (int i = 0; i < 3; i++) // attempt to find a non-banned weapon
                 {
                     tmpPlayer.curWeapon = WeaponFindNext(&tmpPlayer, NULL, (char)(oldKeyFlags.nextWeapon == 1));
                     if (!BannedUnderwater(tmpPlayer.curWeapon)) // if new weapon is not a banned weapon, set to new current weapon
@@ -2359,7 +2361,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 }
             }
         }
-        if (pPlayer->input.newWeapon == 6)
+        if (pPlayer->input.newWeapon == 6 && !lastWeaponPressed)
         {
             if (pPlayer->curWeapon == 6)
             {
@@ -2797,7 +2799,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     WeaponUpdateState(pPlayer);
 }
 
-void sub_51340(spritetype *pMissile, int a2)
+void teslaHit(spritetype *pMissile, int a2)
 {
     char va4[(kMaxSectors+7)>>3];
     int x = pMissile->x;
