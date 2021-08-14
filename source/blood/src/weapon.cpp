@@ -2254,23 +2254,25 @@ void WeaponProcess(PLAYER *pPlayer) {
             pPlayer->nextWeapon = 0;
         }
     }
-    if ((pPlayer->curWeapon == 0) && !VanillaMode() && !DemoRecordStatus()) // if player is switching weapon, clear next/prev keyflags
+    if ((pPlayer->curWeapon == 0) && !VanillaMode() && !DemoRecordStatus()) // if player is switching weapon, clear next/prev/last keyflags
     {
         pPlayer->input.keyFlags.nextWeapon = 0;
         pPlayer->input.keyFlags.prevWeapon = 0;
+        pPlayer->input.keyFlags.lastWeapon = 0;
     }
     const KEYFLAGS oldKeyFlags = pPlayer->input.keyFlags; // used to fix next/prev weapon issue for banned weapons
     bool lastWeaponPressed = false; // needed to bypass weapon cycle issues with tnt->remote->proxy
     if (pPlayer->input.keyFlags.lastWeapon)
     {
         pPlayer->input.keyFlags.lastWeapon = 0;
-        if ((pPlayer->lastWeapon > 0) && (pPlayer->lastWeapon < 13) && pPlayer->curWeapon && !VanillaMode() && !DemoRecordStatus())
+        if (pPlayer->curWeapon && (pPlayer->lastWeapon != pPlayer->curWeapon) && (pPlayer->lastWeapon > 0) && (pPlayer->lastWeapon < 13) && !VanillaMode() && !DemoRecordStatus())
         {
             pPlayer->input.keyFlags.nextWeapon = 0;
             pPlayer->input.keyFlags.prevWeapon = 0;
             pPlayer->nextWeapon = 0;
             pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
             pPlayer->input.newWeapon = pPlayer->lastWeapon;
+            pPlayer->lastWeapon = pPlayer->curWeapon;
             lastWeaponPressed = true;
         }
     }
