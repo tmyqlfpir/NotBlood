@@ -579,6 +579,8 @@ int gHealthTemp[kMaxPlayers];
 vec3_t startpos;
 int16_t startang, startsectnum;
 
+int gDoQuickSave = 0;
+
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
     const bool triggerAutosave = !gDemo.at0 && !gDemo.at1 && (gGameOptions.nGameType == 0) && // if demo isn't active and not in multiplayer session and we switched to new level
@@ -787,6 +789,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     netWaitForEveryone(0);
     totalclock = 0;
     gPaused = 0;
+    gDoQuickSave = 0;
     gGameStarted = 1;
     ready2send = 1;
     gAutosaveInCurLevel = false;
@@ -835,8 +838,6 @@ void StartNetworkLevel(void)
     }
     StartLevel(&gGameOptions);
 }
-
-int gDoQuickSave = 0;
 
 static void DoQuickLoad(void)
 {

@@ -1083,7 +1083,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             if (pPlayer->hasKey[pItem->type-99]) return 0;
             pPlayer->hasKey[pItem->type-99] = 1;
             pickupSnd = 781;
-            if (gAutosave > 0 && gGameOptions.nGameType == 0) // if autosave is on and not currently in multiplayer, autosave on key pickup
+            if ((gAutosave > 0) && (gGameOptions.nGameType == 0) && !gDemo.at1) // if autosave is on and not currently in multiplayer/demo playback, autosave on key pickup
                 gDoQuickSave = 3;
             break;
         case kItemHealthMedPouch:
