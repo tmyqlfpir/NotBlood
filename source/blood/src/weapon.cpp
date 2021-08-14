@@ -2265,15 +2265,18 @@ void WeaponProcess(PLAYER *pPlayer) {
     if (pPlayer->input.keyFlags.lastWeapon)
     {
         pPlayer->input.keyFlags.lastWeapon = 0;
-        if (pPlayer->curWeapon && (pPlayer->lastWeapon != pPlayer->curWeapon) && (pPlayer->lastWeapon > 0) && (pPlayer->lastWeapon < 13) && !VanillaMode() && !DemoRecordStatus())
+        if (pPlayer->curWeapon && (pPlayer->curWeapon != pPlayer->lastWeapon) && !VanillaMode() && !DemoRecordStatus()) // if player is not currently switching weapons and current weapon is different to last weapon
         {
-            pPlayer->input.keyFlags.nextWeapon = 0;
-            pPlayer->input.keyFlags.prevWeapon = 0;
-            pPlayer->nextWeapon = 0;
-            pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
-            pPlayer->input.newWeapon = pPlayer->lastWeapon;
-            pPlayer->lastWeapon = pPlayer->curWeapon;
-            lastWeaponPressed = true;
+            if ((pPlayer->lastWeapon > 0) && (pPlayer->lastWeapon < 13) && !(pPlayer->isUnderwater && BannedUnderwater(pPlayer->lastWeapon))) // if last weapon is safe to switch to
+            {
+                pPlayer->input.keyFlags.nextWeapon = 0;
+                pPlayer->input.keyFlags.prevWeapon = 0;
+                pPlayer->nextWeapon = 0;
+                pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
+                pPlayer->input.newWeapon = pPlayer->lastWeapon;
+                pPlayer->lastWeapon = pPlayer->curWeapon;
+                lastWeaponPressed = true;
+            }
         }
     }
     if (pPlayer->input.keyFlags.nextWeapon)
