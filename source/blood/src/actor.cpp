@@ -3093,7 +3093,7 @@ void actKillDude(int nKillerSprite, spritetype *pSprite, DAMAGE_TYPE damageType,
         }
         break;
     case kDudeTinyCaleb:
-        if (VanillaMode() || DemoRecordStatus())
+        if (!EnemiesNotBlood() || VanillaMode() || DemoRecordStatus())
             break;
         if (damageType == kDamageBurn && pXSprite->medium == kMediumNormal)
         {
@@ -3925,6 +3925,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
         case kMissileFlameHound:
             if (hitCode == 3)
             {
+                bool reduceSprayDamage = ProjectilesNotBlood() && actSpriteOwnerIsPlayer(pMissile) && !VanillaMode() && !DemoRecordStatus(); // reduce spray can damage if using new projectile collisions mode (higher hit rate)
                 int nObject = gHitInfo.hitsprite;
                 dassert(nObject >= 0 && nObject < kMaxSprites);
                 spritetype *pObject = &sprite[nObject];
@@ -3935,7 +3936,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                         evPost(nObject, 3, 0, kCallbackFXFlameLick);
                     int nOwner = actSpriteOwnerToSpriteId(pMissile);
                     actBurnSprite(pMissile->owner, pXObject, (4+gGameOptions.nDifficulty)<<2);
-                    actDamageSprite(nOwner, pObject, kDamageBurn, 8);
+                    actDamageSprite(nOwner, pObject, kDamageBurn, !reduceSprayDamage ? 8 : 3);
                 }
             }
             break;
@@ -4460,7 +4461,7 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
     if (pSprite == NULL)
         return 0;
     int nSprite = pSprite->index;
-    if (!gGameOptions.bProjectileBehavior || VanillaMode() || DemoRecordStatus()) // if projectile behavior is set to original, or sprite has no owner, or in demo/vanilla mode
+    if (!ProjectilesNotBlood() || VanillaMode() || DemoRecordStatus()) // if projectile behavior is set to original, or sprite has no owner, or in demo/vanilla mode
         return 0;
     if (nSprite < 0 || nSprite >= kMaxSprites) // invalid sprite, don't bother processing
         return 0;
@@ -4518,7 +4519,7 @@ int MoveThing(spritetype *pSprite)
         short bakCstat = pSprite->cstat;
         pSprite->cstat &= ~257;
         const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
-        if(tinywd && gGameOptions.bProjectileBehavior && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        if(tinywd && ProjectilesNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
             wd = tinywd;
             v8 = gSpriteHit[nXSprite].hit = ClipMoveEDuke(pSprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
@@ -4537,7 +4538,7 @@ int MoveThing(spritetype *pSprite)
         if ((gSpriteHit[nXSprite].hit&0xc000) == 0x8000) {
             int nHitWall = gSpriteHit[nXSprite].hit&0x3fff;
             bool bounce = true;
-            if (gGameOptions.bProjectileBehavior && (wall[nHitWall].nextsector != -1) && !VanillaMode() && !DemoRecordStatus()) { // if not in demo/vanilla mode, and sprite didn't hit a solid wall
+            if (ProjectilesNotBlood() && (wall[nHitWall].nextsector != -1) && !VanillaMode() && !DemoRecordStatus()) { // if not in demo/vanilla mode, and sprite didn't hit a solid wall
                 if (actSpriteOwnerIsPlayer(pSprite) || (pSprite->type == kThingZombieHead) || (pSprite->type == kThingKickablePail)) { // if sprite is owned by a player, or is a non-played owned zombie head/metal pail
                     switch (pSprite->type) {
                         case kThingArmedTNTBundle: // filter out these sprites
@@ -5042,7 +5043,7 @@ void MoveDude(spritetype *pSprite)
                     break;
                 case kDudeBurningCultist:
                 {
-                    const bool fixRandomCultist = (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && !VanillaMode() && !DemoRecordStatus(); // fix burning cultists randomly switching types underwater
+                    const bool fixRandomCultist = EnemiesNotBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && !VanillaMode() && !DemoRecordStatus(); // fix burning cultists randomly switching types underwater
                     if (Chance(chance))
                         pSprite->type = kDudeCultistTommy;
                     else
@@ -5370,7 +5371,7 @@ int MoveMissile(spritetype *pSprite)
         clipmoveboxtracenum = 1;
         int vdx;
         const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
-        if(tinywd && gGameOptions.bProjectileBehavior && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        if(tinywd && ProjectilesNotBlood() && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
             wd = tinywd;
             vdx = ClipMoveEDuke(pSprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
@@ -6402,7 +6403,7 @@ void actProcessSprites(void)
         // example: throwing dynamite at the first doors of E1M2 while standing on the rotating platform
         // if new explosions behavior is on bypass checking spriteExp array
         // this will fix the issue of dynamite not working with some sectors, as well as some other edge cases
-        const bool bypassSpriteExpCheck = gGameOptions.bExplosionBehavior && actSpriteIdIsPlayer(pSprite->owner) && !VanillaMode() && !DemoRecordStatus();
+        const bool bypassSpriteExpCheck = ExplosionsNotBlood() && actSpriteIdIsPlayer(pSprite->owner) && !VanillaMode() && !DemoRecordStatus();
 
         for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
         {
@@ -6578,7 +6579,7 @@ void actProcessSprites(void)
         if (nXSprite > 0)
         {
             XSPRITE *pXSprite = &xsprite[nXSprite];
-            const bool fixBurnGlitch = IsBurningDude(pSprite) && !VanillaMode() && !DemoRecordStatus(); // if enemies are burning, always apply burning damage per tick
+            const bool fixBurnGlitch = EnemiesNotBlood() && IsBurningDude(pSprite) && !VanillaMode() && !DemoRecordStatus(); // if enemies are burning, always apply burning damage per tick
             if ((pXSprite->burnTime > 0) || fixBurnGlitch)
             {
                 switch (pSprite->type)

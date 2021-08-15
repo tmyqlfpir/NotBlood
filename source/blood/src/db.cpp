@@ -716,11 +716,12 @@ void dbRandomizerModeInit(void)
         "IH8PETS!", // no rats/hands/spiders/bats/hell hounds
     };
 
+    const uint32_t defaultSeed = 0xCA1EB666;
     gGameOptions.nRandomizerCheat = -1;
     if (gGameOptions.szRandomizerSeed[0] == '\0') // if seed is empty, generate a new one
     {
         if (gGameOptions.nGameType > 0) // if in multiplayer, use a failsafe seed
-            curRandomizerSeed = 0xCA1EB666;
+            curRandomizerSeed = defaultSeed;
         else // in singleplayer
             curRandomizerSeed = qrand();
         curRandomizerSeedThings = curRandomizerSeedDudes = curRandomizerSeed;
@@ -751,7 +752,7 @@ void dbRandomizerModeInit(void)
     if ((gGameOptions.nRandomizerCheat != -1) && (gGameOptions.nGameType == 0)) // if seed cheat is active and in singleplayer
         curRandomizerSeed = qrand(); // always re-roll random seed when cheat seed mode is active
     else
-        curRandomizerSeed = 0; // reset seed
+        curRandomizerSeed = defaultSeed; // reset seed
     for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++) // shitty seed system, but if it works for the N64's CIC then who am I to judge
     {
         if (gGameOptions.szRandomizerSeed[i] == '\0')

@@ -73,6 +73,7 @@ GAMEOPTIONS gSingleGameOptions = {
     1,     // bool bDamageInvul;
     0,     // bool bExplosionBehavior;
     0,     // bool bProjectileBehavior;
+    0,     // bool bEnemyBehavior;
     0,     // bool bHitscanProjectiles;
     0,     // char nRandomizerMode;
     "",    // char szRandomizerSeed[9];
@@ -453,6 +454,7 @@ void LevelsLoadSave::Load(void)
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;
         gGameOptions.bProjectileBehavior = gProjectileBehavior;
+        gGameOptions.bEnemyBehavior = gEnemyBehavior;
         gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
         gGameOptions.nRandomizerMode = gRandomizerMode;
         Bmemcpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));

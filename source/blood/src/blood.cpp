@@ -610,6 +610,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;
         gGameOptions.bProjectileBehavior = gProjectileBehavior;
+        gGameOptions.bEnemyBehavior = gEnemyBehavior;
         gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
         gGameOptions.nRandomizerMode = gRandomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
@@ -639,6 +640,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
+        gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
@@ -820,6 +822,7 @@ void StartNetworkLevel(void)
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
+        gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
@@ -2830,6 +2833,18 @@ bool WeaponsNBlood(void) {
 
 bool WeaponsV10x(void) {
     return gGameOptions.nWeaponsVer == 2; // V1.0x style weapon behavior
+}
+
+bool ExplosionsNotBlood(void) {
+    return gGameOptions.bExplosionBehavior == 0; // notblood's explosions logic
+}
+
+bool ProjectilesNotBlood(void) {
+    return gGameOptions.bProjectileBehavior == 0; // notblood's projectile collision
+}
+
+bool EnemiesNotBlood(void) {
+    return gGameOptions.bEnemyBehavior == 0; // notblood's enemies
 }
 
 bool fileExistsRFF(int id, const char *ext) {
