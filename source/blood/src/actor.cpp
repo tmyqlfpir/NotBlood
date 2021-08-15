@@ -3092,6 +3092,17 @@ void actKillDude(int nKillerSprite, spritetype *pSprite, DAMAGE_TYPE damageType,
             return;
         }
         break;
+    case kDudeTinyCaleb:
+        if (VanillaMode() || DemoRecordStatus())
+            break;
+        if (damageType == kDamageBurn && pXSprite->medium == kMediumNormal)
+        {
+            pSprite->type = kDudeBurningTinyCaleb;
+            aiNewState(pSprite, pXSprite, &tinycalebBurnGoto);
+            actHealDude(pXSprite, dudeInfo[39].startHealth, dudeInfo[39].startHealth);
+            return;
+        }
+        break;
     }
     for (int p = connecthead; p >= 0; p = connectpoint2[p])
     {
@@ -4448,13 +4459,12 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
 {
     if (pSprite == NULL)
         return 0;
-    int nOwner = pSprite->owner;
     int nSprite = pSprite->index;
-    if (!gGameOptions.bProjectileBehavior || nOwner == -1 || VanillaMode() || DemoRecordStatus()) // if projectile behavior is set to original, or sprite has no owner, or in demo/vanilla mode
-        return 0;
-    if (!actSpriteIdIsPlayer(nOwner)) // if sprite is not player owned/spawned
+    if (!gGameOptions.bProjectileBehavior || VanillaMode() || DemoRecordStatus()) // if projectile behavior is set to original, or sprite has no owner, or in demo/vanilla mode
         return 0;
     if (nSprite < 0 || nSprite >= kMaxSprites) // invalid sprite, don't bother processing
+        return 0;
+    if (!actSpriteOwnerIsPlayer(pSprite)) // if sprite is not player owned/spawned
         return 0;
 
     int smallwd;
@@ -4508,10 +4518,10 @@ int MoveThing(spritetype *pSprite)
         short bakCstat = pSprite->cstat;
         pSprite->cstat &= ~257;
         const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
-        if(tinywd && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        if(tinywd && gGameOptions.bProjectileBehavior && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
             wd = tinywd;
-            v8 = gSpriteHit[nXSprite].hit = ClipMoveHack(pSprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
+            v8 = gSpriteHit[nXSprite].hit = ClipMoveEDuke(pSprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
         }
         else
         {
@@ -4527,8 +4537,8 @@ int MoveThing(spritetype *pSprite)
         if ((gSpriteHit[nXSprite].hit&0xc000) == 0x8000) {
             int nHitWall = gSpriteHit[nXSprite].hit&0x3fff;
             bool bounce = true;
-            if (WeaponsNotBlood() && (wall[nHitWall].nextsector != -1) && !VanillaMode() && !DemoRecordStatus()) { // if not in demo/vanilla mode, and sprite didn't hit a solid wall
-                if (actSpriteOwnerIsPlayer(pSprite) || (pSprite->type == kThingZombieHead) || (pSprite->type == kThingKickablePail)) { // if sprite is owned by a player, or is a zombie head/metal pail
+            if (gGameOptions.bProjectileBehavior && (wall[nHitWall].nextsector != -1) && !VanillaMode() && !DemoRecordStatus()) { // if not in demo/vanilla mode, and sprite didn't hit a solid wall
+                if (actSpriteOwnerIsPlayer(pSprite) || (pSprite->type == kThingZombieHead) || (pSprite->type == kThingKickablePail)) { // if sprite is owned by a player, or is a non-played owned zombie head/metal pail
                     switch (pSprite->type) {
                         case kThingArmedTNTBundle: // filter out these sprites
                         case kThingArmedProxBomb:
@@ -5032,22 +5042,17 @@ void MoveDude(spritetype *pSprite)
                     break;
                 case kDudeBurningCultist:
                 {
+                    const bool fixRandomCultist = (pSprite->type >= kDudeBase) && (pSprite->type < kDudeMax) && !VanillaMode() && !DemoRecordStatus(); // fix burning cultists randomly switching types underwater
                     if (Chance(chance))
-                    {
                         pSprite->type = kDudeCultistTommy;
-                        pXSprite->burnTime = 0;
-                        evPost(nSprite, 3, 0, kCallbackEnemeyBubble);
-                        sfxPlay3DSound(pSprite, 720, -1, 0);
-                        aiNewState(pSprite, pXSprite, &cultistSwimGoto);
-                    }
                     else
-                    {
                         pSprite->type = kDudeCultistShotgun;
-                        pXSprite->burnTime = 0;
-                        evPost(nSprite, 3, 0, kCallbackEnemeyBubble);
-                        sfxPlay3DSound(pSprite, 720, -1, 0);
-                        aiNewState(pSprite, pXSprite, &cultistSwimGoto);
-                    }
+                    if (fixRandomCultist) // fix burning cultists randomly switching types underwater
+                        pSprite->type = pSprite->inittype; // restore back to spawned cultist type
+                    pXSprite->burnTime = 0;
+                    evPost(nSprite, 3, 0, kCallbackEnemeyBubble);
+                    sfxPlay3DSound(pSprite, 720, -1, 0);
+                    aiNewState(pSprite, pXSprite, &cultistSwimGoto);
                     break;
                 }
                 case kDudeZombieAxeNormal:
@@ -5365,10 +5370,10 @@ int MoveMissile(spritetype *pSprite)
         clipmoveboxtracenum = 1;
         int vdx;
         const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
-        if(tinywd && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        if(tinywd && gGameOptions.bProjectileBehavior && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
         {
             wd = tinywd;
-            vdx = ClipMoveHack(pSprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
+            vdx = ClipMoveEDuke(pSprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
         }
         else
         {
@@ -6573,7 +6578,8 @@ void actProcessSprites(void)
         if (nXSprite > 0)
         {
             XSPRITE *pXSprite = &xsprite[nXSprite];
-            if (pXSprite->burnTime > 0)
+            bool fixBurnGlitch = IsBurningDude(pSprite) && !VanillaMode() && !DemoRecordStatus(); // if enemies are these types, always apply burning damage per tick
+            if ((pXSprite->burnTime > 0) || fixBurnGlitch)
             {
                 switch (pSprite->type)
                 {

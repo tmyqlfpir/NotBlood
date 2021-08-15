@@ -2576,7 +2576,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.randomizerMode = itemNetEnhancementRandomizerMode.m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bmemcpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
     if (gPacketStartGame.szRandomizerSeed[0] == '\0') // if no seed entered, generate new one before sending packet
-        sprintf(gPacketStartGame.szRandomizerSeed, "%08X", wrand());
+        sprintf(gPacketStartGame.szRandomizerSeed, "%08X", qrand());
     ////
     gPacketStartGame.unk = 0;
     Bstrncpy(gPacketStartGame.userMapName, zUserMapName, sizeof(zUserMapName));

@@ -947,19 +947,20 @@ void LocalKeys(void)
     if (gDoQuickSave)
     {
         keyFlushScans();
-        if (gGameOptions.nGameType > 0)
-            return;
-        switch (gDoQuickSave)
+        if ((gGameOptions.nGameType == 0) && !gDemo.at1) // if not in multiplayer session and not in demo playback, allow quicksave
         {
-        case 1:
-            DoQuickSave();
-            break;
-        case 2:
-            DoQuickLoad();
-            break;
-        case 3:
-            AutosaveGame(false);
-            break;
+            switch (gDoQuickSave)
+            {
+            case 1:
+                DoQuickSave();
+                break;
+            case 2:
+                DoQuickLoad();
+                break;
+            case 3:
+                AutosaveGame(false);
+                break;
+            }
         }
         gDoQuickSave = 0;
         return;

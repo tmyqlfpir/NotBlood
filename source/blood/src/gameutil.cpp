@@ -808,32 +808,31 @@ unsigned int ClipMove(int *x, int *y, int *z, int *nSector, int xv, int yv, int 
     return nRes;
 }
 
-unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask)
+unsigned int ClipMoveEDuke(spritetype *pSprite, int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask)
 {
     // while this function may look as hideous as any build engine internals, it's been carefully setup like a stack of cards
     // do not touch unless you know what you're doing, or are severely drunk
-    // good levels to test with, the train doors on E1M2 while standing on the rotating platform, and the first breakable cave wall of CPE1M1
+    // good levels to test with - the first breakable cave wall of CPE1M1 and DWE2M8's skull key room
     if ((xv == 0) && (yv == 0)) // not moving, don't bother continuing
         return 0;
     dassert(pSprite != NULL);
     int origX = *x;
     int origY = *y;
     int origZ = *z;
-    short updSect = *nSector;
-    short origSect = updSect;
+    short updSect = *nSector, origSect = *nSector;
+    const int bakCompat = enginecompatibilitymode;
+    enginecompatibilitymode = ENGINE_EDUKE32; // improved clipmove accuracy
     unsigned int nRes = clipmove_old((int32_t*)x, (int32_t*)y, (int32_t*)z, &updSect, xv<<14, yv<<14, wd, cd, fd, nMask);
+    enginecompatibilitymode = bakCompat; // restore
     if (updSect == -1) // clipped out of bounds, restore position
-    {
-        *x = origX; *y = origY; *z = origZ;
-    }
+        *x = origX, *y = origY, *z = origZ;
     else
-    {
         *nSector = updSect;
-    }
     if (nRes > 0) // got a hit, return
         return nRes;
 
     // we didn't hit shit, let's raycast and try again
+    bool seekSector = false;
     const int distClipmove = approxDist(origX-*x, origY-*y);
     vec3_t pos = {origX, origY, origZ};
     hitdata_t hitData;
@@ -841,28 +840,33 @@ unsigned int ClipMoveHack(spritetype *pSprite, int *x, int *y, int *z, int *nSec
     hitscangoal.x = *x;
     hitscangoal.y = *y;
     hitscan(&pos, origSect, Cos(pSprite->ang)>>16, Sin(pSprite->ang)>>16, 0, &hitData, nMask);
-    if (hitData.sprite >= kMaxSprites || hitData.wall >= kMaxWalls || hitData.sect >= kMaxSectors)
+    if (hitData.sprite >= kMaxSprites || hitData.wall >= kMaxWalls || hitData.sect >= kMaxSectors) // we didn't hit shit, get current sector and return
+        seekSector = true;
+    else if (hitData.sprite >= 0 || hitData.wall >= 0) // did we hit something, and was it a sprite/wall
     {
-        *x = origX; *y = origY; *z = origZ;
-        if (hitData.sect >= 0)
-            *nSector = hitData.sect;
-    }
-    const int distRay = approxDist(origX-hitData.pos.x, origY-hitData.pos.y);
-    if ((updSect == -1) || ((distRay < distClipmove) && (hitData.sprite >= 0 || hitData.wall >= 0))) // did we hit something, and was it a sprite/wall, or we're just floating in zero-g and we should update the sector and fake a wall hit
-    {
+        const int distRay = approxDist(origX-hitData.pos.x, origY-hitData.pos.y);
         *x = hitData.pos.x; // set to raycast position
         *y = hitData.pos.y;
         *z = hitData.pos.z;
         *nSector = hitData.sect;
+        wd = pSprite->clipdist<<2; // use the original wd values to offset from wall/sprite
         if ((distRay - ((wd+8)<<1)) > 0) // if there is enough room to offset from ray's hit surface
         {
             *x -= mulscale30(wd+8, Cos(pSprite->ang)); // offset using walldist argument
             *y -= mulscale30(wd+8, Sin(pSprite->ang));
+            seekSector = true; // we've moved the sprite, there might be a very small possibility that the sector is misaligned so check this
         }
         if (hitData.sprite >= 0)
             nRes = (hitData.sprite & 0x3FFF) | 0x8000;
         else
             nRes = (hitData.wall & 0x3FFF) | 0xC000;
+    }
+    if (seekSector) // find sector for sprite
+    {
+        if (!FindSector(*x, *y, *z, nSector)) // we couldn't find where we're supposed to be, just restore back to original position and return
+            *nSector = -1;
+        else if (!cansee(origX, origY, origZ, origSect, *x, *y, *z, *nSector)) // if the new updated sector is broken (this will happen when there are shared sectors in the same XYZ location such as DWE2M8's skull key room)
+            *nSector = -1;
     }
     if (*nSector == -1) // if sector still failed, restore and pray to the build gods that everything will work out
     {

@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "globals.h"
 #include "db.h"
 #include "iob.h"
+#include "demo.h"
 #include "eventq.h"
 #ifdef NOONE_EXTENSIONS
 #include "nnexts.h"
@@ -406,7 +407,7 @@ unsigned short dbInsertXSprite(int nSprite)
         ThrowError("Out of free XSprites");
     }
     memset(&xsprite[nXSprite], 0, sizeof(XSPRITE));
-    if (!bVanilla)
+    //if (!bVanilla) // this intentionally causes demos to desync like dos (eg: playing BLOOD002.DEM after finishing BLOOD001.DEM) - for notblood we'll disable it
         memset(&gSpriteHit[nXSprite], 0, sizeof(SPRITEHIT));
     xsprite[nXSprite].reference = nSprite;
     sprite[nSprite].extra = nXSprite;
@@ -721,7 +722,7 @@ void dbRandomizerModeInit(void)
         if (gGameOptions.nGameType > 0) // if in multiplayer, use a failsafe seed
             curRandomizerSeed = 0xCA1EB666;
         else // in singleplayer
-            curRandomizerSeed = dbRandomizerRNG(curRandomizerSeed);
+            curRandomizerSeed = qrand();
         curRandomizerSeedThings = curRandomizerSeedDudes = curRandomizerSeed;
         return;
     }
@@ -748,7 +749,7 @@ void dbRandomizerModeInit(void)
     }
 
     if ((gGameOptions.nRandomizerCheat != -1) && (gGameOptions.nGameType == 0)) // if seed cheat is active and in singleplayer
-        curRandomizerSeed = dbRandomizerRNG(curRandomizerSeed); // always re-roll random seed when cheat seed mode is active
+        curRandomizerSeed = qrand(); // always re-roll random seed when cheat seed mode is active
     else
         curRandomizerSeed = 0; // reset seed
     for (int i = 0; i < (int)sizeof(gGameOptions.szRandomizerSeed); i++) // shitty seed system, but if it works for the N64's CIC then who am I to judge
