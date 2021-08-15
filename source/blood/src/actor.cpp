@@ -5042,7 +5042,7 @@ void MoveDude(spritetype *pSprite)
                     break;
                 case kDudeBurningCultist:
                 {
-                    const bool fixRandomCultist = (pSprite->type >= kDudeBase) && (pSprite->type < kDudeMax) && !VanillaMode() && !DemoRecordStatus(); // fix burning cultists randomly switching types underwater
+                    const bool fixRandomCultist = (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && !VanillaMode() && !DemoRecordStatus(); // fix burning cultists randomly switching types underwater
                     if (Chance(chance))
                         pSprite->type = kDudeCultistTommy;
                     else
@@ -6578,7 +6578,7 @@ void actProcessSprites(void)
         if (nXSprite > 0)
         {
             XSPRITE *pXSprite = &xsprite[nXSprite];
-            bool fixBurnGlitch = IsBurningDude(pSprite) && !VanillaMode() && !DemoRecordStatus(); // if enemies are these types, always apply burning damage per tick
+            const bool fixBurnGlitch = IsBurningDude(pSprite) && !VanillaMode() && !DemoRecordStatus(); // if enemies are these types, always apply burning damage per tick
             if ((pXSprite->burnTime > 0) || fixBurnGlitch)
             {
                 switch (pSprite->type)
