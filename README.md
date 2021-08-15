@@ -18,7 +18,7 @@ New features include:
 * Charge up alt fire for pitchfork
 * Bullet projectiles for hitscan enemies
 * New enhancements menu under game options
-* New last weapon key binding (default Q)
+* New last weapon key binding (default Q) ([demo](https://files.catbox.moe/28cirg.mp4))
 * Fixed various original glitches with burning enemies
 * Fixed underwater cultists changing weapons when ignited
 * Fixed buggy weapon switching behavior

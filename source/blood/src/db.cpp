@@ -1794,7 +1794,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
             pXSprite->height = bitReader.readUnsigned(16);
             pXSprite->stateTimer = bitReader.readUnsigned(16);
             pXSprite->aiState = NULL;
-            if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and randomizer is on
+            if ((gGameOptions.nRandomizerMode & 1) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and randomizer is set to enemies or enemies+weapons mode
             {
                 const int curRandomCheat = gGameOptions.nRandomizerCheat;
                 const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 14); // only randomize enemy sizes if seed cheats 0-14 are active
