@@ -1136,10 +1136,16 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
         case kDudeTinyCaleb:
             if (nDmgType == kDamageBurn && pXSprite->health <= (unsigned int)pDudeInfo->fleeHealth/* && (pXSprite->at17_6 != 1 || pXSprite->at17_6 != 2)*/)
             {
-                pSprite->type = kDudeBurningInnocent;
                 if (!VanillaMode() && !DemoRecordStatus()) // fix burning sprite for tiny caleb
+                {
                     pSprite->type = kDudeBurningTinyCaleb;
-                aiNewState(pSprite, pXSprite, &cultistBurnGoto);
+                    aiNewState(pSprite, pXSprite, &tinycalebBurnGoto);
+                }
+                else
+                {
+                    pSprite->type = kDudeBurningInnocent;
+                    aiNewState(pSprite, pXSprite, &cultistBurnGoto);
+                }
                 aiPlay3DSound(pSprite, 361, AI_SFX_PRIORITY_0, -1);
                 gDudeExtra[pSprite->extra].at0 = (int)gFrameClock+360;
                 actHealDude(pXSprite, dudeInfo[39].startHealth, dudeInfo[39].startHealth);
