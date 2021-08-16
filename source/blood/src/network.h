@@ -75,12 +75,12 @@ struct PKT_STARTGAME {
     char episodeId, levelId;
     int unk;
     char userMap, userMapName[BMAX_PATH];
-    int nWeaponsVer;
     bool bQuadDamagePowerup;
     bool bDamageInvul;
     bool bExplosionBehavior;
     bool bProjectileBehavior;
     bool bEnemyBehavior;
+    int nWeaponsVer;
     bool bHitscanProjectiles;
     bool bFriendlyFire;
     bool bKeepKeysOnRespawn;

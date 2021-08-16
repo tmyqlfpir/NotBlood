@@ -80,6 +80,8 @@ int32_t gDetail;
 int32_t gMouseAim;
 int32_t gAutoAim;
 int32_t gWeaponSwitch;
+int32_t gAutosave;
+bool gAutosaveInCurLevel;
 int32_t gAutoRun;
 int32_t gViewInterpolate;
 int32_t gWeaponInterpolate;
@@ -121,14 +123,12 @@ int32_t gShowWeaponSelect;
 int32_t gShowWeaponSelectTime;
 
 //////////
-int gWeaponsVer;
-int gAutosave;
-bool gAutosaveInCurLevel;
 int gQuadDamagePowerup;
 int gDamageInvul;
 int gExplosionBehavior;
 int gProjectileBehavior;
 int gEnemyBehavior;
+int gWeaponsVer;
 int gHitscanProjectiles;
 int gRandomizerMode;
 char gzRandomizerSeed[9];
@@ -427,15 +427,15 @@ void CONFIG_SetDefaults(void)
     gMouseAim = 1;
     gAutoAim = 2;
     gWeaponSwitch = 0;
-
-    gWeaponsVer = 0;
     gAutosave = 1;
     gAutosaveInCurLevel = false;
+
     gQuadDamagePowerup = 0;
     gDamageInvul = 0;
     gExplosionBehavior = 0;
     gProjectileBehavior = 0;
     gEnemyBehavior = 0;
+    gWeaponsVer = 0;
     gHitscanProjectiles = 0;
     gRandomizerMode = 0;
     Bmemset(gzRandomizerSeed, 0, sizeof(gzRandomizerSeed));
@@ -702,13 +702,13 @@ int CONFIG_ReadSetup(void)
 
     // Nuke: make cvar
     ///////
-    SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsVer", &gWeaponsVer);
     SCRIPT_GetNumber(scripthandle, "Game Options", "Autosave", &gAutosave);
     SCRIPT_GetNumber(scripthandle, "Game Options", "QuadDamagePowerup", &gQuadDamagePowerup);
     SCRIPT_GetNumber(scripthandle, "Game Options", "DamageInvul", &gDamageInvul);
     SCRIPT_GetNumber(scripthandle, "Game Options", "ExplosionsBehavior", &gExplosionBehavior);
     SCRIPT_GetNumber(scripthandle, "Game Options", "ProjectilesBehavior", &gProjectileBehavior);
     SCRIPT_GetNumber(scripthandle, "Game Options", "EnemyBehavior", &gEnemyBehavior);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsVer", &gWeaponsVer);
     SCRIPT_GetNumber(scripthandle, "Game Options", "HitscanProjectiles", &gHitscanProjectiles);
     SCRIPT_GetNumber(scripthandle, "Game Options", "RandomizerMode", &gRandomizerMode);
 
@@ -1012,13 +1012,13 @@ void CONFIG_WriteSetup(uint32_t flags)
     }
 
     ///////
-    SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsVer", gWeaponsVer, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "Autosave", gAutosave, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "QuadDamagePowerup", gQuadDamagePowerup, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "DamageInvul", gDamageInvul, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "ExplosionsBehavior", gExplosionBehavior, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "ProjectilesBehavior", gProjectileBehavior, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "EnemyBehavior", gEnemyBehavior, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsVer", gWeaponsVer, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "HitscanProjectiles", gHitscanProjectiles, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "RandomizerMode", gRandomizerMode, FALSE, FALSE);
     gzRandomizerSeed[sizeof(gzRandomizerSeed)-1] = '\0';

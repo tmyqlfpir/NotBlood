@@ -54,12 +54,12 @@ struct GAMEOPTIONS {
     int nWeaponRespawnTime;
     int nItemRespawnTime;
     int nSpecialRespawnTime;
-    int nWeaponsVer;
     bool bQuadDamagePowerup;
     bool bDamageInvul;
     bool bExplosionBehavior;
     bool bProjectileBehavior;
     bool bEnemyBehavior;
+    int nWeaponsVer;
     bool bHitscanProjectiles;
     char nRandomizerMode;
     char szRandomizerSeed[9];

@@ -68,12 +68,12 @@ GAMEOPTIONS gSingleGameOptions = {
     1800,  // int nWeaponRespawnTime;
     1800,  // int nItemRespawnTime;
     7200,  // int nSpecialRespawnTime;
-    0,     // int nWeaponsVer;
     0,     // bool bQuadDamagePowerup;
     1,     // bool bDamageInvul;
     0,     // bool bExplosionBehavior;
     0,     // bool bProjectileBehavior;
     0,     // bool bEnemyBehavior;
+    0,     // int nWeaponsVer;
     0,     // bool bHitscanProjectiles;
     0,     // char nRandomizerMode;
     "",    // char szRandomizerSeed[9];
@@ -449,12 +449,12 @@ void LevelsLoadSave::Load(void)
 
     if (gGameOptions.nGameType == 0) // if not multiplayer, update the game options by loading the current set settings
     {
-        gGameOptions.nWeaponsVer = gWeaponsVer;
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;
         gGameOptions.bProjectileBehavior = gProjectileBehavior;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
+        gGameOptions.nWeaponsVer = gWeaponsVer;
         gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
         gGameOptions.nRandomizerMode = gRandomizerMode;
         Bmemcpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));

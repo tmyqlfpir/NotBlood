@@ -605,12 +605,12 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             levelPlayIntroScene(gGameOptions.nEpisode);
 
         ///////
-        gGameOptions.nWeaponsVer = gWeaponsVer;
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;
         gGameOptions.bProjectileBehavior = gProjectileBehavior;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
+        gGameOptions.nWeaponsVer = gWeaponsVer;
         gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
         gGameOptions.nRandomizerMode = gRandomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
@@ -635,12 +635,12 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
 
         ///////
-        gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
+        gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
@@ -817,12 +817,12 @@ void StartNetworkLevel(void)
         gGameOptions.bKeepKeysOnRespawn = gPacketStartGame.bKeepKeysOnRespawn;
         
         ///////
-        gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
+        gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));

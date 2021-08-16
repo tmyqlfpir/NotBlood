@@ -59,6 +59,8 @@ extern int32_t gTurnSpeed;
 extern int32_t gDetail;
 extern int32_t gAutoAim;
 extern int32_t gWeaponSwitch;
+extern int32_t gAutosave;
+extern bool gAutosaveInCurLevel;
 extern int32_t gAutoRun;
 extern int32_t gViewInterpolate;
 extern int32_t gWeaponInterpolate;
@@ -101,14 +103,12 @@ extern int32_t gShowWeaponSelect;
 extern int32_t gShowWeaponSelectTime;
 
 ///////
-extern int gWeaponsVer;
-extern int gAutosave;
-extern bool gAutosaveInCurLevel;
 extern int gQuadDamagePowerup;
 extern int gDamageInvul;
 extern int gExplosionBehavior;
 extern int gProjectileBehavior;
 extern int gEnemyBehavior;
+extern int gWeaponsVer;
 extern int gHitscanProjectiles;
 extern int gRandomizerMode;
 extern char gzRandomizerSeed[9];
