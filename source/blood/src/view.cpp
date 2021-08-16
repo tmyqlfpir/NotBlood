@@ -1356,15 +1356,17 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         {-1, 0, 0x8000}, // NULL
     };
 
-    const int curTime = gLevelTime, travelTime = 7, holdTime = gShowWeaponSelectTime, decayTime = 6;
-    const float animPosMax = 24, animPosMin = -10, animPosRange = animPosMax + (-animPosMin);
-    static int animClock = 0, animState = 0;
-    static float animPos = animPosMin, animPosPrev = 0;
-    animPosPrev = animPos;
+    const int travelTime = 7, holdTime = gShowWeaponSelectTime, decayTime = 6;
+    const float animPosMax = 24, animPosMin = -10;
 
-    if (!gShowWeaponSelect || (curTime < 50) || animState && ((animClock - (holdTime+decayTime) > curTime) || (animClock + (holdTime+decayTime) < curTime))) // if show weapon select is disabled, or player just started level, or the clock is impossibly far ahead (eg player quickloaded)
+    const float animPosRange = animPosMax + (-animPosMin);
+    const int curTime = gLevelTime;
+    static int animClock = 0, animState = 0;
+    static float animPosPrev;
+    float animPos = 0;
+
+    if (!gShowWeaponSelect || (curTime < 50) || animState && ((animClock - (travelTime+holdTime+decayTime) > curTime) || (animClock + (travelTime+holdTime+decayTime) < curTime))) // if show weapon select is disabled, or player just started level, or the clock is impossibly far ahead (eg player quickloaded)
     {
-        animPos = animPosMin; // reset animation state and return
         animClock = curTime;
         animState = 0;
         return;
@@ -1372,61 +1374,67 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
 
     switch (animState)
     {
-    case 0: // opening animation
-    case 4: // finished state
     default:
-        animPos = animPosMin;
-        animPosPrev = animPos;
+    case 0: // idle
         animClock = curTime;
         animState = 0;
-        if (pPlayer->input.newWeapon != 0) // player switched weapon, start weapon animation
-        {
+        animPos = 0;
+        animPosPrev = 0;
+        if (pPlayer->input.newWeapon != 0) // player switched weapon, set start weapon animation state
             animState = 1;
-            break;
-        }
         return;
-    case 1: // travel animation
+    case 1: // init animation
+        if (curTime == animClock) // if we're at the same tick, wait for next frame
+            return;
+        animPos = 0;
+        animPosPrev = -(1.f / (float)travelTime); // this is needed for a smooth opening else it'll create an ugly 'pop'
+        if (gViewInterpolate)
+            animPosPrev = (float)interpolate(animPosPrev * 100000.f, animPos * 100000.f, gInterpolate) / 100000.f;
+        animState = 2;
+        break;
+    case 2: // travel animation
         animPos = (float)(curTime - animClock) / (float)travelTime;
         if ((animClock + travelTime) <= curTime) // finish opening animation
         {
-            animState = 2;
+            animState = 3;
             animClock = curTime;
             animPos = 1;
         }
         break;
-    case 2: // idle animation
+    case 3: // hold animation
         animPos = 1;
         if (!pXSprite || pXSprite->health == 0) // player died, transition to closing
         {
-            animState = 3;
+            animState = 4;
             animClock = curTime;
         }
         if (pPlayer->input.newWeapon != 0) // changed weapon, reset the clock
             animClock = curTime;
         if ((animClock + holdTime) <= curTime) // time's up, transition to closing
         {
-            animState = 3;
+            animState = 4;
             animClock = curTime;
         }
         break;
-    case 3: // closing animation
+    case 4: // closing animation
+        animPos = 1.f-((float)(curTime - animClock) / (float)decayTime);
         if (pPlayer->input.newWeapon != 0) // changed weapon, set to opening state
         {
-            animState = 1;
+            animState = 2;
             animClock = curTime - (int)(animPos * (float)travelTime);
-            break;
+            return;
         }
-        animPos = 1.f-((float)(curTime - animClock) / (float)decayTime);
-        if ((animClock + decayTime) <= curTime) // time's up, transition to closing
+        if ((animClock + decayTime) <= curTime) // finished closing
         {
-            animState = 4;
+            animState = 0;
             animClock = curTime;
-            animPos = animPosMin;
+            animPos = 0;
         }
         break;
     }
     if (gViewInterpolate)
-        animPos = (float)interpolate(animPosPrev * 10000, animPos * 10000, gInterpolate) / 10000.f;
+        animPos = (float)interpolate(animPosPrev * 100000.f, animPos * 100000.f, gInterpolate) / 100000.f;
+    animPosPrev = animPos;
 
     PLAYER tmpPlayer = *pPlayer;
     if (pPlayer->curWeapon == 0) // if we're switching between weapons, use the next weapon value
@@ -3885,6 +3893,8 @@ RORHACK:
                 zDelta >>= 7;
                 zDelta <<= 7;
             }
+            if (!gWeaponHBobbing) // disable weapon sway
+                v4c = 0;
             cX = (v4c<<8)+(160<<16);
             cY = (v48<<8)+(220<<16)+(zDelta<<9);
             int nShade = sector[nSectnum].floorshade; int nPalette = 0;

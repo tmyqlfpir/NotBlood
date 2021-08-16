@@ -1787,18 +1787,14 @@ void playerProcess(PLAYER *pPlayer)
     {
         if (pXSprite->height < 256)
         {
-            pPlayer->bobAmp = (pPlayer->bobAmp+pPosture->pace[pPlayer->isRunning]*4) & 2047;
-            pPlayer->swayAmp = (pPlayer->swayAmp+(pPosture->pace[pPlayer->isRunning]*4)/2) & 2047;
-            if (pPlayer->isRunning)
-            {
-                if (pPlayer->bobPhase < 60)
-                    pPlayer->bobPhase = ClipHigh(pPlayer->bobPhase+nSpeed, 60);
-            }
-            else
-            {
-                if (pPlayer->bobPhase < 30)
-                    pPlayer->bobPhase = ClipHigh(pPlayer->bobPhase+nSpeed, 30);
-            }
+            int isRunning = pPlayer->isRunning == true;
+            if ((gWeaponHBobbing == 2) && (gGameOptions.nGameType == 0) && (numplayers == 1) && !VanillaMode() && !DemoRecordStatus()) // v1.0x weapon swaying (disable for multiplayer/demo playback - causes desync)
+                isRunning = 1; // always running
+            pPlayer->bobAmp = (pPlayer->bobAmp+pPosture->pace[isRunning]*4) & 2047;
+            pPlayer->swayAmp = (pPlayer->swayAmp+(pPosture->pace[isRunning]*4)/2) & 2047;
+            const int clampPhase = isRunning ? 60 : 30;
+            if (pPlayer->bobPhase < clampPhase)
+                pPlayer->bobPhase = ClipHigh(pPlayer->bobPhase+nSpeed, clampPhase);
         }
         pPlayer->bobHeight = mulscale30(pPosture->bobV*pPlayer->bobPhase, Sin(pPlayer->bobAmp*2));
         pPlayer->bobWidth = mulscale30(pPosture->bobH*pPlayer->bobPhase, Sin(pPlayer->bobAmp-256));
@@ -2156,7 +2152,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         FragPlayer(pPlayer, nSource);
         trTriggerSprite(nSprite, pXSprite, kCmdOff);
 
-        if (gGameOptions.nGameType == 0 && numplayers == 1 && pPlayer->pXSprite->health <= 0 && !VanillaMode() && !DemoRecordStatus()) // if died in singleplayer and not playing demo
+        if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode() && !DemoRecordStatus()) // if died in singleplayer and not playing demo
         {
             viewSetMessage("press \"use\" to load last save or press \"enter\" to restart level"); // string borrowed from bloodgdx (thank you M210)
         }

@@ -70,6 +70,7 @@ void SetRandomizerSeed(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
 void SetSlopeTilting(CGameMenuItemZBool *);
 void SetViewBobbing(CGameMenuItemZBool *);
 void SetViewSwaying(CGameMenuItemZBool *);
+void SetWeaponSwaying(CGameMenuItemZCycle *);
 void SetWeaponInterpolate(CGameMenuItemZCycle *);
 void SetMouseSensitivity(CGameMenuItemSliderFloat *);
 void SetMouseAimFlipped(CGameMenuItemZBool *);
@@ -195,17 +196,17 @@ const char *pzAutosaveModeStrings[] = {
 
 const char *pzExplosionBehaviorStrings[] = {
     "NotBlood",
-    "NBlood",
+    "Original",
 };
 
 const char *pzProjectileBehaviorStrings[] = {
     "NotBlood",
-    "NBlood",
+    "Original",
 };
 
 const char *pzEnemyBehaviorStrings[] = {
     "NotBlood",
-    "NBlood",
+    "Original",
 };
 
 const char *pzRandomizerModeStrings[] = {
@@ -474,12 +475,19 @@ CGameMenuItemChain itemOptionsChainDisplay("DISPLAY SETUP", 1, 0, 70, 320, 1, &m
 CGameMenuItemChain itemOptionsChainSound("SOUND SETUP", 1, 0, 90, 320, 1, &menuOptionsSound, -1, SetupOptionsSound, 0);
 CGameMenuItemChain itemOptionsChainPlayer("PLAYER SETUP", 1, 0, 110, 320, 1, &menuOptionsPlayer, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainControl("CONTROL SETUP", 1, 0, 130, 320, 1, &menuOptionsControl, -1, NULL, 0);
-CGameMenuItemChain itemOptionsChainOld("OLD MENU", 1, 0, 170, 320, 1, &menuOptionsOld, -1, NULL, 0);
+CGameMenuItemChain itemOptionsChainEnhancements("ENHANCEMENTS", 1, 0, 150, 320, 1, &menuOptionsGameEnhancements, -1, NULL, 0);
+//CGameMenuItemChain itemOptionsChainOld("OLD MENU", 1, 0, 170, 320, 1, &menuOptionsOld, -1, NULL, 0);
 
 const char *pzAutoAimStrings[] = {
     "NEVER",
     "ALWAYS",
     "HITSCAN ONLY"
+};
+
+const char *pzWeaponHBobbingStrings[] = {
+    "OFF",
+    "ORIGINAL",
+    "V1.0X",
 };
 
 const char *pzWeaponInterpolateStrings[] = {
@@ -510,9 +518,8 @@ CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
 CGameMenuItemTitle itemGameEnhancementsTitle("ENHANCEMENTS", 1, 160, 20, 2038);
 
 ///////////////
-CGameMenuItemZCycle itemOptionsGameWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 130, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
-CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 140, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
-CGameMenuItemChain itemOptionsChainEnhancements("ENHANCEMENTS", 3, 0, 160, 320, 1, &menuOptionsGameEnhancements, -1, NULL, 0);
+CGameMenuItemZCycle itemOptionsGameWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 140, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
+CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 150, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
 CGameMenuItemZBool itemEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 65, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
 CGameMenuItemZBool itemEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 75, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
 CGameMenuItemZCycle itemEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 85, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
@@ -528,10 +535,11 @@ CGameMenuItemZCycle itemOptionsGameShowWeapons("SHOW WEAPONS:", 3, 66, 60, 180, 
 CGameMenuItemZBool itemOptionsGameBoolSlopeTilting("SLOPE TILTING:", 3, 66, 70, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
 CGameMenuItemZBool itemOptionsGameBoolViewBobbing("VIEW BOBBING:", 3, 66, 80, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
 CGameMenuItemZBool itemOptionsGameBoolViewSwaying("VIEW SWAYING:", 3, 66, 90, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameBoolWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 100, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
-CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 110, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
-CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 120, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
-//CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 120, 320, 1, &menuParentalLock, -1, NULL, 0);
+CGameMenuItemZCycle itemOptionsGameBoolWeaponSwaying("WEAPON SWAYING:", 3, 66, 100, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
+CGameMenuItemZCycle itemOptionsGameBoolWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 110, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
+CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 120, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
+CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 130, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
+//CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 160, 320, 1, &menuParentalLock, -1, NULL, 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
@@ -1275,6 +1283,7 @@ void SetupOptionsMenu(void)
     menuOptions.Add(&itemOptionsChainSound, false);
     menuOptions.Add(&itemOptionsChainPlayer, false);
     menuOptions.Add(&itemOptionsChainControl, false);
+    menuOptions.Add(&itemOptionsChainEnhancements, false);
     //menuOptions.Add(&itemOptionsChainOld, false);
     menuOptions.Add(&itemBloodQAV, false);
 
@@ -1284,6 +1293,7 @@ void SetupOptionsMenu(void)
     menuOptionsGame.Add(&itemOptionsGameBoolSlopeTilting, false);
     menuOptionsGame.Add(&itemOptionsGameBoolViewBobbing, false);
     menuOptionsGame.Add(&itemOptionsGameBoolViewSwaying, false);
+    menuOptionsGame.Add(&itemOptionsGameBoolWeaponSwaying, false);
     menuOptionsGame.Add(&itemOptionsGameBoolWeaponInterpolation, false);
     menuOptionsGame.Add(&itemOptionsGameBoolAutoAim, false);
     menuOptionsGame.Add(&itemOptionsGameWeaponSwitch, false);
@@ -1291,7 +1301,6 @@ void SetupOptionsMenu(void)
     //////////////////////
     menuOptionsGame.Add(&itemOptionsGameWeaponsVer, false);
     menuOptionsGame.Add(&itemOptionsGameAutosaveMode, false);
-    menuOptionsGame.Add(&itemOptionsChainEnhancements, false);
     menuOptionsGameEnhancements.Add(&itemGameEnhancementsTitle, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementBoolQuadDamagePowerup, true);
     menuOptionsGameEnhancements.Add(&itemEnhancementBoolDamageInvul, false);
@@ -1313,6 +1322,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameBoolSlopeTilting.at20 = gSlopeTilting;
     itemOptionsGameBoolViewBobbing.at20 = gViewVBobbing;
     itemOptionsGameBoolViewSwaying.at20 = gViewHBobbing;
+    itemOptionsGameBoolWeaponSwaying.m_nFocus = gWeaponHBobbing % ARRAY_SSIZE(pzWeaponHBobbingStrings);
     itemOptionsGameBoolWeaponInterpolation.m_nFocus = gWeaponInterpolate % ARRAY_SSIZE(pzWeaponInterpolateStrings);
     itemOptionsGameBoolAutoAim.m_nFocus = gAutoAim;
     itemOptionsGameWeaponSwitch.m_nFocus = (gWeaponSwitch&1) ? ((gWeaponSwitch&2) ? 1 : 2) : 0;
@@ -1712,6 +1722,11 @@ void SetViewBobbing(CGameMenuItemZBool *pItem)
 void SetViewSwaying(CGameMenuItemZBool *pItem)
 {
     gViewHBobbing = pItem->at20;
+}
+
+void SetWeaponSwaying(CGameMenuItemZCycle *pItem)
+{
+    gWeaponHBobbing = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponHBobbingStrings);
 }
 
 void SetWeaponInterpolate(CGameMenuItemZCycle *pItem)

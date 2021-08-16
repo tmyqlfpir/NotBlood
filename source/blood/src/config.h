@@ -64,6 +64,7 @@ extern int32_t gViewInterpolate;
 extern int32_t gWeaponInterpolate;
 extern int32_t gViewHBobbing;
 extern int32_t gViewVBobbing;
+extern int32_t gWeaponHBobbing;
 extern int32_t gFollowMap;
 extern int32_t gOverlayMap;
 extern int32_t gRotateMap;
