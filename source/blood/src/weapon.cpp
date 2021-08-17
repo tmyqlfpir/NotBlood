@@ -2806,7 +2806,7 @@ void WeaponProcess(PLAYER *pPlayer) {
 
 void teslaHit(spritetype *pMissile, int a2)
 {
-    char va4[(kMaxSectors+7)>>3];
+    char sectmap[(kMaxSectors+7)>>3];
     int x = pMissile->x;
     int y = pMissile->y;
     int z = pMissile->z;
@@ -2816,7 +2816,7 @@ void teslaHit(spritetype *pMissile, int a2)
     gAffectedSectors[0] = -1;
     gAffectedXWalls[0] = -1;
     const bool newSectCheckMethod = WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
-    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, va4, gAffectedXWalls, newSectCheckMethod);
+    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
     char v4 = 1;
     int v24 = -1;
     actHitcodeToData(a2, &gHitInfo, &v24, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -2829,7 +2829,7 @@ void teslaHit(spritetype *pMissile, int a2)
             spritetype *pSprite = &sprite[nSprite];
             if (pSprite->flags&32)
                 continue;
-            if (TestBitString(va4, pSprite->sectnum) && CheckProximity(pSprite, x, y, z, nSector, nDist))
+            if (TestBitString(sectmap, pSprite->sectnum) && CheckProximity(pSprite, x, y, z, nSector, nDist))
             {
                 int dx = pMissile->x-pSprite->x;
                 int dy = pMissile->y-pSprite->y;
@@ -2845,7 +2845,7 @@ void teslaHit(spritetype *pMissile, int a2)
         spritetype *pSprite = &sprite[nSprite];
         if (pSprite->flags&32)
             continue;
-        if (TestBitString(va4, pSprite->sectnum) && CheckProximity(pSprite, x, y, z, nSector, nDist))
+        if (TestBitString(sectmap, pSprite->sectnum) && CheckProximity(pSprite, x, y, z, nSector, nDist))
         {
             XSPRITE *pXSprite = &xsprite[pSprite->extra];
             if (!pXSprite->locked)

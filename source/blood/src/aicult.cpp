@@ -113,7 +113,7 @@ static void TommySeqCallback(int, int nXSprite)
         if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, calculate prediction for projectile
         {
             const int nDiff = approxDist(dx, dy);
-            int nDist = clamp(approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y), 0, 20000);
+            int nDist = ClipRange(approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y), 0, 20000);
             if (nDist < 1250) // target is very close, just use hitscan
                 useProjectile = false;
             else
@@ -166,7 +166,7 @@ static void ShotSeqCallback(int, int nXSprite)
         if ((klabs(pSprite->z-pTarget->z) < 30000) && Random2(gGameOptions.nDifficulty+2)) // if height difference is under 30000, calculate prediction for projectile
         {
             const int nDiff = approxDist(dx, dy);
-            int nDist = clamp(approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y), 0, 20000);
+            int nDist = ClipRange(approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y), 0, 20000);
             if (nDist < 1250) // target is very close, just use hitscan
                 useProjectile = false;
             else

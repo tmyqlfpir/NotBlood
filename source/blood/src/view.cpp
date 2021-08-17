@@ -1439,14 +1439,14 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     PLAYER tmpPlayer = *pPlayer;
     if (pPlayer->curWeapon == 0) // if we're switching between weapons, use the next weapon value
         tmpPlayer.curWeapon = pPlayer->input.newWeapon;
-    const char weaponPrev = clamp(WeaponFindNext(&tmpPlayer, NULL, 0), 1, 12);
-    const char weaponCur = clamp(tmpPlayer.curWeapon, 0, 13);
-    const char weaponNext = clamp(WeaponFindNext(&tmpPlayer, NULL, 1), 1, 12);
+    const char weaponPrev = ClipRange(WeaponFindNext(&tmpPlayer, NULL, 0), 1, 12);
+    const char weaponCur = ClipRange(tmpPlayer.curWeapon, 0, 13);
+    const char weaponNext = ClipRange(WeaponFindNext(&tmpPlayer, NULL, 1), 1, 12);
     const bool showThreeWeapons = (weaponPrev != weaponCur) && (weaponNext != weaponCur);
 
     const int x = 640/4;
     const int xoffset = 640/11;
-    int yPrimary = (int)((viewDrawParametricBlend(clamp(animPos, 0, 1) * 1.1f) * animPosRange) + animPosMin);
+    int yPrimary = (int)((viewDrawParametricBlend(ClipRangeF(animPos, 0, 1) * 1.1f) * animPosRange) + animPosMin);
     if ((gViewSize > 2) && (gShowWeaponSelect == 1)) // if full hud is displayed, bump up by a few pixels
         yPrimary += 24;
     int ySecondary = yPrimary;

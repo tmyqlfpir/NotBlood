@@ -2467,6 +2467,17 @@ bool actSpriteOwnerIsPlayer(spritetype *pSprite)
     return (pSprite->owner & kMaxSprites);
 }
 
+bool actSpriteOwnerIsDude(spritetype *pSprite)
+{
+    dassert(pSprite != NULL);
+    const int nOwner = pSprite->owner;
+    if (nOwner == -1)
+        return false;
+    if (nOwner & kMaxSprites)
+        return 1;
+    return (nOwner >= kDudeBase) && (nOwner < kDudeMax);
+}
+
 bool actTypeInSector(int nSector, int nType)
 {
     for (int nSprite = headspritesect[nSector]; nSprite >= 0; nSprite = nextspritestat[nSprite])
@@ -2722,7 +2733,7 @@ void actRadiusDamage(int nSprite, int x, int y, int z, int nSector, int nDist, i
     int nOwner = actSpriteIdToOwnerId(nSprite);
     gAffectedSectors[0] = 0;
     gAffectedXWalls[0] = 0;
-    const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+    const bool newSectCheckMethod = ExplosionsNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
     GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
     nDist <<= 4;
     if (flags & 2)
@@ -3917,18 +3928,19 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
         case kMissileFlameHound:
             if (hitCode == 3)
             {
-                bool reduceSprayDamage = ProjectilesNotBlood() && actSpriteOwnerIsPlayer(pMissile) && !VanillaMode() && !DemoRecordStatus(); // reduce spray can damage if using new projectile collisions mode (higher hit rate)
                 int nObject = gHitInfo.hitsprite;
                 dassert(nObject >= 0 && nObject < kMaxSprites);
                 spritetype *pObject = &sprite[nObject];
                 if (pObject->extra > 0)
                 {
+                    const bool reduceSprayDamage = ProjectilesNotBlood() && actSpriteOwnerIsPlayer(pMissile) && !VanillaMode() && !DemoRecordStatus(); // reduce spray can damage if using new projectile collisions mode (higher hit rate)
                     XSPRITE *pXObject = &xsprite[pObject->extra];
                     if ((pObject->statnum == kStatThing || pObject->statnum == kStatDude) && pXObject->burnTime == 0)
                         evPost(nObject, 3, 0, kCallbackFXFlameLick);
                     int nOwner = actSpriteOwnerToSpriteId(pMissile);
                     actBurnSprite(pMissile->owner, pXObject, (4+gGameOptions.nDifficulty)<<2);
-                    actDamageSprite(nOwner, pObject, kDamageBurn, !reduceSprayDamage ? 8 : 3);
+                    int nDamage = !reduceSprayDamage ? 8 : 3;
+                    actDamageSprite(nOwner, pObject, kDamageBurn, nDamage);
                 }
             }
             break;
@@ -6385,10 +6397,10 @@ void actProcessSprites(void)
         #endif
 
         // GetClosestSpriteSectors() has issues checking some sectors due to optimizations
-        // while the new flag newSectCheckMethod for GetClosestSpriteSectors() does try to at least rectify some of these issues it'll still fail on ledges with large spans
-        // the bypass flag will fix the issue of explosions not working with some sectors, as well as some other edge cases
-        const bool bypassSectorCheck = ExplosionsNotBlood() && actSpriteOwnerIsPlayer(pSprite) && !VanillaMode() && !DemoRecordStatus();
-        GetClosestSpriteSectors(nSector, x, y, radius, gAffectedSectors, spriteExp, gAffectedXWalls, bypassSectorCheck);
+        // the new flag newSectCheckMethod for GetClosestSpriteSectors() does rectify these issues, but this may cause unintended side effects for level scripted explosions
+        // so only allow this new checking method for dude spawned explosions
+        const bool newSectCheckMethod = ExplosionsNotBlood() && actSpriteOwnerIsDude(pSprite) && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+        GetClosestSpriteSectors(nSector, x, y, radius, gAffectedSectors, spriteExp, gAffectedXWalls, newSectCheckMethod);
 
         for (int i = 0; i < kMaxXWalls; i++)
         {
@@ -6405,7 +6417,7 @@ void actProcessSprites(void)
 
             if (pDude->flags & 32)
                 continue;
-            if (TestBitString(spriteExp, pDude->sectnum) || bypassSectorCheck)
+            if (TestBitString(spriteExp, pDude->sectnum))
             {
                 if (pXSprite->data1 && CheckProximity(pDude, x, y, z, nSector, radius))
                 {
@@ -6434,7 +6446,7 @@ void actProcessSprites(void)
 
             if (pThing->flags & 32)
                 continue;
-            if (TestBitString(spriteExp, pThing->sectnum) || bypassSectorCheck)
+            if (TestBitString(spriteExp, pThing->sectnum))
             {
                 if (pXSprite->data1 && CheckProximity(pThing, x, y, z, nSector, radius))
                 {

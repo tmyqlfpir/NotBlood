@@ -1803,13 +1803,13 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
                     switch (pSprite->type) // make enemies randomly huge
                     {
                         case kDudeRat:
-                            pXSprite->scale = clamp(dbRandomizerRNGDudes(2048-128)+128, 128, 2048);
+                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(2048-128)+128, 128, 2048);
                             break;
                         case kDudeHand:
-                            pXSprite->scale = clamp(dbRandomizerRNGDudes(1024-128)+128, 128, 1024);
+                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(1024-128)+128, 128, 1024);
                             break;
                         case kDudeHellHound:
-                            pXSprite->scale = clamp(dbRandomizerRNGDudes(512-128)+128, 128, 512);
+                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(512-128)+128, 128, 512);
                             break;
                         case kDudeCultistBeast: // boss types
                         case kDudeTchernobog:
@@ -1817,23 +1817,23 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
                         case kDudeCerberusOneHead:
                         case kDudeSpiderMother:
                         case kDudeGargoyleStone:
-                            pXSprite->scale = clamp(dbRandomizerRNGDudes(512-32)+32, 32, 512);
+                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(512-32)+32, 32, 512);
                             break;
                         case kDudeGargoyleFlesh:
-                            pXSprite->scale = clamp(dbRandomizerRNGDudes(512-32)+32, 32, 512);
+                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(512-32)+32, 32, 512);
                             break;
                         case kDudeCultistShotgun: // regular enemies
                         case kDudeCultistTommy:
                         case kDudeCultistTommyProne:
                         case kDudeCultistShotgunProne:
-                            pXSprite->scale = clamp(dbRandomizerRNGDudes(384-128)+128, 128, 384);
+                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(384-128)+128, 128, 384);
                             break;
                         case kDudeCultistTNT:
-                            pXSprite->scale = clamp(dbRandomizerRNGDudes(384-96)+96, 96, 256);
+                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(384-96)+96, 96, 256);
                             break;
                         case kDudeZombieButcher:
                         case kDudeGillBeast:
-                            pXSprite->scale = clamp(dbRandomizerRNGDudes(384-64)+64, 64, 384);
+                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(384-64)+64, 64, 384);
                             break;
                         default:
                             break;

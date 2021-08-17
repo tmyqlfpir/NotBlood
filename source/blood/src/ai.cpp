@@ -1501,11 +1501,11 @@ void aiLookForTarget(spritetype *pSprite, XSPRITE *pXSprite)
         }
         if (pXSprite->state)
         {
-            char va4[(kMaxSectors+7)>>3];
+            char sectmap[(kMaxSectors+7)>>3];
             gAffectedSectors[0] = 0;
             gAffectedXWalls[0] = 0;
             const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
-            GetClosestSpriteSectors(pSprite->sectnum, pSprite->x, pSprite->y, 400, gAffectedSectors, va4, gAffectedXWalls, newSectCheckMethod);
+            GetClosestSpriteSectors(pSprite->sectnum, pSprite->x, pSprite->y, 400, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
             for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
             {
                 spritetype *pSprite2 = &sprite[nSprite2];

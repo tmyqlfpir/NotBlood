@@ -96,7 +96,7 @@ static void SlashSeqCallback(int, int nXSprite)
 
 static void StompSeqCallback(int, int nXSprite)
 {
-    char vb8[(kMaxSectors+7)>>3];
+    char sectmap[(kMaxSectors+7)>>3];
     XSPRITE *pXSprite = &xsprite[nXSprite];
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
@@ -112,7 +112,7 @@ static void StompSeqCallback(int, int nXSprite)
     gAffectedSectors[0] = -1;
     gAffectedXWalls[0] = -1;
     const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
-    GetClosestSpriteSectors(nSector, x, y, vc, gAffectedSectors, vb8, gAffectedXWalls, newSectCheckMethod);
+    GetClosestSpriteSectors(nSector, x, y, vc, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
     char v4 = 0;
     int v34 = -1;
     int hit = HitScan(pSprite, pSprite->z, dx, dy, 0, CLIPMASK1, 0);
@@ -134,7 +134,7 @@ static void StompSeqCallback(int, int nXSprite)
                     continue;
                 if (pSprite2->flags&32)
                     continue;
-                if (TestBitString(vb8, pSprite2->sectnum) && CheckProximity(pSprite2, x, y, z, nSector, vc))
+                if (TestBitString(sectmap, pSprite2->sectnum) && CheckProximity(pSprite2, x, y, z, nSector, vc))
                 {
                     int top, bottom;
                     GetSpriteExtents(pSprite, &top, &bottom);
@@ -164,7 +164,7 @@ static void StompSeqCallback(int, int nXSprite)
         spritetype *pSprite2 = &sprite[nSprite2];
         if (pSprite2->flags&32)
             continue;
-        if (TestBitString(vb8, pSprite2->sectnum) && CheckProximity(pSprite2, x, y, z, nSector, vc))
+        if (TestBitString(sectmap, pSprite2->sectnum) && CheckProximity(pSprite2, x, y, z, nSector, vc))
         {
             XSPRITE *pXSprite = &xsprite[pSprite2->extra];
             if (pXSprite->locked)
