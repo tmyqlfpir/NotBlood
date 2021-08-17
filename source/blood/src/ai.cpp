@@ -1463,7 +1463,7 @@ void aiThinkTarget(spritetype *pSprite, XSPRITE *pXSprite)
     }
 }
 
-void sub_5F15C(spritetype *pSprite, XSPRITE *pXSprite)
+void aiLookForTarget(spritetype *pSprite, XSPRITE *pXSprite)
 {
     dassert(pSprite->type >= kDudeBase && pSprite->type < kDudeMax);
     DUDEINFO *pDudeInfo = getDudeInfo(pSprite->type);
@@ -1504,7 +1504,8 @@ void sub_5F15C(spritetype *pSprite, XSPRITE *pXSprite)
             char va4[(kMaxSectors+7)>>3];
             gAffectedSectors[0] = 0;
             gAffectedXWalls[0] = 0;
-            GetClosestSpriteSectors(pSprite->sectnum, pSprite->x, pSprite->y, 400, gAffectedSectors, va4, gAffectedXWalls);
+            const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+            GetClosestSpriteSectors(pSprite->sectnum, pSprite->x, pSprite->y, 400, gAffectedSectors, va4, gAffectedXWalls, newSectCheckMethod);
             for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
             {
                 spritetype *pSprite2 = &sprite[nSprite2];

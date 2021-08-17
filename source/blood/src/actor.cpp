@@ -2467,13 +2467,6 @@ bool actSpriteOwnerIsPlayer(spritetype *pSprite)
     return (pSprite->owner & kMaxSprites);
 }
 
-bool actSpriteIdIsPlayer(int nSprite)
-{
-    if (nSprite == -1)
-        return false;
-    return (nSprite & kMaxSprites);
-}
-
 bool actTypeInSector(int nSector, int nType)
 {
     for (int nSprite = headspritesect[nSector]; nSprite >= 0; nSprite = nextspritestat[nSprite])
@@ -2723,21 +2716,20 @@ int actFloorBounceVector(int *x, int *y, int *z, int nSector, int a5)
     return mulscale16r(t8, t);
 }
 
-void sub_2A620(int nSprite, int x, int y, int z, int nSector, int nDist, int a7, int a8, DAMAGE_TYPE a9, int a10, int a11, int a12, int a13)
+void actRadiusDamage(int nSprite, int x, int y, int z, int nSector, int nDist, int baseDmg, int distDmg, DAMAGE_TYPE dmgType, int flags, int burn)
 {
-    UNREFERENCED_PARAMETER(a12);
-    UNREFERENCED_PARAMETER(a13);
-    char va0[(kMaxSectors+7)>>3];
+    char sectmap[(kMaxSectors+7)>>3];
     int nOwner = actSpriteIdToOwnerId(nSprite);
     gAffectedSectors[0] = 0;
     gAffectedXWalls[0] = 0;
-    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, va0, gAffectedXWalls);
+    const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
     nDist <<= 4;
-    if (a10 & 2)
+    if (flags & 2)
     {
         for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i])
         {
-            if (i != nSprite || (a10 & 1))
+            if (i != nSprite || (flags & 1))
             {
                 spritetype *pSprite2 = &sprite[i];
                 if (pSprite2->extra > 0 && pSprite2->extra < kMaxXSprites)
@@ -2745,7 +2737,7 @@ void sub_2A620(int nSprite, int x, int y, int z, int nSector, int nDist, int a7,
 
                     if (pSprite2->flags & 0x20)
                         continue;
-                    if (!TestBitString(va0, pSprite2->sectnum))
+                    if (!TestBitString(sectmap, pSprite2->sectnum))
                         continue;
                     if (!CheckProximity(pSprite2, x, y, z, nSector, nDist))
                         continue;
@@ -2757,17 +2749,17 @@ void sub_2A620(int nSprite, int x, int y, int z, int nSector, int nDist, int a7,
                         continue;
                     int vcx;
                     if (dist != 0)
-                        vcx = a7+((nDist-dist)*a8)/nDist;
+                        vcx = baseDmg+((nDist-dist)*distDmg)/nDist;
                     else
-                        vcx = a7+a8;
-                    actDamageSprite(nSprite, pSprite2, a9, vcx<<4);
-                    if (a11)
-                        actBurnSprite(nOwner, &xsprite[pSprite2->extra], a11);
+                        vcx = baseDmg+distDmg;
+                    actDamageSprite(nSprite, pSprite2, dmgType, vcx<<4);
+                    if (burn)
+                        actBurnSprite(nOwner, &xsprite[pSprite2->extra], burn);
                 }
             }
         }
     }
-    if (a10 & 4)
+    if (flags & 4)
     {
         for (int i = headspritestat[kStatThing]; i >= 0; i = nextspritestat[i])
         {
@@ -2775,7 +2767,7 @@ void sub_2A620(int nSprite, int x, int y, int z, int nSector, int nDist, int a7,
 
             if (pSprite2->flags&0x20)
                 continue;
-            if (!TestBitString(va0, pSprite2->sectnum))
+            if (!TestBitString(sectmap, pSprite2->sectnum))
                 continue;
             if (!CheckProximity(pSprite2, x, y, z, nSector, nDist))
                 continue;
@@ -2789,17 +2781,17 @@ void sub_2A620(int nSprite, int x, int y, int z, int nSector, int nDist, int a7,
                 continue;
             int vcx;
             if (dist != 0)
-                vcx = a7+((nDist-dist)*a8)/nDist;
+                vcx = baseDmg+((nDist-dist)*distDmg)/nDist;
             else
-                vcx = a7+a8;
-            actDamageSprite(nSprite, pSprite2, a9, vcx<<4);
-            if (a11)
-                actBurnSprite(nOwner, pXSprite2, a11);
+                vcx = baseDmg+distDmg;
+            actDamageSprite(nSprite, pSprite2, dmgType, vcx<<4);
+            if (burn)
+                actBurnSprite(nOwner, pXSprite2, burn);
         }
     }
 }
 
-void sub_2AA94(spritetype *pSprite, XSPRITE *pXSprite)
+void actNapalmMove(spritetype *pSprite, XSPRITE *pXSprite)
 {
     int nSprite = actOwnerIdToSpriteId(pSprite->owner);
     actPostSprite(pSprite->index, kStatDecoration);
@@ -2808,7 +2800,7 @@ void sub_2AA94(spritetype *pSprite, XSPRITE *pXSprite)
         pSprite->cstat |= 4;
 
     sfxPlay3DSound(pSprite, 303, 24+(pSprite->flags&3), 1);
-    sub_2A620(nSprite, pSprite->x, pSprite->y, pSprite->z, pSprite->sectnum, 128, 0, 60, kDamageExplode, 15, 120, 0, 0);
+    actRadiusDamage(nSprite, pSprite->x, pSprite->y, pSprite->z, pSprite->sectnum, 128, 0, 60, kDamageExplode, 15, 120);
     if (pXSprite->data4 > 1)
     {
         GibSprite(pSprite, GIBTYPE_5, NULL, NULL);
@@ -3572,7 +3564,7 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
     if (!gGameOptions.bFriendlyFire && IsTargetTeammate(pSourcePlayer, pSprite)) return 0;
     if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode
     {
-        if ((gGameOptions.nRandomizerCheat == 12) && IsPlayerSprite(pSprite) && !actSpriteIdIsPlayer(nSource) && (damageType != kDamageExplode)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
+        if ((gGameOptions.nRandomizerCheat == 12) && IsPlayerSprite(pSprite) && !actSpriteOwnerIsPlayer(pSprite) && (damageType != kDamageExplode)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
         {
             const int type = sprite[nSource].type;
             if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))
@@ -3895,7 +3887,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                         evPost(nSpriteHit, 3, 0, kCallbackFXFlameLick);
                 
                     actBurnSprite(pMissile->owner, pXSpriteHit, 480);
-                    sub_2A620(nOwner, pMissile->x, pMissile->y, pMissile->z, pMissile->sectnum, 16, 20, 10, kDamageBullet, 6, 480, 0, 0);
+                    actRadiusDamage(nOwner, pMissile->x, pMissile->y, pMissile->z, pMissile->sectnum, 16, 20, 10, kDamageBullet, 6, 480);
 
                     // by NoOne: allow additional bullet damage for Flare Gun
                     if (WeaponsV10x() && !VanillaMode() && !DemoRecordStatus()) {
@@ -4652,7 +4644,7 @@ int MoveThing(spritetype *pSprite)
             
             switch (pSprite->type) {
                 case kThingNapalmBall:
-                    if (zvel[nSprite] == 0 || Chance(0xA000)) sub_2AA94(pSprite, pXSprite);
+                    if (zvel[nSprite] == 0 || Chance(0xA000)) actNapalmMove(pSprite, pXSprite);
                     break;
                 case kThingZombieHead:
                     if (klabs(zvel[nSprite]) > 0x80000) {
@@ -6279,7 +6271,7 @@ void actProcessSprites(void)
                         case kThingPodGreenBall:
                             if ((hit&0xc000) == 0x4000)
                             {
-                                sub_2A620(actSpriteOwnerToSpriteId(pSprite), pSprite->x, pSprite->y, pSprite->z, pSprite->sectnum, 200, 1, 20, kDamageExplode, 6, 0, 0, 0);
+                                actRadiusDamage(actSpriteOwnerToSpriteId(pSprite), pSprite->x, pSprite->y, pSprite->z, pSprite->sectnum, 200, 1, 20, kDamageExplode, 6, 0);
                                 evPost(pSprite->index, 3, 0, kCallbackFXPodBloodSplat);
                             }
                             else
@@ -6391,9 +6383,13 @@ void actProcessSprites(void)
         if (gModernMap && pXSprite->data4 > 0)
             radius = pXSprite->data4;
         #endif
-        
-        GetClosestSpriteSectors(nSector, x, y, radius, gAffectedSectors, spriteExp, gAffectedXWalls);
-        
+
+        // GetClosestSpriteSectors() has issues checking some sectors due to optimizations
+        // while the new flag newSectCheckMethod for GetClosestSpriteSectors() does try to at least rectify some of these issues it'll still fail on ledges with large spans
+        // the bypass flag will fix the issue of explosions not working with some sectors, as well as some other edge cases
+        const bool bypassSectorCheck = ExplosionsNotBlood() && actSpriteOwnerIsPlayer(pSprite) && !VanillaMode() && !DemoRecordStatus();
+        GetClosestSpriteSectors(nSector, x, y, radius, gAffectedSectors, spriteExp, gAffectedXWalls, bypassSectorCheck);
+
         for (int i = 0; i < kMaxXWalls; i++)
         {
             int nWall = gAffectedXWalls[i];
@@ -6403,20 +6399,13 @@ void actProcessSprites(void)
             trTriggerWall(nWall, pXWall, kCmdWallImpact);
         }
 
-        // GetClosestSpriteSectors() has issues checking some sectors due to the way it's written (97' optimization?)
-        // example: throwing dynamite at the first doors of E1M2 while standing on the rotating platform
-        // if new explosions behavior is on bypass checking spriteExp array
-        // this will fix the issue of dynamite not working with some sectors, as well as some other edge cases
-        const bool bypassSpriteExpCheck = ExplosionsNotBlood() && actSpriteIdIsPlayer(pSprite->owner) && !VanillaMode() && !DemoRecordStatus();
-
         for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
         {
             spritetype *pDude = &sprite[nSprite2];
 
             if (pDude->flags & 32)
                 continue;
-
-            if (TestBitString(spriteExp, pDude->sectnum) || bypassSpriteExpCheck)
+            if (TestBitString(spriteExp, pDude->sectnum) || bypassSectorCheck)
             {
                 if (pXSprite->data1 && CheckProximity(pDude, x, y, z, nSector, radius))
                 {
@@ -6445,7 +6434,7 @@ void actProcessSprites(void)
 
             if (pThing->flags & 32)
                 continue;
-            if (TestBitString(spriteExp, pThing->sectnum) || bypassSpriteExpCheck)
+            if (TestBitString(spriteExp, pThing->sectnum) || bypassSectorCheck)
             {
                 if (pXSprite->data1 && CheckProximity(pThing, x, y, z, nSector, radius))
                 {

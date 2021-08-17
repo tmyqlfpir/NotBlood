@@ -1499,7 +1499,7 @@ void viewDrawAimedPlayerName(void)
     if (!gShowPlayerNames || (gView->aim.dx == 0 && gView->aim.dy == 0))
         return;
 
-    int hit = HitScan(gView->pSprite, gView->pSprite->z, gView->aim.dx, gView->aim.dy, gView->aim.dz, CLIPMASK0, 512);
+    int hit = HitScan(gView->pSprite, gView->zView, gView->aim.dx, gView->aim.dy, gView->aim.dz, CLIPMASK0, 512);
     if (hit == 3)
     {
         spritetype* pSprite = &sprite[gHitInfo.hitsprite];

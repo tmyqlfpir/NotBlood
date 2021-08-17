@@ -111,7 +111,8 @@ static void StompSeqCallback(int, int nXSprite)
     int v10 = 25+30*gGameOptions.nDifficulty;
     gAffectedSectors[0] = -1;
     gAffectedXWalls[0] = -1;
-    GetClosestSpriteSectors(nSector, x, y, vc, gAffectedSectors, vb8, gAffectedXWalls);
+    const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+    GetClosestSpriteSectors(nSector, x, y, vc, gAffectedSectors, vb8, gAffectedXWalls, newSectCheckMethod);
     char v4 = 0;
     int v34 = -1;
     int hit = HitScan(pSprite, pSprite->z, dx, dy, 0, CLIPMASK1, 0);

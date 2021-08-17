@@ -870,7 +870,7 @@ unsigned int ClipMoveEDuke(spritetype *pSprite, int *x, int *y, int *z, int *nSe
     }
     if (*nSector == -1) // if sector still failed, restore and pray to the build gods that everything will work out
     {
-        *x = origX; *y = origY; *z = origZ;
+        *x = origX, *y = origY, *z = origZ;
         *nSector = origSect;
     }
     return nRes;
@@ -892,13 +892,13 @@ int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, cha
     }
     while (i < n)
     {
-        int nCurSector = pSectors[i];
-        int nStartWall = sector[nCurSector].wallptr;
-        int nEndWall = nStartWall + sector[nCurSector].wallnum;
-        walltype *pWall = &wall[nStartWall];
-        for (int j = nStartWall; j < nEndWall; j++, pWall++)
+        const int nCurSector = pSectors[i];
+        const int nStartWall = sector[nCurSector].wallptr;
+        const int nEndWall = nStartWall + sector[nCurSector].wallnum;
+        for (int j = nStartWall; j < nEndWall; j++)
         {
-            int nNextSector = pWall->nextsector;
+            const walltype *pWall = &wall[j];
+            const int nNextSector = pWall->nextsector;
             if (nNextSector < 0)
                 continue;
             if (TestBitString(sectbits, nNextSector))
@@ -922,8 +922,11 @@ int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, cha
     return n;
 }
 
-int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *a8)
+int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *pWalls, bool newSectCheckMethod)
 {
+    // this function only checks the wall's next sector once, but this would fail with sectors that linked with wide spans, or there was more than one link to the same sector. for example...
+    // E6M1: throwing TNT on the stone footpath while standing on the brown road will fail due to the start/end points of the span being too far away. it'll only do damage at one end of the road
+    // E1M2: try throwing TNT at the double doors while standing on the train platform
     char sectbits[(kMaxSectors+7)>>3];
     dassert(pSectors != NULL);
     memset(sectbits, 0, sizeof(sectbits));
@@ -936,39 +939,76 @@ int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSector
         memset(pSectBit, 0, (kMaxSectors+7)>>3);
         SetBitString(pSectBit, nSector);
     }
-    while (i < n)
+    while (i < n) // scan through sectors
     {
-        int nCurSector = pSectors[i];
-        int nStartWall = sector[nCurSector].wallptr;
-        int nEndWall = nStartWall + sector[nCurSector].wallnum;
-        walltype *pWall = &wall[nStartWall];
-        for (int j = nStartWall; j < nEndWall; j++, pWall++)
+        const int nCurSector = pSectors[i];
+        const int nStartWall = sector[nCurSector].wallptr;
+        const int nEndWall = nStartWall + sector[nCurSector].wallnum;
+        for (int j = nStartWall; j < nEndWall; j++) // scan each wall of current sector for new sectors
         {
-            int nNextSector = pWall->nextsector;
-            if (nNextSector < 0)
+            const walltype *pWall = &wall[j];
+            const int nNextSector = pWall->nextsector;
+            if (nNextSector < 0) // if next wall isn't linked to a sector, skip
                 continue;
-            if (TestBitString(sectbits, nNextSector))
+            if (TestBitString(sectbits, nNextSector)) // if we've already checked this sector, skip
                 continue;
-            SetBitString(sectbits, nNextSector);
-            if (CheckProximityWall(wall[j].point2, x, y, nDist))
+            bool withinRange = CheckProximityWall(pWall->point2, x, y, nDist);
+            bool setSectBit = true;
+            if (newSectCheckMethod && !withinRange) // if range check failed, try scanning current wall to next wall, and then comparing midpoints of walls
             {
+                for (int k = (j+1); k < nEndWall; k++) // scan through the rest of the sector's walls
+                {
+                    if (wall[k].nextsector == nNextSector) // if the next walls still reference the sector, then don't flag the sector as checked yet
+                    {
+                        setSectBit = false;
+                        break;
+                    }
+                }
+                if (!withinRange) // reattempt by checking current wall span
+                {
+                    int nWallA = j;
+                    withinRange = CheckProximityWall(nWallA, x, y, nDist);
+                    if (!withinRange) // reattempt using current wall's midpoints
+                    {
+                        int nWallB = wall[nWallA].point2;
+                        int x1 = wall[nWallA].x, y1 = wall[nWallA].y;
+                        int x2 = wall[nWallB].x, y2 = wall[nWallB].y;
+                        int centerx = (x1+x2)>>1, centery = (y1+y2)>>1;
+                        withinRange = CheckProximityPoint(centerx, centery, 0, x, y, 0, nDist);
+                        if (!withinRange) // reattempt using next wall's midpoints
+                        {
+                            nWallA = nWallB;
+                            nWallB = wall[nWallA].point2;
+                            x1 = wall[nWallA].x, y1 = wall[nWallA].y;
+                            x2 = wall[nWallB].x, y2 = wall[nWallB].y;
+                            centerx = (x1+x2)>>1, centery = (y1+y2)>>1;
+                            withinRange = CheckProximityPoint(centerx, centery, 0, x, y, 0, nDist);
+                        }
+                    }
+                }
+            }
+            if (withinRange) // if new sector is within range, set to current sector and test walls
+            {
+                setSectBit = true; // sector is within range, set as checked
                 if (pSectBit)
                     SetBitString(pSectBit, nNextSector);
                 pSectors[n++] = nNextSector;
-                if (a8 && pWall->extra > 0)
+                if (pWalls && pWall->extra > 0)
                 {
                     XWALL *pXWall = &xwall[pWall->extra];
                     if (pXWall->triggerVector && !pXWall->isTriggered && !pXWall->state)
-                        a8[m++] = j;
+                        pWalls[m++] = j;
                 }
             }
+            if (setSectBit)
+                SetBitString(sectbits, nNextSector);
         }
         i++;
     }
     pSectors[n] = -1;
-    if (a8)
+    if (pWalls)
     {
-        a8[m] = -1;
+        pWalls[m] = -1;
     }
     return n;
 }

@@ -2815,7 +2815,8 @@ void teslaHit(spritetype *pMissile, int a2)
     int nOwner = actSpriteOwnerToSpriteId(pMissile);
     gAffectedSectors[0] = -1;
     gAffectedXWalls[0] = -1;
-    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, va4, gAffectedXWalls);
+    const bool newSectCheckMethod = WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, va4, gAffectedXWalls, newSectCheckMethod);
     char v4 = 1;
     int v24 = -1;
     actHitcodeToData(a2, &gHitInfo, &v24, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);

@@ -392,7 +392,7 @@ static void thinkSearch( spritetype* pSprite, XSPRITE* pXSprite ) {
     
     //viewSetSystemMessage("IN SEARCH");
     aiChooseDirection(pSprite, pXSprite, pXSprite->goalAng);
-    sub_5F15C(pSprite, pXSprite);
+    aiLookForTarget(pSprite, pXSprite);
 }
 
 static void thinkGoto(spritetype* pSprite, XSPRITE* pXSprite) {
