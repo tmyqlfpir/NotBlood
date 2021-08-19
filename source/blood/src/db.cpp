@@ -36,6 +36,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "iob.h"
 #include "demo.h"
 #include "eventq.h"
+#include "blood.h"
+#include "config.h"
+#include "player.h"
 #ifdef NOONE_EXTENSIONS
 #include "nnexts.h"
 #endif
@@ -871,8 +874,7 @@ void dbRandomizerMode(spritetype *pSprite)
                     pSprite->type = kDudeBase;
                 break;
             case 20: // "NOTHING!" - no enemies
-                if (IsDudeSprite(pSprite) && !IsPlayerSprite(pSprite))
-                    pSprite->type = kDudeBase;
+                pSprite->type = kDudeBase;
                 break;
             default: // unknown cheat id, don't do anything
             {

@@ -5802,7 +5802,8 @@ void MoveMissileBullet(spritetype *pSprite)
         else
             pOwner = NULL;
     }
-    const bool bulletIsUnderwater = spriteIsUnderwater(pSprite, false) && (gGameOptions.nDifficulty < 4); // bullet is underwater and difficulty isn't extra crispy
+    const bool underwaterSector = (sector[pSprite->sectnum].extra >= 0 && xsector[sector[pSprite->sectnum].extra].Underwater);
+    const bool bulletIsUnderwater = underwaterSector && (gGameOptions.nDifficulty < 4); // bullet is underwater and difficulty isn't extra crispy
     const int nSprite = pSprite->index;
     const int bakX = pSprite->x;
     const int bakY = pSprite->y;
@@ -6584,7 +6585,12 @@ void actProcessSprites(void)
         if (nXSprite > 0)
         {
             XSPRITE *pXSprite = &xsprite[nXSprite];
-            const bool fixBurnGlitch = EnemiesNotBlood() && IsBurningDude(pSprite) && !VanillaMode() && !DemoRecordStatus(); // if enemies are burning, always apply burning damage per tick
+            #ifdef NOONE_EXTENSIONS
+            const bool burningType = IsBurningDude(pSprite);
+            #else
+            const bool burningType = (pSprite->type == kDudeBurningInnocent) || (pSprite->type == kDudeBurningCultist) || (pSprite->type == kDudeBurningZombieAxe) || (pSprite->type == kDudeBurningZombieButcher) || (pSprite->type == kDudeBurningTinyCaleb) || (pSprite->type == kDudeBurningBeast);
+            #endif
+            const bool fixBurnGlitch = EnemiesNotBlood() && burningType && !VanillaMode() && !DemoRecordStatus(); // if enemies are burning, always apply burning damage per tick
             if ((pXSprite->burnTime > 0) || fixBurnGlitch)
             {
                 switch (pSprite->type)
