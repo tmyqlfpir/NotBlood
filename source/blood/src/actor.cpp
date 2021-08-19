@@ -3933,14 +3933,12 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                 spritetype *pObject = &sprite[nObject];
                 if (pObject->extra > 0)
                 {
-                    const bool reduceSprayDamage = ProjectilesNotBlood() && actSpriteOwnerIsPlayer(pMissile) && !VanillaMode() && !DemoRecordStatus(); // reduce spray can damage if using new projectile collisions mode (higher hit rate)
                     XSPRITE *pXObject = &xsprite[pObject->extra];
                     if ((pObject->statnum == kStatThing || pObject->statnum == kStatDude) && pXObject->burnTime == 0)
                         evPost(nObject, 3, 0, kCallbackFXFlameLick);
                     int nOwner = actSpriteOwnerToSpriteId(pMissile);
                     actBurnSprite(pMissile->owner, pXObject, (4+gGameOptions.nDifficulty)<<2);
-                    int nDamage = !reduceSprayDamage ? 8 : 3;
-                    actDamageSprite(nOwner, pObject, kDamageBurn, nDamage);
+                    actDamageSprite(nOwner, pObject, kDamageBurn, 8);
                 }
             }
             break;
@@ -4475,9 +4473,6 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
     int smallwd;
     switch (pSprite->type)
     {
-    case kMissileFlameSpray:
-        smallwd = min(walldist, 42);
-        break;
     case kMissileFlareRegular: // for the flare gun, make the walldist argument extra small
         smallwd = min(walldist, 16);
         break;
