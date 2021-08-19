@@ -1307,8 +1307,8 @@ void SetupOptionsMenu(void)
     menuOptionsGameEnhancements.Add(&itemEnhancementBoolDamageInvul, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementExplosionBehavior, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementProjectileBehavior, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementWeaponsVer, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementEnemyBehavior, false);
+    menuOptionsGameEnhancements.Add(&itemEnhancementWeaponsVer, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementBoolHitscanProjectiles, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerMode, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerSeed, false);
