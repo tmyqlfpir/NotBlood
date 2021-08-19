@@ -509,6 +509,7 @@ void PreloadCache(void)
 void EndLevel(void)
 {
     gViewPos = VIEWPOS_0;
+    gViewIndex = myconnectindex;
     gGameMessageMgr.Clear();
     sndKillAllSounds();
     sfxKillAllSounds();
@@ -918,10 +919,7 @@ void LocalKeys(void)
     if (BUTTON(gamefunc_See_Chase_View) && !alt && !shift)
     {
         CONTROL_ClearButton(gamefunc_See_Chase_View);
-        if (gViewPos > VIEWPOS_0)
-            gViewPos = VIEWPOS_0;
-        else
-            gViewPos = VIEWPOS_1;
+        gViewPos = gViewPos != VIEWPOS_0 ? VIEWPOS_0 : VIEWPOS_1;
     }
     if (BUTTON(gamefunc_See_Coop_View))
     {
