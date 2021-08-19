@@ -3578,7 +3578,8 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
         if ((gGameOptions.nRandomizerCheat == 12) && IsPlayerSprite(pSprite) && !actSpriteOwnerIsPlayer(pSprite) && (damageType != kDamageExplode)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
         {
             const int type = sprite[nSource].type;
-            if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))
+            const bool weedType = (type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT);
+            if (weedType)
                 gPlayer[pSprite->type - kDudePlayer1].pwUpTime[kPwUpDeliriumShroom] = gPowerUpInfo[kPwUpDeliriumShroom].bonusTime >> 1;
         }
         if (gGameOptions.bQuadDamagePowerup)
@@ -5047,12 +5048,12 @@ void MoveDude(spritetype *pSprite)
                 case kDudeBurningCultist:
                 {
                     const bool fixRandomCultist = EnemiesNotBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && !VanillaMode() && !DemoRecordStatus(); // fix burning cultists randomly switching types underwater
-                    if (Chance(chance))
+                    if (fixRandomCultist)
+                        pSprite->type = pSprite->inittype;
+                    else if (Chance(chance)) // vanilla behavior
                         pSprite->type = kDudeCultistTommy;
                     else
                         pSprite->type = kDudeCultistShotgun;
-                    if (fixRandomCultist) // fix burning cultists randomly switching types underwater
-                        pSprite->type = pSprite->inittype; // restore back to spawned cultist type
                     pXSprite->burnTime = 0;
                     evPost(nSprite, 3, 0, kCallbackEnemeyBubble);
                     sfxPlay3DSound(pSprite, 720, -1, 0);

@@ -454,19 +454,16 @@ void ctrlGetInput(void)
     else
     {
         if (BUTTON(gamefunc_Turn_Left))
-        {
-            if (!r_mirrormode)
-                turnLeft = 1;
-            else // mirror mode, invert turning
-                turnRight = 1;
-        }
+            turnLeft = 1;
         if (BUTTON(gamefunc_Turn_Right))
-        {
-            if (!r_mirrormode)
-                turnRight = 1;
-            else // mirror mode, invert turning
-                turnLeft = 1;
-        }
+            turnRight = 1;
+    }
+    if (r_mirrormode) // mirror mode, invert controls
+    {
+        input.strafe = -input.strafe;
+        info.mousex = -info.mousex;
+        turnLeft = !turnLeft;
+        turnRight = !turnRight;
     }
 
     static int32_t turnHeldTime;
@@ -488,16 +485,12 @@ void ctrlGetInput(void)
     if ((run2 || run) && turnHeldTime > 24)
         input.q16turn <<= 1;
 
-    if (r_mirrormode) // mirror mode, invert mouse
-        info.mousex = -info.mousex;
     if (BUTTON(gamefunc_Strafe))
-        input.strafe -= !r_mirrormode ? info.mousex : -info.mousex;
+        input.strafe -= info.mousex;
     else
         input.q16turn = fix16_sadd(input.q16turn, fix16_sdiv(fix16_from_int(info.mousex), F16(32)));
 
     input.strafe -= -(info.dx<<5);
-    if (r_mirrormode) // mirror mode, invert strafe
-        input.strafe = -input.strafe;
 
 #if 0
     if (info.dz < 0)

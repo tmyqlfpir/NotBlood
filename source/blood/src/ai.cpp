@@ -1105,17 +1105,19 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
             }
             if (Chance(0x600) && (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo))
             {
-                pSprite->type = kDudeCultistTommy;
-                if (fixRandomCultist) // fix burning cultists randomly switching types underwater
+                if (fixRandomCultist)
                     pSprite->type = pSprite->inittype; // restore back to spawned cultist type
+                else
+                    pSprite->type = kDudeCultistTommy; // vanilla behavior
                 pXSprite->burnTime = 0;
                 aiNewState(pSprite, pXSprite, &cultistSwimGoto);
             }
             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
             {
-                pSprite->type = kDudeCultistShotgun;
-                if (fixRandomCultist) // fix burning cultists randomly switching types underwater
+                if (fixRandomCultist)
                     pSprite->type = pSprite->inittype; // restore back to spawned cultist type
+                else
+                    pSprite->type = kDudeCultistShotgun; // vanilla behavior
                 pXSprite->burnTime = 0;
                 aiNewState(pSprite, pXSprite, &cultistSwimGoto);
             }

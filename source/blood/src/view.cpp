@@ -2520,13 +2520,15 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
         WEAPONICON weaponIcon = gWeaponIcon[pPlayer->curWeapon];
         const int nTile = weaponIcon.nTile;
-        if (nTile < 0) break;
+        if (nTile < 0)
+            break;
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
         pNSprite->z = pTSprite->z-(32<<8);
+        pNSprite->z -= weaponIcon.zOffset<<8; // offset up
         pNSprite->picnum = nTile;
         pNSprite->shade = pTSprite->shade;
         pNSprite->xrepeat = 32;
@@ -2538,13 +2540,11 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             pNSprite->cstat |= 48;
             pNSprite->cstat &= ~8;
             pNSprite->picnum = nVoxel;
-            pNSprite->z -= weaponIcon.zOffset<<8;
-            const int lifeLeech = 9;
-            if (pPlayer->curWeapon == lifeLeech)
+            if ((pPlayer->curWeapon == 9) || (pPlayer->curWeapon == 10)) // make lifeleech/voodoo doll always face viewer like sprite
             {
                 pNSprite->x +=  mulscale30(128, Cos(gView->pSprite->ang));
                 pNSprite->y += mulscale30(128, Sin(gView->pSprite->ang));
-                pNSprite->ang = (gView->pSprite->ang + 1024) & 2047; // make lifeleech always face viewer like sprite
+                pNSprite->ang = (gView->pSprite->ang + 1024) & 2047;
             }
         }
         break;
@@ -2553,8 +2553,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     {
         dassert(pTSprite->type >= kDudePlayer1 && pTSprite->type <= kDudePlayer8);
         PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
-        short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
-        if (nTile < 0) break;
+        const short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
@@ -2938,8 +2937,10 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     pTSprite->shade = -128;
                     pTSprite->pal = 5;
                 } else if (powerupCheck(pPlayer, kPwUpDoppleganger)) {
-                    pTSprite->pal = 11+(gView->teamId&3);
-                    if (gGameOptions.nGameType == 3) pTSprite->pal = (gView->teamId & 1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
+                    if (gGameOptions.nGameType == 3)
+                        pTSprite->pal = (gView->teamId & 1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
+                    else
+                        pTSprite->pal = 11+(gView->teamId&3);
                 }
                 
                 if (powerupCheck(pPlayer, kPwUpReflectShots)) {
@@ -2948,7 +2949,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 
                 if (gShowWeapon && gGameOptions.nGameType > 0 && gView) {
                     viewAddEffect(nTSprite, kViewEffectShowWeapon);
-                    if (powerupCheck(pPlayer, kPwUpTwoGuns)) viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active and not in singleplayer
+                    if (powerupCheck(pPlayer, kPwUpTwoGuns))
+                        viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active and not in singleplayer
                 }
 
                 if (pPlayer->flashEffect && (gView != pPlayer || gViewPos != VIEWPOS_0)) {
