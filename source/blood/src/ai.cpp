@@ -211,7 +211,7 @@ bool CanMove(spritetype *pSprite, int a2, int nAngle, int nRange)
         // It makes ignore danger if enemy immune to N damageType. As result Cerberus start acting like
         // in Blood 1.0 so it can move normally to player. It's up to you for adding rest of enemies here as
         // i don't think it will broke something in game.
-        if (!VanillaMode() && Crusher && isImmune(pSprite, pXSector->damageType, 16)) return true;
+        if (EnemiesNotBlood() && !VanillaMode() && Crusher && isImmune(pSprite, pXSector->damageType, 16)) return true;
         fallthrough__;
     case kDudeZombieButcher:
     case kDudeSpiderBrown:

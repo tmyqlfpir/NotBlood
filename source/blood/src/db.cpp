@@ -714,6 +714,7 @@ void dbRandomizerModeInit(void)
         "SAFEWATR", // no hands/gill beasts
         "PESTCTRL", // no rats/hands/spiders
         "IH8PETS!", // no rats/hands/spiders/bats/hell hounds
+        "NOTHING!", // no enemies
     };
 
     const uint32_t defaultSeed = 0xCA1EB666;
@@ -867,6 +868,10 @@ void dbRandomizerMode(spritetype *pSprite)
                 break;
             case 19: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeBat) || (pSprite->type == kDudeHellHound))
+                    pSprite->type = kDudeBase;
+                break;
+            case 20: // "NOTHING!" - no enemies
+                if (IsDudeSprite(pSprite) && !IsPlayerSprite(pSprite))
                     pSprite->type = kDudeBase;
                 break;
             default: // unknown cheat id, don't do anything
@@ -1797,7 +1802,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
             if ((gGameOptions.nRandomizerMode & 1) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and randomizer is set to enemies or enemies+weapons mode
             {
                 const int curRandomCheat = gGameOptions.nRandomizerCheat;
-                const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 14); // only randomize enemy sizes if seed cheats 0-14 are active
+                const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 14); // only randomize enemy sizes if seed cheats 0-13 are active
                 if (randomCheatActive && !pXSprite->scale && !dbRandomizerRNGDudes(3)) // if random seed cheat is being used
                 {
                     switch (pSprite->type) // make enemies randomly huge
