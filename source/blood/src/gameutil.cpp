@@ -836,7 +836,6 @@ unsigned int ClipMoveEDuke(spritetype *pSprite, int *x, int *y, int *z, int *nSe
 
     // we didn't hit shit, let's raycast and try again
     bool seekSector = false;
-    const int distClipmove = approxDist(origX-*x, origY-*y);
     vec3_t pos = {origX, origY, origZ};
     hitdata_t hitData;
     hitData.pos = pos;
