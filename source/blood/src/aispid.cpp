@@ -121,8 +121,8 @@ static void SpidBiteSeqCallback(int, int nXSprite)
                     dz += Random2(2000);
                     actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorSpiderBite);
                     SpidPoisonTarget(pXTarget, 8, 16);
-                    }
                     break;
+                }
             }
         }
 
