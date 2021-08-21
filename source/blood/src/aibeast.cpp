@@ -111,7 +111,7 @@ static void StompSeqCallback(int, int nXSprite)
     int v10 = 25+30*gGameOptions.nDifficulty;
     gAffectedSectors[0] = -1;
     gAffectedXWalls[0] = -1;
-    const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+    const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode(); // use new sector checking logic
     GetClosestSpriteSectors(nSector, x, y, vc, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
     char v4 = 0;
     int v34 = -1;

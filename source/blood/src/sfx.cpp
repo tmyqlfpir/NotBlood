@@ -99,10 +99,9 @@ void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
 {
     if (!SoundToggle || soundId < 0) return;
 
-    if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode
+    if ((soundId == 3017) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not play quote about having two guns
     {
-        if ((soundId == 3017) && gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not play quote about having two guns
-            soundId = 3016;
+        soundId = 3016;
     }
     DICTNODE *hRes = gSoundRes.Lookup(soundId, "SFX");
     if (!hRes)return;
@@ -158,7 +157,7 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int a3, int a4)
         return;
     if (soundId < 0)
         return;
-    if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode
+    if (!VanillaMode())
     {
         if ((gGameOptions.nRandomizerCheat == 12) && Random(2) && (soundId > 1000)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
         {
@@ -278,7 +277,7 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int a3, int a4)
 void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int a3, int a4, int pitch, int volume)
 {
     if (!SoundToggle || !pSprite || soundId < 0) return;
-    if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode
+    if (!VanillaMode())
     {
         if ((gGameOptions.nRandomizerCheat == 12) && Random(2) && (soundId > 1000)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
         {

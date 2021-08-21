@@ -283,7 +283,7 @@ void LifeLeechOperate(spritetype *pSprite, XSPRITE *pXSprite, EVENT event)
                         int tz = pTarget->z - (pTarget->yrepeat * pDudeInfo->aimHeight) * 4;
                         int dz = divscale(tz - top - 256, nDist, 10);
                         int nMissileType = kMissileLifeLeechAltNormal + (pXSprite->data3 ? 1 : 0);
-                        if (gLifeleechRnd && !VanillaMode() && !DemoRecordStatus()) // if random projectiles for lifeleech flag is on and not in demo/vanilla mode
+                        if (gLifeleechRnd && !VanillaMode()) // if random projectiles for lifeleech flag is on
                             nMissileType = kMissileBase + Random(18);
                         int t2;
                         if (!pXSprite->data3)
@@ -295,7 +295,7 @@ void LifeLeechOperate(spritetype *pSprite, XSPRITE *pXSprite, EVENT event)
                         {
                             pMissile->owner = pSprite->owner;
                             pXSprite->stateTimer = 1;
-                            if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, reduce the firing rate of the lifeleech
+                            if (WeaponsNotBlood() && !VanillaMode()) // reduce the firing rate of the lifeleech
                                 pXSprite->stateTimer = 3;
                             evPost(pSprite->index, 3, t2, kCallbackLeechStateTimer);
                             pXSprite->data3 = ClipLow(pXSprite->data3-1, 0);
@@ -494,7 +494,7 @@ void OperateSprite(int nSprite, XSPRITE *pXSprite, EVENT event)
         if (gGameOptions.nMonsterSettings && pXSprite->data1 >= kDudeBase && pXSprite->data1 < kDudeMax) {
             spritetype* pSpawn = actSpawnDude(pSprite, pXSprite->data1, -1, 0);
             if (pSpawn) {
-                if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus()) { // randomize spawned enemy
+                if (gGameOptions.nRandomizerMode && !VanillaMode()) { // randomize spawned enemy
                     dbRandomizerMode(pSpawn);
                 }
                 XSPRITE *pXSpawn = &xsprite[pSpawn->extra];
@@ -1478,7 +1478,7 @@ void OperateTeleport(unsigned int nSector, XSECTOR *pXSector)
                 {
                     playerResetInertia(pPlayer);
                     pPlayer->zViewVel = pPlayer->zWeaponVel = 0;
-                    if (!VanillaMode() && !DemoRecordStatus()) // if player teleported, clear old angles
+                    if (!VanillaMode()) // if player teleported, clear old angles
                     {
                         pPlayer->angold = pSprite->ang;
                         pPlayer->q16ang = fix16_from_int(pSprite->ang);
@@ -2271,7 +2271,7 @@ void MGunFireSeqCallback(int, int nXSprite)
         int dx = (Cos(pSprite->ang)>>16)+Random2(1000);
         int dy = (Sin(pSprite->ang)>>16)+Random2(1000);
         int dz = Random2(1000);
-        if (gGameOptions.bHitscanProjectiles && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and enemy hitscan projectiles are enabled, spawn bullet projectile
+        if (gGameOptions.bHitscanProjectiles && !VanillaMode()) // if enemy hitscan projectiles are enabled, spawn bullet projectile
         {
             const int bakX = pSprite->x;
             const int bakY = pSprite->y;

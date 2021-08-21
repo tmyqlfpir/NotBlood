@@ -1292,7 +1292,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
     if (!gPowerupDuration)
         return;
 
-    short int akimboQuadDamagePicnum = gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
+    short int akimboQuadDamagePicnum = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
 
     POWERUPDISPLAY powerups[nPowerUps];
     powerups[0] = { gPowerUpInfo[kPwUpShadowCloak].picnum,  0.4f, 0, pPlayer->pwUpTime[kPwUpShadowCloak] }; // Invisibility
@@ -2554,7 +2554,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     {
         dassert(pTSprite->type >= kDudePlayer1 && pTSprite->type <= kDudePlayer8);
         PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
-        const short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
+        const short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;

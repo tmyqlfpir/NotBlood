@@ -1454,7 +1454,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
     numsectors = mapHeader.at1f;
     numwalls = mapHeader.at21;
     dbInit();
-    if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus())
+    if (gGameOptions.nRandomizerMode && !VanillaMode())
     {
         dbRandomizerModeInit(); // seed enemy/pickup randomizer
     }
@@ -1709,11 +1709,11 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         pSprite->flags = B_LITTLE16(pSprite->hitag);
         pSprite->extra = B_LITTLE16(pSprite->extra);
 #endif
-        if (gGameOptions.nRandomizerMode && !VanillaMode() && !DemoRecordStatus()) // randomize enemy/pickups
+        if (gGameOptions.nRandomizerMode && !VanillaMode()) // randomize enemy/pickups
         {
             dbRandomizerMode(pSprite);
         }
-        if ((pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
+        if ((pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
         {
             pSprite->picnum = 30703;
         }
@@ -1801,7 +1801,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
             pXSprite->height = bitReader.readUnsigned(16);
             pXSprite->stateTimer = bitReader.readUnsigned(16);
             pXSprite->aiState = NULL;
-            if ((gGameOptions.nRandomizerMode & 1) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and randomizer is set to enemies or enemies+weapons mode
+            if ((gGameOptions.nRandomizerMode & 1) && !VanillaMode()) // if randomizer is set to enemies or enemies+weapons mode
             {
                 const int curRandomCheat = gGameOptions.nRandomizerCheat;
                 const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 14); // only randomize enemy sizes if seed cheats 0-13 are active

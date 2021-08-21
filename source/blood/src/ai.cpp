@@ -1059,7 +1059,7 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
             DUDEEXTRA *pDudeExtra = &gDudeExtra[pSprite->extra];
             pDudeExtra->at4 = 1;
         }
-        const bool fixRandomCultist = EnemiesNotBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && !VanillaMode() && !DemoRecordStatus(); // fix burning cultists randomly switching types underwater
+        const bool fixRandomCultist = EnemiesNotBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && !VanillaMode(); // fix burning cultists randomly switching types underwater
         switch (pSprite->type)
         {
         case kDudeCultistTommy:
@@ -1138,7 +1138,7 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
         case kDudeTinyCaleb:
             if (nDmgType == kDamageBurn && pXSprite->health <= (unsigned int)pDudeInfo->fleeHealth/* && (pXSprite->at17_6 != 1 || pXSprite->at17_6 != 2)*/)
             {
-                if (EnemiesNotBlood() && !VanillaMode() && !DemoRecordStatus()) // fix burning sprite for tiny caleb
+                if (EnemiesNotBlood() && !VanillaMode()) // fix burning sprite for tiny caleb
                 {
                     pSprite->type = kDudeBurningTinyCaleb;
                     aiNewState(pSprite, pXSprite, &tinycalebBurnGoto);
@@ -1506,7 +1506,7 @@ void aiLookForTarget(spritetype *pSprite, XSPRITE *pXSprite)
             char sectmap[(kMaxSectors+7)>>3];
             gAffectedSectors[0] = 0;
             gAffectedXWalls[0] = 0;
-            const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+            const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode(); // use new sector checking logic
             GetClosestSpriteSectors(pSprite->sectnum, pSprite->x, pSprite->y, 400, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
             for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
             {

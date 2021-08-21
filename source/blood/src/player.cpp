@@ -269,7 +269,7 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
         return 0;
     if (!pPlayer->pwUpTime[nPowerUp]) {
         int bonusTime = gPowerUpInfo[nPowerUp].bonusTime;
-        if ((nPowerUp == kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if picked up quad damage
+        if ((nPowerUp == kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if picked up quad damage
             bonusTime = 2500; // set to 25 seconds
         pPlayer->pwUpTime[nPowerUp] = bonusTime;
     }
@@ -326,7 +326,7 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
             pPlayer->damageControl[1]++;
             break;
         case kItemTwoGuns:
-            if (gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is active, do not switch weapon
+            if (gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not switch weapon
                 break;
             pPlayer->input.newWeapon = pPlayer->curWeapon;
             WeaponRaise(pPlayer);
@@ -379,7 +379,7 @@ void powerupDeactivate(PLAYER *pPlayer, int nPowerUp)
             pPlayer->damageControl[1]--;
             break;
         case kItemTwoGuns:
-            if (gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // if quad damage is active, do not switch weapon
+            if (gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not switch weapon
                 break;
             pPlayer->input.newWeapon = pPlayer->curWeapon;
             WeaponRaise(pPlayer);
@@ -1187,7 +1187,7 @@ void PickUp(PLAYER *pPlayer, spritetype *pSprite)
     if (nType >= kItemBase && nType <= kItemMax) {
         pickedUp = PickupItem(pPlayer, pSprite);
         if (pickedUp && customMsg == -1) {
-            if ((nType == kItemTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus()) // replace guns akimbo pickup text
+            if ((nType == kItemTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // replace guns akimbo pickup text
                 sprintf(buffer, "Picked up Quad Damage");
             else
                 sprintf(buffer, "Picked up %s", gItemText[nType - kItemBase]);
@@ -1788,7 +1788,7 @@ void playerProcess(PLAYER *pPlayer)
         if (pXSprite->height < 256)
         {
             int isRunning = pPlayer->isRunning == true;
-            if ((gWeaponHBobbing == 2) && (gGameOptions.nGameType == 0) && (numplayers == 1) && !VanillaMode() && !DemoRecordStatus()) // v1.0x weapon swaying (disable for multiplayer/demo playback - causes desync)
+            if ((gWeaponHBobbing == 2) && (gGameOptions.nGameType == 0) && (numplayers == 1) && !VanillaMode()) // v1.0x weapon swaying (disable for multiplayer/demo playback - causes desync)
                 isRunning = 1; // always running
             pPlayer->bobAmp = (pPlayer->bobAmp+pPosture->pace[isRunning]*4) & 2047;
             pPlayer->swayAmp = (pPlayer->swayAmp+(pPosture->pace[isRunning]*4)/2) & 2047;
@@ -2011,7 +2011,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
     dassert(pPlayer != NULL);
     if (pPlayer->damageControl[nDamageType])
         return 0;
-    if (gGameOptions.bDamageInvul && !VanillaMode() && !DemoRecordStatus()) // if invul timer option is active
+    if (gGameOptions.bDamageInvul && !VanillaMode()) // if invul timer option is active
     {
         if ((nDamageType == kDamageBullet) || (nDamageType == kDamageSpirit) || (nDamageType == kDamageTesla)) // only apply invulnerability for bullet/spirit/tesla damage
         {
@@ -2152,7 +2152,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         FragPlayer(pPlayer, nSource);
         trTriggerSprite(nSprite, pXSprite, kCmdOff);
 
-        if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode() && !DemoRecordStatus()) // if died in singleplayer and not playing demo
+        if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode()) // if died in singleplayer and not playing demo
         {
             viewSetMessage("press \"use\" to load last save or press \"enter\" to restart level"); // string borrowed from bloodgdx (thank you M210)
         }

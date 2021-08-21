@@ -106,7 +106,7 @@ static void TommySeqCallback(int, int nXSprite)
     dx += Random3((5-gGameOptions.nDifficulty)*1000);
     dy += Random3((5-gGameOptions.nDifficulty)*1000);
     dz += Random3((5-gGameOptions.nDifficulty)*500);
-    bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode() && !DemoRecordStatus(); // if not in demo/vanilla mode, and enemy hitscan projectiles are enabled, spawn bullet projectile
+    bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode(); // if enemy hitscan projectiles are enabled, spawn bullet projectile
     if (useProjectile && (gGameOptions.nDifficulty > 2) && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if difficulty is above lightly broiled, and target is valid
     {
         spritetype *pTarget = &sprite[pXSprite->target];
@@ -159,7 +159,7 @@ static void ShotSeqCallback(int, int nXSprite)
     dx += Random2((5-gGameOptions.nDifficulty)*1000-500);
     dy += Random2((5-gGameOptions.nDifficulty)*1000-500);
     dz += Random2((5-gGameOptions.nDifficulty)*500);
-    bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode() && !DemoRecordStatus(); // if not in demo/vanilla mode, and enemy hitscan projectiles are enabled, spawn bullet projectile
+    bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode(); // if enemy hitscan projectiles are enabled, spawn bullet projectile
     if (useProjectile && (gGameOptions.nDifficulty > 2) && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if difficulty is above lightly broiled, and target is valid
     {
         spritetype *pTarget = &sprite[pXSprite->target];

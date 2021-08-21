@@ -2733,7 +2733,7 @@ void actRadiusDamage(int nSprite, int x, int y, int z, int nSector, int nDist, i
     int nOwner = actSpriteIdToOwnerId(nSprite);
     gAffectedSectors[0] = 0;
     gAffectedXWalls[0] = 0;
-    const bool newSectCheckMethod = ExplosionsNotBlood() && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+    const bool newSectCheckMethod = ExplosionsNotBlood() && !VanillaMode(); // use new sector checking logic
     GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
     nDist <<= 4;
     if (flags & 2)
@@ -2893,7 +2893,7 @@ spritetype *actDropItem(spritetype *pSprite, int nType)
         pSprite2->shade = pItem->shade;
         pSprite2->xrepeat = pItem->xrepeat;
         pSprite2->yrepeat = pItem->yrepeat;
-        if (gGameOptions.bQuadDamagePowerup && (nType == kItemTwoGuns) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and quad damage is enabled
+        if (gGameOptions.bQuadDamagePowerup && (nType == kItemTwoGuns) && !VanillaMode()) // if quad damage is enabled
         {
             if (pSprite2->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) // replace guns akimbo icon with quad damage icon from TILES099.ART
                 pSprite2->picnum = 30703;
@@ -3096,7 +3096,7 @@ void actKillDude(int nKillerSprite, spritetype *pSprite, DAMAGE_TYPE damageType,
         }
         break;
     case kDudeTinyCaleb:
-        if (!EnemiesNotBlood() || VanillaMode() || DemoRecordStatus())
+        if (!EnemiesNotBlood() || VanillaMode())
             break;
         if (damageType == kDamageBurn && pXSprite->medium == kMediumNormal)
         {
@@ -3573,7 +3573,7 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
     PLAYER *pSourcePlayer = NULL;
     if (IsPlayerSprite(&sprite[nSource])) pSourcePlayer = &gPlayer[sprite[nSource].type - kDudePlayer1];
     if (!gGameOptions.bFriendlyFire && IsTargetTeammate(pSourcePlayer, pSprite)) return 0;
-    if (!VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode
+    if (!VanillaMode())
     {
         if ((gGameOptions.nRandomizerCheat == 12) && IsPlayerSprite(pSprite) && !actSpriteOwnerIsPlayer(pSprite) && (damageType != kDamageExplode)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
         {
@@ -3801,7 +3801,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                     actBurnSprite(pMissile->owner, pXSpriteHit, 360);
 
                 // by NoOne: make Life Leech heal user, just like it was in 1.0x versions
-                if (WeaponsV10x() && !VanillaMode() && !DemoRecordStatus() && pDudeInfo != NULL) {
+                if (WeaponsV10x() && !VanillaMode() && pDudeInfo != NULL) {
                     spritetype* pSource = &sprite[nOwner];
                     XSPRITE* pXSource = (pSource->extra >= 0) ? &xsprite[pSource->extra] : NULL;
 
@@ -3865,7 +3865,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                 int nOwner = actSpriteOwnerToSpriteId(pMissile);
                 int nDmgMul = (pMissile->type == kMissileLifeLeechAltSmall) ? 6 : 3;
                 int nDamage = (nDmgMul+Random(nDmgMul))<<4;
-                if (WeaponsNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, increase the damage for lifeleech
+                if (WeaponsNotBlood() && !VanillaMode()) // increase the damage for lifeleech
                 {
                     if (!IsPlayerSprite(&sprite[pSpriteHit->index])) // target is not a player, do extra damage
                         nDamage *= 3;
@@ -3902,7 +3902,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                     actRadiusDamage(nOwner, pMissile->x, pMissile->y, pMissile->z, pMissile->sectnum, 16, 20, 10, kDamageBullet, 6, 480);
 
                     // by NoOne: allow additional bullet damage for Flare Gun
-                    if (WeaponsV10x() && !VanillaMode() && !DemoRecordStatus()) {
+                    if (WeaponsV10x() && !VanillaMode()) {
                         int nDamage = (20 + Random(10)) << 4;
                         actDamageSprite(nOwner, pSpriteHit, kDamageBullet, nDamage);
                     }
@@ -4030,7 +4030,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
             if (hitCode == 3 && pSpriteHit)
             {
                 spritetype *pObject = &sprite[gHitInfo.hitsprite];
-                if (WeaponsNotBlood() && IsPlayerSprite(pObject) && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode, and player was shot, reflect back tesla projectile
+                if (WeaponsNotBlood() && IsPlayerSprite(pObject) && !VanillaMode()) // if player was shot, reflect back tesla projectile
                 {
                     if (powerupCheck(&gPlayer[pObject->type - kDudePlayer1], kPwUpReflectShots))
                     {
@@ -4464,7 +4464,7 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
     if (pSprite == NULL)
         return 0;
     int nSprite = pSprite->index;
-    if (!ProjectilesNotBlood() || VanillaMode() || DemoRecordStatus()) // if projectile behavior is set to original, or sprite has no owner, or in demo/vanilla mode
+    if (!ProjectilesNotBlood() || VanillaMode()) // if projectile behavior is set to original
         return 0;
     if (nSprite < 0 || nSprite >= kMaxSprites) // invalid sprite, don't bother processing
         return 0;
@@ -4519,7 +4519,7 @@ int MoveThing(spritetype *pSprite)
         short bakCstat = pSprite->cstat;
         pSprite->cstat &= ~257;
         const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
-        if(tinywd && ProjectilesNotBlood() && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        if(tinywd && ProjectilesNotBlood() && !VanillaMode()) // if object owned by player, use smaller hitboxes for specific player owned items
         {
             wd = tinywd;
             v8 = gSpriteHit[nXSprite].hit = ClipMoveEDuke(pSprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
@@ -4538,7 +4538,7 @@ int MoveThing(spritetype *pSprite)
         if ((gSpriteHit[nXSprite].hit&0xc000) == 0x8000) {
             int nHitWall = gSpriteHit[nXSprite].hit&0x3fff;
             bool bounce = true;
-            if (ProjectilesNotBlood() && (wall[nHitWall].nextsector != -1) && !VanillaMode() && !DemoRecordStatus()) { // if not in demo/vanilla mode, and sprite didn't hit a solid wall
+            if (ProjectilesNotBlood() && (wall[nHitWall].nextsector != -1) && !VanillaMode()) { // if sprite didn't hit a solid wall
                 if (actSpriteOwnerIsPlayer(pSprite) || (pSprite->type == kThingZombieHead) || (pSprite->type == kThingKickablePail)) { // if sprite is owned by a player, or is a non-played owned zombie head/metal pail
                     switch (pSprite->type) {
                         case kThingArmedTNTBundle: // filter out these sprites
@@ -4579,8 +4579,8 @@ int MoveThing(spritetype *pSprite)
                     sfxPlay3DSound(pSprite, 607, 0, 0);
                     actDamageSprite(-1, pSprite, kDamageFall, 80);
                     break;
-                case kThingDroppedLifeLeech:
-                    if (!WeaponsNotBlood() || VanillaMode() || DemoRecordStatus()) // if in demo/vanilla mode, don't play lifeleech sfx on wall bounce
+                case kThingDroppedLifeLeech: // play sfx on wall bounce for lifeleech
+                    if (!WeaponsNotBlood() || VanillaMode())
                         break;
                     if (klabs(zvel[nSprite]) > 0x20000)
                         sfxPlay3DSound(pSprite, 816 + Random(2), 0, 0);
@@ -4660,8 +4660,8 @@ int MoveThing(spritetype *pSprite)
                         actDamageSprite(-1, pSprite, kDamageFall, 80);
                     }
                     break;
-                case kThingDroppedLifeLeech:
-                    if (!WeaponsNotBlood() || VanillaMode() || DemoRecordStatus()) // if in demo/vanilla mode, don't play lifeleech sfx on floor bounce
+                case kThingDroppedLifeLeech: // play sfx on floor bounce for lifeleech
+                    if (!WeaponsNotBlood() || VanillaMode())
                         break;
                     if (klabs(zvel[nSprite]) > 0x40000)
                         sfxPlay3DSound(pSprite, 816 + Random(2), 0, 0);
@@ -4773,7 +4773,7 @@ void MoveDude(spritetype *pSprite)
         {
             short bakCstat = pSprite->cstat;
             pSprite->cstat &= ~257;
-            if (gEnemyZoomies && !pPlayer && !VanillaMode() && !DemoRecordStatus()) // if not in demo/vanilla mode and enemy zoomies cheat is active
+            if (gEnemyZoomies && !pPlayer && !VanillaMode()) // if enemy zoomies cheat is active
             {
                 vx <<= 1; // double enemy velocity
                 vy <<= 1;
@@ -4944,7 +4944,7 @@ void MoveDude(spritetype *pSprite)
     }
     if (pPlayer && zvel[nSprite] > 0x155555 && !pPlayer->fallScream && pXSprite->height > 0)
     {
-        const bool playerAlive = (pXSprite->health > 0) || VanillaMode() || DemoRecordStatus(); // only trigger falling scream if player is alive
+        const bool playerAlive = (pXSprite->health > 0) || VanillaMode(); // only trigger falling scream if player is alive
         if (playerAlive)
         {
             pPlayer->fallScream = 1;
@@ -5047,7 +5047,7 @@ void MoveDude(spritetype *pSprite)
                     break;
                 case kDudeBurningCultist:
                 {
-                    const bool fixRandomCultist = EnemiesNotBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && !VanillaMode() && !DemoRecordStatus(); // fix burning cultists randomly switching types underwater
+                    const bool fixRandomCultist = EnemiesNotBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && !VanillaMode(); // fix burning cultists randomly switching types underwater
                     if (fixRandomCultist)
                         pSprite->type = pSprite->inittype;
                     else if (Chance(chance)) // vanilla behavior
@@ -5375,7 +5375,7 @@ int MoveMissile(spritetype *pSprite)
         clipmoveboxtracenum = 1;
         int vdx;
         const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
-        if(tinywd && ProjectilesNotBlood() && !VanillaMode() && !DemoRecordStatus())  // if not in demo/vanilla mode and object owned by player, use smaller hitboxes for specific player owned items
+        if(tinywd && ProjectilesNotBlood() && !VanillaMode()) // if object owned by player, use smaller hitboxes for specific player owned items
         {
             wd = tinywd;
             vdx = ClipMoveEDuke(pSprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
@@ -6304,9 +6304,9 @@ void actProcessSprites(void)
                             actExplodeSprite(pSprite);
                             break;
                         }
-                        case kThingDroppedLifeLeech:
+                        case kThingDroppedLifeLeech: // allow player to kill enemies with thrown lifeleech
                         {
-                            if (!WeaponsNotBlood() || VanillaMode() || DemoRecordStatus()) // if in demo/vanilla mode, don't allow player to kill enemies with thrown lifeleech
+                            if (!WeaponsNotBlood() || VanillaMode())
                                 break;
                             int nObject = hit & 0x3fff;
                             if (((hit & 0xc000) != 0xc000) || (nObject < 0 || nObject >= 4096))
@@ -6396,7 +6396,7 @@ void actProcessSprites(void)
         // GetClosestSpriteSectors() has issues checking some sectors due to optimizations
         // the new flag newSectCheckMethod for GetClosestSpriteSectors() does rectify these issues, but this may cause unintended side effects for level scripted explosions
         // so only allow this new checking method for dude spawned explosions
-        const bool newSectCheckMethod = ExplosionsNotBlood() && actSpriteOwnerIsDude(pSprite) && !VanillaMode() && !DemoRecordStatus(); // use new sector checking logic
+        const bool newSectCheckMethod = ExplosionsNotBlood() && actSpriteOwnerIsDude(pSprite) && !VanillaMode(); // use new sector checking logic
         GetClosestSpriteSectors(nSector, x, y, radius, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
 
         for (int i = 0; i < kMaxXWalls; i++)
@@ -6586,7 +6586,7 @@ void actProcessSprites(void)
             #else
             const bool burningType = (pSprite->type == kDudeBurningInnocent) || (pSprite->type == kDudeBurningCultist) || (pSprite->type == kDudeBurningZombieAxe) || (pSprite->type == kDudeBurningZombieButcher) || (pSprite->type == kDudeBurningTinyCaleb) || (pSprite->type == kDudeBurningBeast);
             #endif
-            const bool fixBurnGlitch = EnemiesNotBlood() && burningType && !VanillaMode() && !DemoRecordStatus(); // if enemies are burning, always apply burning damage per tick
+            const bool fixBurnGlitch = EnemiesNotBlood() && burningType && !VanillaMode(); // if enemies are burning, always apply burning damage per tick
             if ((pXSprite->burnTime > 0) || fixBurnGlitch)
             {
                 switch (pSprite->type)
@@ -7345,7 +7345,7 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
             DAMAGE_TYPE dmgType = pVectorData->dmgType;
             if (vectorType == kVectorTine && !IsPlayerSprite(pSprite))
                 shift = 3;
-            if (IsPlayerSprite(pShooter) && gGameOptions.bQuadDamagePowerup && !VanillaMode() && !DemoRecordStatus())
+            if (IsPlayerSprite(pShooter) && gGameOptions.bQuadDamagePowerup && !VanillaMode())
             {
                 PLAYER *pPlayer = &gPlayer[pShooter->type - kDudePlayer1];
                 if (powerupCheck(pPlayer, kPwUpTwoGuns)) // if quad is active, increase pushback and do random explosive damage for hitscan weapons
