@@ -714,7 +714,7 @@ void WeaponLower(PLAYER *pPlayer)
                 StartQAV(pPlayer, 11, -1, 0);
             }
             break;
-        case 7:
+        case 7: // throwing ignited alt fire spray
             if (VanillaMode() || DemoRecordStatus() || (pPlayer->input.newWeapon != 0))
                 break;
             pPlayer->weaponState = 1;
