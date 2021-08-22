@@ -2118,7 +2118,7 @@ void UpdateFrame(void)
 
 void viewDrawInterface(ClockTicks arg)
 {
-    if (gViewMode == 3/* && gViewSize >= 3*/ && (pcBackground != 0 || videoGetRenderMode() >= REND_POLYMOST))
+    if (gViewMode == 3 && gViewSize >= 3)
     {
         UpdateFrame();
         pcBackground--;
