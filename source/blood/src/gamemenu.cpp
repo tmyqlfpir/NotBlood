@@ -340,7 +340,9 @@ void CGameMenu::Draw(void)
     {
         if (pItemList[i]->pPreDrawCallback)
             pItemList[i]->pPreDrawCallback(pItemList[i]);
-        if ((i == m_nFocus || (i != m_nFocus && !pItemList[i]->bNoDraw)) && !(gNetPlayers > 1 && pItemList[i]->bDisableForNet))
+        const bool bEnableBak = pItemList[i]->bEnable;
+        pItemList[i]->bEnable = pItemList[i]->bEnable && !(gNetPlayers > 1 && pItemList[i]->bDisableForNet); // turn off any menu items that should not be accessible during multiplayer
+        if (i == m_nFocus || (i != m_nFocus && !pItemList[i]->bNoDraw))
         {
             pItemList[i]->Draw();
             if ((i == m_nFocus) && (pItemList[i]->tooltip_pzTextUpper != NULL))
@@ -357,6 +359,7 @@ void CGameMenu::Draw(void)
                 }
             }
         }
+        pItemList[i]->bEnable = bEnableBak;
     }
 }
 
