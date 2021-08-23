@@ -811,14 +811,14 @@ unsigned int ClipMove(int *x, int *y, int *z, int *nSector, int xv, int yv, int 
     return nRes;
 }
 
-unsigned int ClipMoveEDuke(spritetype *pSprite, int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask)
+unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask)
 {
     // while this function may look as hideous as any build engine internals, it's been carefully setup like a stack of cards
     // do not touch unless you know what you're doing, or are severely drunk
     // good levels to test with - the first breakable cave wall of CPE1M1 and DWE2M8's skull key room
+    // providing a sprite will use additional raycast collision testing, otherwise this will behave like ClipMove()
     if ((xv == 0) && (yv == 0)) // not moving, don't bother continuing
         return 0;
-    dassert(pSprite != NULL);
     int origX = *x;
     int origY = *y;
     int origZ = *z;
@@ -831,7 +831,7 @@ unsigned int ClipMoveEDuke(spritetype *pSprite, int *x, int *y, int *z, int *nSe
         *x = origX, *y = origY, *z = origZ;
     else
         *nSector = updSect;
-    if (nRes > 0) // got a hit, return
+    if ((nRes > 0) || (raySprite == NULL)) // if got a hit, or sprite is null, return
         return nRes;
 
     // we didn't hit shit, let's raycast and try again
@@ -841,7 +841,7 @@ unsigned int ClipMoveEDuke(spritetype *pSprite, int *x, int *y, int *z, int *nSe
     hitData.pos = pos;
     hitscangoal.x = *x;
     hitscangoal.y = *y;
-    hitscan(&pos, origSect, Cos(pSprite->ang)>>16, Sin(pSprite->ang)>>16, 0, &hitData, nMask);
+    hitscan(&pos, origSect, Cos(raySprite->ang)>>16, Sin(raySprite->ang)>>16, 0, &hitData, nMask);
     if (hitData.sprite >= kMaxSprites || hitData.wall >= kMaxWalls || hitData.sect >= kMaxSectors) // we didn't hit shit, get current sector and return
         seekSector = true;
     else if (hitData.sprite >= 0 || hitData.wall >= 0) // did we hit something, and was it a sprite/wall
@@ -851,11 +851,11 @@ unsigned int ClipMoveEDuke(spritetype *pSprite, int *x, int *y, int *z, int *nSe
         *y = hitData.pos.y;
         *z = hitData.pos.z;
         *nSector = hitData.sect;
-        wd = pSprite->clipdist<<2; // use the original wd values to offset from wall/sprite
+        wd = raySprite->clipdist<<2; // use the original wd values to offset from wall/sprite
         if ((distRay - ((wd+8)<<1)) > 0) // if there is enough room to offset from ray's hit surface
         {
-            *x -= mulscale30(wd+8, Cos(pSprite->ang)); // offset using walldist argument
-            *y -= mulscale30(wd+8, Sin(pSprite->ang));
+            *x -= mulscale30(wd+8, Cos(raySprite->ang)); // offset using walldist argument
+            *y -= mulscale30(wd+8, Sin(raySprite->ang));
             seekSector = true; // we've moved the sprite, there might be a very small possibility that the sector is misaligned so check this
         }
         if (hitData.sprite >= 0)

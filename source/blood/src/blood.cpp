@@ -661,8 +661,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             gHealthTemp[i] = xsprite[gPlayer[i].pSprite->extra].health;
         }
     }
-    bVanilla = gDemo.at1 && gDemo.m_bLegacy;
-    enginecompatibilitymode = ENGINE_19960925;//bVanilla;
+    enginecompatibilitymode = ENGINE_19960925;
     memset(xsprite,0,sizeof(xsprite));
     memset(sprite,0,kMaxSprites*sizeof(spritetype));
     drawLoadingScreen();
@@ -774,7 +773,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     InitMirrors();
     gFrameClock = 0;
     trInit();
-    if (!bVanilla && !gMe->packSlots[1].isActive) // if diving suit is not active, turn off reverb sound effect
+    if (!VanillaMode() && !gMe->packSlots[1].isActive) // if diving suit is not active, turn off reverb sound effect
         sfxSetReverb(0);
     ambInit();
     sub_79760();
@@ -2821,7 +2820,7 @@ bool DemoRecordStatus(void) {
 }
 
 bool VanillaMode() {
-    return gDemo.m_bLegacy && gDemo.at1;
+    return gDemo.at1 ? gDemo.m_bLegacy : gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1);
 }
 
 bool WeaponsNotBlood(void) {

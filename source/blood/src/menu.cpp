@@ -182,7 +182,7 @@ const char *pzShowWeaponStrings[] = {
 };
 
 const char *pzExplosionBehaviorStrings[] = {
-    "NotBlood",
+    "Raze",
     "Original",
 };
 
@@ -513,6 +513,7 @@ void SetPowerupDuration(CGameMenuItemZBool *);
 void SetShowMapTitle(CGameMenuItemZBool*);
 void SetWeaponSwitch(CGameMenuItemZCycle *pItem);
 void SetAutosaveMode(CGameMenuItemZCycle *pItem);
+void SetVanillaMode(CGameMenuItemZBool *);
 
 CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
 CGameMenuItemTitle itemGameEnhancementsTitle("ENHANCEMENTS", 1, 160, 20, 2038);
@@ -539,7 +540,8 @@ CGameMenuItemZCycle itemOptionsGameBoolWeaponInterpolation("WEAPON SMOOTHING:", 
 CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 120, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
 CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 130, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
 CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 140, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
-//CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 150, 320, 1, &menuParentalLock, -1, NULL, 0);
+CGameMenuItemZBool itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 150, 180, gVanilla, SetVanillaMode, NULL, NULL);
+//CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 160, 320, 1, &menuParentalLock, -1, NULL, 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
@@ -1066,6 +1068,20 @@ void SetupNetStartMenu(void)
     menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolHitscanProjectiles, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerMode, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerSeed, false);
+    itemNetEnhancementBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
+    itemNetEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
+    itemNetEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
+    itemNetEnhancementBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
+    itemNetEnhancementExplosionBehavior.tooltip_pzTextUpper = "Uses Raze's enhanced explosion calculation";
+    itemNetEnhancementProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
+    itemNetEnhancementProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
+    itemNetEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
+    itemNetEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
+    itemNetEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
+    itemNetEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Makes enemies spawn bullet projects";
+    itemNetEnhancementRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
+    itemNetEnhancementRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
+    itemNetEnhancementRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
     //////////////////////
 
     itemNetStart1.SetTextIndex(1);
@@ -1299,7 +1315,21 @@ void SetupOptionsMenu(void)
     menuOptionsGame.Add(&itemOptionsGameBoolAutoAim, false);
     menuOptionsGame.Add(&itemOptionsGameWeaponSwitch, false);
     menuOptionsGame.Add(&itemOptionsGameAutosaveMode, false);
+    menuOptionsGame.Add(&itemOptionsGameBoolVanillaMode, false);
     itemOptionsGameAutosaveMode.bDisableForNet = 1;
+    itemOptionsGameBoolVanillaMode.bDisableForNet = 1;
+    itemOptionsDisplayWeaponSelect.bDisableForNet = !gVanilla;
+    itemOptionsGameBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's names";
+    itemOptionsGameBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
+    itemOptionsGameShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
+    itemOptionsGameShowWeapons.tooltip_pzTextLower = "over their head";
+    itemOptionsGameBoolSlopeTilting.tooltip_pzTextUpper = "Tilt view when looking";
+    itemOptionsGameBoolSlopeTilting.tooltip_pzTextLower = "towards a slope";
+    itemOptionsGameBoolWeaponInterpolation.tooltip_pzTextUpper = "Set QAV interpolation for";
+    itemOptionsGameBoolWeaponInterpolation.tooltip_pzTextLower = "weapon sprites";
+    itemOptionsGameAutosaveMode.tooltip_pzTextUpper = "Set when autosave will trigger";
+    itemOptionsGameBoolVanillaMode.tooltip_pzTextUpper = "Forcefully disables all";
+    itemOptionsGameBoolVanillaMode.tooltip_pzTextLower = "non-vanilla features/enhancements";
 
     //////////////////////
     menuOptionsGameEnhancements.Add(&itemGameEnhancementsTitle, false);
@@ -1313,6 +1343,21 @@ void SetupOptionsMenu(void)
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerMode, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerSeed, false);
     itemOptionsChainEnhancements.bDisableForNet = 1;
+    itemOptionsChainEnhancements.bEnable = !gVanilla;
+    itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
+    itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
+    itemEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
+    itemEnhancementBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
+    itemEnhancementExplosionBehavior.tooltip_pzTextUpper = "Uses Raze's enhanced explosion calculation";
+    itemEnhancementProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
+    itemEnhancementProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
+    itemEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
+    itemEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
+    itemEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
+    itemEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Makes enemies spawn bullet projects";
+    itemEnhancementRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
+    itemEnhancementRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
+    itemEnhancementRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
     /////////////////////
 
     //menuOptionsGame.Add(&itemOptionsGameChainParentalLock, false);
@@ -1327,6 +1372,8 @@ void SetupOptionsMenu(void)
     itemOptionsGameBoolAutoAim.m_nFocus = gAutoAim;
     itemOptionsGameWeaponSwitch.m_nFocus = (gWeaponSwitch&1) ? ((gWeaponSwitch&2) ? 1 : 2) : 0;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
+    itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
+    itemOptionsGameBoolVanillaMode.at20 = gVanilla;
 
     ///////
     menuOptionsGameEnhancements.Add(&itemBloodQAV, false);
@@ -1827,6 +1874,17 @@ void SetAutosaveMode(CGameMenuItemZCycle *pItem)
     gAutosave = pItem->m_nFocus % ARRAY_SSIZE(pzAutosaveModeStrings);
 
     itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
+}
+
+void SetVanillaMode(CGameMenuItemZBool *pItem)
+{
+    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+        gVanilla = pItem->at20;
+        itemOptionsChainEnhancements.bEnable = !gVanilla;
+        itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
+    } else {
+        pItem->at20 = gVanilla;
+    }
 }
 
 extern bool gStartNewGame;

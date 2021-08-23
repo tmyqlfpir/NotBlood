@@ -341,7 +341,22 @@ void CGameMenu::Draw(void)
         if (pItemList[i]->pPreDrawCallback)
             pItemList[i]->pPreDrawCallback(pItemList[i]);
         if ((i == m_nFocus || (i != m_nFocus && !pItemList[i]->bNoDraw)) && !(gNetPlayers > 1 && pItemList[i]->bDisableForNet))
+        {
             pItemList[i]->Draw();
+            if ((i == m_nFocus) && (pItemList[i]->tooltip_pzTextUpper != NULL))
+            {
+                const bool twoLines = pItemList[i]->tooltip_pzTextLower != NULL;
+                const int height = twoLines ? 170 : 175;
+                int width;
+                gMenuTextMgr.GetFontInfo(3, pItemList[i]->tooltip_pzTextUpper, &width, NULL);
+                viewDrawText(3, pItemList[i]->tooltip_pzTextUpper, (320/2)+2-(width/2), height, 0, 8, 0, true);
+                if (pItemList[i]->tooltip_pzTextLower != NULL)
+                {
+                    gMenuTextMgr.GetFontInfo(3, pItemList[i]->tooltip_pzTextLower, &width, NULL);
+                    viewDrawText(3, pItemList[i]->tooltip_pzTextLower, (320/2)+2-(width/2), height+10, 0, 8, 0, true);
+                }
+            }
+        }
     }
 }
 
@@ -450,6 +465,8 @@ CGameMenuItem::CGameMenuItem()
     pMenu = NULL;
     bNoDraw = 0;
     bDisableForNet = 0;
+    tooltip_pzTextUpper = NULL;
+    tooltip_pzTextLower = NULL;
     pPreDrawCallback = NULL;
 }
 

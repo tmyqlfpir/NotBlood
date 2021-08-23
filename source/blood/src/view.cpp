@@ -1365,7 +1365,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     static float animPosPrev;
     float animPos = 0;
 
-    if (!gShowWeaponSelect || (curTime < 50) || animState && ((animClock - (travelTime+holdTime+decayTime) > curTime) || (animClock + (travelTime+holdTime+decayTime) < curTime))) // if show weapon select is disabled, or player just started level, or the clock is impossibly far ahead (eg player quickloaded)
+    if ((curTime < 50) || animState && ((animClock - (travelTime+holdTime+decayTime) > curTime) || (animClock + (travelTime+holdTime+decayTime) < curTime))) // if show weapon select is disabled, or player just started level, or the clock is impossibly far ahead (eg player quickloaded)
     {
         animClock = curTime;
         animState = 0;
@@ -1732,7 +1732,8 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gViewSize < 0) return;
 
-    viewDrawWeaponSelect(pPlayer, pXSprite);
+    if (gShowWeaponSelect && !VanillaMode())
+        viewDrawWeaponSelect(pPlayer, pXSprite);
 
     if (gViewSize == 1)
     {
@@ -3570,7 +3571,7 @@ void viewDrawScreen(void)
             {
                 cZ += v8c;
             }
-            if (gSlopeTilting || VanillaMode())
+            if (VanillaMode())
             {
                 q16horiz += q16slopehoriz;
             }

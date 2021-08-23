@@ -2733,7 +2733,7 @@ void actRadiusDamage(int nSprite, int x, int y, int z, int nSector, int nDist, i
     int nOwner = actSpriteIdToOwnerId(nSprite);
     gAffectedSectors[0] = 0;
     gAffectedXWalls[0] = 0;
-    const bool newSectCheckMethod = ExplosionsNotBlood() && !VanillaMode(); // use new sector checking logic
+    const bool newSectCheckMethod = ExplosionsNotBlood() && (nOwner != -1) && actSpriteOwnerIsDude(&sprite[nOwner]) && !VanillaMode(); // use new sector checking logic
     GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
     nDist <<= 4;
     if (flags & 2)
@@ -4464,8 +4464,6 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
     if (pSprite == NULL)
         return 0;
     int nSprite = pSprite->index;
-    if (!ProjectilesNotBlood() || VanillaMode()) // if projectile behavior is set to original
-        return 0;
     if (nSprite < 0 || nSprite >= kMaxSprites) // invalid sprite, don't bother processing
         return 0;
     if (!actSpriteOwnerIsPlayer(pSprite)) // if sprite is not player owned/spawned
@@ -4494,7 +4492,7 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
 
     vec3_t tempxyz = {pSprite->x, pSprite->y, pSprite->z};
     int tempsec = pSprite->sectnum;
-    const int moved = ClipMove(&tempxyz.x, &tempxyz.y, &tempxyz.z, &tempsec, xvel[nSprite]>>12, yvel[nSprite]>>12, walldist, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
+    const int moved = ClipMoveEDuke(NULL, &tempxyz.x, &tempxyz.y, &tempxyz.z, &tempsec, xvel[nSprite]>>12, yvel[nSprite]>>12, walldist, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
     if ((moved & 0xc000) == 0x8000) // use a small hitbox if the sprite collided with a wall
         return smallwd;
     return walldist;
@@ -4518,11 +4516,16 @@ int MoveThing(spritetype *pSprite)
         int wd = pSprite->clipdist<<2;
         short bakCstat = pSprite->cstat;
         pSprite->cstat &= ~257;
-        const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
-        if(tinywd && ProjectilesNotBlood() && !VanillaMode()) // if object owned by player, use smaller hitboxes for specific player owned items
+        if (ProjectilesNotBlood() && (pSprite->owner >= 0) && !VanillaMode()) // improved clipmove accuracy
         {
-            wd = tinywd;
-            v8 = gSpriteHit[nXSprite].hit = ClipMoveEDuke(pSprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
+            spritetype *raySprite = NULL;
+            const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
+            if(tinywd) // if object owned by player, use smaller hitboxes for specific player owned items
+            {
+                wd = tinywd;
+                raySprite = pSprite; // set raycast collisions to be used
+            }
+            v8 = gSpriteHit[nXSprite].hit = ClipMoveEDuke(raySprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
         }
         else
         {
@@ -4958,7 +4961,7 @@ void MoveDude(spritetype *pSprite)
         GetZRange(pSprite, &ceilZ, &ceilHit, &floorZ, &floorHit, wd, CLIPMASK0, PARALLAXCLIP_CEILING|PARALLAXCLIP_FLOOR);
         if (pPlayer)
         {
-            if (bVanilla)
+            if (VanillaMode())
                 playerResetInertia(pPlayer);
             else
                 playerCorrectInertia(pPlayer, &oldpos);
@@ -5365,6 +5368,7 @@ int MoveMissile(spritetype *pSprite)
     int top, bottom;
     GetSpriteExtents(pSprite, &top, &bottom);
     int i = 1;
+    const bool isFlameSprite = (pSprite->type == kMissileFlameSpray || pSprite->type == kMissileFlameHound); // do not use eduke clipmove for flame based sprites (changes damage too much)
     while (1)
     {
         int x = pSprite->x;
@@ -5374,11 +5378,16 @@ int MoveMissile(spritetype *pSprite)
         int nSector2 = pSprite->sectnum;
         clipmoveboxtracenum = 1;
         int vdx;
-        const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
-        if(tinywd && ProjectilesNotBlood() && !VanillaMode()) // if object owned by player, use smaller hitboxes for specific player owned items
+        if (ProjectilesNotBlood() && (pSprite->owner >= 0) && !isFlameSprite && !VanillaMode()) // improved clipmove accuracy
         {
-            wd = tinywd;
-            vdx = ClipMoveEDuke(pSprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
+            spritetype *raySprite = NULL;
+            const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
+            if(tinywd) // if object owned by player, use smaller hitboxes for specific player owned items
+            {
+                wd = tinywd;
+                raySprite = pSprite; // set raycast collisions to be used
+            }
+            vdx = ClipMoveEDuke(raySprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
         }
         else
         {

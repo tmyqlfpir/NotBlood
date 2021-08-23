@@ -1366,7 +1366,7 @@ void ProcessInput(PLAYER *pPlayer)
         pPlayer->deathTime += 4;
         if (!bSeqStat)
         {
-            if (bVanilla)
+            if (VanillaMode())
                 pPlayer->q16horiz = fix16_from_int(mulscale16(0x8000-(Cos(ClipHigh(pPlayer->deathTime*8, 1024))>>15), 120));
             else
                 pPlayer->q16horiz = mulscale16(0x8000-(Cos(ClipHigh(pPlayer->deathTime*8, 1024))>>15), F16(120));
@@ -1582,7 +1582,7 @@ void ProcessInput(PLAYER *pPlayer)
         }
         pInput->keyFlags.action = 0;
     }
-    if (bVanilla)
+    if (VanillaMode())
     {
         if (pInput->keyFlags.lookCenter && !pInput->buttonFlags.lookUp && !pInput->buttonFlags.lookDown)
         {

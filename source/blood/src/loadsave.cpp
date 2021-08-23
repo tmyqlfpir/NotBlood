@@ -129,7 +129,7 @@ void LoadSave::LoadGame(char *pzFile)
     InitSectorFX();
     viewInitializePrediction();
     PreloadCache();
-    if (!bVanilla && !gMe->packSlots[1].isActive) // if diving suit is not active, turn off reverb sound effect
+    if (!VanillaMode() && !gMe->packSlots[1].isActive) // if diving suit is not active, turn off reverb sound effect
         sfxSetReverb(0);
     ambInit();
 #ifdef YAX_ENABLE
@@ -170,7 +170,6 @@ void LoadSave::LoadGame(char *pzFile)
     totalclock = 0;
     gPaused = 0;
     gGameStarted = 1;
-    bVanilla = false;
     
 
 #ifdef USE_STRUCT_TRACKERS

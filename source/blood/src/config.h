@@ -103,6 +103,7 @@ extern int32_t gShowWeaponSelect;
 extern int32_t gShowWeaponSelectTime;
 
 ///////
+extern int gVanilla;
 extern int gQuadDamagePowerup;
 extern int gDamageInvul;
 extern int gExplosionBehavior;

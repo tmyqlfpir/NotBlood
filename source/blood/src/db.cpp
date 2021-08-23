@@ -279,7 +279,7 @@ void qinitspritelists(void) // Replace
     {
         headspritestat[i] = -1;
     }
-    int const nMaxSprites = bVanilla ? 4096 : kMaxSprites;
+    int const nMaxSprites = VanillaMode() ? 4096 : kMaxSprites;
     for (short i = 0; i < nMaxSprites; i++)
     {
         sprite[i].sectnum = -1;
@@ -410,7 +410,7 @@ unsigned short dbInsertXSprite(int nSprite)
         ThrowError("Out of free XSprites");
     }
     memset(&xsprite[nXSprite], 0, sizeof(XSPRITE));
-    //if (!bVanilla) // this intentionally causes demos to desync like dos (eg: playing BLOOD002.DEM after finishing BLOOD001.DEM) - for notblood we'll disable it
+    //if (!VanillaMode()) // this intentionally causes demos to desync like dos (eg: playing BLOOD002.DEM after finishing BLOOD001.DEM) - for notblood we'll disable it
         memset(&gSpriteHit[nXSprite], 0, sizeof(SPRITEHIT));
     xsprite[nXSprite].reference = nSprite;
     sprite[nSprite].extra = nXSprite;
