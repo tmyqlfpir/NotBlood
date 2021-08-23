@@ -1078,7 +1078,8 @@ void SetupNetStartMenu(void)
     itemNetEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
     itemNetEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
     itemNetEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
-    itemNetEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Makes enemies spawn bullet projects";
+    itemNetEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
+    itemNetEnhancementBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
     itemNetEnhancementRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
     itemNetEnhancementRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
     itemNetEnhancementRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
@@ -1354,7 +1355,8 @@ void SetupOptionsMenu(void)
     itemEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
     itemEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
     itemEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
-    itemEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Makes enemies spawn bullet projects";
+    itemEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
+    itemEnhancementBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
     itemEnhancementRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
     itemEnhancementRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
     itemEnhancementRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";

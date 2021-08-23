@@ -5,7 +5,7 @@ New features include:
 * Default midi uses the excellent SC55 soundfont by trevor0402 (https://github.com/trevor0402/SC55Soundfont)
 * Difficulty based invulnerability timer for bullet/spirit/tesla damage
 * Smaller hitboxes for player projectiles
-* Raymatching collision testing for player projectiles
+* Raymarching collision testing for player projectiles
 * Replaced sector based damage logic for player explosions
 * Quad damage replacement for guns akimbo powerup
 * Throwable lifeleech alt fire and cheat 'big bertha'
