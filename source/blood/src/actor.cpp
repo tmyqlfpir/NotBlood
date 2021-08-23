@@ -5378,8 +5378,10 @@ int MoveMissile(spritetype *pSprite)
         int nSector2 = pSprite->sectnum;
         clipmoveboxtracenum = 1;
         int vdx;
-        if (ProjectilesNotBlood() && (pSprite->owner >= 0) && !isFlameSprite && !VanillaMode()) // improved clipmove accuracy
+        if (ProjectilesNotBlood() && pOwner && !isFlameSprite && !VanillaMode()) // improved clipmove accuracy
         {
+            const short bakSpriteCstat = pSprite->cstat;
+            pSprite->cstat &= ~257; // remove self collisions for accurate clipmove
             spritetype *raySprite = NULL;
             const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
             if(tinywd) // if object owned by player, use smaller hitboxes for specific player owned items
@@ -5388,6 +5390,7 @@ int MoveMissile(spritetype *pSprite)
                 raySprite = pSprite; // set raycast collisions to be used
             }
             vdx = ClipMoveEDuke(raySprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
+            pSprite->cstat = bakSpriteCstat;
         }
         else
         {
