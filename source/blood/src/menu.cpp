@@ -507,13 +507,19 @@ const char *pzAutosaveModeStrings[] = {
     "Only Keys+New Level",
 };
 
-void SetAutoAim(CGameMenuItemZCycle *);
-void SetLevelStats(CGameMenuItemZBool *);
-void SetPowerupDuration(CGameMenuItemZBool *);
-void SetShowMapTitle(CGameMenuItemZBool*);
+const char *pzVanillaModeStrings[] = {
+    "OFF",
+    "ON",
+    "ORIGINAL MOUSE+ON",
+};
+
+void SetAutoAim(CGameMenuItemZCycle *pItem);
+void SetLevelStats(CGameMenuItemZBool *pItem);
+void SetPowerupDuration(CGameMenuItemZBool *pItem);
+void SetShowMapTitle(CGameMenuItemZBool *pItem);
 void SetWeaponSwitch(CGameMenuItemZCycle *pItem);
 void SetAutosaveMode(CGameMenuItemZCycle *pItem);
-void SetVanillaMode(CGameMenuItemZBool *);
+void SetVanillaMode(CGameMenuItemZCycle *pItem);
 
 CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
 CGameMenuItemTitle itemGameEnhancementsTitle("ENHANCEMENTS", 1, 160, 20, 2038);
@@ -540,7 +546,7 @@ CGameMenuItemZCycle itemOptionsGameBoolWeaponInterpolation("WEAPON SMOOTHING:", 
 CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 120, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
 CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 130, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
 CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 140, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
-CGameMenuItemZBool itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 150, 180, gVanilla, SetVanillaMode, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 150, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
 //CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 160, 320, 1, &menuParentalLock, -1, NULL, 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
@@ -1375,7 +1381,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameWeaponSwitch.m_nFocus = (gWeaponSwitch&1) ? ((gWeaponSwitch&2) ? 1 : 2) : 0;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
     itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
-    itemOptionsGameBoolVanillaMode.at20 = gVanilla;
+    itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
 
     ///////
     menuOptionsGameEnhancements.Add(&itemBloodQAV, false);
@@ -1878,14 +1884,14 @@ void SetAutosaveMode(CGameMenuItemZCycle *pItem)
     itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
 }
 
-void SetVanillaMode(CGameMenuItemZBool *pItem)
+void SetVanillaMode(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
-        gVanilla = pItem->at20;
+        gVanilla = pItem->m_nFocus % ARRAY_SSIZE(pzVanillaModeStrings);
         itemOptionsChainEnhancements.bEnable = !gVanilla;
         itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     } else {
-        pItem->at20 = gVanilla;
+        pItem->m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
     }
 }
 

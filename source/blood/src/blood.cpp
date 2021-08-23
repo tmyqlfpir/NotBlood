@@ -2819,7 +2819,9 @@ bool DemoRecordStatus(void) {
     return gDemo.at0;
 }
 
-bool VanillaMode() {
+bool VanillaMode(const bool demoState) {
+    if (demoState) // only check if an vanilla demo is active, or if vanilla mode is set to true vanilla mode (used for original mouselook code)
+        return gDemo.at1 && gDemo.m_bLegacy || (gVanilla == 2);
     return gDemo.at1 ? gDemo.m_bLegacy : gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1);
 }
 

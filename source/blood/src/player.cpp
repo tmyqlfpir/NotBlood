@@ -1582,7 +1582,7 @@ void ProcessInput(PLAYER *pPlayer)
         }
         pInput->keyFlags.action = 0;
     }
-    if (VanillaMode())
+    if (VanillaMode(true))
     {
         if (pInput->keyFlags.lookCenter && !pInput->buttonFlags.lookUp && !pInput->buttonFlags.lookDown)
         {

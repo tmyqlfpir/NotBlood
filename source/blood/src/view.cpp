@@ -3571,7 +3571,7 @@ void viewDrawScreen(void)
             {
                 cZ += v8c;
             }
-            if (VanillaMode())
+            if (VanillaMode(true))
             {
                 q16horiz += q16slopehoriz;
             }
