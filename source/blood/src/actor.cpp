@@ -2579,12 +2579,12 @@ void actInit(bool bSaveLoad) {
             if (gGameOptions.nRandomizerMode) // randomize pickups
                 dbRandomizerMode(pSprite, NULL);
         }
-        for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) { // scan through all dudes
-            if ((sprite[nSprite].statnum < 0) || (sprite[nSprite].statnum >= kMaxStatus)) // invalid sprite, don't bother processing
-                continue;
-            spritetype* pSprite = &sprite[nSprite];
-            if (gGameOptions.nRandomizerMode & 1) { // randomize enemy
+        if (gGameOptions.nRandomizerMode & 1) { // randomize enemy
+            for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) { // scan through all dudes
+                if ((sprite[nSprite].statnum < 0) || (sprite[nSprite].statnum >= kMaxStatus)) // invalid sprite, don't bother processing
+                    continue;
                 XSPRITE *pXSprite = NULL;
+                spritetype* pSprite = &sprite[nSprite];
                 if ((pSprite->extra >= 0) && (pSprite->extra < kMaxXSprites))
                     pXSprite = &xsprite[pSprite->extra];
                 dbRandomizerMode(pSprite, pXSprite);

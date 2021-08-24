@@ -2820,7 +2820,7 @@ bool DemoRecordStatus(void) {
 }
 
 bool VanillaMode(const bool demoState) {
-    if (gVanilla == 2) // true vanilla mode, always return true (except for multiplayer)
+    if (gVanilla == 2) // vanilla mode override, always return true (except for multiplayer)
         return (gGameOptions.nGameType == 0) && (numplayers == 1);
     if (demoState) // only check if a dos demo is active
         return gDemo.at1 && gDemo.m_bLegacy;
