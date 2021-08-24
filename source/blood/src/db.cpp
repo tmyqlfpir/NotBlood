@@ -895,7 +895,7 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                     if (pXSprite->dropMsg > 0) // drop item
                         actDropObject(pSprite, pXSprite->dropMsg);
                 }
-                actPostSprite(pSprite->index, kStatFree);
+                pSprite->type = kDudeBase;
             }
             return;
         }
