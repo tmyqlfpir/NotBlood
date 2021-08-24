@@ -163,6 +163,7 @@ spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned i
     }
     if (nFx < 0 || nFx >= kFXMax)
         return NULL;
+    FXDATA *pFX = &gFXData[nFx];
     if (!VanillaMode() && (gGameOptions.nGameType == 0)) // if singleplayer, extend violent effects duration by 3
     {
         switch (nFx)
@@ -177,13 +178,14 @@ spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned i
         case FX_36:
         case FX_39: // bullet casing
         case FX_40: // shell casing
+            if (!duration) // no override duration given, load from global fx data struct
+                duration = pFX->duration;
             duration *= 3;
             break;
         default:
             break;
         }
     }
-    FXDATA *pFX = &gFXData[nFx];
     if (gStatCount[1] == 512)
     {
         int nSprite = headspritestat[kStatFX];
