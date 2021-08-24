@@ -2571,15 +2571,14 @@ void actInit(bool bSaveLoad) {
 
     if (!VanillaMode()) {
         for (int nSprite = 0; nSprite < kMaxSprites; nSprite++) {
-            if (sprite[nSprite].statnum >= kMaxStatus) // invalid sprite, don't bother processing
+            if ((sprite[nSprite].statnum < 0) || (sprite[nSprite].statnum >= kMaxStatus)) // invalid sprite, don't bother processing
                 continue;
             spritetype* pSprite = &sprite[nSprite];
-            if ((pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && gGameOptions.bQuadDamagePowerup) { // if quad damage is enabled, use new quad damage voxel from notblood.pk3
+            if ((pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && (pSprite->type == kItemTwoGuns) && gGameOptions.bQuadDamagePowerup) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
                 pSprite->picnum = 30703;
-            }
             if (gGameOptions.nRandomizerMode) { // randomize enemy/pickups
                 XSPRITE *pXSprite = NULL;
-                if ((pSprite->extra >= 0) || (pSprite->extra < kMaxXSprites))
+                if ((pSprite->extra >= 0) && (pSprite->extra < kMaxXSprites))
                     pXSprite = &xsprite[pSprite->extra];
                 dbRandomizerMode(pSprite, pXSprite);
                 if (pXSprite && (gGameOptions.nRandomizerMode & 1)) // if randomizer is set to enemies or enemies+weapons mode, randomly scale enemies
