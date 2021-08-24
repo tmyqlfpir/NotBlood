@@ -2059,8 +2059,8 @@ void viewResizeView(int size)
     yscale = divscale16(ydim, 200);
     xstep = divscale16(320, xdim);
     ystep = divscale16(200, ydim);
-    gViewSize = ClipRange(size, 0, 7);
-    if (gViewSize <= 2)
+    gViewSize = ClipRange(size, 0, 8);
+    if (gViewSize <= 3)
     {
         gViewX0 = 0;
         gViewX1 = xdim-1;
@@ -2087,10 +2087,10 @@ void viewResizeView(int size)
         }
 
         int height = gViewY1-gViewY0;
-        gViewX0 += mulscale16(xdim*(gViewSize-3),4096);
-        gViewX1 -= mulscale16(xdim*(gViewSize-3),4096);
-        gViewY0 += mulscale16(height*(gViewSize-3),4096);
-        gViewY1 -= mulscale16(height*(gViewSize-3),4096);
+        gViewX0 += mulscale16(xdim*(gViewSize-4),4096);
+        gViewX1 -= mulscale16(xdim*(gViewSize-4),4096);
+        gViewY0 += mulscale16(height*(gViewSize-4),4096);
+        gViewY1 -= mulscale16(height*(gViewSize-4),4096);
         gViewX0S = divscale16(gViewX0, xscalecorrect);
         gViewY0S = divscale16(gViewY0, yscale);
         gViewX1S = divscale16(gViewX1, xscalecorrect);
@@ -3908,6 +3908,8 @@ RORHACK:
                 if (pXSector->color)
                     nPalette = pSector->floorpal;
             }
+            if (gViewSize == 3) // with this view size, move up so it matches the same position as full hud
+                cY -= (int)((25.f/2.f)*65536.f);
             
             #ifdef NOONE_EXTENSIONS
                 if (gView->sceneQav < 0) WeaponDraw(gView, nShade, cX, cY, nPalette);

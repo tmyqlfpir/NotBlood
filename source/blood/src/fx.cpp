@@ -116,7 +116,7 @@ FXDATA gFXData[] = {
     { kCallbackNone, 1, 70, 1, -13981, 5120, 0, 0, 0, 0, 0, 0, 0 }
 };
 
-void CFX::sub_73FB0(int nSprite)
+void CFX::fxKill(int nSprite)
 {
     if (nSprite < 0 || nSprite >= kMaxSprites)
         return;
@@ -126,7 +126,7 @@ void CFX::sub_73FB0(int nSprite)
     DeleteSprite(nSprite);
 }
 
-void CFX::sub_73FFC(int nSprite)
+void CFX::fxFree(int nSprite)
 {
     if (nSprite < 0 || nSprite >= kMaxSprites)
         return;
@@ -164,7 +164,7 @@ spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned i
     if (nFx < 0 || nFx >= kFXMax)
         return NULL;
     FXDATA *pFX = &gFXData[nFx];
-    if (!VanillaMode() && (gGameOptions.nGameType == 0) && !gModernMap) // if singleplayer, extend violent effects duration by 4
+    if (!VanillaMode() && (gGameOptions.nGameType == 0) && !gModernMap) // if singleplayer, extend violent effects duration
     {
         switch (nFx)
         {
@@ -180,20 +180,20 @@ spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned i
         case FX_40: // shell casing
             if (!duration) // no override duration given, load from global fx data struct
                 duration = pFX->duration;
-            duration *= 4;
+            duration *= 8;
             break;
         default:
             break;
         }
     }
-    if (gStatCount[1] == 512)
+    if (gStatCount[1] == (MAXSTATUS/2)) // hit upper limit of available sprites, don't spawn any more
     {
         int nSprite = headspritestat[kStatFX];
-        while ((sprite[nSprite].flags & 32) && nSprite != -1)
+        while ((sprite[nSprite].flags & 32) && nSprite != -1) // scan through sprites for free slot
             nSprite = nextspritestat[nSprite];
         if (nSprite == -1)
             return NULL;
-        sub_73FB0(nSprite);
+        fxKill(nSprite);
     }
     spritetype *pSprite = actSpawnSprite(nSector, x, y, z, 1, 0);
     pSprite->type = nFx;
@@ -245,14 +245,14 @@ void CFX::fxProcess(void)
             updatesector(pSprite->x, pSprite->y, &nSector);
             if (nSector == -1)
             {
-                sub_73FFC(nSprite);
+                fxFree(nSprite);
                 continue;
             }
             if (getflorzofslope(pSprite->sectnum, pSprite->x, pSprite->y) <= pSprite->z)
             {
                 if (pFXData->funcID < 0 || pFXData->funcID >= kCallbackMax)
                 {
-                    sub_73FFC(nSprite);
+                    fxFree(nSprite);
                     continue;
                 }
                 dassert(gCallback[pFXData->funcID] != NULL);
@@ -271,14 +271,14 @@ void CFX::fxProcess(void)
             getzsofslope(nSector, pSprite->x, pSprite->y, &ceilZ, &floorZ);
             if (ceilZ > pSprite->z && !(sector[nSector].ceilingstat&1))
             {
-                sub_73FFC(nSprite);
+                fxFree(nSprite);
                 continue;
             }
             if (floorZ < pSprite->z)
             {
                 if (pFXData->funcID < 0 || pFXData->funcID >= kCallbackMax)
                 {
-                    sub_73FFC(nSprite);
+                    fxFree(nSprite);
                     continue;
                 }
                 dassert(gCallback[pFXData->funcID] != NULL);

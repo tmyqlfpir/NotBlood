@@ -268,7 +268,7 @@ void WeaponDraw(PLAYER *pPlayer, int a2, int x, int y, int a5)
     {
         const int warningTime = 5;
         int remainingSeconds = pPlayer->pwUpTime[kPwUpTwoGuns] / 100;
-        if ((remainingSeconds > 5) || (((int)totalclock & 32) && (remainingSeconds > 2)) || (((int)totalclock & 16) && (remainingSeconds <= 2))) // flash weapon when nearing end
+        if ((remainingSeconds > warningTime) || (((int)totalclock & 32) && (remainingSeconds > 2)) || (((int)totalclock & 16) && (remainingSeconds <= 2))) // flash weapon when nearing end
         {
             a5 = kMediumGoo;
         }

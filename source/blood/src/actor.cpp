@@ -5816,11 +5816,8 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
 void MoveMissileBullet(spritetype *pSprite)
 {
     dassert(pSprite != NULL);
-    int nXSprite = pSprite->extra;
-    XSPRITE *pXSprite = &xsprite[nXSprite];
-    int nXMissile = pSprite->extra;
+    const int nXMissile = pSprite->extra;
     dassert(nXMissile > 0 && nXMissile < kMaxXSprites);
-    XSPRITE *pXMissile = &xsprite[pSprite->extra];
     spritetype *pOwner = NULL;
     int bakCstat = 0;
     if (pSprite->owner >= 0)
