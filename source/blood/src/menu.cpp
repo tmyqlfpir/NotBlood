@@ -2670,6 +2670,10 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.bFriendlyFire = itemNetStart8.at20;
     gPacketStartGame.bKeepKeysOnRespawn = itemNetStart9.at20;
     ////
+    gVanilla = false; // turn off vanilla mode for multiplayer so menus don't get bugged
+    itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
+    itemOptionsChainEnhancements.bEnable = !gVanilla;
+    itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     gPacketStartGame.bQuadDamagePowerup = itemNetEnhancementBoolQuadDamagePowerup.at20;
     gPacketStartGame.bDamageInvul = itemNetEnhancementBoolDamageInvul.at20;
     gPacketStartGame.bExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);

@@ -1388,7 +1388,7 @@ void AltFireSpread2(int nTrigger, PLAYER *pPlayer)
     dassert(nTrigger > 0 && nTrigger <= kMaxSpread);
     Aim *aim = &pPlayer->aim;
     int angle;
-    if (r_mirrormode && (numplayers == 1) && !VanillaMode()) // mirror mode enabled, invert tommy gun spread (only for single-player)
+    if (r_mirrormode && (numplayers == 1) && !VanillaMode(true)) // mirror mode enabled, invert tommy gun spread (only for single-player)
         angle = (getangle(aim->dx, aim->dy)-((112*(nTrigger-1))/14-56))&2047;
     else
         angle = (getangle(aim->dx, aim->dy)+((112*(nTrigger-1))/14-56))&2047;

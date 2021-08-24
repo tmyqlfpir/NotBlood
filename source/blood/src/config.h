@@ -100,7 +100,10 @@ extern int32_t gFov;
 extern int32_t gCenterHoriz;
 extern int32_t gDeliriumBlur;
 extern int32_t gShowWeaponSelect;
-extern int32_t gShowWeaponSelectTime;
+extern int32_t gShowWeaponSelectTimeStart;
+extern int32_t gShowWeaponSelectTimeHold;
+extern int32_t gShowWeaponSelectTimeEnd;
+extern int32_t gShowWeaponSelectPosition;
 
 ///////
 extern int gVanilla;

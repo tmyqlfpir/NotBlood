@@ -120,7 +120,10 @@ int32_t gFov;
 int32_t gCenterHoriz;
 int32_t gDeliriumBlur;
 int32_t gShowWeaponSelect;
-int32_t gShowWeaponSelectTime;
+int32_t gShowWeaponSelectTimeStart;
+int32_t gShowWeaponSelectTimeHold;
+int32_t gShowWeaponSelectTimeEnd;
+int32_t gShowWeaponSelectPosition;
 
 //////////
 int gVanilla;
@@ -364,7 +367,10 @@ void CONFIG_SetDefaults(void)
     gPowerupDuration = 1;
     gShowMapTitle = 1;
     gShowWeaponSelect = 0;
-    gShowWeaponSelectTime = 38;
+    gShowWeaponSelectTimeStart = 7;
+    gShowWeaponSelectTimeHold = 38;
+    gShowWeaponSelectTimeEnd = 6;
+    gShowWeaponSelectPosition = 24;
     //ud.lockout                = 0;
     //ud.m_marker               = 1;
     //ud.maxautosaves           = 5;

@@ -1356,8 +1356,8 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         {-1, 0, 0x8000}, // NULL
     };
 
-    const int travelTime = 7, holdTime = gShowWeaponSelectTime, decayTime = 6;
-    const float animPosMax = 24, animPosMin = -10;
+    const int travelTime = gShowWeaponSelectTimeStart, holdTime = gShowWeaponSelectTimeHold, decayTime = gShowWeaponSelectTimeEnd;
+    const float animPosMax = gShowWeaponSelectPosition, animPosMin = -10;
 
     const float animPosRange = animPosMax + (-animPosMin);
     const int curTime = gLevelTime;
@@ -3465,7 +3465,7 @@ void viewDrawScreen(void)
     if (delta < 0)
         delta = 0;
     lastUpdate = totalclock;
-    if (!gPaused && (!CGameMenuMgr::m_bActive || gGameOptions.nGameType != 0))
+    if (!gPaused && (!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW) || gGameOptions.nGameType != 0))
     {
         gInterpolate = ((totalclock-gNetFifoClock)+4).toScale16()/4;
     }
@@ -3478,7 +3478,7 @@ void viewDrawScreen(void)
         CalcInterpolations();
     }
 
-    if (!gPaused && (!CGameMenuMgr::m_bActive || gGameOptions.nGameType != 0))
+    if (!gPaused && (!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW) || gGameOptions.nGameType != 0))
         rotatespritesmoothratio = gInterpolate;
     else
         rotatespritesmoothratio = 65536;

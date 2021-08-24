@@ -1135,7 +1135,7 @@ void ProcessFrame(void)
     viewClearInterpolations();
     if (!gDemo.at1)
     {
-        if (gPaused || gEndGameMgr.at0 || (gGameOptions.nGameType == 0 && gGameMenuMgr.m_bActive))
+        if (gPaused || gEndGameMgr.at0 || (gGameOptions.nGameType == 0 && (gGameMenuMgr.m_bActive || ((osd->flags & OSD_DRAW) == OSD_DRAW))))
             return;
         if (gDemo.at0)
             gDemo.Write(gFifoInput[(gNetFifoTail-1)&255]);
@@ -2820,8 +2820,10 @@ bool DemoRecordStatus(void) {
 }
 
 bool VanillaMode(const bool demoState) {
-    if (demoState) // only check if an vanilla demo is active, or if vanilla mode is set to true vanilla mode (used for original mouselook code)
-        return gDemo.at1 && gDemo.m_bLegacy || (gVanilla == 2);
+    if (gVanilla == 2) // true vanilla mode, always return true (except for multiplayer)
+        return (gGameOptions.nGameType == 0) && (numplayers == 1);
+    if (demoState) // only check if a dos demo is active
+        return gDemo.at1 && gDemo.m_bLegacy;
     return gDemo.at1 ? gDemo.m_bLegacy : gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1);
 }
 
