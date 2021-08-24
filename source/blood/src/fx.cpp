@@ -41,19 +41,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 CFX gFX;
 
 struct FXDATA {
-    CALLBACK_ID funcID; // callback
-    char at1; // detail
-    short at2; // seq
-    short at4; // flags
-    int at6; // gravity
-    int ata; // air drag
-    int duration; // duration
-    short at12; // picnum
-    unsigned char at14; // xrepeat
-    unsigned char at15; // yrepeat
-    short at16; // cstat
-    signed char at18; // shade
-    char at19; // pal
+    CALLBACK_ID funcID;
+    char detail;
+    short seq;
+    short flags;
+    int gravity;
+    int airdrag;
+    int duration;
+    short picnum;
+    unsigned char xrepeat;
+    unsigned char yrepeat;
+    short cstat;
+    signed char shade;
+    char pal;
 };
 
 FXDATA gFXData[] = {
@@ -164,7 +164,7 @@ spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned i
     if (nFx < 0 || nFx >= kFXMax)
         return NULL;
     FXDATA *pFX = &gFXData[nFx];
-    if (!VanillaMode() && (gGameOptions.nGameType == 0)) // if singleplayer, extend violent effects duration by 3
+    if (!VanillaMode() && (gGameOptions.nGameType == 0) && !gModernMap) // if singleplayer, extend violent effects duration by 4
     {
         switch (nFx)
         {
@@ -180,7 +180,7 @@ spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned i
         case FX_40: // shell casing
             if (!duration) // no override duration given, load from global fx data struct
                 duration = pFX->duration;
-            duration *= 3;
+            duration *= 4;
             break;
         default:
             break;
@@ -197,23 +197,23 @@ spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned i
     }
     spritetype *pSprite = actSpawnSprite(nSector, x, y, z, 1, 0);
     pSprite->type = nFx;
-    pSprite->picnum = pFX->at12;
-    pSprite->cstat |= pFX->at16;
-    pSprite->shade = pFX->at18;
-    pSprite->pal = pFX->at19;
-    qsprite_filler[pSprite->index] = pFX->at1;
-    if (pFX->at14 > 0)
-        pSprite->xrepeat = pFX->at14;
-    if (pFX->at15 > 0)
-        pSprite->yrepeat = pFX->at15;
-    if ((pFX->at4 & 1) && Chance(0x8000))
+    pSprite->picnum = pFX->picnum;
+    pSprite->cstat |= pFX->cstat;
+    pSprite->shade = pFX->shade;
+    pSprite->pal = pFX->pal;
+    qsprite_filler[pSprite->index] = pFX->detail;
+    if (pFX->xrepeat > 0)
+        pSprite->xrepeat = pFX->xrepeat;
+    if (pFX->yrepeat > 0)
+        pSprite->yrepeat = pFX->yrepeat;
+    if ((pFX->flags & 1) && Chance(0x8000))
         pSprite->cstat |= 4;
-    if ((pFX->at4 & 2) && Chance(0x8000))
+    if ((pFX->flags & 2) && Chance(0x8000))
         pSprite->cstat |= 8;
-    if (pFX->at2)
+    if (pFX->seq)
     {
         int nXSprite = dbInsertXSprite(pSprite->index);
-        seqSpawn(pFX->at2, 3, nXSprite, -1);
+        seqSpawn(pFX->seq, 3, nXSprite, -1);
     }
     if (!duration) // no override duration given, load from global fx data struct
         duration = pFX->duration;
@@ -232,7 +232,7 @@ void CFX::fxProcess(void)
         dassert(nSector >= 0 && nSector < kMaxSectors);
         dassert(pSprite->type < kFXMax);
         FXDATA *pFXData = &gFXData[pSprite->type];
-        actAirDrag(pSprite, pFXData->ata);
+        actAirDrag(pSprite, pFXData->airdrag);
         if (xvel[nSprite])
             pSprite->x += xvel[nSprite]>>12;
         if (yvel[nSprite])
@@ -286,7 +286,7 @@ void CFX::fxProcess(void)
                 continue;
             }
         }
-        zvel[nSprite] += pFXData->at6;
+        zvel[nSprite] += pFXData->gravity;
     }
 }
 
@@ -378,8 +378,8 @@ void fxPrecache(void)
 {
     for (int i = 0; i < kFXMax; i++)
     {
-        tilePrecacheTile(gFXData[i].at12, 0);
-        if (gFXData[i].at2)
-            seqPrecacheId(gFXData[i].at2);
+        tilePrecacheTile(gFXData[i].picnum, 0);
+        if (gFXData[i].seq)
+            seqPrecacheId(gFXData[i].seq);
     }
 }
