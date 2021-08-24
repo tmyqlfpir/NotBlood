@@ -1106,7 +1106,7 @@ void SetupNetStartMenu(void)
     itemNetEnhancementWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     itemNetEnhancementBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
     itemNetEnhancementRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
-    Bmemcpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(gPacketStartGame.szRandomizerSeed));
+    Bstrncpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(gPacketStartGame.szRandomizerSeed));
     ///////
 
     menuNetStart.Add(&itemBloodQAV, false);
@@ -1662,7 +1662,7 @@ void ResetKeysClassic(CGameMenuItemChain *)
 ////
 void SetQuadDamagePowerup(CGameMenuItemZBool* pItem)
 {
-    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gQuadDamagePowerup = pItem->at20;
         gGameOptions.bQuadDamagePowerup = pItem->at20;
     } else {
@@ -1672,7 +1672,7 @@ void SetQuadDamagePowerup(CGameMenuItemZBool* pItem)
 
 void SetDamageInvul(CGameMenuItemZBool* pItem)
 {
-    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gDamageInvul = pItem->at20;
         gGameOptions.bDamageInvul = pItem->at20;
     } else {
@@ -1682,7 +1682,7 @@ void SetDamageInvul(CGameMenuItemZBool* pItem)
 
 void SetExplosionBehavior(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gExplosionBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
         gGameOptions.bExplosionBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     } else {
@@ -1692,7 +1692,7 @@ void SetExplosionBehavior(CGameMenuItemZCycle *pItem)
 
 void SetProjectileBehavior(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gProjectileBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
         gGameOptions.bProjectileBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     } else {
@@ -1702,7 +1702,7 @@ void SetProjectileBehavior(CGameMenuItemZCycle *pItem)
 
 void SetEnemyBehavior(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gEnemyBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzEnemyBehaviorStrings);
         gGameOptions.bEnemyBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzEnemyBehaviorStrings);
     } else {
@@ -1712,7 +1712,7 @@ void SetEnemyBehavior(CGameMenuItemZCycle *pItem)
 
 void SetWeaponsVer(CGameMenuItemZCycle* pItem)
 {
-    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gWeaponsVer = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
         gGameOptions.nWeaponsVer = gWeaponsVer;
     } else {
@@ -1722,7 +1722,7 @@ void SetWeaponsVer(CGameMenuItemZCycle* pItem)
 
 void SetHitscanProjectiles(CGameMenuItemZBool *pItem)
 {
-    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gHitscanProjectiles = pItem->at20;
         gGameOptions.bHitscanProjectiles = pItem->at20;
     } else {
@@ -1732,7 +1732,7 @@ void SetHitscanProjectiles(CGameMenuItemZBool *pItem)
 
 void SetRandomizerMode(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gRandomizerMode = pItem->m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
     } else {
         pItem->m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
@@ -1744,6 +1744,8 @@ void SetRandomizerSeed(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
     UNREFERENCED_PARAMETER(pItem);
     UNREFERENCED_PARAMETER(pEvent);
     Bstrncpy(gzRandomizerSeed, szRandomizerSeedMenu, sizeof(gzRandomizerSeed));
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1))
+        Bstrncpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
 }
 ////
 
@@ -1886,7 +1888,7 @@ void SetAutosaveMode(CGameMenuItemZCycle *pItem)
 
 void SetVanillaMode(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) || (numplayers == 1)) {
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gVanilla = pItem->m_nFocus % ARRAY_SSIZE(pzVanillaModeStrings);
         itemOptionsChainEnhancements.bEnable = !gVanilla;
         itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
@@ -2682,7 +2684,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.nWeaponsVer = itemNetEnhancementWeaponsVer.m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
     gPacketStartGame.bHitscanProjectiles = itemNetEnhancementBoolHitscanProjectiles.at20;
     gPacketStartGame.randomizerMode = itemNetEnhancementRandomizerMode.m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
-    Bmemcpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
+    Bstrncpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
     if (gPacketStartGame.szRandomizerSeed[0] == '\0') // if no seed entered, generate new one before sending packet
         sprintf(gPacketStartGame.szRandomizerSeed, "%08X", qrand());
     ////

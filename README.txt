@@ -57,7 +57,7 @@ Randomizer seed - Set the enemy/pickups randomizer's seed (an empty string will 
 * BRAAAINS - Zombies only
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
 
-### Additional randomizer seed cheats (can softlock levels if enemies have keys)
+### Additional randomizer seed cheats (can softlock levels if enemies are required for triggers)
 * GHSTBSTR - No phantoms
 * NOHANDS! - No hands
 * SAFEWATR - No hands/gill beasts

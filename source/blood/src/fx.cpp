@@ -47,7 +47,7 @@ struct FXDATA {
     short at4; // flags
     int at6; // gravity
     int ata; // air drag
-    int ate;
+    int duration; // duration
     short at12; // picnum
     unsigned char at14; // xrepeat
     unsigned char at15; // yrepeat
@@ -137,7 +137,7 @@ void CFX::sub_73FFC(int nSprite)
         actPostSprite(nSprite, kStatFree);
 }
 
-spritetype * CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned int a6)
+spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned int duration)
 {
     if (nSector < 0 || nSector >= numsectors)
         return NULL;
@@ -163,10 +163,30 @@ spritetype * CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned 
     }
     if (nFx < 0 || nFx >= kFXMax)
         return NULL;
+    if (!VanillaMode() && (gGameOptions.nGameType == 0)) // if singleplayer, extend violent effects duration by 3
+    {
+        switch (nFx)
+        {
+        case FX_0:
+        case FX_1:
+        case FX_2:
+        case FX_3:
+        case FX_13:
+        case FX_34:
+        case FX_35:
+        case FX_36:
+        case FX_39: // bullet casing
+        case FX_40: // shell casing
+            duration *= 3;
+            break;
+        default:
+            break;
+        }
+    }
     FXDATA *pFX = &gFXData[nFx];
     if (gStatCount[1] == 512)
     {
-        int nSprite = headspritestat[kStatFX];;
+        int nSprite = headspritestat[kStatFX];
         while ((sprite[nSprite].flags & 32) && nSprite != -1)
             nSprite = nextspritestat[nSprite];
         if (nSprite == -1)
@@ -193,10 +213,10 @@ spritetype * CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned 
         int nXSprite = dbInsertXSprite(pSprite->index);
         seqSpawn(pFX->at2, 3, nXSprite, -1);
     }
-    if (a6 == 0)
-        a6 = pFX->ate;
-    if (a6)
-        evPost((int)pSprite->index, 3, a6+Random2(a6>>1), kCallbackRemove);
+    if (!duration) // no override duration given, load from global fx data struct
+        duration = pFX->duration;
+    if (duration)
+        evPost((int)pSprite->index, 3, duration+Random2(duration>>1), kCallbackRemove);
     return pSprite;
 }
 
@@ -278,7 +298,7 @@ void fxSpawnBlood(spritetype *pSprite, int a2)
         return;
     if (gbAdultContent && gGameOptions.nGameType <= 0)
         return;
-    spritetype *pBlood = gFX.fxSpawn(FX_27, pSprite->sectnum, pSprite->x, pSprite->y, pSprite->z, 0);
+    spritetype *pBlood = gFX.fxSpawn(FX_27, pSprite->sectnum, pSprite->x, pSprite->y, pSprite->z);
     if (pBlood)
     {
         pBlood->ang = 1024;
@@ -301,9 +321,9 @@ void sub_746D4(spritetype *pSprite, int a2)
         return;
     spritetype *pSpawn;
     if (pSprite->type == kDudePodGreen)
-        pSpawn = gFX.fxSpawn(FX_53, pSprite->sectnum, pSprite->x, pSprite->y, pSprite->z, 0);
+        pSpawn = gFX.fxSpawn(FX_53, pSprite->sectnum, pSprite->x, pSprite->y, pSprite->z);
     else
-        pSpawn = gFX.fxSpawn(FX_54, pSprite->sectnum, pSprite->x, pSprite->y, pSprite->z, 0);
+        pSpawn = gFX.fxSpawn(FX_54, pSprite->sectnum, pSprite->x, pSprite->y, pSprite->z);
     if (pSpawn)
     {
         pSpawn->ang = 1024;
@@ -320,7 +340,7 @@ void fxSpawnEjectingBrass(spritetype *pSprite, int z, int a3, int a4)
     int y = pSprite->y+mulscale28(pSprite->clipdist-4, Sin(pSprite->ang));
     x += mulscale30(a3, Cos(pSprite->ang+512));
     y += mulscale30(a3, Sin(pSprite->ang+512));
-    spritetype *pBrass = gFX.fxSpawn((FX_ID)(FX_37+Random(3)), pSprite->sectnum, x, y, z, 0);
+    spritetype *pBrass = gFX.fxSpawn((FX_ID)(FX_37+Random(3)), pSprite->sectnum, x, y, z);
     if (pBrass)
     {
         if (!VanillaMode())
@@ -339,7 +359,7 @@ void fxSpawnEjectingShell(spritetype *pSprite, int z, int a3, int a4)
     int y = pSprite->y+mulscale28(pSprite->clipdist-4, Sin(pSprite->ang));
     x += mulscale30(a3, Cos(pSprite->ang+512));
     y += mulscale30(a3, Sin(pSprite->ang+512));
-    spritetype *pShell = gFX.fxSpawn((FX_ID)(FX_40+Random(3)), pSprite->sectnum, x, y, z, 0);
+    spritetype *pShell = gFX.fxSpawn((FX_ID)(FX_40+Random(3)), pSprite->sectnum, x, y, z);
     if (pShell)
     {
         if (!VanillaMode())

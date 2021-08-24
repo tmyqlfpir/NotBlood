@@ -766,7 +766,7 @@ void dbRandomizerModeInit(void)
     curRandomizerSeedThings = curRandomizerSeedDudes = curRandomizerSeed;
 }
 
-void dbRandomizerMode(spritetype *pSprite)
+void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
 {
     if (pSprite == NULL) // invalid sprite, don't bother processing
         return;
@@ -787,6 +787,7 @@ void dbRandomizerMode(spritetype *pSprite)
         const int type = pSprite->type;
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother)) // filter problematic enemy types
         {
+            bool delDude = false;
             switch (gGameOptions.nRandomizerCheat) // replace enemy according to cheat type
             {
             case  0: // "AAAAAAAA" - phantoms only
@@ -855,26 +856,26 @@ void dbRandomizerMode(spritetype *pSprite)
             }
             case 15: // "GHSTBSTR" - no phantoms
                 if (pSprite->type == kDudePhantasm)
-                    pSprite->type = kDudeBase;
+                    delDude = true;
                 break;
             case 16: // "NOHANDS!" - no hands
                 if (pSprite->type == kDudeHand)
-                    pSprite->type = kDudeBase;
+                    delDude = true;
                 break;
             case 17: // "SAFEWATR" - no hands/gill beasts
                 if ((pSprite->type == kDudeHand) || (pSprite->type == kDudeGillBeast))
-                    pSprite->type = kDudeBase;
+                    delDude = true;
                 break;
             case 18: // "PESTCTRL" - no rats/hands/spiders
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed))
-                    pSprite->type = kDudeBase;
+                    delDude = true;
                 break;
             case 19: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeBat) || (pSprite->type == kDudeHellHound))
-                    pSprite->type = kDudeBase;
+                    delDude = true;
                 break;
             case 20: // "NOTHING!" - no enemies
-                pSprite->type = kDudeBase;
+                delDude = true;
                 break;
             default: // unknown cheat id, don't do anything
             {
@@ -884,6 +885,17 @@ void dbRandomizerMode(spritetype *pSprite)
                 shownError = true;
                 break;
             }
+            }
+            if (delDude)
+            {
+                if (pXSprite)
+                {
+                    if (pXSprite->key > 0) // drop key
+                        actDropObject(pSprite, kItemKeyBase + (pXSprite->key - 1));
+                    if (pXSprite->dropMsg > 0) // drop item
+                        actDropObject(pSprite, pXSprite->dropMsg);
+                }
+                actPostSprite(pSprite->index, kStatFree);
             }
             return;
         }
@@ -1248,6 +1260,51 @@ void dbRandomizerMode(spritetype *pSprite)
         }
         default:
             break;
+        }
+    }
+}
+
+void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
+{
+    const int curRandomCheat = gGameOptions.nRandomizerCheat;
+    const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 14); // only randomize enemy sizes if seed cheats 0-13 are active
+    if (randomCheatActive && !pXSprite->scale && !dbRandomizerRNGDudes(3)) { // if random seed cheat is being used
+        switch (pSprite->type) { // make enemies randomly huge
+            case kDudeRat:
+                pXSprite->scale = ClipRange(dbRandomizerRNGDudes(2048-128)+128, 128, 2048);
+                break;
+            case kDudeHand:
+                pXSprite->scale = ClipRange(dbRandomizerRNGDudes(1024-128)+128, 128, 1024);
+                break;
+            case kDudeHellHound:
+                pXSprite->scale = ClipRange(dbRandomizerRNGDudes(512-128)+128, 128, 512);
+                break;
+            case kDudeCultistBeast: // boss types
+            case kDudeTchernobog:
+            case kDudeCerberusTwoHead:
+            case kDudeCerberusOneHead:
+            case kDudeSpiderMother:
+            case kDudeGargoyleStone:
+                pXSprite->scale = ClipRange(dbRandomizerRNGDudes(512-32)+32, 32, 512);
+                break;
+            case kDudeGargoyleFlesh:
+                pXSprite->scale = ClipRange(dbRandomizerRNGDudes(512-32)+32, 32, 512);
+                break;
+            case kDudeCultistShotgun: // regular enemies
+            case kDudeCultistTommy:
+            case kDudeCultistTommyProne:
+            case kDudeCultistShotgunProne:
+                pXSprite->scale = ClipRange(dbRandomizerRNGDudes(384-128)+128, 128, 384);
+                break;
+            case kDudeCultistTNT:
+                pXSprite->scale = ClipRange(dbRandomizerRNGDudes(384-96)+96, 96, 256);
+                break;
+            case kDudeZombieButcher:
+            case kDudeGillBeast:
+                pXSprite->scale = ClipRange(dbRandomizerRNGDudes(384-64)+64, 64, 384);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -1709,14 +1766,6 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         pSprite->flags = B_LITTLE16(pSprite->hitag);
         pSprite->extra = B_LITTLE16(pSprite->extra);
 #endif
-        if (gGameOptions.nRandomizerMode && !VanillaMode()) // randomize enemy/pickups
-        {
-            dbRandomizerMode(pSprite);
-        }
-        if ((pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
-        {
-            pSprite->picnum = 30703;
-        }
         InsertSpriteSect(i, sprite[i].sectnum);
         InsertSpriteStat(i, sprite[i].statnum);
         Numsprites++;
@@ -1801,52 +1850,6 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
             pXSprite->height = bitReader.readUnsigned(16);
             pXSprite->stateTimer = bitReader.readUnsigned(16);
             pXSprite->aiState = NULL;
-            if ((gGameOptions.nRandomizerMode & 1) && !VanillaMode()) // if randomizer is set to enemies or enemies+weapons mode
-            {
-                const int curRandomCheat = gGameOptions.nRandomizerCheat;
-                const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 14); // only randomize enemy sizes if seed cheats 0-13 are active
-                if (randomCheatActive && !pXSprite->scale && !dbRandomizerRNGDudes(3)) // if random seed cheat is being used
-                {
-                    switch (pSprite->type) // make enemies randomly huge
-                    {
-                        case kDudeRat:
-                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(2048-128)+128, 128, 2048);
-                            break;
-                        case kDudeHand:
-                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(1024-128)+128, 128, 1024);
-                            break;
-                        case kDudeHellHound:
-                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(512-128)+128, 128, 512);
-                            break;
-                        case kDudeCultistBeast: // boss types
-                        case kDudeTchernobog:
-                        case kDudeCerberusTwoHead:
-                        case kDudeCerberusOneHead:
-                        case kDudeSpiderMother:
-                        case kDudeGargoyleStone:
-                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(512-32)+32, 32, 512);
-                            break;
-                        case kDudeGargoyleFlesh:
-                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(512-32)+32, 32, 512);
-                            break;
-                        case kDudeCultistShotgun: // regular enemies
-                        case kDudeCultistTommy:
-                        case kDudeCultistTommyProne:
-                        case kDudeCultistShotgunProne:
-                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(384-128)+128, 128, 384);
-                            break;
-                        case kDudeCultistTNT:
-                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(384-96)+96, 96, 256);
-                            break;
-                        case kDudeZombieButcher:
-                        case kDudeGillBeast:
-                            pXSprite->scale = ClipRange(dbRandomizerRNGDudes(384-64)+64, 64, 384);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
             bitReader.skipBits(32);
             xsprite[sprite[i].extra].reference = i;
             xsprite[sprite[i].extra].busy = xsprite[sprite[i].extra].state << 16;
