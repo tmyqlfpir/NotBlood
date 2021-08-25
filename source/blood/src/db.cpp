@@ -895,7 +895,7 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                     if (pXSprite->dropMsg > 0) // drop item
                         actDropObject(pSprite, pXSprite->dropMsg);
                 }
-                pSprite->type = kDudeBase;
+                pSprite->type = kDudeBat; // replace with bat as I don't know any stable way of removing enemies without clearing all monsters
             }
             return;
         }

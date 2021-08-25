@@ -901,6 +901,52 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
     return nRes;
 }
 
+int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit)
+{
+    char sectbits[(kMaxSectors+7)>>3];
+    dassert(pSectors != NULL);
+    memset(sectbits, 0, sizeof(sectbits));
+    pSectors[0] = nSector;
+    SetBitString(sectbits, nSector);
+    int n = 1;
+    int i = 0;
+    if (pSectBit)
+    {
+        memset(pSectBit, 0, (kMaxSectors+7)>>3);
+        SetBitString(pSectBit, nSector);
+    }
+    while (i < n)
+    {
+        const int nCurSector = pSectors[i];
+        const int nStartWall = sector[nCurSector].wallptr;
+        const int nEndWall = nStartWall + sector[nCurSector].wallnum;
+        for (int j = nStartWall; j < nEndWall; j++)
+        {
+            const walltype *pWall = &wall[j];
+            const int nNextSector = pWall->nextsector;
+            if (nNextSector < 0)
+                continue;
+            if (TestBitString(sectbits, nNextSector))
+                continue;
+            SetBitString(sectbits, nNextSector);
+            int dx = klabs(wall[pWall->point2].x - x)>>4;
+            int dy = klabs(wall[pWall->point2].y - y)>>4;
+            if (dx < nDist && dy < nDist)
+            {
+                if (approxDist(dx, dy) < nDist)
+                {
+                    if (pSectBit)
+                        SetBitString(pSectBit, nNextSector);
+                    pSectors[n++] = nNextSector;
+                }
+            }
+        }
+        i++;
+    }
+    pSectors[n] = -1;
+    return n;
+}
+
 int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *pWalls, bool newSectCheckMethod)
 {
     // by default this function fails with sectors that linked with wide spans, or there was more than one link to the same sector. for example...

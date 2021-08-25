@@ -2435,9 +2435,9 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     }
     case kViewEffectShadow:
     {
-        if (!VanillaMode())
+        if (!VanillaMode()) // if floor has ror, don't render shadow
         {
-            if ((sector[pTSprite->sectnum].floorpicnum >= 4080) && (sector[pTSprite->sectnum].floorpicnum <= 4095)) // if floor has ror, don't render shadow
+            if ((sector[pTSprite->sectnum].floorpicnum >= 4080) && (sector[pTSprite->sectnum].floorpicnum <= 4095))
                 break;
         }
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
@@ -2450,7 +2450,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->yrepeat = pTSprite->yrepeat>>2;
         pNSprite->picnum = pTSprite->picnum;
         if (!VanillaMode() && (pTSprite->type == kThingDroppedLifeLeech)) // fix shadow for thrown lifeleech
-            pNSprite->picnum = 525;
+            pNSprite->picnum = 800;
         pNSprite->pal = 5;
         int height = tilesiz[pNSprite->picnum].y;
         int center = height/2+picanm[pNSprite->picnum].yofs;
@@ -2474,7 +2474,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     case kViewEffectCeilGlow:
     {
         sectortype *pSector = &sector[pTSprite->sectnum];
-        if (!VanillaMode()) // check if ceiling has ror
+        if (!VanillaMode()) // if ceiling has ror, don't render effect
         {
             if ((pSector->ceilingpicnum >= 4080) && (pSector->ceilingpicnum <= 4095))
                 break;
@@ -2497,7 +2497,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     case kViewEffectFloorGlow:
     {
         sectortype *pSector = &sector[pTSprite->sectnum];
-        if (!VanillaMode()) // check if floor has ror
+        if (!VanillaMode()) // if floor has ror, don't render effect
         {
             if ((pSector->floorpicnum >= 4080) && (pSector->floorpicnum <= 4095))
                 break;
