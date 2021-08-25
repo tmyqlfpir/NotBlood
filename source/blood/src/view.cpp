@@ -2435,6 +2435,11 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     }
     case kViewEffectShadow:
     {
+        if (!VanillaMode())
+        {
+            if ((sector[pTSprite->sectnum].floorpicnum >= 4080) && (sector[pTSprite->sectnum].floorpicnum <= 4095)) // if floor has ror, don't render shadow
+                break;
+        }
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
@@ -2444,6 +2449,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->xrepeat = pTSprite->xrepeat;
         pNSprite->yrepeat = pTSprite->yrepeat>>2;
         pNSprite->picnum = pTSprite->picnum;
+        if (!VanillaMode() && (pTSprite->type == kThingDroppedLifeLeech)) // fix shadow for thrown lifeleech
+            pNSprite->picnum = 525;
         pNSprite->pal = 5;
         int height = tilesiz[pNSprite->picnum].y;
         int center = height/2+picanm[pNSprite->picnum].yofs;
@@ -2466,10 +2473,15 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     }
     case kViewEffectCeilGlow:
     {
+        sectortype *pSector = &sector[pTSprite->sectnum];
+        if (!VanillaMode()) // check if ceiling has ror
+        {
+            if ((pSector->ceilingpicnum >= 4080) && (pSector->ceilingpicnum <= 4095))
+                break;
+        }
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
-        sectortype *pSector = &sector[pTSprite->sectnum];
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
         pNSprite->z = pSector->ceilingz;
@@ -2484,10 +2496,15 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     }
     case kViewEffectFloorGlow:
     {
+        sectortype *pSector = &sector[pTSprite->sectnum];
+        if (!VanillaMode()) // check if floor has ror
+        {
+            if ((pSector->floorpicnum >= 4080) && (pSector->floorpicnum <= 4095))
+                break;
+        }
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
-        sectortype *pSector = &sector[pTSprite->sectnum];
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
         pNSprite->z = pSector->floorz;

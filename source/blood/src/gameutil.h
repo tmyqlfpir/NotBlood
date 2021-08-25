@@ -63,7 +63,7 @@ inline bool wallRangeIsFine(int nIndex) {
 }
 ///
 
-bool AreSectorsNeighbors(int sect1, int sect2);
+bool AreSectorsNeighbors(int sect1, int sect2, int depth = 0);
 bool FindSector(int nX, int nY, int nZ, int *nSector);
 bool FindSector(int nX, int nY, int *nSector);
 void CalcFrameRate(void);

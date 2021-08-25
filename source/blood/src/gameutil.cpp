@@ -44,31 +44,48 @@ short gUpperLink[kMaxSectors];
 short gLowerLink[kMaxSectors];
 HITINFO gHitInfo;
 
-bool AreSectorsNeighbors(int sect1, int sect2)
+static bool AreSectorsNeighborsDepthCheck(int sect1, int sect2, int depth, char *pSectBit)
 {
-    dassert(sect1 >= 0 && sect1 < kMaxSectors);
-    dassert(sect2 >= 0 && sect2 < kMaxSectors);
-    if (sector[sect1].wallnum < sector[sect2].wallnum)
+    for (int i = 0; i < sector[sect1].wallnum; i++)
     {
-        for (int i = 0; i < sector[sect1].wallnum; i++)
+        const int nextSect = wall[sector[sect1].wallptr+i].nextsector;
+        if (nextSect < 0) // if next wall isn't linked to a sector, skip
+            continue;
+        if (TestBitString(pSectBit, nextSect)) // if we've already checked this sector, skip
+            continue;
+        if (nextSect == sect2) // howdy neighbor
+            return 1;
+        SetBitString(pSectBit, nextSect); // set the next sector as checked
+        if (depth)
         {
-            if (wall[sector[sect1].wallptr+i].nextsector == sect2)
-            {
+            if (AreSectorsNeighborsDepthCheck(nextSect, sect2, depth-1, pSectBit))
                 return 1;
-            }
-        }
-    }
-    else
-    {
-        for (int i = 0; i < sector[sect2].wallnum; i++)
-        {
-            if (wall[sector[sect2].wallptr+i].nextsector == sect1)
-            {
-                return 1;
-            }
         }
     }
     return 0;
+}
+
+bool AreSectorsNeighbors(int sect1, int sect2, int depth)
+{
+    if (sect1 == sect2) // same sector
+        return 1;
+    dassert(sect1 >= 0 && sect1 < kMaxSectors);
+    dassert(sect2 >= 0 && sect2 < kMaxSectors);
+    char sectbits[(kMaxSectors+7)>>3];
+    memset(sectbits, 0, sizeof(sectbits));
+    int srcSect, dstSect;
+    if (sector[sect1].wallnum < sector[sect2].wallnum)
+    {
+        srcSect = sect1;
+        dstSect = sect2;
+    }
+    else
+    {
+        srcSect = sect2;
+        dstSect = sect1;
+    }
+    SetBitString(sectbits, srcSect); // set the source sector as checked
+    return AreSectorsNeighborsDepthCheck(srcSect, dstSect, depth, sectbits);
 }
 
 bool FindSector(int nX, int nY, int nZ, int *nSector)
@@ -834,6 +851,12 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
     if ((nRes > 0) || (raySprite == NULL)) // if got a hit, or sprite is null, return
         return nRes;
 
+    if ((*x == origX) && (*y == origY)) // if sprite got stuck, perform some special build guru meditation and unfuck the position with a horrible hack
+    {
+        *x += xv; // manually move position to the intended destination - hopefully face first into a wall
+        *y += yv;
+    }
+
     // we didn't hit shit, let's raycast and try again
     bool seekSector = false;
     vec3_t pos = {origX, origY, origZ};
@@ -878,52 +901,6 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
     return nRes;
 }
 
-int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit)
-{
-    char sectbits[(kMaxSectors+7)>>3];
-    dassert(pSectors != NULL);
-    memset(sectbits, 0, sizeof(sectbits));
-    pSectors[0] = nSector;
-    SetBitString(sectbits, nSector);
-    int n = 1;
-    int i = 0;
-    if (pSectBit)
-    {
-        memset(pSectBit, 0, (kMaxSectors+7)>>3);
-        SetBitString(pSectBit, nSector);
-    }
-    while (i < n)
-    {
-        const int nCurSector = pSectors[i];
-        const int nStartWall = sector[nCurSector].wallptr;
-        const int nEndWall = nStartWall + sector[nCurSector].wallnum;
-        for (int j = nStartWall; j < nEndWall; j++)
-        {
-            const walltype *pWall = &wall[j];
-            const int nNextSector = pWall->nextsector;
-            if (nNextSector < 0)
-                continue;
-            if (TestBitString(sectbits, nNextSector))
-                continue;
-            SetBitString(sectbits, nNextSector);
-            int dx = klabs(wall[pWall->point2].x - x)>>4;
-            int dy = klabs(wall[pWall->point2].y - y)>>4;
-            if (dx < nDist && dy < nDist)
-            {
-                if (approxDist(dx, dy) < nDist)
-                {
-                    if (pSectBit)
-                        SetBitString(pSectBit, nNextSector);
-                    pSectors[n++] = nNextSector;
-                }
-            }
-        }
-        i++;
-    }
-    pSectors[n] = -1;
-    return n;
-}
-
 int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *pWalls, bool newSectCheckMethod)
 {
     // by default this function fails with sectors that linked with wide spans, or there was more than one link to the same sector. for example...
@@ -956,8 +933,12 @@ int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSector
             if (TestBitString(sectbits, nNextSector)) // if we've already checked this sector, skip
                 continue;
             bool setSectBit = true;
-            bool withinRange = CheckProximityWall(pWall->point2, x, y, nDist);
-            if (newSectCheckMethod && !withinRange) // if range check failed, try comparing midpoints/subdivides of wall span
+            bool withinRange = false;
+            if (!newSectCheckMethod) // original method
+            {
+                withinRange = CheckProximityWall(pWall->point2, x, y, nDist);
+            }
+            else // new method - first test edges and then wall span midpoints
             {
                 for (int k = (j+1); k < nEndWall; k++) // scan through the rest of the sector's walls
                 {
@@ -971,27 +952,34 @@ int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSector
                 const int nWallB = wall[nWallA].point2;
                 int x1 = wall[nWallA].x, y1 = wall[nWallA].y;
                 int x2 = wall[nWallB].x, y2 = wall[nWallB].y;
+                int point1Dist = approxDist(x-x1, y-y1); // setup edge distance needed for below loop (determines which point to shift closer to center)
+                int point2Dist = approxDist(x-x2, y-y2);
                 int nLength = approxDist(x1-x2, y1-y2);
-                const int nDist2 = (nDist+(nDist>>1))<<4;
-                nLength = ClipRange(nLength / nDist2, 1, 4); // never split more than 4 times
-                for (int k = 0; true; k++) // subdivide span into smaller chunks towards direction
+                const int nDist4 = nDist<<4;
+                nLength = ClipRange(nLength / (nDist4+(nDist4>>1)), 1, 4); // always test midpoint at least once, and never split more than 4 times
+                for (int k = 0; true; k++) // check both points of wall and subdivide span into smaller chunks towards target
                 {
-                    const int xcenter = (x1+x2)>>1, ycenter = (y1+y2)>>1;
-                    withinRange = CheckProximityPoint(xcenter, ycenter, 0, x, y, 0, nDist);
+                    withinRange = (point1Dist < nDist4) || (point2Dist < nDist4); // check if both points of span is within radius
                     if (withinRange)
                         break;
-                    if (k == (nLength-1)) // reached end
+                    if (k == nLength) // reached end
                         break;
-                    const bool bDir = approxDist(x-x1, y-y1) < approxDist(x-x2, y-y2);
-                    if (bDir) // step closer and check again
+                    const int xcenter = (x1+x2)>>1, ycenter = (y1+y2)>>1;
+                    if (point1Dist < point2Dist) // shift closest side of wall towards target point, and refresh point distance values
+                    {
                         x2 = xcenter, y2 = ycenter;
+                        point2Dist = approxDist(x-x2, y-y2);
+                    }
                     else
+                    {
                         x1 = xcenter, y1 = ycenter;
+                        point1Dist = approxDist(x-x1, y-y1);
+                    }
                 }
             }
             if (withinRange) // if new sector is within range, set to current sector and test walls
             {
-                setSectBit = true; // sector is within range, set as checked
+                setSectBit = true; // sector is within range, set the sector as checked
                 if (pSectBit)
                     SetBitString(pSectBit, nNextSector);
                 pSectors[n++] = nNextSector;

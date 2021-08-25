@@ -5483,7 +5483,7 @@ int MoveMissile(spritetype *pSprite)
             nSector2 = nSector;
         }
         int ceilZ, ceilHit, floorZ, floorHit;
-        GetZRangeAtXYZ(x, y, z, nSector2, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist<<2, CLIPMASK0);
+        GetZRangeAtXYZ(x, y, z, nSector2, &ceilZ, &ceilHit, &floorZ, &floorHit, wd, CLIPMASK0);
         GetSpriteExtents(pSprite, &top, &bottom);
         top += vz;
         bottom += vz;

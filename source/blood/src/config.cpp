@@ -99,7 +99,7 @@ int32_t gMessageTime;
 int32_t gMessageFont;
 int32_t gbAdultContent;
 char gzAdultPassword[9];
-int32_t gDoppler;
+int32_t gStereo;
 int32_t gShowPlayerNames;
 int32_t gShowWeapon;
 int32_t gMouseSensitivity;
@@ -425,7 +425,7 @@ void CONFIG_SetDefaults(void)
     gMessageTime = 5;
     gMessageFont = 0;
     gbAdultContent = 0;
-    gDoppler = 1;
+    gStereo = 1;
     gShowPlayerNames = 0;
     gShowWeapon = 2;
     gzAdultPassword[0] = 0;
