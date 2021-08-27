@@ -230,10 +230,10 @@ void Respawn(int nSprite) // 9
     XSPRITE *pXSprite = &xsprite[pSprite->extra];
     
     if (pSprite->statnum != kStatRespawn && pSprite->statnum != kStatThing) {
-        viewSetSystemMessage("Sprite #%d is not on Respawn or Thing list\n", nSprite);
+        OSD_Printf("Sprite #%d is not on Respawn or Thing list\n", nSprite);
         return;
     } else if (!(pSprite->flags & kHitagRespawn)) {
-        viewSetSystemMessage("Sprite #%d does not have the respawn attribute\n", nSprite);
+        OSD_Printf("Sprite #%d does not have the respawn attribute\n", nSprite);
         return;
     }
 

@@ -5838,7 +5838,6 @@ void MoveMissileBullet(spritetype *pSprite)
     const int bakX = pSprite->x;
     const int bakY = pSprite->y;
     const int bakZ = pSprite->z;
-    const int bakSect = pSprite->sectnum;
     const int dx = Cos(pSprite->ang)>>16;
     const int dy = Sin(pSprite->ang)>>16;
     int dz = zvel[nSprite]>>7;

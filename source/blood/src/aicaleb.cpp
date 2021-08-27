@@ -85,7 +85,7 @@ static void SeqAttackCallback(int, int nXSprite)
     {
         const spritetype *pTarget = &sprite[pXSprite->target];
         if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, check target distance
-            useProjectile = approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y) < 1250; // if target is very close, just use hitscan
+            useProjectile = approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y) > 1250; // if target is very close, just use hitscan
     }
     for (int i = 0; i < 2; i++)
     {
