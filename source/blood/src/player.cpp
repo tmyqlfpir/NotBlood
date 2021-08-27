@@ -1034,8 +1034,8 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
         case kItemFlagA: {
             if (gGameOptions.nGameType != 3) return 0;
             gBlueFlagDropped = false;
-            const bool enemyTeam = (pPlayer->teamId&1) == 0;
-            if (enemyTeam && (pItem->owner >= 0) && (pItem->owner < kMaxSprites)) {
+            const bool enemyTeam = (pPlayer->teamId&1) == 1;
+            if (!enemyTeam && (pItem->owner >= 0) && (pItem->owner < kMaxSprites)) {
                 pPlayer->hasFlag &= ~1;
                 pPlayer->used2[0] = -1;
                 spritetype* pOwner = &sprite[pItem->owner];
@@ -1048,7 +1048,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             }
             pPlayer->hasFlag |= 1;
             pPlayer->used2[0] = pItem->owner;
-            if (!enemyTeam)
+            if (enemyTeam)
             {
                 sprintf(buffer, "%s stole Blue Flag", gProfile[pPlayer->nPlayer].name);
                 sndStartSample(8007, 255, 2, 0);
@@ -1059,8 +1059,8 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
         case kItemFlagB: {
             if (gGameOptions.nGameType != 3) return 0;
             gRedFlagDropped = false;
-            const bool enemyTeam = (pPlayer->teamId&1) == 1;
-            if (enemyTeam && (pItem->owner >= 0) && (pItem->owner < kMaxSprites)) {
+            const bool enemyTeam = (pPlayer->teamId&1) == 0;
+            if (!enemyTeam && (pItem->owner >= 0) && (pItem->owner < kMaxSprites)) {
                 pPlayer->hasFlag &= ~2;
                 pPlayer->used2[1] = -1;
                 spritetype* pOwner = &sprite[pItem->owner];
@@ -1073,7 +1073,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             }
             pPlayer->hasFlag |= 2;
             pPlayer->used2[1] = pItem->owner;
-            if (!enemyTeam)
+            if (enemyTeam)
             {
                 sprintf(buffer, "%s stole Red Flag", gProfile[pPlayer->nPlayer].name);
                 sndStartSample(8006, 255, 2, 0);

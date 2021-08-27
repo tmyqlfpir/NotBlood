@@ -1141,32 +1141,40 @@ void DrawStatNumber(const char *pFormat, int nNumber, int nTile, int x, int y, i
     for (size_t i = 0; i < nLength; i++, x += width*nScale)
     {
         int numTile, numScale, numY;
-        switch (tempbuf[i])
-        {
-        case ' ': // space
+        if (tempbuf[i] == ' ')
             continue;
-        case '-': // negative
+        else if (tempbuf[i] == '-')
         {
-            numTile = kSBarNegative;
-            if ((nTile == kSBarNumberAmmo) || (nTile == 2240))
+            switch (nTile)
+            {
+            default:
+                numTile = kSBarNegative;
+                break;
+            case 2240:
+            case kSBarNumberAmmo:
                 numTile = kSBarNegative+1;
-            else if (nTile == kSBarNumberInv)
+                break;
+            case kSBarNumberInv:
                 numTile = kSBarNegative+2;
-            else if (nTile == kSBarNumberArmor1)
+                break;
+            case kSBarNumberArmor1:
                 numTile = kSBarNegative+3;
-            else if (nTile == kSBarNumberArmor2)
+                break;
+            case kSBarNumberArmor2:
                 numTile = kSBarNegative+4;
-            else if (nTile == kSBarNumberArmor3)
+                break;
+            case kSBarNumberArmor3:
                 numTile = kSBarNegative+5;
+                break;
+            }
             numScale = nScale/3;
             numY = (y<<16) + (1<<15); // offset to center of number row
-            break;
         }
-        default: // regular number
+        else // regular number
+        {
             numTile = nTile+tempbuf[i]-'0';
             numScale = nScale;
             numY = y<<16;
-            break;
         }
         rotatesprite(x, numY, numScale, 0, numTile, nShade, nPalette, nStat | 10, 0, 0, xdim-1, ydim-1);
     }
