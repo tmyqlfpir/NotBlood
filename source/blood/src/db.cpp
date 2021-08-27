@@ -768,12 +768,12 @@ void dbRandomizerModeInit(void)
     curRandomizerSeedThings = curRandomizerSeedDudes = curRandomizerSeed;
 }
 
-void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
+bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
 {
     if (pSprite == NULL) // invalid sprite, don't bother processing
-        return;
+        return false;
     if ((pSprite->index < 0) || (pSprite->index >= kMaxSprites))
-        return;
+        return false;
 
     if ((gGameOptions.nRandomizerMode >= 2) && (pSprite->type == kItemBeastVision)) // always replace beast vision if pickups or enemies+pickups mode
     {
@@ -789,7 +789,7 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
         const int type = pSprite->type;
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother)) // filter problematic enemy types
         {
-            bool batMan = false;
+            bool removeDude = false;
             switch (gGameOptions.nRandomizerCheat) // replace enemy according to cheat type
             {
             case  0: // "AAAAAAAA" - phantoms only
@@ -856,25 +856,25 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
                 break;
             }
-            case 15: // "GHSTBSTR" - turn phantoms into bats
+            case 15: // "GHSTBSTR" - no phantoms
                 if (pSprite->type == kDudePhantasm)
-                    batMan = true;
+                    removeDude = true;
                 break;
-            case 16: // "NOHANDS!" - turn hands into bats
+            case 16: // "NOHANDS!" - no hands
                 if (pSprite->type == kDudeHand)
-                    batMan = true;
+                    removeDude = true;
                 break;
-            case 17: // "SAFEWATR" - turn hands/gill beasts into bats
+            case 17: // "SAFEWATR" - no hands/gill beasts
                 if ((pSprite->type == kDudeHand) || (pSprite->type == kDudeGillBeast))
-                    batMan = true;
+                    removeDude = true;
                 break;
-            case 18: // "PESTCTRL" - turn rats/hands/spiders into bats
+            case 18: // "PESTCTRL" - no rats/hands/spiders
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed))
-                    batMan = true;
+                    removeDude = true;
                 break;
-            case 19: // "IH8PETS!" - turn rats/hands/spiders/hell hounds into bats
+            case 19: // "IH8PETS!" - no rats/hands/spiders/hell hounds
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeHellHound))
-                    batMan = true;
+                    removeDude = true;
                 break;
             default: // unknown cheat id, don't do anything
             {
@@ -885,7 +885,7 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 break;
             }
             }
-            if (batMan) // na na na na na na...
+            if (removeDude)
             {
                 if (pXSprite)
                 {
@@ -896,21 +896,21 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 }
                 pSprite->type = kDudeBat;
             }
-            return;
+            return removeDude;
         }
     }
 
     if (gGameOptions.nDifficulty <= 2) // don't always replace enemies/pickups
     {
-        if (!dbRandomizerRNG(2)) return;
+        if (!dbRandomizerRNG(2)) return false;
     }
     else if (gGameOptions.nDifficulty == 3) // well done
     {
-        if (!dbRandomizerRNG(4)) return;
+        if (!dbRandomizerRNG(4)) return false;
     }
     else // extra crispy
     {
-        if (!dbRandomizerRNG(5)) return;
+        if (!dbRandomizerRNG(5)) return false;
     }
 
     if (gGameOptions.nRandomizerMode & 1) // if enemies or enemies+weapons mode, randomize enemy
@@ -1261,9 +1261,10 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
             break;
         }
     }
+    return false;
 }
 
-void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
+static void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
 {
     const int curRandomCheat = gGameOptions.nRandomizerCheat;
     const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 14); // only randomize enemy sizes if seed cheats 0-13 are active
@@ -1960,6 +1961,51 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
             }
             break;
             
+        }
+    }
+
+
+    if (!VanillaMode())
+    {
+        for (int nSprite = headspritestat[kStatItem]; nSprite >= 0; nSprite = nextspritestat[nSprite]) // scan through all items
+        {
+            spritetype* pSprite = &sprite[nSprite];
+            if ((sprite[nSprite].statnum < 0) || (sprite[nSprite].statnum >= kMaxStatus)) // invalid sprite, don't bother processing
+                continue;
+            if (gGameOptions.nRandomizerMode) // randomize pickups
+                dbRandomizerMode(pSprite, NULL);
+            if (gGameOptions.bQuadDamagePowerup && (pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && (pSprite->type == kItemTwoGuns)) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
+                pSprite->picnum = 30703;
+        }
+        if (gGameOptions.nRandomizerMode & 1) // randomize enemy
+        {
+            int nSprite = headspritestat[kStatDude];
+            while (nSprite >= 0) // scan through all dudes
+            {
+                if ((sprite[nSprite].statnum < 0) || (sprite[nSprite].statnum >= kMaxStatus)) // invalid sprite, don't bother processing
+                {
+                    nSprite = nextspritestat[nSprite];
+                    continue;
+                }
+                XSPRITE *pXSprite = NULL;
+                spritetype* pSprite = &sprite[nSprite];
+                if (IsPlayerSprite(pSprite)) // don't bother randomizing
+                {
+                    nSprite = nextspritestat[nSprite];
+                    continue;
+                }
+                if ((pSprite->extra >= 0) && (pSprite->extra < kMaxXSprites))
+                    pXSprite = &xsprite[pSprite->extra];
+                if (dbRandomizerMode(pSprite, pXSprite)) // if randomizer deleted dude
+                {
+                    DeleteSprite(nSprite);
+                    nSprite = headspritestat[kStatDude]; // start all over again until only player sprites are left
+                    continue;
+                }
+                if (pXSprite && (gGameOptions.nRandomizerMode & 1)) // if randomizer is set to enemies or enemies+weapons mode, randomly scale enemies
+                    dbRandomizerModeScale(pSprite, pXSprite);
+                nSprite = nextspritestat[nSprite];
+            }
         }
     }
 

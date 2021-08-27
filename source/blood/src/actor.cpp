@@ -2568,43 +2568,20 @@ void actInit(bool bSaveLoad) {
                 break;
         }
     }
-
-    if (!VanillaMode()) {
-        for (int nSprite = headspritestat[kStatItem]; nSprite >= 0; nSprite = nextspritestat[nSprite]) { // scan through all items
-            if ((sprite[nSprite].statnum < 0) || (sprite[nSprite].statnum >= kMaxStatus)) // invalid sprite, don't bother processing
-                continue;
-            spritetype* pSprite = &sprite[nSprite];
-            if ((pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && (pSprite->type == kItemTwoGuns) && gGameOptions.bQuadDamagePowerup) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
-                pSprite->picnum = 30703;
-            if (gGameOptions.nRandomizerMode) // randomize pickups
-                dbRandomizerMode(pSprite, NULL);
-        }
-        if (gGameOptions.nRandomizerMode & 1) { // randomize enemy
-            for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) { // scan through all dudes
-                if ((sprite[nSprite].statnum < 0) || (sprite[nSprite].statnum >= kMaxStatus)) // invalid sprite, don't bother processing
-                    continue;
-                XSPRITE *pXSprite = NULL;
-                spritetype* pSprite = &sprite[nSprite];
-                if (IsPlayerSprite(pSprite)) // don't bother randomizing
-                    continue;
-                if ((pSprite->extra >= 0) && (pSprite->extra < kMaxXSprites))
-                    pXSprite = &xsprite[pSprite->extra];
-                dbRandomizerMode(pSprite, pXSprite);
-                if (pXSprite && (gGameOptions.nRandomizerMode & 1)) // if randomizer is set to enemies or enemies+weapons mode, randomly scale enemies
-                    dbRandomizerModeScale(pSprite, pXSprite);
-            }
-        }
-    }
-
+    
     if (gGameOptions.nMonsterSettings == 0) {
         gKillMgr.SetCount(0);
-        for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
+        int nSprite = headspritestat[kStatDude];
+        while (nSprite >= 0) {
             spritetype *pSprite = &sprite[headspritestat[kStatDude]];
             if (IsPlayerSprite(pSprite)) // do not delete player sprites (causes game to crash on load save)
+            {
+                nSprite = nextspritestat[nSprite];
                 continue;
+            }
             if (pSprite->extra > 0 && pSprite->extra < kMaxXSprites && xsprite[pSprite->extra].key > 0) // Drop Key
                 actDropObject(pSprite, kItemKeyBase + (xsprite[pSprite->extra].key - 1));
-            DeleteSprite(headspritestat[kStatDude]);
+            DeleteSprite(nSprite);
             nSprite = headspritestat[kStatDude]; // start all over again until only player sprites are left
         }
     } else {

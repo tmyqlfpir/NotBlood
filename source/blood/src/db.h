@@ -371,7 +371,6 @@ void dbXWallClean(void);
 void dbXSectorClean(void);
 void dbInit(void);
 void PropagateMarkerReferences(void);
-void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite);
-void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite);
+bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite);
 unsigned int dbReadMapCRC(const char *pPath);
 int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short *pSector, unsigned int *pCRC);

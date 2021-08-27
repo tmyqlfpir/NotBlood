@@ -1521,16 +1521,22 @@ int viewDrawCalculateShadowSize(tspritetype *pTSprite)
 {
     if (pTSprite == NULL)
         return 0;
-    float dz = (float)getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) - (float)gView->zView;
-    if (dz <= 0) // pov is below shadow, don't render shadow
+    const bool slopedFloor = sector[pTSprite->sectnum].floorstat&2;
+    int nDiff = getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) - gView->zView;
+    if (slopedFloor) // always make height difference positive if sprite is on a slope
+        nDiff = klabs(nDiff);
+    if (nDiff <= 0) // pov is below shadow, don't render shadow
         return 0;
-    dz = dz / (float)(1<<8); // convert to real units
+    float dz = (float)nDiff / (float)(1<<8); // convert to real units
     dz = ClipRangeF(dz, 0.1f, 300.f) / 300.f; // convert to 0-1 range
 
     float nDist = (float)ClipRange(approxDist(gView->pSprite->x-pTSprite->x, gView->pSprite->y-pTSprite->y, 0), 1, 512<<4) / (float)(1<<4);
     nDist /= 512 * 8;
     nDist = (nDist * (float)pTSprite->yrepeat) + (dz * (float)pTSprite->yrepeat);
-    return ClipRange((int)nDist, 0, pTSprite->yrepeat * 4);
+    if (slopedFloor)
+        nDist /= 1.5f;
+    int output = ClipRange((int)nDist, 0, pTSprite->yrepeat * 4);
+    return output;
 }
 
 void viewDrawMapTitle(void)

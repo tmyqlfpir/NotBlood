@@ -71,11 +71,11 @@ New features include:
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
 
 ### Additional randomizer seed cheats
-* GHSTBSTR - Turn phantoms into bats
-* NOHANDS! - Turn hands into bats
-* SAFEWATR - Turn hands/gill beasts into bats
-* PESTCTRL - Turn rats/hands/spiders into bats
-* IH8PETS! - Turn rats/hands/spiders/hell hounds into bats
+* GHSTBSTR - No phantoms
+* NOHANDS! - No hands
+* SAFEWATR - No hands/gill beasts
+* PESTCTRL - No rats/hands/spiders
+* IH8PETS! - No rats/hands/spiders/hell hounds
 
 ### Installing
 1. Extract NotBlood to a new directory
