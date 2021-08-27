@@ -7266,6 +7266,7 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
     VECTORDATA *pVectorData = &gVectorData[vectorType];
     int nRange = pVectorData->maxDist;
     int hit = VectorScan(pShooter, a2, a3, a4, a5, a6, nRange, 1);
+    bool returnedFire = false;
     if (hit == 3)
     {
         int nSprite = gHitInfo.hitsprite;
@@ -7280,6 +7281,8 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                 gHitInfo.hitx = pShooter->x;
                 gHitInfo.hity = pShooter->y;
                 gHitInfo.hitz = pShooter->z;
+                if (WeaponsNotBlood() && !VanillaMode()) // invert impulse direction
+                    returnedFire = true;
             }
         }
     }
@@ -7360,6 +7363,7 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
             int shift = 4;
             int boost = 1;
             int boostz = 1;
+            int invertVal = returnedFire ? -1 : 1; // if shot player with reflective sphere, invert impulse direction
             DAMAGE_TYPE dmgType = pVectorData->dmgType;
             if (vectorType == kVectorTine && !IsPlayerSprite(pSprite))
                 shift = 3;
@@ -7392,9 +7396,9 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                 if (t > 0 && pVectorData->impulse)
                 {
                     int t2 = divscale(pVectorData->impulse, t, 8);
-                    xvel[nSprite] += mulscale16(a4, t2) * boost;
-                    yvel[nSprite] += mulscale16(a5, t2) * boost;
-                    zvel[nSprite] += mulscale16(a6, t2) * boostz;
+                    xvel[nSprite] += mulscale16(a4, t2) * boost * invertVal;
+                    yvel[nSprite] += mulscale16(a5, t2) * boost * invertVal;
+                    zvel[nSprite] += mulscale16(a6, t2) * boostz * invertVal;
                 }
                 if (pVectorData->burnTime)
                 {
@@ -7422,9 +7426,9 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                 if (t > 0 && pVectorData->impulse)
                 {
                     int t2 = divscale(pVectorData->impulse, t, 8);
-                    xvel[nSprite] += mulscale16(a4, t2) * boost;
-                    yvel[nSprite] += mulscale16(a5, t2) * boost;
-                    zvel[nSprite] += mulscale16(a6, t2) * boostz;
+                    xvel[nSprite] += mulscale16(a4, t2) * boost * invertVal;
+                    yvel[nSprite] += mulscale16(a5, t2) * boost * invertVal;
+                    zvel[nSprite] += mulscale16(a6, t2) * boostz * invertVal;
                 }
                 if (pVectorData->burnTime)
                 {
@@ -7483,9 +7487,9 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                     if (pXSprite->physAttr & kPhysDebrisVector) {
                         
                     int impulse = divscale(pVectorData->impulse, ClipLow(gSpriteMass[pSprite->extra].mass, 10), 6);
-                    xvel[nSprite] += mulscale16(a4, impulse) * boost;
-                    yvel[nSprite] += mulscale16(a5, impulse) * boost;
-                    zvel[nSprite] += mulscale16(a6, impulse) * boostz;
+                    xvel[nSprite] += mulscale16(a4, impulse) * boost * invertVal;
+                    yvel[nSprite] += mulscale16(a5, impulse) * boost * invertVal;
+                    zvel[nSprite] += mulscale16(a6, impulse) * boostz * invertVal;
 
                     if (pVectorData->burnTime != 0) {
                         if (!xsprite[nXSprite].burnTime) evPost(nSprite, 3, 0, kCallbackFXFlameLick);
