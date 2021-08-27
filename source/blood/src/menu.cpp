@@ -56,6 +56,7 @@ void SetCenterHoriz(CGameMenuItemZBool *);
 void SetShowPlayerNames(CGameMenuItemZBool *);
 void SetShowWeapons(CGameMenuItemZCycle *);
 
+void SetMonsters(CGameMenuItemZCycle*);
 void SetQuadDamagePowerup(CGameMenuItemZBool*);
 void SetDamageInvul(CGameMenuItemZBool*);
 void SetExplosionBehavior(CGameMenuItemZCycle*);
@@ -180,6 +181,13 @@ const char *pzShowWeaponStrings[] = {
     "OFF",
     "SPRITE",
     "VOXEL"
+};
+
+const char *pzMonsterStrings[] =
+{
+    "None",
+    "Default",
+    "Respawn",
 };
 
 const char *pzExplosionBehaviorStrings[] = {
@@ -526,15 +534,16 @@ CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
 CGameMenuItemTitle itemGameEnhancementsTitle("ENHANCEMENTS", 1, 160, 20, 2038);
 
 ///////////////
-CGameMenuItemZBool itemEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 60, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
-CGameMenuItemZBool itemEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 70, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
-CGameMenuItemZCycle itemEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 80, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
-CGameMenuItemZCycle itemEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 90, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
-CGameMenuItemZCycle itemEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 100, 180, 0, SetEnemyBehavior, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
-CGameMenuItemZCycle itemEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 110, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
-CGameMenuItemZBool itemEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 120, 180, gHitscanProjectiles, SetHitscanProjectiles, NULL, NULL);
-CGameMenuItemZCycle itemEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 130, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
-CGameMenuItemZEdit itemEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 140, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
+CGameMenuItemZCycle itemEnhancementMonsterSettings("MONSTERS:", 3, 66, 55, 180, 0, SetMonsters, pzMonsterStrings, ARRAY_SSIZE(pzMonsterStrings), 0);
+CGameMenuItemZBool itemEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 65, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
+CGameMenuItemZBool itemEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 75, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
+CGameMenuItemZCycle itemEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 85, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
+CGameMenuItemZCycle itemEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 95, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
+CGameMenuItemZCycle itemEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 105, 180, 0, SetEnemyBehavior, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
+CGameMenuItemZCycle itemEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
+CGameMenuItemZBool itemEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 125, 180, gHitscanProjectiles, SetHitscanProjectiles, NULL, NULL);
+CGameMenuItemZCycle itemEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 135, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
+CGameMenuItemZEdit itemEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 145, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
 CGameMenuItemZBool itemOptionsGameBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 50, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
@@ -1342,7 +1351,8 @@ void SetupOptionsMenu(void)
 
     //////////////////////
     menuOptionsGameEnhancements.Add(&itemGameEnhancementsTitle, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementBoolQuadDamagePowerup, true);
+    menuOptionsGameEnhancements.Add(&itemEnhancementMonsterSettings, true);
+    menuOptionsGameEnhancements.Add(&itemEnhancementBoolQuadDamagePowerup, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementBoolDamageInvul, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementExplosionBehavior, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementProjectileBehavior, false);
@@ -1353,6 +1363,8 @@ void SetupOptionsMenu(void)
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerSeed, false);
     itemOptionsChainEnhancements.bDisableForNet = 1;
     itemOptionsChainEnhancements.bEnable = !gVanilla;
+    itemEnhancementMonsterSettings.tooltip_pzTextUpper = "Set the monster settings";
+    itemEnhancementMonsterSettings.tooltip_pzTextLower = "for singleplayer mode";
     itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
     itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
     itemEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
@@ -1387,6 +1399,7 @@ void SetupOptionsMenu(void)
 
     ///////
     menuOptionsGameEnhancements.Add(&itemBloodQAV, false);
+    itemEnhancementMonsterSettings.m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
     itemEnhancementBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
     itemEnhancementBoolDamageInvul.at20 = !!gDamageInvul;
     itemEnhancementExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
@@ -1664,6 +1677,16 @@ void ResetKeysClassic(CGameMenuItemChain *)
 }
 
 ////
+void SetMonsters(CGameMenuItemZCycle *pItem)
+{
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+        gMonsterSettings = pItem->m_nFocus % ARRAY_SSIZE(pzMonsterStrings);
+        gGameOptions.nMonsterSettings = pItem->m_nFocus % ARRAY_SSIZE(pzMonsterStrings);
+    } else {
+        pItem->m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
+    }
+}
+
 void SetQuadDamagePowerup(CGameMenuItemZBool* pItem)
 {
     if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {

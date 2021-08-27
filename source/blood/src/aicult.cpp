@@ -107,7 +107,7 @@ static void TommySeqCallback(int, int nXSprite)
     dy += Random3((5-gGameOptions.nDifficulty)*1000);
     dz += Random3((5-gGameOptions.nDifficulty)*500);
     bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode(); // if enemy hitscan projectiles are enabled, spawn bullet projectile
-    if (useProjectile && (gGameOptions.nDifficulty > 2) && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if difficulty is above lightly broiled, and target is valid
+    if (useProjectile && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if target is valid
     {
         spritetype *pTarget = &sprite[pXSprite->target];
         if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, calculate prediction for projectile
@@ -116,7 +116,7 @@ static void TommySeqCallback(int, int nXSprite)
             int nDist = ClipRange(approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y), 0, 20000);
             if (nDist < 1250) // target is very close, just use hitscan
                 useProjectile = false;
-            else
+            else if (gGameOptions.nDifficulty > 2) // if difficulty is above lightly broiled
             {
                 dx += ((xvel[pTarget->index]+nDiff)>>8)+((xvel[pTarget->index]+nDiff)>>9)+((xvel[pTarget->index]+nDiff)>>10);
                 dy += ((yvel[pTarget->index]+nDiff)>>8)+((yvel[pTarget->index]+nDiff)>>9)+((yvel[pTarget->index]+nDiff)>>10);
@@ -160,16 +160,16 @@ static void ShotSeqCallback(int, int nXSprite)
     dy += Random2((5-gGameOptions.nDifficulty)*1000-500);
     dz += Random2((5-gGameOptions.nDifficulty)*500);
     bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode(); // if enemy hitscan projectiles are enabled, spawn bullet projectile
-    if (useProjectile && (gGameOptions.nDifficulty > 2) && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if difficulty is above lightly broiled, and target is valid
+    if (useProjectile && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if target is valid
     {
-        spritetype *pTarget = &sprite[pXSprite->target];
-        if ((klabs(pSprite->z-pTarget->z) < 30000) && Random2(gGameOptions.nDifficulty+2)) // if height difference is under 30000, calculate prediction for projectile
+        const spritetype *pTarget = &sprite[pXSprite->target];
+        if ((klabs(pSprite->z-pTarget->z) < 30000)) // if height difference is under 30000, calculate prediction for projectile
         {
             const int nDiff = approxDist(dx, dy);
             int nDist = ClipRange(approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y), 0, 20000);
             if (nDist < 1250) // target is very close, just use hitscan
                 useProjectile = false;
-            else
+            else if ((gGameOptions.nDifficulty > 2) && Random2(gGameOptions.nDifficulty+2)) // if difficulty is above lightly broiled
             {
                 dx += (xvel[pTarget->index]+nDiff)>>7;
                 dy += (yvel[pTarget->index]+nDiff)>>7;

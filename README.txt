@@ -30,15 +30,28 @@ New features include:
 * NO U - Activates reflect shots power-up
 
 ### Enhancements Options
-Replace guns akimbo with quad damage - Self explanatory, replaces the guns akimbo powerup with Quake's quad damage (lasts 25 seconds)
-Hitscan damage invulnerability - Apply a short invulnerability state for the player for bullet/spirit/tesla damage
-Explosions behavior - Replace the default vanilla explosion calculation with an new improved sector scanning system (fixes cases where enemies did not take explosive damage)
-Projectiles behavior - For player projectiles, it'll use the improved eduke32's clipmove() logic as well as raymatching per tick. This feature also adjusts certain hitboxes so it's easier to target around corners
-Enemy behavior - Fixes bugs with the vanilla enemy behavior such as tiny Caleb using the wrong burning sprite, enemies sometimes burning indefinitely, cultists switching weapons if extinguished in water, Cerberus spinning uselessly on lava, etc
-Weapon behavior - Adds a charge up stab for pitchfork's alt fire, makes lifeleech throwable and increass the damage in sentry mode, and adds a special alt fire missile attack for pitchfork's charge up if quad damage is active
-Hitscan projectiles - Makes enemies that would use hitscan bullets spawn physical sprite based bullets with travel time
-Randomizer mode - Set the enemy/pickups randomizer mode
-Randomizer seed - Set the enemy/pickups randomizer's seed (an empty string will regenerate anew for every level start)
+* Replace guns akimbo with quad damage - Self explanatory, replaces the guns akimbo powerup with Quake's quad damage (lasts 25 seconds)
+* Hitscan damage invulnerability - Apply a short invulnerability state for the player for bullet/spirit/tesla damage
+* Explosions behavior - Replace the default vanilla explosion calculation with an new improved sector scanning system (fixes cases where enemies did not take explosive damage)
+* Projectiles behavior - For player projectiles, it'll use the improved eduke32's clipmove() logic as well as raymatching per tick. This feature also adjusts certain hitboxes so it's easier to target around corners
+* Enemy behavior - Fixes bugs with the vanilla enemy behavior such as tiny Caleb using the wrong burning sprite, enemies sometimes burning indefinitely, cultists switching weapons if extinguished in water, Cerberus spinning uselessly on lava, etc
+* Weapon behavior - Adds a charge up stab for pitchfork's alt fire, makes lifeleech throwable and increass the damage in sentry mode, and adds a special alt fire missile attack for pitchfork's charge up if quad damage is active
+* Hitscan projectiles - Makes enemies that would use hitscan bullets spawn physical sprite based bullets with travel time
+* Randomizer mode - Set the enemy/pickups randomizer mode
+* Randomizer seed - Set the enemy/pickups randomizer's seed (an empty string will regenerate anew for every level start)
+
+### New console variables for NotBlood
+* r_mirrormode
+* cl_interpolateweapon
+* cl_weaponhbob
+* cl_slowroomflicker
+* cl_shadowsfake3d
+* cl_particlesduration
+* hud_showweaponselect
+* hud_showweaponselecttimestart
+* hud_showweaponselecttimehold
+* hud_showweaponselecttimeend
+* hud_showweaponselectposition
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only
@@ -57,13 +70,12 @@ Randomizer seed - Set the enemy/pickups randomizer's seed (an empty string will 
 * BRAAAINS - Zombies only
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
 
-### Additional randomizer seed cheats (can softlock levels if enemies are required for triggers)
-* GHSTBSTR - No phantoms
-* NOHANDS! - No hands
-* SAFEWATR - No hands/gill beasts
-* PESTCTRL - No rats/hands/spiders
-* IH8PETS! - No rats/hands/spiders/bats/hell hounds
-* NOTHING! - No enemies
+### Additional randomizer seed cheats
+* GHSTBSTR - Turn phantoms into bats
+* NOHANDS! - Turn hands into bats
+* SAFEWATR - Turn hands/gill beasts into bats
+* PESTCTRL - Turn rats/hands/spiders into bats
+* IH8PETS! - Turn rats/hands/spiders/hell hounds into bats
 
 ### Installing
 1. Extract NotBlood to a new directory

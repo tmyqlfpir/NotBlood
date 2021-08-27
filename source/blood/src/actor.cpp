@@ -2948,7 +2948,7 @@ spritetype *actDropKey(spritetype *pSprite, int nType)
 spritetype *actDropFlag(spritetype *pSprite, int nType)
 {
     spritetype *pSprite2 = NULL;
-    if (pSprite && pSprite->statnum < kMaxStatus && (nType == 147 || nType == 148))
+    if (pSprite && pSprite->statnum < kMaxStatus && (nType == kItemFlagA || nType == kItemFlagB))
     {
         pSprite2 = actDropItem(pSprite, nType);
         if (pSprite2 && gGameOptions.nGameType == 3)
@@ -5838,6 +5838,7 @@ void MoveMissileBullet(spritetype *pSprite)
     const int bakX = pSprite->x;
     const int bakY = pSprite->y;
     const int bakZ = pSprite->z;
+    const int bakSect = pSprite->sectnum;
     const int dx = Cos(pSprite->ang)>>16;
     const int dy = Sin(pSprite->ang)>>16;
     int dz = zvel[nSprite]>>7;
@@ -5882,19 +5883,21 @@ void MoveMissileBullet(spritetype *pSprite)
         GetSpriteExtents(pSprite, &top, &bottom);
         top += vz;
         bottom += vz;
+        pSprite->z += vz;
         if (bottom >= floorZ) // we're clipping into the floor, so just delete the sprite
         {
-            MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, 0, 0, -0x300000, nType, (speed>>12) + (speed>>13)); // shoot fake bullet towards the floor
+            pSprite->z = floorZ;
+            actFireVector(pSprite, 0, 0, vx, vy, 0x8000, nType); // shoot fake bullet towards the floor
             weHitSomething = true;
             break;
         }
         if (top <= ceilZ) // we're clipping into the ceiling, so just delete the sprite
         {
-            MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, 0, 0, 0x300000, nType, (speed>>12) + (speed>>13)); // shoot fake bullet towards the ceiling
+            pSprite->z = ceilZ;
+            actFireVector(pSprite, 0, 0, vx, vy, -0x8000, nType); // shoot fake bullet towards the ceiling
             weHitSomething = true;
             break;
         }
-        pSprite->z += vz;
         short nSectorShort = nSector;
         updatesector(pSprite->x, pSprite->y, &nSectorShort);
         if (nSector == -1) // if invalid sector, attempt to get back on the right track

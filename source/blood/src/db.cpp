@@ -695,6 +695,9 @@ inline int dbRandomizerRNGThings(const int range)
 
 void dbRandomizerModeInit(void)
 {
+    // if adding a new seed cheat, ensure that you do the following:
+    // - add the new entry to the switch statement in dbRandomizerMode()
+    // - updating range cheat range for dbRandomizerModeScale()
     const char randomizerCheats[][sizeof(gzRandomizerSeed)] =
     {
         "AAAAAAAA", // phantoms only
@@ -712,12 +715,11 @@ void dbRandomizerModeInit(void)
         "WEED420!", // cultists only but they're green (and make you dizzy on damage)
         "BRAAAINS", // zombies only
         "SNEAKYFU", // prone shotgun/tommy gun cultists only
-        "GHSTBSTR", // no phantoms
-        "NOHANDS!", // no hands
-        "SAFEWATR", // no hands/gill beasts
-        "PESTCTRL", // no rats/hands/spiders
-        "IH8PETS!", // no rats/hands/spiders/bats/hell hounds
-        "NOTHING!", // no enemies
+        "GHSTBSTR", // turn phantoms into bats
+        "NOHANDS!", // turn hands into bats
+        "SAFEWATR", // turn hands/gill beasts into bats
+        "PESTCTRL", // turn rats/hands/spiders into bats
+        "IH8PETS!", // turn rats/hands/spiders/hell hounds into bats
     };
 
     const uint32_t defaultSeed = 0xCA1EB666;
@@ -787,7 +789,7 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
         const int type = pSprite->type;
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother)) // filter problematic enemy types
         {
-            bool delDude = false;
+            bool batMan = false;
             switch (gGameOptions.nRandomizerCheat) // replace enemy according to cheat type
             {
             case  0: // "AAAAAAAA" - phantoms only
@@ -854,28 +856,25 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
                 break;
             }
-            case 15: // "GHSTBSTR" - no phantoms
+            case 15: // "GHSTBSTR" - turn phantoms into bats
                 if (pSprite->type == kDudePhantasm)
-                    delDude = true;
+                    batMan = true;
                 break;
-            case 16: // "NOHANDS!" - no hands
+            case 16: // "NOHANDS!" - turn hands into bats
                 if (pSprite->type == kDudeHand)
-                    delDude = true;
+                    batMan = true;
                 break;
-            case 17: // "SAFEWATR" - no hands/gill beasts
+            case 17: // "SAFEWATR" - turn hands/gill beasts into bats
                 if ((pSprite->type == kDudeHand) || (pSprite->type == kDudeGillBeast))
-                    delDude = true;
+                    batMan = true;
                 break;
-            case 18: // "PESTCTRL" - no rats/hands/spiders
+            case 18: // "PESTCTRL" - turn rats/hands/spiders into bats
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed))
-                    delDude = true;
+                    batMan = true;
                 break;
-            case 19: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
-                if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeBat) || (pSprite->type == kDudeHellHound))
-                    delDude = true;
-                break;
-            case 20: // "NOTHING!" - no enemies
-                delDude = true;
+            case 19: // "IH8PETS!" - turn rats/hands/spiders/hell hounds into bats
+                if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeHellHound))
+                    batMan = true;
                 break;
             default: // unknown cheat id, don't do anything
             {
@@ -886,7 +885,7 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 break;
             }
             }
-            if (delDude)
+            if (batMan) // na na na na na na...
             {
                 if (pXSprite)
                 {
@@ -895,7 +894,7 @@ void dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                     if (pXSprite->dropMsg > 0) // drop item
                         actDropObject(pSprite, pXSprite->dropMsg);
                 }
-                pSprite->type = kDudeBat; // replace with bat as I don't know any stable way of removing enemies without clearing all monsters
+                pSprite->type = kDudeBat;
             }
             return;
         }

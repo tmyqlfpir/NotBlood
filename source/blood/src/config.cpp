@@ -124,9 +124,12 @@ int32_t gShowWeaponSelectTimeStart;
 int32_t gShowWeaponSelectTimeHold;
 int32_t gShowWeaponSelectTimeEnd;
 int32_t gShowWeaponSelectPosition;
+int32_t gShadowsFake3D;
+int32_t gParticlesDuration;
 
 //////////
 int gVanilla;
+int gMonsterSettings;
 int gQuadDamagePowerup;
 int gDamageInvul;
 int gExplosionBehavior;
@@ -371,6 +374,8 @@ void CONFIG_SetDefaults(void)
     gShowWeaponSelectTimeHold = 38;
     gShowWeaponSelectTimeEnd = 6;
     gShowWeaponSelectPosition = 24;
+    gShadowsFake3D = 1;
+    gParticlesDuration = 1;
     //ud.lockout                = 0;
     //ud.m_marker               = 1;
     //ud.maxautosaves           = 5;
@@ -438,6 +443,7 @@ void CONFIG_SetDefaults(void)
     gAutosaveInCurLevel = false;
 
     gVanilla = 0;
+    gMonsterSettings = 1;
     gQuadDamagePowerup = 0;
     gDamageInvul = 0;
     gExplosionBehavior = 0;
@@ -712,6 +718,7 @@ int CONFIG_ReadSetup(void)
     ///////
     SCRIPT_GetNumber(scripthandle, "Game Options", "Autosave", &gAutosave);
     SCRIPT_GetNumber(scripthandle, "Game Options", "VanillaMode", &gVanilla);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "MonsterSettings", &gMonsterSettings);
     SCRIPT_GetNumber(scripthandle, "Game Options", "QuadDamagePowerup", &gQuadDamagePowerup);
     SCRIPT_GetNumber(scripthandle, "Game Options", "DamageInvul", &gDamageInvul);
     SCRIPT_GetNumber(scripthandle, "Game Options", "ExplosionsBehavior", &gExplosionBehavior);
@@ -1023,6 +1030,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     ///////
     SCRIPT_PutNumber(scripthandle, "Game Options", "Autosave", gAutosave, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "VanillaMode", gVanilla, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "MonsterSettings", gMonsterSettings, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "QuadDamagePowerup", gQuadDamagePowerup, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "DamageInvul", gDamageInvul, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "ExplosionsBehavior", gExplosionBehavior, FALSE, FALSE);

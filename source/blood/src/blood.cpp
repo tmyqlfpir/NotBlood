@@ -606,6 +606,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             levelPlayIntroScene(gGameOptions.nEpisode);
 
         ///////
+        gGameOptions.nMonsterSettings = VanillaMode() ? 1 : gMonsterSettings;
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;

@@ -1365,11 +1365,20 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     static float animPosPrev;
     float animPos = 0;
 
-    if ((curTime < 50) || animState && ((animClock - (travelTime+holdTime+decayTime) > curTime) || (animClock + (travelTime+holdTime+decayTime) < curTime))) // if show weapon select is disabled, or player just started level, or the clock is impossibly far ahead (eg player quickloaded)
+    if ((curTime < 50) || animState && ((animClock - (travelTime+holdTime+decayTime) > curTime) || (animClock + (travelTime+holdTime+decayTime) < curTime))) // if player just started level, or the clock is impossibly far ahead (eg player quickloaded)
     {
         animClock = curTime;
         animState = 0;
         return;
+    }
+
+    int statsOffset = 0;
+    if (gGameOptions.nGameType > 0) // offset for multiplayer stats bar
+    {
+        for (int nRows = (gNetPlayers - 1) / 4; nRows >= 0; nRows--)
+        {
+            statsOffset += (4 + nRows * 9) * 2;
+        }
     }
 
     switch (animState)
@@ -1449,6 +1458,8 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     int yPrimary = (int)((viewDrawParametricBlend(ClipRangeF(animPos, 0, 1) * 1.1f) * animPosRange) + animPosMin);
     if ((gViewSize > 2) && (gShowWeaponSelect == 1)) // if full hud is displayed, bump up by a few pixels
         yPrimary += 24;
+    else if (gShowWeaponSelect == 2) // if drawn at the top, offset by the multiplayer stats bar height
+        yPrimary += statsOffset;
     int ySecondary = yPrimary;
     if (gShowWeaponSelect == 1) // draw at the bottom instead
         yPrimary = -yPrimary + 195, ySecondary = -ySecondary + 195;
@@ -1475,6 +1486,22 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         if (pPlayer->isUnderwater && BannedUnderwater(weaponNext)) // if next weapon is unavailable, draw cross over icon
             DrawStatMaskedSprite(1142, x+xoffset, ySecondary, 256, 12, 0, 0x2000);
     }
+}
+
+int viewDrawCalculateShadowSize(tspritetype *pTSprite)
+{
+    if (pTSprite == NULL)
+        return 0;
+    float dz = (float)getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) - (float)gView->zView;
+    if (dz <= 0) // pov is below shadow, don't render shadow
+        return 0;
+    dz = dz / (float)(1<<8); // convert to real units
+    dz = ClipRangeF(dz, 0.1, 300) / 300.f; // convert to 0-1 range
+
+    float nDist = (float)ClipRange(approxDist(gView->pSprite->x-pTSprite->x, gView->pSprite->y-pTSprite->y, 0), 1, 512<<4) / (float)(1<<4);
+    nDist /= 512 * 8;
+    nDist = (nDist * (float)pTSprite->yrepeat) + (dz * (float)pTSprite->yrepeat);
+    return ClipRange((int)nDist, 0, pTSprite->yrepeat * 4);
 }
 
 void viewDrawMapTitle(void)
@@ -2119,7 +2146,7 @@ void UpdateFrame(void)
 
 void viewDrawInterface(ClockTicks arg)
 {
-    if (gViewMode == 3 && gViewSize >= 3)
+    if (gViewMode == 3 && ((gViewSize >= 3) || (gViewSize <= 2 && gGameOptions.nGameType > 0)))
     {
         UpdateFrame();
         pcBackground--;
@@ -2435,9 +2462,16 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     }
     case kViewEffectShadow:
     {
+        int yScale = -1;
         if (!VanillaMode()) // if floor has ror, don't render shadow
         {
             if ((sector[pTSprite->sectnum].floorpicnum >= 4080) && (sector[pTSprite->sectnum].floorpicnum <= 4095))
+                break;
+        }
+        if (gShadowsFake3D) // fake parallax projection using height difference
+        {
+            yScale = viewDrawCalculateShadowSize(pTSprite);
+            if (yScale < 1) // scale is infinitely small, don't render shadow
                 break;
         }
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
@@ -2448,6 +2482,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->cstat |= 2;
         pNSprite->xrepeat = pTSprite->xrepeat;
         pNSprite->yrepeat = pTSprite->yrepeat>>2;
+        if (yScale > -1) // use better shadow calculation
+            pNSprite->yrepeat = yScale;
         pNSprite->picnum = pTSprite->picnum;
         if (!VanillaMode() && (pTSprite->type == kThingDroppedLifeLeech)) // fix shadow for thrown lifeleech
             pNSprite->picnum = 800;
@@ -2492,7 +2528,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->cstat |= 106;
         pNSprite->ang = pTSprite->ang;
         pNSprite->owner = pTSprite->owner;
-        break;
+        return pNSprite;
     }
     case kViewEffectFloorGlow:
     {
@@ -2516,7 +2552,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->cstat |= 98;
         pNSprite->ang = pTSprite->ang;
         pNSprite->owner = pTSprite->owner;
-        break;
+        return pNSprite;
     }
     case kViewEffectSpear:
     {
@@ -2539,6 +2575,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         WEAPONICON weaponIcon = gWeaponIcon[pPlayer->curWeapon];
         const int nTile = weaponIcon.nTile;
         if (nTile < 0)
+            break;
+        if (pPlayer->pXSprite->health == 0)
             break;
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
@@ -2563,7 +2601,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
                 pNSprite->x +=  mulscale30(128, Cos(gView->pSprite->ang));
                 pNSprite->y += mulscale30(128, Sin(gView->pSprite->ang));
             }
-            if ((pPlayer->curWeapon == 9) || (pPlayer->curWeapon == 10))  // make lifeleech/voodoo doll always face viewer like sprite
+            if ((pPlayer->curWeapon == 9) || (pPlayer->curWeapon == 10)) // make lifeleech/voodoo doll always face viewer like sprite
                 pNSprite->ang = (gView->pSprite->ang + 1024) & 2047;
         }
         break;
@@ -2572,6 +2610,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     {
         dassert(pTSprite->type >= kDudePlayer1 && pTSprite->type <= kDudePlayer8);
         PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
+        if (pPlayer->pXSprite->health == 0)
+            break;
         const short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         pNSprite->x = pTSprite->x;
@@ -2899,6 +2939,30 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 case kMissileButcherKnife:
                     viewAddEffect(nTSprite, kViewEffectTrail);
                     break;
+                case kMissileShell:
+                case kMissileBullet: {
+                    sectortype *pSector = &sector[pTSprite->sectnum];
+                    int zDiff = (pTSprite->z - pSector->ceilingz) >> 8;
+                    if ((pSector->ceilingstat&1) == 0 && zDiff < 64) {
+                        auto pNTSprite = viewAddEffect(nTSprite, kViewEffectCeilGlow);
+                        if (pNTSprite) {
+                            pNTSprite->xrepeat >>= 3;
+                            pNTSprite->yrepeat >>= 3;
+                            pNTSprite->shade >>= 2;
+                        }
+                    }
+                    
+                    zDiff = (pSector->floorz - pTSprite->z) >> 8;
+                    if ((pSector->floorstat&1) == 0 && zDiff < 64) {
+                        auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFloorGlow);
+                        if (pNTSprite) {
+                            pNTSprite->xrepeat >>= 2;
+                            pNTSprite->yrepeat >>= 2;
+                            pNTSprite->shade >>= 1;
+                        }
+                    }
+                    break;
+                }
                 case kMissileFlareRegular:
                 case kMissileFlareAlt:
                     if (pTSprite->statnum == kStatFlare) {
@@ -3129,8 +3193,11 @@ void CalcOtherPosition(spritetype *pSprite, int *pX, int *pY, int *pZ, int *vsec
     *pZ += mulscale16(vZ, othercameradist);
     othercameradist = ClipHigh(othercameradist+(((int)(totalclock-othercameraclock))<<10), 65536);
     othercameraclock = (int)totalclock;
+    if (*vsectnum >= 0 && *vsectnum < kMaxSectors)
+        FindSector(*pX, *pY, *pZ, vsectnum);
+    else
+        *vsectnum = pSprite->sectnum;
     dassert(*vsectnum >= 0 && *vsectnum < kMaxSectors);
-    FindSector(*pX, *pY, *pZ, vsectnum);
     pSprite->cstat = bakCstat;
 }
 

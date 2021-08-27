@@ -71,6 +71,7 @@ AISTATE tinycaleb139698 = { kAiStateOther, 8, -1, 120, NULL, aiMoveTurn, NULL, &
 
 static void SeqAttackCallback(int, int nXSprite)
 {
+    XSPRITE *pXSprite = &xsprite[nXSprite];
     int nSprite = xsprite[nXSprite].reference;
     spritetype *pSprite = &sprite[nSprite];
     int dx = Cos(pSprite->ang)>>16;
@@ -79,12 +80,22 @@ static void SeqAttackCallback(int, int nXSprite)
     dx += Random2(1500);
     dy += Random2(1500);
     dz += Random2(1500);
+    bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode(); // if enemy hitscan projectiles are enabled, spawn bullet projectile
+    if (useProjectile && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if target is valid
+    {
+        const spritetype *pTarget = &sprite[pXSprite->target];
+        if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, check target distance
+            useProjectile = approxDist(pSprite->x-pTarget->x, pSprite->y-pTarget->y) < 1250; // if target is very close, just use hitscan
+    }
     for (int i = 0; i < 2; i++)
     {
         int r1 = Random3(500);
         int r2 = Random3(1000);
         int r3 = Random3(1000);
-        actFireVector(pSprite, 0, 0, dx+r3, dy+r2, dz+r1, kVectorShell);
+        if (!useProjectile) // normal hitscan
+            actFireVector(pSprite, 0, 0, dx+r3, dy+r2, dz+r1, kVectorShell);
+        else // projectile
+            actFireMissile(pSprite, 0, 0, dx+r3, dy+r2, dz+r1, kMissileBullet);
     }
     if (Chance(0x8000))
         sfxPlay3DSound(pSprite, 10000+Random(5), -1, 0);
