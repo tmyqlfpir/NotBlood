@@ -2585,6 +2585,8 @@ void actInit(bool bSaveLoad) {
                     continue;
                 XSPRITE *pXSprite = NULL;
                 spritetype* pSprite = &sprite[nSprite];
+                if (IsPlayerSprite(pSprite)) // don't bother randomizing
+                    continue;
                 if ((pSprite->extra >= 0) && (pSprite->extra < kMaxXSprites))
                     pXSprite = &xsprite[pSprite->extra];
                 dbRandomizerMode(pSprite, pXSprite);
@@ -2596,11 +2598,14 @@ void actInit(bool bSaveLoad) {
 
     if (gGameOptions.nMonsterSettings == 0) {
         gKillMgr.SetCount(0);
-        while (headspritestat[kStatDude] >= 0) {
+        for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
             spritetype *pSprite = &sprite[headspritestat[kStatDude]];
+            if (IsPlayerSprite(pSprite)) // do not delete player sprites (causes game to crash on load save)
+                continue;
             if (pSprite->extra > 0 && pSprite->extra < kMaxXSprites && xsprite[pSprite->extra].key > 0) // Drop Key
                 actDropObject(pSprite, kItemKeyBase + (xsprite[pSprite->extra].key - 1));
             DeleteSprite(headspritestat[kStatDude]);
+            nSprite = headspritestat[kStatDude]; // start all over again until only player sprites are left
         }
     } else {
         // by NoOne: WTF is this?

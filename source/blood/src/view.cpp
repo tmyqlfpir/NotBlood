@@ -194,7 +194,6 @@ void FontSet(int id, int tile, int space)
         QFONT *pQFont = (QFONT*)gSysRes.Load(hQFont);
         for (int i = 32; i < 128; i++)
         {
-            int const nTile = tile + i - 32;
             QFONTCHAR* pChar = &pQFont->at20[i];
             yoff = min(yoff, pQFont->atf + pChar->oy);
         }
@@ -1138,10 +1137,38 @@ void DrawStatNumber(const char *pFormat, int nNumber, int nTile, int x, int y, i
     int width = tilesiz[nTile].x+1;
     x <<= 16;
     sprintf(tempbuf, pFormat, nNumber);
-    for (unsigned int i = 0; i < strlen(tempbuf); i++, x += width*nScale)
+    const size_t nLength = strlen(tempbuf);
+    for (size_t i = 0; i < nLength; i++, x += width*nScale)
     {
-        if (tempbuf[i] == ' ') continue;
-        rotatesprite(x, y<<16, nScale, 0, nTile+tempbuf[i]-'0', nShade, nPalette, nStat | 10, 0, 0, xdim-1, ydim-1);
+        int numTile, numScale, numY;
+        switch (tempbuf[i])
+        {
+        case ' ': // space
+            continue;
+        case '-': // negative
+        {
+            numTile = kSBarNegative;
+            if ((nTile == kSBarNumberAmmo) || (nTile == 2240))
+                numTile = kSBarNegative+1;
+            else if (nTile == kSBarNumberInv)
+                numTile = kSBarNegative+2;
+            else if (nTile == kSBarNumberArmor1)
+                numTile = kSBarNegative+3;
+            else if (nTile == kSBarNumberArmor2)
+                numTile = kSBarNegative+4;
+            else if (nTile == kSBarNumberArmor3)
+                numTile = kSBarNegative+5;
+            numScale = nScale/3;
+            numY = (y<<16) + (1<<15); // offset to center of number row
+            break;
+        }
+        default: // regular number
+            numTile = nTile+tempbuf[i]-'0';
+            numScale = nScale;
+            numY = y<<16;
+            break;
+        }
+        rotatesprite(x, numY, numScale, 0, numTile, nShade, nPalette, nStat | 10, 0, 0, xdim-1, ydim-1);
     }
 }
 
@@ -1255,13 +1282,6 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
     viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256);
 }
 
-#define kSBarNumberHealth 9220
-#define kSBarNumberAmmo 9230
-#define kSBarNumberInv 9240
-#define kSBarNumberArmor1 9250
-#define kSBarNumberArmor2 9260
-#define kSBarNumberArmor3 9270
-
 struct POWERUPDISPLAY
 {
     int nTile;
@@ -1365,7 +1385,8 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     static float animPosPrev;
     float animPos = 0;
 
-    if ((curTime < 50) || animState && ((animClock - (travelTime+holdTime+decayTime) > curTime) || (animClock + (travelTime+holdTime+decayTime) < curTime))) // if player just started level, or the clock is impossibly far ahead (eg player quickloaded)
+    const bool timeDiffTooBig = ((animClock - (travelTime+holdTime+decayTime)) > curTime) || ((animClock + (travelTime+holdTime+decayTime)) < curTime);
+    if ((curTime < 50) || (animState && timeDiffTooBig)) // if player just started level, or the clock is impossibly far ahead (eg player quickloaded)
     {
         animClock = curTime;
         animState = 0;
@@ -1455,7 +1476,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
 
     const int x = 640/4;
     const int xoffset = 640/11;
-    int yPrimary = (int)((viewDrawParametricBlend(ClipRangeF(animPos, 0, 1) * 1.1f) * animPosRange) + animPosMin);
+    int yPrimary = (int)((viewDrawParametricBlend(ClipRangeF(animPos, 0.f, 1.f) * 1.1f) * animPosRange) + animPosMin);
     if ((gViewSize > 2) && (gShowWeaponSelect == 1)) // if full hud is displayed, bump up by a few pixels
         yPrimary += 24;
     else if (gShowWeaponSelect == 2) // if drawn at the top, offset by the multiplayer stats bar height
@@ -1496,7 +1517,7 @@ int viewDrawCalculateShadowSize(tspritetype *pTSprite)
     if (dz <= 0) // pov is below shadow, don't render shadow
         return 0;
     dz = dz / (float)(1<<8); // convert to real units
-    dz = ClipRangeF(dz, 0.1, 300) / 300.f; // convert to 0-1 range
+    dz = ClipRangeF(dz, 0.1f, 300.f) / 300.f; // convert to 0-1 range
 
     float nDist = (float)ClipRange(approxDist(gView->pSprite->x-pTSprite->x, gView->pSprite->y-pTSprite->y, 0), 1, 512<<4) / (float)(1<<4);
     nDist /= 512 * 8;
@@ -2010,6 +2031,10 @@ void viewPrecacheTiles(void)
         tilePrecacheTile(kSBarNumberArmor2 + i, 0);
         tilePrecacheTile(kSBarNumberArmor3 + i, 0);
     }
+    for (int i = 0; i < 6; i++)
+    {
+        tilePrecacheTile(kSBarNegative + i, 0);
+    }
     for (int i = 0; i < 5; i++)
     {
         tilePrecacheTile(gPackIcons[i], 0);
@@ -2520,7 +2545,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             break;
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
-        pNSprite->z = pSector->ceilingz;
+        pNSprite->z = VanillaMode() ? pSector->ceilingz : getceilzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
         pNSprite->picnum = 624;
         pNSprite->shade = ((pTSprite->z-pSector->ceilingz)>>8)-64;
         pNSprite->pal = 2;
@@ -2543,7 +2568,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             break;
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
-        pNSprite->z = pSector->floorz;
+        pNSprite->z = VanillaMode() ? pSector->floorz : getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
         pNSprite->picnum = 624;
         char nShade = (pSector->floorz-pTSprite->z)>>8; 
         pNSprite->shade = nShade-32;
@@ -2781,9 +2806,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         if ((pTSprite->cstat&48) != 48 && usevoxels && videoGetRenderMode() != REND_POLYMER && !(spriteext[nSprite].flags&SPREXT_NOTMD))
         {
             int const nRootTile = pTSprite->picnum;
-            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+pTSprite->owner);
-
 #if 0
+            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+pTSprite->owner);
             if (tiletovox[nAnimTile] != -1)
             {
                 pTSprite->yoffset += picanm[nAnimTile].yofs;
@@ -2942,7 +2966,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 case kMissileShell:
                 case kMissileBullet: {
                     sectortype *pSector = &sector[pTSprite->sectnum];
-                    int zDiff = (pTSprite->z - pSector->ceilingz) >> 8;
+                    int zDiff = getceilzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
+                    zDiff = (pTSprite->z - zDiff) >> 8;
                     if ((pSector->ceilingstat&1) == 0 && zDiff < 64) {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectCeilGlow);
                         if (pNTSprite) {
@@ -2951,8 +2976,9 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                             pNTSprite->shade >>= 2;
                         }
                     }
-                    
-                    zDiff = (pSector->floorz - pTSprite->z) >> 8;
+
+                    zDiff = getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
+                    zDiff = (zDiff - pTSprite->z) >> 8;
                     if ((pSector->floorstat&1) == 0 && zDiff < 64) {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFloorGlow);
                         if (pNTSprite) {
@@ -2977,12 +3003,14 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     if (pTSprite->type != kMissileFlareRegular) break;
                     sectortype *pSector = &sector[pTSprite->sectnum];
                     
-                    int zDiff = (pTSprite->z - pSector->ceilingz) >> 8;
+                    int zDiff = VanillaMode() ? pSector->ceilingz : getceilzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
+                    zDiff = (pTSprite->z - zDiff) >> 8;
                     if ((pSector->ceilingstat&1) == 0 && zDiff < 64) {
                         viewAddEffect(nTSprite, kViewEffectCeilGlow);
                     }
                     
-                    zDiff = (pSector->floorz - pTSprite->z) >> 8;
+                    zDiff = VanillaMode() ? pSector->floorz : getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
+                    zDiff = (zDiff - pTSprite->z) >> 8;
                     if ((pSector->floorstat&1) == 0 && zDiff < 64) {
                         viewAddEffect(nTSprite, kViewEffectFloorGlow);
                     }
@@ -3549,7 +3577,7 @@ void viewDrawScreen(void)
     if (delta < 0)
         delta = 0;
     lastUpdate = totalclock;
-    if (!gPaused && (!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW) || gGameOptions.nGameType != 0))
+    if (!gPaused && !CGameMenuMgr::m_bActive && (((osd->flags & OSD_DRAW) != OSD_DRAW) || (gGameOptions.nGameType != 0)))
     {
         gInterpolate = ((totalclock-gNetFifoClock)+4).toScale16()/4;
     }
@@ -3562,7 +3590,7 @@ void viewDrawScreen(void)
         CalcInterpolations();
     }
 
-    if (!gPaused && (!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW) || gGameOptions.nGameType != 0))
+    if (!gPaused && !CGameMenuMgr::m_bActive && (((osd->flags & OSD_DRAW) != OSD_DRAW) || (gGameOptions.nGameType != 0)))
         rotatespritesmoothratio = gInterpolate;
     else
         rotatespritesmoothratio = 65536;
@@ -3628,8 +3656,6 @@ void viewDrawScreen(void)
         }
         if (gView == gMe && (numplayers <= 1 || gPrediction) && gView->pXSprite->health != 0 && !VanillaMode())
         {
-            CONSTEXPR int upAngle = 289;
-            CONSTEXPR int downAngle = -347;
             fix16_t q16look;
             cA = gViewAngle;
             q16look = gViewLook;
