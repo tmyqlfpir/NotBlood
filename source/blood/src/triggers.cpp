@@ -497,7 +497,15 @@ void OperateSprite(int nSprite, XSPRITE *pXSprite, EVENT event)
             spritetype* pSpawn = actSpawnDude(pSprite, pXSprite->data1, -1, 0);
             if (pSpawn) {
                 XSPRITE *pXSpawn = &xsprite[pSpawn->extra];
-                gKillMgr.sub_263E0(1);
+                if (gGameOptions.nRandomizerMode && !VanillaMode()) // randomize spawned enemy
+                {
+                    if (dbRandomizerMode(pSpawn, pXSpawn)) // if randomizer flagged the sprite as deleted, remove sprite
+                    {
+                        DeleteSprite(pSpawn->index);
+                        break;
+                    }
+                }
+                gKillMgr.AddCount(1);
                 switch (pXSprite->data1) {
                     case kDudeBurningInnocent:
                     case kDudeBurningCultist:
@@ -513,8 +521,6 @@ void OperateSprite(int nSprite, XSPRITE *pXSprite, EVENT event)
                         break;
                     }
                 }
-                if (gGameOptions.nRandomizerMode && !VanillaMode()) // randomize spawned enemy
-                    dbRandomizerMode(pSpawn, pXSpawn);
             }
         }
         break;

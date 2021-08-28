@@ -715,11 +715,11 @@ void dbRandomizerModeInit(void)
         "WEED420!", // cultists only but they're green (and make you dizzy on damage)
         "BRAAAINS", // zombies only
         "SNEAKYFU", // prone shotgun/tommy gun cultists only
-        "GHSTBSTR", // turn phantoms into bats
-        "NOHANDS!", // turn hands into bats
-        "SAFEWATR", // turn hands/gill beasts into bats
-        "PESTCTRL", // turn rats/hands/spiders into bats
-        "IH8PETS!", // turn rats/hands/spiders/hell hounds into bats
+        "GHSTBSTR", // no phantoms
+        "NOHANDS!", // no hands
+        "SAFEWATR", // no hands/gill beasts
+        "PESTCTRL", // no rats/hands/spiders
+        "IH8PETS!", // no rats/hands/spiders/bats/hell hounds
     };
 
     const uint32_t defaultSeed = 0xCA1EB666;
@@ -872,8 +872,8 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed))
                     removeDude = true;
                 break;
-            case 19: // "IH8PETS!" - no rats/hands/spiders/hell hounds
-                if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeHellHound))
+            case 19: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
+                if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeBat) || (pSprite->type == kDudeHellHound))
                     removeDude = true;
                 break;
             default: // unknown cheat id, don't do anything

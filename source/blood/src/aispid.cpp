@@ -182,9 +182,15 @@ static void SpidBirthSeqCallback(int, int nXSprite)
             pSpawn = actSpawnDude(pSprite, kDudeSpiderBrown, pSprite->clipdist, 0);
         
         if (pSpawn) {
+            if (gGameOptions.nRandomizerMode && !VanillaMode()) {
+                if (dbRandomizerMode(pSpawn, NULL)) { // if randomizer flagged the sprite as deleted, remove sprite
+                    DeleteSprite(pSpawn->index);
+                    return;
+                }
+            }
             pDudeExtraE->at4++;
             pSpawn->owner = nSprite;
-            gKillMgr.sub_263E0(1);
+            gKillMgr.AddCount(1);
         }
     }
 

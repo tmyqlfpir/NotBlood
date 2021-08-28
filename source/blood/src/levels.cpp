@@ -449,7 +449,7 @@ void LevelsLoadSave::Load(void)
 
     if (gGameOptions.nGameType == 0) // if not multiplayer, update the game options by loading the current set settings
     {
-        gGameOptions.nMonsterSettings = gMonsterSettings;
+        gGameOptions.nMonsterSettings = VanillaMode() ? 1 : gMonsterSettings;
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;

@@ -2596,7 +2596,7 @@ void actInit(bool bSaveLoad) {
             unk[pSprite->type - kDudeBase] = 1;
         }
         
-        gKillMgr.sub_2641C();
+        gKillMgr.CountTotalKills();
         ///////////////
 
         for (int i = 0; i < kDudeMax - kDudeBase; i++)
@@ -5619,13 +5619,17 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
                 PLAYER *pPlayer = &gPlayer[pShooter->type - kDudePlayer1];
                 if (powerupCheck(pPlayer, kPwUpTwoGuns)) // if quad is active, increase pushback and do random explosive damage for hitscan weapons
                 {
-                    shift = 2;
-                    boost = 2;
-                    boostz = 4;
+                    if (a6 < 5000) // only increase velocity impulse if vector is aiming upwards
+                    {
+                        shift = 2;
+                        boost = 2;
+                        boostz = 4;
+                    }
                     if ((dmgType == kDamageBullet) && !Random(10))
                     {
                         dmgType = kDamageExplode;
-                        shift = 4;
+                        if (a6 < 5000)
+                            shift = 4;
                     }
                 }
             }
@@ -7367,18 +7371,22 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
             DAMAGE_TYPE dmgType = pVectorData->dmgType;
             if (vectorType == kVectorTine && !IsPlayerSprite(pSprite))
                 shift = 3;
-            if (IsPlayerSprite(pShooter) && gGameOptions.bQuadDamagePowerup && !VanillaMode())
+            if (pShooter && IsPlayerSprite(pShooter) && gGameOptions.bQuadDamagePowerup && !VanillaMode())
             {
                 PLAYER *pPlayer = &gPlayer[pShooter->type - kDudePlayer1];
                 if (powerupCheck(pPlayer, kPwUpTwoGuns)) // if quad is active, increase pushback and do random explosive damage for hitscan weapons
                 {
-                    shift = 2;
-                    boost = 2;
-                    boostz = 4;
+                    if (a6 < 5000) // only increase velocity impulse if vector is aiming upwards
+                    {
+                        shift = 2;
+                        boost = 2;
+                        boostz = 4;
+                    }
                     if ((dmgType == kDamageBullet) && !Random(10))
                     {
                         dmgType = kDamageExplode;
-                        shift = 4;
+                        if (a6 < 5000)
+                            shift = 4;
                     }
                 }
             }
