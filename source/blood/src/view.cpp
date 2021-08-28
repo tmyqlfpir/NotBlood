@@ -1523,8 +1523,6 @@ int viewDrawCalculateShadowSize(tspritetype *pTSprite)
         return 0;
     const bool slopedFloor = sector[pTSprite->sectnum].floorstat&2;
     int nDiff = getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) - gView->zView;
-    if (slopedFloor) // always make height difference positive if sprite is on a slope
-        nDiff = klabs(nDiff);
     if (nDiff <= 0) // pov is below shadow, don't render shadow
         return 0;
     float dz = (float)nDiff / (float)(1<<8); // convert to real units
@@ -1533,10 +1531,9 @@ int viewDrawCalculateShadowSize(tspritetype *pTSprite)
     float nDist = (float)ClipRange(approxDist(gView->pSprite->x-pTSprite->x, gView->pSprite->y-pTSprite->y, 0), 1, 512<<4) / (float)(1<<4);
     nDist /= 512 * 8;
     nDist = (nDist * (float)pTSprite->yrepeat) + (dz * (float)pTSprite->yrepeat);
-    if (slopedFloor)
-        nDist /= 1.5f;
-    int output = ClipRange((int)nDist, 0, pTSprite->yrepeat * 4);
-    return output;
+    if (slopedFloor) // halve by 75% when sprite is on slope
+        nDist *= 0.75f;
+    return ClipRange((int)nDist, 0, pTSprite->yrepeat * 4);
 }
 
 void viewDrawMapTitle(void)
@@ -2501,7 +2498,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     }
     case kViewEffectShadow:
     {
-        int yScale = -1;
+        int yScale = 0;
         if (!VanillaMode()) // if floor has ror, don't render shadow
         {
             if ((sector[pTSprite->sectnum].floorpicnum >= 4080) && (sector[pTSprite->sectnum].floorpicnum <= 4095))
@@ -2520,9 +2517,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->shade = 127;
         pNSprite->cstat |= 2;
         pNSprite->xrepeat = pTSprite->xrepeat;
-        pNSprite->yrepeat = pTSprite->yrepeat>>2;
-        if (yScale > -1) // use better shadow calculation
-            pNSprite->yrepeat = yScale;
+        pNSprite->yrepeat = gShadowsFake3D ? yScale : pTSprite->yrepeat>>2;
         pNSprite->picnum = pTSprite->picnum;
         if (!VanillaMode() && (pTSprite->type == kThingDroppedLifeLeech)) // fix shadow for thrown lifeleech
             pNSprite->picnum = 800;
