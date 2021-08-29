@@ -293,7 +293,7 @@ void Respawn(int nSprite) // 9
             pXSprite->burnTime = 0;
             pXSprite->isTriggered = 0;
             if (IsDudeSprite(pSprite)) {
-                if (!VanillaMode() && (gKillMgr.at4 > 0)) // remove a kill
+                if (!VanillaMode()) // remove a kill
                     gKillMgr.RemoveKill(pSprite);
                 int nType = pSprite->type-kDudeBase;
                 pSprite->x = baseSprite[nSprite].x;
