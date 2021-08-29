@@ -144,7 +144,10 @@ const char *zMonsterStrings[] =
 {
     "None",
     "Bring 'em on",
-    "Respawn",
+    "Respawn (15 Secs)",
+    "Respawn (30 Secs)",
+    "Respawn (45 Secs)",
+    "Respawn (60 Secs)",
 };
 
 const char *zWeaponStrings[] =
@@ -188,7 +191,10 @@ const char *pzMonsterStrings[] =
 {
     "None",
     "Default",
-    "Respawn",
+    "Respawn (15 Secs)",
+    "Respawn (30 Secs)",
+    "Respawn (45 Secs)",
+    "Respawn (60 Secs)",
 };
 
 const char *pzExplosionBehaviorStrings[] = {
@@ -375,7 +381,7 @@ CGameMenuItemZCycle itemNetStart1("GAME:", 3, 66, 40, 180, 0, 0, zNetGameTypes, 
 CGameMenuItemZCycle itemNetStart2("EPISODE:", 3, 66, 50, 180, 0, SetupNetLevels, NULL, 0, 0);
 CGameMenuItemZCycle itemNetStart3("LEVEL:", 3, 66, 60, 180, 0, NetClearUserMap, NULL, 0, 0);
 CGameMenuItemZCycle itemNetStart4("DIFFICULTY:", 3, 66, 70, 180, 0, 0, zDiffStrings, 5, 0);
-CGameMenuItemZCycle itemNetStart5("MONSTERS:", 3, 66, 80, 180, 0, 0, zMonsterStrings, 3, 0);
+CGameMenuItemZCycle itemNetStart5("MONSTERS:", 3, 66, 80, 180, 0, 0, zMonsterStrings, ARRAY_SSIZE(zMonsterStrings), 0);
 CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 90, 180, 0, 0, zWeaponStrings, 4, 0);
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 100, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 110, 180, true, 0, NULL, NULL);
@@ -1693,7 +1699,11 @@ void SetMonsters(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gMonsterSettings = pItem->m_nFocus % ARRAY_SSIZE(pzMonsterStrings);
-        gGameOptions.nMonsterSettings = pItem->m_nFocus % ARRAY_SSIZE(pzMonsterStrings);
+        gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
+        if (gMonsterSettings >= 2)
+            gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
+        else
+            gGameOptions.nMonsterRespawnTime = 3600; // default
     } else {
         pItem->m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
     }

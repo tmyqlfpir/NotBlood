@@ -2474,8 +2474,10 @@ bool actSpriteOwnerIsDude(spritetype *pSprite)
     if (nOwner < 0)
         return false;
     if (nOwner & kMaxSprites)
-        return 1;
+        return true;
     spritetype *pOwner = &sprite[nOwner];
+    if (!pOwner)
+        return false;
     return (pOwner->type >= kDudeBase) && (pOwner->type < kDudeMax);
 }
 
@@ -6119,6 +6121,8 @@ void actProcessSprites(void)
                 case kThingBloodBits:
                 case kThingBloodChunks:
                 case kThingZombieHead:
+                    if ((pXSprite->respawnPending == 3) && (pSprite->inittype >= kDudeBase && pSprite->inittype < kDudeMax) && !VanillaMode()) // don't gib chunks if enemy is set to respawn state
+                        continue;
                     if (pXSprite->locked && gFrameClock >= pXSprite->targetX) pXSprite->locked = 0;
                     break;
             }

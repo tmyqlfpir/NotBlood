@@ -450,7 +450,11 @@ void LevelsLoadSave::Load(void)
 
     if (gGameOptions.nGameType == 0) // if not multiplayer, update the game options by loading the current set settings
     {
-        gGameOptions.nMonsterSettings = VanillaMode() ? 1 : gMonsterSettings;
+        gGameOptions.nMonsterSettings = VanillaMode() ? 1 : ClipRange(gMonsterSettings, 0, 2);
+        if ((gMonsterSettings >= 2) && !VanillaMode())
+            gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
+        else
+            gGameOptions.nMonsterRespawnTime = 3600;
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;

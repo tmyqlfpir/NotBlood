@@ -606,7 +606,11 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             levelPlayIntroScene(gGameOptions.nEpisode);
 
         ///////
-        gGameOptions.nMonsterSettings = VanillaMode() ? 1 : gMonsterSettings;
+        gGameOptions.nMonsterSettings = VanillaMode() ? 1 : ClipRange(gMonsterSettings, 0, 2);
+        if ((gMonsterSettings >= 2) && !VanillaMode())
+            gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
+        else
+            gGameOptions.nMonsterRespawnTime = 3600; // default
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;
@@ -626,7 +630,11 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nLevel = gPacketStartGame.levelId;
         gGameOptions.nGameType = gPacketStartGame.gameType;
         gGameOptions.nDifficulty = gPacketStartGame.difficulty;
-        gGameOptions.nMonsterSettings = gPacketStartGame.monsterSettings;
+        gGameOptions.nMonsterSettings = ClipRange(gPacketStartGame.monsterSettings, 0, 2);
+        if (gPacketStartGame.monsterSettings >= 2)
+            gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 1) * 15 * 120;
+        else
+            gGameOptions.nMonsterRespawnTime = 3600; // default
         gGameOptions.nWeaponSettings = gPacketStartGame.weaponSettings;
         gGameOptions.nItemSettings = gPacketStartGame.itemSettings;
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
@@ -812,7 +820,11 @@ void StartNetworkLevel(void)
         gGameOptions.nLevel = gPacketStartGame.levelId;
         gGameOptions.nGameType = gPacketStartGame.gameType;
         gGameOptions.nDifficulty = gPacketStartGame.difficulty;
-        gGameOptions.nMonsterSettings = gPacketStartGame.monsterSettings;
+        gGameOptions.nMonsterSettings = ClipRange(gPacketStartGame.monsterSettings, 0, 2);
+        if (gPacketStartGame.monsterSettings >= 2)
+            gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 1) * 15 * 120;
+        else
+            gGameOptions.nMonsterRespawnTime = 3600; // default
         gGameOptions.nWeaponSettings = gPacketStartGame.weaponSettings;
         gGameOptions.nItemSettings = gPacketStartGame.itemSettings;
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
