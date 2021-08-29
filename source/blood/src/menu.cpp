@@ -1349,7 +1349,7 @@ void SetupOptionsMenu(void)
     menuOptionsGame.Add(&itemOptionsGameBoolVanillaMode, false);
     itemOptionsGameAutosaveMode.bDisableForNet = 1;
     itemOptionsGameBoolVanillaMode.bDisableForNet = 1;
-    itemOptionsDisplayWeaponSelect.bDisableForNet = !gVanilla;
+    itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     itemOptionsGameBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's names";
     itemOptionsGameBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
     itemOptionsGameShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
@@ -1487,8 +1487,8 @@ void SetupOptionsMenu(void)
             ++gResolutionNum;
         }
     }
-    itemOptionsDisplayModeResolution.SetTextArray(gResolutionName, gResolutionNum, 0);
     SetupVideoModeMenu(NULL);
+    itemOptionsDisplayModeResolution.SetTextArray(gResolutionName, gResolutionNum, 0);
 #ifdef USE_OPENGL
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeRenderer, false);
 #endif
