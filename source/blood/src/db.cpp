@@ -714,6 +714,7 @@ void dbRandomizerModeInit(void)
         "BILLYRAY", // shotgun cultists only
         "WEED420!", // cultists only but they're green (and make you dizzy on damage)
         "BRAAAINS", // zombies only
+        "OKBOOMER", // tnt cultists only
         "SNEAKYFU", // prone shotgun/tommy gun cultists only
         "GHSTBSTR", // no phantoms
         "NOHANDS!", // no hands
@@ -850,29 +851,32 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
             case 13: // "BRAAAINS" - zombies only
                 pSprite->type = kDudeZombieAxeNormal;
                 break;
-            case 14: // "SNEAKYFU" - prone shotgun/tommy gun cultists only
+            case 14: // "OKBOOMER" - tnt cultists only
+                pSprite->type = kDudeCultistTNT;
+                break;
+            case 15: // "SNEAKYFU" - prone shotgun/tommy gun cultists only
             {
                 const int enemiesrng[] = {kDudeCultistShotgunProne, kDudeCultistTommyProne};
                 pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
                 break;
             }
-            case 15: // "GHSTBSTR" - no phantoms
+            case 16: // "GHSTBSTR" - no phantoms
                 if (pSprite->type == kDudePhantasm)
                     removeDude = true;
                 break;
-            case 16: // "NOHANDS!" - no hands
+            case 17: // "NOHANDS!" - no hands
                 if (pSprite->type == kDudeHand)
                     removeDude = true;
                 break;
-            case 17: // "SAFEWATR" - no hands/gill beasts
+            case 18: // "SAFEWATR" - no hands/gill beasts
                 if ((pSprite->type == kDudeHand) || (pSprite->type == kDudeGillBeast))
                     removeDude = true;
                 break;
-            case 18: // "PESTCTRL" - no rats/hands/spiders
+            case 19: // "PESTCTRL" - no rats/hands/spiders
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed))
                     removeDude = true;
                 break;
-            case 19: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
+            case 20: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeBat) || (pSprite->type == kDudeHellHound))
                     removeDude = true;
                 break;
@@ -1267,7 +1271,7 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
 static void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
 {
     const int curRandomCheat = gGameOptions.nRandomizerCheat;
-    const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 14); // only randomize enemy sizes if seed cheats 0-13 are active
+    const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 15); // only randomize enemy sizes if seed cheats 0-14 are active
     if (randomCheatActive && !pXSprite->scale && !dbRandomizerRNGDudes(3)) { // if random seed cheat is being used
         switch (pSprite->type) { // make enemies randomly huge
             case kDudeRat:

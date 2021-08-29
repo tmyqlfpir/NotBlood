@@ -62,6 +62,7 @@ void SetDamageInvul(CGameMenuItemZBool*);
 void SetExplosionBehavior(CGameMenuItemZCycle*);
 void SetProjectileBehavior(CGameMenuItemZCycle*);
 void SetEnemyBehavior(CGameMenuItemZCycle*);
+void SetEnemyRandomTNT(CGameMenuItemZBool*);
 void SetWeaponsVer(CGameMenuItemZCycle*);
 void SetHitscanProjectiles(CGameMenuItemZBool*);
 void SetRandomizerMode(CGameMenuItemZCycle*);
@@ -384,11 +385,12 @@ CGameMenuItemChain itemNetStart11("ENHANCEMENTS", 3, 66, 150, 320, 0, &menuNetwo
 CGameMenuItemChain itemNetStart12("START GAME", 1, 0, 165, 320, 1, 0, -1, StartNetGame, 0);
 
 ///////////////
-CGameMenuItemZBool itemNetEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 60, 180, 0, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 70, 180, false, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 80, 180, 0, 0, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
-CGameMenuItemZCycle itemNetEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 90, 180, 0, 0, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
-CGameMenuItemZCycle itemNetEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 100, 180, 0, 0, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
+CGameMenuItemZBool itemNetEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 50, 180, 0, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 60, 180, false, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 70, 180, 0, 0, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
+CGameMenuItemZCycle itemNetEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 80, 180, 0, 0, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
+CGameMenuItemZCycle itemNetEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 90, 180, 0, 0, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
+CGameMenuItemZBool itemNetEnhancementBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 100, 180, false, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 110, 180, 0, 0, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZBool itemNetEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 120, 180, false, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 130, 180, 0, 0, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
@@ -534,12 +536,13 @@ CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
 CGameMenuItemTitle itemGameEnhancementsTitle("ENHANCEMENTS", 1, 160, 20, 2038);
 
 ///////////////
-CGameMenuItemZCycle itemEnhancementMonsterSettings("MONSTERS:", 3, 66, 55, 180, 0, SetMonsters, pzMonsterStrings, ARRAY_SSIZE(pzMonsterStrings), 0);
-CGameMenuItemZBool itemEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 65, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
-CGameMenuItemZBool itemEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 75, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
-CGameMenuItemZCycle itemEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 85, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
-CGameMenuItemZCycle itemEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 95, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
-CGameMenuItemZCycle itemEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 105, 180, 0, SetEnemyBehavior, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
+CGameMenuItemZCycle itemEnhancementMonsterSettings("MONSTERS:", 3, 66, 45, 180, 0, SetMonsters, pzMonsterStrings, ARRAY_SSIZE(pzMonsterStrings), 0);
+CGameMenuItemZBool itemEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 55, 180, gQuadDamagePowerup, SetQuadDamagePowerup, NULL, NULL);
+CGameMenuItemZBool itemEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 65, 180, gDamageInvul, SetDamageInvul, NULL, NULL);
+CGameMenuItemZCycle itemEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 75, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
+CGameMenuItemZCycle itemEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 85, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
+CGameMenuItemZCycle itemEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, 0, SetEnemyBehavior, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
+CGameMenuItemZBool itemEnhancementBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, gEnemyRandomTNT, SetEnemyRandomTNT, NULL, NULL);
 CGameMenuItemZCycle itemEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZBool itemEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 125, 180, gHitscanProjectiles, SetHitscanProjectiles, NULL, NULL);
 CGameMenuItemZCycle itemEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 135, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
@@ -1081,6 +1084,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameEnhancements.Add(&itemNetEnhancementExplosionBehavior, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementProjectileBehavior, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementEnemyBehavior, false);
+    menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolEnemyRandomTNT, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementWeaponsVer, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolHitscanProjectiles, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerMode, false);
@@ -1093,6 +1097,8 @@ void SetupNetStartMenu(void)
     itemNetEnhancementProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
     itemNetEnhancementProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
     itemNetEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
+    itemNetEnhancementBoolEnemyRandomTNT.tooltip_pzTextUpper = "Set cultist to have a chance of";
+    itemNetEnhancementBoolEnemyRandomTNT.tooltip_pzTextLower = "throwing random projectiles";
     itemNetEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
     itemNetEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
     itemNetEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
@@ -1114,6 +1120,7 @@ void SetupNetStartMenu(void)
     itemNetEnhancementExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     itemNetEnhancementProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     itemNetEnhancementEnemyBehavior.m_nFocus = gEnemyBehavior % ARRAY_SSIZE(pzEnemyBehaviorStrings);
+    itemNetEnhancementBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
     itemNetEnhancementWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     itemNetEnhancementBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
     itemNetEnhancementRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
@@ -1357,6 +1364,7 @@ void SetupOptionsMenu(void)
     menuOptionsGameEnhancements.Add(&itemEnhancementExplosionBehavior, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementProjectileBehavior, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementEnemyBehavior, false);
+    menuOptionsGameEnhancements.Add(&itemEnhancementBoolEnemyRandomTNT, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementWeaponsVer, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementBoolHitscanProjectiles, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerMode, false);
@@ -1373,6 +1381,8 @@ void SetupOptionsMenu(void)
     itemEnhancementProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
     itemEnhancementProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
     itemEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
+    itemEnhancementBoolEnemyRandomTNT.tooltip_pzTextUpper = "Set cultist to have a chance of";
+    itemEnhancementBoolEnemyRandomTNT.tooltip_pzTextLower = "throwing random projectiles";
     itemEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
     itemEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
     itemEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
@@ -1406,6 +1416,7 @@ void SetupOptionsMenu(void)
     itemEnhancementWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     itemEnhancementProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     itemEnhancementEnemyBehavior.m_nFocus = gEnemyBehavior % ARRAY_SSIZE(pzEnemyBehaviorStrings);
+    itemEnhancementBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
     itemEnhancementBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
     itemEnhancementRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bstrncpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(szRandomizerSeedMenu));
@@ -1471,6 +1482,7 @@ void SetupOptionsMenu(void)
         }
     }
     itemOptionsDisplayModeResolution.SetTextArray(gResolutionName, gResolutionNum, 0);
+    SetupVideoModeMenu(NULL);
 #ifdef USE_OPENGL
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeRenderer, false);
 #endif
@@ -1734,6 +1746,16 @@ void SetEnemyBehavior(CGameMenuItemZCycle *pItem)
         gGameOptions.bEnemyBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzEnemyBehaviorStrings);
     } else {
         pItem->m_nFocus = gEnemyBehavior % ARRAY_SSIZE(pzEnemyBehaviorStrings);
+    }
+}
+
+void SetEnemyRandomTNT(CGameMenuItemZBool* pItem)
+{
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+        gEnemyRandomTNT = pItem->at20;
+        gGameOptions.bEnemyRandomTNT = pItem->at20;
+    } else {
+        pItem->at20 = gEnemyRandomTNT;
     }
 }
 
@@ -2713,6 +2735,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.bExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     gPacketStartGame.bProjectileBehavior = itemNetEnhancementProjectileBehavior.m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     gPacketStartGame.bEnemyBehavior = itemNetEnhancementEnemyBehavior.m_nFocus % ARRAY_SSIZE(pzEnemyBehaviorStrings);
+    gPacketStartGame.bEnemyRandomTNT = itemNetEnhancementBoolEnemyRandomTNT.at20;
     gPacketStartGame.nWeaponsVer = itemNetEnhancementWeaponsVer.m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
     gPacketStartGame.bHitscanProjectiles = itemNetEnhancementBoolHitscanProjectiles.at20;
     gPacketStartGame.randomizerMode = itemNetEnhancementRandomizerMode.m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);

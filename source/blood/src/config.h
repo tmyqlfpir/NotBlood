@@ -105,6 +105,7 @@ extern int32_t gShowWeaponSelectTimeHold;
 extern int32_t gShowWeaponSelectTimeEnd;
 extern int32_t gShowWeaponSelectPosition;
 extern int32_t gShadowsFake3D;
+extern int32_t gSmokeTrail3D;
 extern int32_t gParticlesDuration;
 
 ///////
@@ -115,6 +116,7 @@ extern int gDamageInvul;
 extern int gExplosionBehavior;
 extern int gProjectileBehavior;
 extern int gEnemyBehavior;
+extern int gEnemyRandomTNT;
 extern int gWeaponsVer;
 extern int gHitscanProjectiles;
 extern int gRandomizerMode;

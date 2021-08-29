@@ -2462,7 +2462,7 @@ int actOwnerIdToSpriteId(int nSprite)
 bool actSpriteOwnerIsPlayer(spritetype *pSprite)
 {
     dassert(pSprite != NULL);
-    if (pSprite->owner == -1)
+    if (pSprite->owner < 0)
         return false;
     return (pSprite->owner & kMaxSprites);
 }
@@ -2471,11 +2471,12 @@ bool actSpriteOwnerIsDude(spritetype *pSprite)
 {
     dassert(pSprite != NULL);
     const int nOwner = pSprite->owner;
-    if (nOwner == -1)
+    if (nOwner < 0)
         return false;
     if (nOwner & kMaxSprites)
         return 1;
-    return (nOwner >= kDudeBase) && (nOwner < kDudeMax);
+    spritetype *pOwner = &sprite[nOwner];
+    return (pOwner->type >= kDudeBase) && (pOwner->type < kDudeMax);
 }
 
 bool actTypeInSector(int nSector, int nType)

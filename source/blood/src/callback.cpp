@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "globals.h"
 #include "levels.h"
 #include "player.h"
+#include "replace.h"
 #include "seq.h"
 #include "sfx.h"
 #include "sound.h"
@@ -205,22 +206,51 @@ void fxArcSpark(int nSprite) // 7
 
 void fxDynPuff(int nSprite) // 8
 {
+    int callbackTicks = 12;
     spritetype *pSprite = &sprite[nSprite];
     if (zvel[nSprite])
     {
-        int nDist = (pSprite->xrepeat*(tilesiz[pSprite->picnum].x/2))>>2;
-        int x = pSprite->x + mulscale30(nDist, Cos(pSprite->ang-512));
-        int y = pSprite->y + mulscale30(nDist, Sin(pSprite->ang-512));
-        int z = pSprite->z;
-        spritetype *pFX = gFX.fxSpawn(FX_7, pSprite->sectnum, x, y, z);
-        if (pFX)
+        const bool SmokeTrail3D = gSmokeTrail3D && !VanillaMode() && actSpriteOwnerIsDude(pSprite) && ((pSprite->type == kThingArmedTNTStick) || (pSprite->type == kThingArmedTNTBundle) || (pSprite->type == kThingArmedSpray));
+        if (SmokeTrail3D && (gGameOptions.nGameType == 0)) // feature is singleplayer only (causes desync)
         {
-            xvel[pFX->index] = xvel[nSprite];
-            yvel[pFX->index] = yvel[nSprite];
-            zvel[pFX->index] = zvel[nSprite];
+            const bool playerOwned = actSpriteOwnerIsPlayer(pSprite);
+            const int nTile = 3436;
+            const int frames = picanm[nTile].num;
+            const int frameoffset = qanimateoffs(nTile, 32768+nSprite);
+            const int angleOffset = frameoffset * (2047 / (frames+1));
+            int angle = (pSprite->ang+((-angleOffset)-512))&2047;
+            if (!playerOwned) // chances are if an enemy is throwing tnt at the player, the angle will be inverted - so rotate by 180 degrees
+                angle = (angle+1024)&2047;
+            int nDist = (pSprite->xrepeat*(tilesiz[pSprite->picnum+frameoffset].x/2))>>3;
+            nDist += nDist>>2;
+            int x = pSprite->x + mulscale30(nDist, Cos(angle));
+            int y = pSprite->y + mulscale30(nDist, Sin(angle));
+            int z = pSprite->z + mulscale30(nDist<<3, Cos(angle));
+            spritetype *pFX = gFX.fxSpawn(FX_7, pSprite->sectnum, x, y, z);
+            if (pFX)
+            {
+                xvel[pFX->index] = xvel[nSprite] + mulscale30(nDist<<10, Cos(angle));
+                yvel[pFX->index] = yvel[nSprite] + mulscale30(nDist<<10, Sin(angle));
+                zvel[pFX->index] = zvel[nSprite];
+                callbackTicks = 10;
+            }
+        }
+        else
+        {
+            int nDist = (pSprite->xrepeat*(tilesiz[pSprite->picnum].x/2))>>2;
+            int x = pSprite->x + mulscale30(nDist, Cos(pSprite->ang-512));
+            int y = pSprite->y + mulscale30(nDist, Sin(pSprite->ang-512));
+            int z = pSprite->z;
+            spritetype *pFX = gFX.fxSpawn(FX_7, pSprite->sectnum, x, y, z, 0);
+            if (pFX)
+            {
+                xvel[pFX->index] = xvel[nSprite];
+                yvel[pFX->index] = yvel[nSprite];
+                zvel[pFX->index] = zvel[nSprite];
+            }
         }
     }
-    evPost(nSprite, 3, 12, kCallbackFXDynPuff);
+    evPost(nSprite, 3, callbackTicks, kCallbackFXDynPuff);
 }
 
 void Respawn(int nSprite) // 9

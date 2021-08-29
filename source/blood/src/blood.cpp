@@ -612,6 +612,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bExplosionBehavior = gExplosionBehavior;
         gGameOptions.bProjectileBehavior = gProjectileBehavior;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
+        gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gWeaponsVer;
         gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
         gGameOptions.nRandomizerMode = gRandomizerMode;
@@ -642,6 +643,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
+        gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
@@ -823,6 +825,7 @@ void StartNetworkLevel(void)
         gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
+        gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
@@ -2841,7 +2844,7 @@ bool WeaponsV10x(void) {
 }
 
 bool ExplosionsNotBlood(void) {
-    return gGameOptions.bExplosionBehavior == 0; // notblood's explosions logic
+    return gGameOptions.bExplosionBehavior == 0; // raze's explosions logic
 }
 
 bool ProjectilesNotBlood(void) {

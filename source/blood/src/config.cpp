@@ -125,6 +125,7 @@ int32_t gShowWeaponSelectTimeHold;
 int32_t gShowWeaponSelectTimeEnd;
 int32_t gShowWeaponSelectPosition;
 int32_t gShadowsFake3D;
+int32_t gSmokeTrail3D;
 int32_t gParticlesDuration;
 
 //////////
@@ -135,6 +136,7 @@ int gDamageInvul;
 int gExplosionBehavior;
 int gProjectileBehavior;
 int gEnemyBehavior;
+int gEnemyRandomTNT;
 int gWeaponsVer;
 int gHitscanProjectiles;
 int gRandomizerMode;
@@ -375,6 +377,7 @@ void CONFIG_SetDefaults(void)
     gShowWeaponSelectTimeEnd = 6;
     gShowWeaponSelectPosition = 24;
     gShadowsFake3D = 1;
+    gSmokeTrail3D = 1;
     gParticlesDuration = 1;
     //ud.lockout                = 0;
     //ud.m_marker               = 1;
@@ -449,6 +452,7 @@ void CONFIG_SetDefaults(void)
     gExplosionBehavior = 0;
     gProjectileBehavior = 0;
     gEnemyBehavior = 0;
+    gEnemyRandomTNT = 0;
     gWeaponsVer = 0;
     gHitscanProjectiles = 0;
     gRandomizerMode = 0;
@@ -724,6 +728,7 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Game Options", "ExplosionsBehavior", &gExplosionBehavior);
     SCRIPT_GetNumber(scripthandle, "Game Options", "ProjectilesBehavior", &gProjectileBehavior);
     SCRIPT_GetNumber(scripthandle, "Game Options", "EnemyBehavior", &gEnemyBehavior);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "EnemyRandomTNT", &gEnemyRandomTNT);
     SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsVer", &gWeaponsVer);
     SCRIPT_GetNumber(scripthandle, "Game Options", "HitscanProjectiles", &gHitscanProjectiles);
     SCRIPT_GetNumber(scripthandle, "Game Options", "RandomizerMode", &gRandomizerMode);
@@ -1036,6 +1041,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Game Options", "ExplosionsBehavior", gExplosionBehavior, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "ProjectilesBehavior", gProjectileBehavior, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "EnemyBehavior", gEnemyBehavior, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "EnemyRandomTNT", gEnemyRandomTNT, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsVer", gWeaponsVer, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "HitscanProjectiles", gHitscanProjectiles, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "RandomizerMode", gRandomizerMode, FALSE, FALSE);

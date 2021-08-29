@@ -687,7 +687,35 @@ void playerStart(int nPlayer, int bNewLevel)
     }
     #endif
     else {
-        pStartZone = &gStartZone[Random(8)];
+        int zoneId = Random(kMaxPlayers);
+        if ((gGameOptions.nGameType == 2) && !VanillaMode()) { // search for a safe random spawn for bloodbath mode
+            bool checkZone[kMaxPlayers] = {false, false, false, false, false, false, false, false};
+            for (int i = 0; i < 12; i++) { // attempt this 12 times max
+                zoneId = Random(kMaxPlayers); // re-roll new random spawn
+                if (checkZone[zoneId]) // we've already checked this zone, skip
+                    continue;
+                checkZone[zoneId] = true;
+                bool spawnTooClose = false;
+                for (int j = connecthead; j >= 0; j = connectpoint2[j]) { // check every connected player
+                    if ((gPlayer[j].pSprite == NULL) || (gPlayer[j].pXSprite == NULL)) // invalid player, skip
+                        continue;
+                    if (gPlayer[j].pSprite->sectnum < 0 || gPlayer[j].pSprite->sectnum >= numsectors) // invalid sector, skip
+                        continue;
+                    const bool activePlayer = (j == nPlayer) || (gPlayer[j].pXSprite->health > 0);
+                    if (!activePlayer) // only check our current location or that of an alive player, otherwise skip
+                        continue;
+                    const int sectorScanDepth = (j == nPlayer) ? 0 : 3; // use a smaller scanning depth if we're checking near self
+                    if (AreSectorsNeighbors(gPlayer[j].pSprite->sectnum, gStartZone[zoneId].sectnum, sectorScanDepth, true)) // this spawn is too close to another player/self, stop checking rest of players
+                    {
+                        spawnTooClose = true;
+                        break;
+                    }
+                }
+                if (!spawnTooClose) // if we found a safe spawn point, quit searching
+                    break;
+            }
+        }
+        pStartZone = &gStartZone[zoneId];
     }
 
     if (!VanillaMode())

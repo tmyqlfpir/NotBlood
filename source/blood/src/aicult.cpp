@@ -200,6 +200,21 @@ static void ThrowSeqCallback(int, int nXSprite)
     int nMissile = kThingArmedTNTStick;
     if (gGameOptions.nDifficulty > 2)
         nMissile = kThingArmedTNTBundle;
+    if (gGameOptions.bEnemyRandomTNT && !VanillaMode()) // if enemy random tnt is on, and not in vanilla mode, randomly change thrown tnt type
+    {
+        if (!Random(20))
+            nMissile = kThingNapalmBall;
+        else if(!Random(15))
+            nMissile = kThingArmedSpray;
+        else if(!Random(5))
+            nMissile = kThingArmedProxBomb;
+        else if(!Random(25))
+            nMissile = kThingZombieHead;
+        else if(!Random(10))
+            nMissile = kThingPodFireBall;
+        else if(!Random(15))
+            nMissile = kThingPodGreenBall;
+    }
     char v4 = Chance(0x6000);
     sfxPlay3DSound(pSprite, 455, -1, 0);
     dassert(pXSprite->target >= 0 && pXSprite->target < kMaxSprites);
@@ -227,6 +242,22 @@ static void sub_68170(int, int nXSprite)
     int nMissile = kThingArmedTNTStick;
     if (gGameOptions.nDifficulty > 2)
         nMissile = kThingArmedTNTBundle;
+    if (gGameOptions.bEnemyRandomTNT && !VanillaMode()) // if enemy random tnt is on, and not in vanilla mode, randomly change thrown tnt type
+    {
+        if (!Random(20))
+            nMissile = kThingNapalmBall;
+        else if(!Random(15))
+            nMissile = kThingArmedSpray;
+        else if(!Random(5))
+            nMissile = kThingArmedProxBomb;
+        else if(!Random(25))
+            nMissile = kThingZombieHead;
+        else if(!Random(10))
+            nMissile = kThingPodFireBall;
+        else if(!Random(15))
+            nMissile = kThingPodGreenBall;
+    }
+
     sfxPlay3DSound(pSprite, 455, -1, 0);
     spritetype *pMissile = actFireThing(pSprite, 0, 0, gDudeSlope[nXSprite]-9460, nMissile, 0x133333);
     evPost(pMissile->index, 3, 120*(2+Random(2)), kCmdOn);
@@ -240,6 +271,22 @@ static void sub_68230(int, int nXSprite)
     int nMissile = kThingArmedTNTStick;
     if (gGameOptions.nDifficulty > 2)
         nMissile = kThingArmedTNTBundle;
+    if (gGameOptions.bEnemyRandomTNT && !VanillaMode()) // if enemy random tnt is on, and not in vanilla mode, randomly change thrown tnt type
+    {
+        if (!Random(20))
+            nMissile = kThingNapalmBall;
+        else if(!Random(15))
+            nMissile = kThingArmedSpray;
+        else if(!Random(5))
+            nMissile = kThingArmedProxBomb;
+        else if(!Random(25))
+            nMissile = kThingZombieHead;
+        else if(!Random(10))
+            nMissile = kThingPodFireBall;
+        else if(!Random(15))
+            nMissile = kThingPodGreenBall;
+    }
+
     sfxPlay3DSound(pSprite, 455, -1, 0);
     dassert(pXSprite->target >= 0 && pXSprite->target < kMaxSprites);
     spritetype *pTarget = &sprite[pXSprite->target];

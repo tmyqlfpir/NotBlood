@@ -19,6 +19,7 @@ New features include:
 * New last weapon key binding (default Q)
 * Fixed various original glitches with burning enemies
 * Fixed underwater cultists changing weapons when ignited
+* Improved spawning randomization logic for bloodbath mode
 * Fixed buggy weapon switching behavior
 * Weapon selection bar
 * Mirror mode
@@ -46,6 +47,7 @@ New features include:
 * cl_weaponhbob
 * cl_slowroomflicker
 * cl_shadowsfake3d
+* cl_smoketrail3d
 * cl_particlesduration
 * hud_showweaponselect
 * hud_showweaponselecttimestart
@@ -68,6 +70,7 @@ New features include:
 * BILLYRAY - Shotgun cultists only
 * WEED420! - Cultists only but they're green
 * BRAAAINS - Zombies only
+* OKBOOMER - TNT cultists only
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
 
 ### Additional randomizer seed cheats

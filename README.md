@@ -21,6 +21,7 @@ New features include:
 * New last weapon key binding (default Q) ([demo](https://files.catbox.moe/28cirg.mp4))
 * Fixed various original glitches with burning enemies
 * Fixed underwater cultists changing weapons when ignited
+* Improved spawning randomization logic for bloodbath mode
 * Fixed buggy weapon switching behavior
 * Weapon selection bar ([demo](https://files.catbox.moe/0zh37q.mp4))
 * Mirror mode

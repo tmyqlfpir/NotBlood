@@ -65,10 +65,13 @@ static bool AreSectorsNeighborsDepthCheck(int sect1, int sect2, int depth, char 
     return 0;
 }
 
-bool AreSectorsNeighbors(int sect1, int sect2, int depth)
+bool AreSectorsNeighbors(int sect1, int sect2, int depth, bool checkSameSector)
 {
-    if (sect1 == sect2) // same sector
-        return 1;
+    if (checkSameSector)
+    {
+        if (sect1 == sect2) // same sector
+            return 1;
+    }
     dassert(sect1 >= 0 && sect1 < kMaxSectors);
     dassert(sect2 >= 0 && sect2 < kMaxSectors);
     char sectbits[(kMaxSectors+7)>>3];
