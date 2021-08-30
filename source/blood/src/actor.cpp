@@ -6117,12 +6117,12 @@ void actProcessSprites(void)
         int nXSprite = pSprite->extra;
         if (nXSprite > 0) {
             XSPRITE *pXSprite = &xsprite[nXSprite];
+            if ((pXSprite->respawnPending > 0) && !VanillaMode()) // don't process currently respawning thing
+                continue;
             switch (pSprite->type) {
                 case kThingBloodBits:
                 case kThingBloodChunks:
                 case kThingZombieHead:
-                    if ((pXSprite->respawnPending == 3) && (pSprite->inittype >= kDudeBase && pSprite->inittype < kDudeMax) && !VanillaMode()) // don't gib chunks if enemy is set to respawn state
-                        continue;
                     if (pXSprite->locked && gFrameClock >= pXSprite->targetX) pXSprite->locked = 0;
                     break;
             }

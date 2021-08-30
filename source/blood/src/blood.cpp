@@ -606,11 +606,14 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             levelPlayIntroScene(gGameOptions.nEpisode);
 
         ///////
-        gGameOptions.nMonsterSettings = VanillaMode() ? 1 : ClipRange(gMonsterSettings, 0, 2);
-        if ((gMonsterSettings >= 2) && !VanillaMode())
-            gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
-        else
-            gGameOptions.nMonsterRespawnTime = 3600; // default
+        if (!VanillaMode())
+        {
+            gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
+            if (gMonsterSettings >= 2)
+                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
+            else
+                gGameOptions.nMonsterRespawnTime = 3600; // default
+        }
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.bExplosionBehavior = gExplosionBehavior;

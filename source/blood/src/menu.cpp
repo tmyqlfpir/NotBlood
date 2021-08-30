@@ -1699,11 +1699,14 @@ void SetMonsters(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gMonsterSettings = pItem->m_nFocus % ARRAY_SSIZE(pzMonsterStrings);
-        gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
-        if (gMonsterSettings >= 2)
-            gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
-        else
-            gGameOptions.nMonsterRespawnTime = 3600; // default
+        if (!VanillaMode())
+        {
+            gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
+            if (gMonsterSettings >= 2)
+                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
+            else
+                gGameOptions.nMonsterRespawnTime = 3600; // default
+        }
     } else {
         pItem->m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
     }

@@ -1526,7 +1526,7 @@ int viewDrawCalculateShadowSize(tspritetype *pTSprite)
     if (nDiff <= 0) // pov is below shadow, don't render shadow
         return 0;
     float dz = (float)nDiff / (float)(1<<8); // convert to real units
-    dz = ClipRangeF(dz, 0.1f, 300.f) / 300.f; // convert to 0-1 range
+    dz = ClipRangeF(dz, 0.1f, 150.f) / 300.f; // convert to 0.0-0.5 range
 
     float nDist = (float)ClipRange(approxDist(gView->pSprite->x-pTSprite->x, gView->pSprite->y-pTSprite->y, 0), 1, 512<<4) / (float)(1<<4);
     nDist /= 512 * 8;

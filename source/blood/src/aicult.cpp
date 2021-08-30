@@ -195,6 +195,8 @@ static void ShotSeqCallback(int, int nXSprite)
 static void ThrowSeqCallback(int, int nXSprite)
 {
     XSPRITE *pXSprite = &xsprite[nXSprite];
+    if (!VanillaMode() && ((pXSprite->target < 0) || (pXSprite->target >= kMaxSprites))) // not a valid target, abort
+        return;
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
     int nMissile = kThingArmedTNTStick;
@@ -237,6 +239,8 @@ static void ThrowSeqCallback(int, int nXSprite)
 static void sub_68170(int, int nXSprite)
 {
     XSPRITE *pXSprite = &xsprite[nXSprite];
+    if (!VanillaMode() && ((pXSprite->target < 0) || (pXSprite->target >= kMaxSprites))) // not a valid target, abort
+        return;
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
     int nMissile = kThingArmedTNTStick;
@@ -266,6 +270,8 @@ static void sub_68170(int, int nXSprite)
 static void sub_68230(int, int nXSprite)
 {
     XSPRITE *pXSprite = &xsprite[nXSprite];
+    if (!VanillaMode() && ((pXSprite->target < 0) || (pXSprite->target >= kMaxSprites))) // not a valid target, abort
+        return;
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
     int nMissile = kThingArmedTNTStick;
