@@ -65,6 +65,9 @@ struct GAMEOPTIONS {
     char nRandomizerMode;
     char szRandomizerSeed[9];
     int nRandomizerCheat;
+    int nEnemyQuantity;
+    int nEnemyHealth;
+    bool bPitchforkOnly;
     bool bFriendlyFire;
     bool bKeepKeysOnRespawn;
     char szUserMap[BMAX_PATH];

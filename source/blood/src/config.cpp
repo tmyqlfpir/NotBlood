@@ -453,7 +453,7 @@ void CONFIG_SetDefaults(void)
     gProjectileBehavior = 0;
     gEnemyBehavior = 0;
     gEnemyRandomTNT = 0;
-    gWeaponsVer = 0;
+    gWeaponsVer = 1;
     gHitscanProjectiles = 0;
     gRandomizerMode = 0;
     Bmemset(gzRandomizerSeed, 0, sizeof(gzRandomizerSeed));

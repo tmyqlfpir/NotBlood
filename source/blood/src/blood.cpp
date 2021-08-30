@@ -610,7 +610,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         {
             gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
             if (gMonsterSettings >= 2)
-                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
+                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 180;
             else
                 gGameOptions.nMonsterRespawnTime = 3600; // default
         }
@@ -635,7 +635,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nDifficulty = gPacketStartGame.difficulty;
         gGameOptions.nMonsterSettings = ClipRange(gPacketStartGame.monsterSettings, 0, 2);
         if (gPacketStartGame.monsterSettings >= 2)
-            gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 1) * 15 * 120;
+            gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 1) * 15 * 180;
         else
             gGameOptions.nMonsterRespawnTime = 3600; // default
         gGameOptions.nWeaponSettings = gPacketStartGame.weaponSettings;
@@ -660,6 +660,9 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         gGameOptions.nRandomizerCheat = -1;
+        gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
+        gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
+        gGameOptions.bPitchforkOnly = false;
         ///////
 
         gBlueFlagDropped = false;
@@ -699,7 +702,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         if (pSprite->statnum < kMaxStatus && pSprite->extra > 0) {
             
             XSPRITE *pXSprite = &xsprite[pSprite->extra];
-            if ((pXSprite->lSkill & (1 << gameOptions->nDifficulty)) || (pXSprite->lS && gameOptions->nGameType == 0)
+            if ((pXSprite->lSkill & (1 << gameOptions->nEnemyQuantity)) || (pXSprite->lS && gameOptions->nGameType == 0)
                 || (pXSprite->lB && gameOptions->nGameType == 2) || (pXSprite->lT && gameOptions->nGameType == 3)
                 || (pXSprite->lC && gameOptions->nGameType == 1)) {
                 
@@ -779,6 +782,15 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             pPlayer->qavLoop = gPlayerTemp[i].qavLoop;
             pPlayer->weaponTimer = gPlayerTemp[i].weaponTimer;
             pPlayer->nextWeapon = gPlayerTemp[i].nextWeapon;
+            pPlayer->lastWeapon = gPlayerTemp[i].lastWeapon;
+            if((gameOptions->nGameType == 0) && gameOptions->bPitchforkOnly) // if pitchfork start mode is on
+            {
+                playerReset(pPlayer); // reset ammo, weapons, etc
+                if (pPlayer->pDudeInfo != NULL) // if dude info is available, reset health
+                {
+                    pPlayer->pXSprite->health = pPlayer->pDudeInfo->startHealth<<4;
+                }
+            }
         }
     }
     gameOptions->uGameFlags &= ~3;
@@ -825,7 +837,7 @@ void StartNetworkLevel(void)
         gGameOptions.nDifficulty = gPacketStartGame.difficulty;
         gGameOptions.nMonsterSettings = ClipRange(gPacketStartGame.monsterSettings, 0, 2);
         if (gPacketStartGame.monsterSettings >= 2)
-            gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 1) * 15 * 120;
+            gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 1) * 15 * 180;
         else
             gGameOptions.nMonsterRespawnTime = 3600; // default
         gGameOptions.nWeaponSettings = gPacketStartGame.weaponSettings;
@@ -846,6 +858,9 @@ void StartNetworkLevel(void)
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         gGameOptions.nRandomizerCheat = -1;
+        gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
+        gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
+        gGameOptions.bPitchforkOnly = false;
         ///////
 
         gBlueFlagDropped = false;

@@ -2604,7 +2604,7 @@ void actInit(bool bSaveLoad) {
 
         for (int i = 0; i < kDudeMax - kDudeBase; i++)
             for (int j = 0; j < 7; j++)
-                dudeInfo[i].at70[j] = mulscale8(DudeDifficulty[gGameOptions.nDifficulty], dudeInfo[i].startDamage[j]);
+                dudeInfo[i].at70[j] = mulscale8(DudeDifficulty[gGameOptions.nEnemyHealth], dudeInfo[i].startDamage[j]);
 
         for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
             if (sprite[nSprite].extra <= 0 || sprite[nSprite].extra >= kMaxXSprites) continue;

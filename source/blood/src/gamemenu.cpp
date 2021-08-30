@@ -683,9 +683,10 @@ CGameMenuItemChain::CGameMenuItemChain()
     at28 = -1;
     at2c = NULL;
     at30 = 0;
+    nPalOverride = 0;
 }
 
-CGameMenuItemChain::CGameMenuItemChain(const char *a1, int a2, int a3, int a4, int a5, int a6, CGameMenu *a7, int a8, void(*a9)(CGameMenuItemChain *), int a10)
+CGameMenuItemChain::CGameMenuItemChain(const char *a1, int a2, int a3, int a4, int a5, int a6, CGameMenu *a7, int a8, void(*a9)(CGameMenuItemChain *), int a10, int palOverride)
 {
     m_pzText = a1;
     m_nFont = a2;
@@ -697,13 +698,14 @@ CGameMenuItemChain::CGameMenuItemChain(const char *a1, int a2, int a3, int a4, i
     at28 = a8;
     at2c = a9;
     at30 = a10;
+    nPalOverride = palOverride;
 }
 
 void CGameMenuItemChain::Draw(void)
 {
     if (!m_pzText) return;
     int shade = bEnable ? 32 : 48;
-    int pal = bEnable ? 0 : 5;
+    int pal = bEnable ? nPalOverride : 5;
     if (pMenu->IsFocusItem(this))
         shade = 32-((int)totalclock&63);
     int width, height;

@@ -22,6 +22,7 @@ New features include:
 * Fixed various original glitches with burning enemies
 * Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
+* Custom difficult options for singleplayer
 * Fixed buggy weapon switching behavior
 * Weapon selection bar ([demo](https://files.catbox.moe/0zh37q.mp4))
 * Mirror mode

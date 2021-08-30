@@ -72,6 +72,9 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.nWeaponRespawnTime = gameOptionsLegacy.nWeaponRespawnTime;
     gameOptions.nItemRespawnTime = gameOptionsLegacy.nItemRespawnTime;
     gameOptions.nSpecialRespawnTime = gameOptionsLegacy.nSpecialRespawnTime;
+    gameOptions.nEnemyQuantity = gameOptions.nDifficulty;
+    gameOptions.nEnemyHealth = gameOptions.nDifficulty;
+    gameOptions.bPitchforkOnly = false;
 }
 
 CDemo gDemo;

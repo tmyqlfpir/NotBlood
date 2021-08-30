@@ -869,6 +869,7 @@ void playerReset(PLAYER *pPlayer)
     pPlayer->curWeapon = 0;
     pPlayer->qavCallback = -1;
     pPlayer->input.newWeapon = 1;
+    pPlayer->lastWeapon = 1;
     for (int i = 0; i < 14; i++)
     {
         pPlayer->weaponOrder[0][i] = dword_136400[i];

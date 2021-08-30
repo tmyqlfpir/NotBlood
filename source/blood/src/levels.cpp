@@ -79,6 +79,9 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // char nRandomizerMode;
     "",    // char szRandomizerSeed[9];
     -1,    // int nRandomizerCheat;
+    2,     // int nEnemyQuantity;
+    2,     // int nEnemyHealth;
+    0,     // bool bPitchforkOnly;
     0,     // bool bFriendlyFire;
     1,     // bool bKeepKeysOnRespawn;
     "",    // char szUserMap[BMAX_PATH];
@@ -454,7 +457,7 @@ void LevelsLoadSave::Load(void)
         {
             gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
             if (gMonsterSettings >= 2)
-                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
+                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 180;
             else
                 gGameOptions.nMonsterRespawnTime = 3600; // default
         }

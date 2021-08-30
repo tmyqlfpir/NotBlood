@@ -45,6 +45,7 @@ void SaveGame(CGameMenuItemZEditBitmap *, CGameMenuEvent *);
 void SaveGameProcess(CGameMenuItemChain *);
 void ShowDifficulties();
 void SetDifficultyAndStart(CGameMenuItemChain *);
+void SetCustomDifficultyAndStart(CGameMenuItemChain *);
 void SetDetail(CGameMenuItemSlider *);
 void SetGamma(CGameMenuItemSlider *);
 void SetMusicVol(CGameMenuItemSlider *);
@@ -242,6 +243,7 @@ CGameMenu menuNetMain;
 CGameMenu menuNetStart;
 CGameMenu menuEpisode;
 CGameMenu menuDifficulty;
+CGameMenu menuCustomDifficulty;
 CGameMenu menuOptionsOld;
 CGameMenu menuControls;
 CGameMenu menuMessages;
@@ -300,11 +302,19 @@ CGameMenuItemTitle itemUserMapTitle("USER MAP", 1, 160, 20, 2038);
 CGameMenuFileSelect itemUserMapList("", 3, 0, 0, 0, "./", "*.map", gGameOptions.szUserMap, ShowDifficulties, 0);
 
 CGameMenuItemTitle itemDifficultyTitle("DIFFICULTY", 1, 160, 20, 2038);
-CGameMenuItemChain itemDifficulty1("STILL KICKING", 1, 0, 60, 320, 1, NULL, -1, SetDifficultyAndStart, 0);
-CGameMenuItemChain itemDifficulty2("PINK ON THE INSIDE", 1, 0, 80, 320, 1, NULL, -1, SetDifficultyAndStart, 1);
-CGameMenuItemChain itemDifficulty3("LIGHTLY BROILED", 1, 0, 100, 320, 1, NULL, -1, SetDifficultyAndStart, 2);
-CGameMenuItemChain itemDifficulty4("WELL DONE", 1, 0, 120, 320, 1, NULL, -1, SetDifficultyAndStart, 3);
-CGameMenuItemChain itemDifficulty5("EXTRA CRISPY", 1, 0, 140, 320, 1, 0, -1, SetDifficultyAndStart, 4);
+CGameMenuItemChain itemDifficulty1("STILL KICKING", 1, 0, 55, 320, 1, NULL, -1, SetDifficultyAndStart, 0);
+CGameMenuItemChain itemDifficulty2("PINK ON THE INSIDE", 1, 0, 75, 320, 1, NULL, -1, SetDifficultyAndStart, 1);
+CGameMenuItemChain itemDifficulty3("LIGHTLY BROILED", 1, 0, 95, 320, 1, NULL, -1, SetDifficultyAndStart, 2);
+CGameMenuItemChain itemDifficulty4("WELL DONE", 1, 0, 115, 320, 1, NULL, -1, SetDifficultyAndStart, 3);
+CGameMenuItemChain itemDifficulty5("EXTRA CRISPY", 1, 0, 135, 320, 1, 0, -1, SetDifficultyAndStart, 4);
+CGameMenuItemChain itemDifficultyCustom("< CUSTOM >", 1, 0, 155, 320, 1, &menuCustomDifficulty, -1, NULL, 0, 8);
+
+CGameMenuItemTitle itemCustomDifficultyTitle("CUSTOM", 1, 160, 20, 2038);
+CGameMenuItemSlider itemCustomDifficultyEnemyQuantity("ENEMIES QUANTITY:", 3, 66, 50, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemSlider itemCustomDifficultyEnemyDamage("ENEMIES DAMAGE:", 3, 66, 70, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 80, 180, false, NULL, NULL, NULL);
+CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 100, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
 CGameMenuItemTitle itemOptionsOldTitle("OPTIONS", 1, 160, 20, 2038);
 CGameMenuItemChain itemOption1("CONTROLS...", 3, 0, 40, 320, 1, &menuControls, -1, NULL, 0);
@@ -720,7 +730,6 @@ CGameMenuItemZBool itemOptionsDisplayPolymostDeliriumBlur("DELIRIUM EFFECT BLUR:
 
 void UpdateSoundToggle(CGameMenuItemZBool *pItem);
 void UpdateMusicToggle(CGameMenuItemZBool *pItem);
-void Update3DToggle(CGameMenuItemZBool *pItem);
 void UpdateCDToggle(CGameMenuItemZBool *pItem);
 void UpdateSoundVolume(CGameMenuItemSlider *pItem);
 void UpdateMusicVolume(CGameMenuItemSlider *pItem);
@@ -766,7 +775,7 @@ CGameMenuFileSelect itemOptionsSoundSF2FS("", 3, 0, 0, 0, "./", "*.sf2", sf2bank
 CGameMenuItemTitle itemOptionsSoundTitle("SOUND SETUP", 1, 160, 20, 2038);
 CGameMenuItemZBool itemOptionsSoundSoundToggle("SOUND:", 3, 66, 60, 180, false, UpdateSoundToggle, NULL, NULL);
 CGameMenuItemZBool itemOptionsSoundMusicToggle("MUSIC:", 3, 66, 70, 180, false, UpdateMusicToggle, NULL, NULL);
-CGameMenuItemZBool itemOptionsSound3DToggle("3D AUDIO:", 3, 66, 80, 180, false, Update3DToggle, NULL, NULL);
+CGameMenuItemZBool itemOptionsSoundMonoStereo("3D AUDIO:", 3, 66, 80, 180, false, SetMonoStereo, NULL, NULL);
 CGameMenuItemSlider itemOptionsSoundSoundVolume("SOUND VOLUME:", 3, 66, 90, 180, &FXVolume, 0, 256, 48, UpdateSoundVolume, -1, -1, kMenuSliderPercent);
 CGameMenuItemSlider itemOptionsSoundMusicVolume("MUSIC VOLUME:", 3, 66, 100, 180, &MusicVolume, 0, 256, 48, UpdateMusicVolume, -1, -1, kMenuSliderPercent);
 CGameMenuItemZCycle itemOptionsSoundSampleRate("SAMPLE RATE:", 3, 66, 110, 180, 0, UpdateSoundRate, pzSoundRateStrings, 3, 0);
@@ -961,7 +970,23 @@ void SetupDifficultyMenu(void)
     menuDifficulty.Add(&itemDifficulty3, true);
     menuDifficulty.Add(&itemDifficulty4, false);
     menuDifficulty.Add(&itemDifficulty5, false);
+    menuDifficulty.Add(&itemDifficultyCustom, false);
     menuDifficulty.Add(&itemBloodQAV, false);
+    itemDifficultyCustom.bDisableForNet = 1;
+
+    menuCustomDifficulty.Add(&itemCustomDifficultyTitle, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyQuantity, true);
+    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyHealth, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyDamage, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyPitchfork, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyStart, false);
+    menuCustomDifficulty.Add(&itemBloodQAV, false);
+    itemCustomDifficultyEnemyQuantity.tooltip_pzTextUpper = "Sets how many enemies";
+    itemCustomDifficultyEnemyQuantity.tooltip_pzTextLower = "are spawned in the level";
+    itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "Sets the enemy's starting health";
+    itemCustomDifficultyEnemyDamage.tooltip_pzTextUpper = "Sets the enemy's damage and difficulty";
+    itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "Player will lose all weapons";
+    itemCustomDifficultyPitchfork.tooltip_pzTextLower = "and inventory on new level";
 }
 
 void SetupEpisodeMenu(void)
@@ -1542,7 +1567,7 @@ void SetupOptionsMenu(void)
     menuOptionsSound.Add(&itemOptionsSoundTitle, false);
     menuOptionsSound.Add(&itemOptionsSoundSoundToggle, true);
     menuOptionsSound.Add(&itemOptionsSoundMusicToggle, false);
-    menuOptionsSound.Add(&itemOptionsSound3DToggle, false);
+    menuOptionsSound.Add(&itemOptionsSoundMonoStereo, false);
     menuOptionsSound.Add(&itemOptionsSoundSoundVolume, false);
     menuOptionsSound.Add(&itemOptionsSoundMusicVolume, false);
     menuOptionsSound.Add(&itemOptionsSoundSampleRate, false);
@@ -1703,7 +1728,7 @@ void SetMonsters(CGameMenuItemZCycle *pItem)
         {
             gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
             if (gMonsterSettings >= 2)
-                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 120;
+                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 180;
             else
                 gGameOptions.nMonsterRespawnTime = 3600; // default
         }
@@ -1969,7 +1994,33 @@ void ShowDifficulties()
 void SetDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     gGameOptions.nDifficulty = pItem->at30;
-    gSkill = pItem->at30;
+    gSkill = gGameOptions.nDifficulty;
+    gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
+    gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
+    gGameOptions.bPitchforkOnly = false;
+    gGameOptions.nLevel = 0;
+    if (gDemo.at1)
+        gDemo.StopPlayback();
+    gStartNewGame = true;
+    gCheatMgr.sub_5BCF4();
+    if (Bstrlen(gGameOptions.szUserMap))
+    {
+        levelAddUserMap(gGameOptions.szUserMap);
+        levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
+        StartLevel(&gGameOptions);
+        viewResizeView(gViewSize);
+    }
+    gGameMenuMgr.Deactivate();
+}
+
+void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
+{
+    UNREFERENCED_PARAMETER(pItem);
+    gGameOptions.nDifficulty = ClipRange(itemCustomDifficultyEnemyDamage.nValue, 0, 4);
+    gSkill = gGameOptions.nDifficulty;
+    gGameOptions.nEnemyQuantity = ClipRange(itemCustomDifficultyEnemyQuantity.nValue, 0, 4);
+    gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
+    gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
     gGameOptions.nLevel = 0;
     if (gDemo.at1)
         gDemo.StopPlayback();
@@ -2291,11 +2342,6 @@ void UpdateMusicToggle(CGameMenuItemZBool *pItem)
     }
 }
 
-void Update3DToggle(CGameMenuItemZBool *pItem)
-{
-    gStereo = pItem->at20;
-}
-
 void UpdateCDToggle(CGameMenuItemZBool *pItem)
 {
     CDAudioToggle = pItem->at20;
@@ -2364,7 +2410,7 @@ void SetupOptionsSound(CGameMenuItemChain *pItem)
     UNREFERENCED_PARAMETER(pItem);
     itemOptionsSoundSoundToggle.at20 = SoundToggle;
     itemOptionsSoundMusicToggle.at20 = MusicToggle;
-    itemOptionsSound3DToggle.at20 = gStereo;
+    itemOptionsSoundMonoStereo.at20 = gStereo;
     itemOptionsSoundCDToggle.at20 = CDAudioToggle;
     itemOptionsSoundSampleRate.m_nFocus = 0;
     for (int i = 0; i < 3; i++)
