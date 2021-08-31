@@ -350,7 +350,7 @@ static int osdcmd_resetcrosshair(osdcmdptr_t UNUSED(parm))
 
 static int osdcmd_give(osdcmdptr_t parm)
 {
-    if (numplayers != 1 || !gGameStarted || gMe->pXSprite->health == 0 || gDemo.at1)
+    if (numplayers != 1 || !gGameStarted || gDemo.at1 || gMe->pXSprite->health == 0)
     {
         OSD_Printf("give: Cannot give while dead or not in a single-player game.\n");
         return OSDCMD_OK;

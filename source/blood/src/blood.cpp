@@ -664,11 +664,13 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
         gGameOptions.bPitchforkOnly = false;
         ///////
-
-        gBlueFlagDropped = false;
-        gRedFlagDropped = false;
+    }
+    if (gGameOptions.nGameType > 0)
+    {
         gView = gMe;
         gViewIndex = myconnectindex;
+        gBlueFlagDropped = false;
+        gRedFlagDropped = false;
     }
     if (gameOptions->uGameFlags&1)
     {
@@ -699,9 +701,10 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     for (int i = 0; i < kMaxSprites; i++)
     {
         spritetype *pSprite = &sprite[i];
+        XSPRITE *pXSprite = NULL;
         if (pSprite->statnum < kMaxStatus && pSprite->extra > 0) {
             
-            XSPRITE *pXSprite = &xsprite[pSprite->extra];
+            pXSprite = &xsprite[pSprite->extra];
             if ((pXSprite->lSkill & (1 << gameOptions->nEnemyQuantity)) || (pXSprite->lS && gameOptions->nGameType == 0)
                 || (pXSprite->lB && gameOptions->nGameType == 2) || (pXSprite->lT && gameOptions->nGameType == 3)
                 || (pXSprite->lC && gameOptions->nGameType == 1)) {
@@ -713,8 +716,30 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             
             #ifdef NOONE_EXTENSIONS
             if (!gModernMap && nnExtEraseModernStuff(pSprite, pXSprite))
+            {
                modernTypesErased++;
+               continue;
+            }
             #endif
+        }
+        if (!VanillaMode() && (sprite[i].statnum >= 0) && (sprite[i].statnum < kMaxStatus)) // randomize sprites and replace guns akimbo with quad damage icon
+        {
+            pXSprite = (pSprite->extra > 0) && (pSprite->extra < kMaxXSprites) ? &xsprite[pSprite->extra] : NULL;
+            const bool randomEnemy = (gGameOptions.nRandomizerMode & 1) && !IsPlayerSprite(pSprite) && IsDudeSprite(pSprite), randomItem = gGameOptions.nRandomizerMode > 0;
+            if (randomEnemy) // if randomizer enemy, randomize non-player enemy
+            {
+                if (dbRandomizerMode(pSprite, pXSprite)) // if randomizer deleted dude
+                {
+                    DeleteSprite(i);
+                    continue;
+                }
+                if (pXSprite && (gGameOptions.nRandomizerMode & 1)) // if randomizer is set to enemies or enemies+weapons mode, randomly scale enemies
+                    dbRandomizerModeScale(pSprite, pXSprite);
+            }
+            else if (randomItem) // randomize pickups
+                dbRandomizerMode(pSprite, NULL);
+            if (gGameOptions.bQuadDamagePowerup && (pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && (pSprite->type == kItemTwoGuns)) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
+                pSprite->picnum = 30703;
         }
     }
     
@@ -772,6 +797,13 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         for (int i = connecthead; i >= 0; i = connectpoint2[i])
         {
             PLAYER *pPlayer = &gPlayer[i];
+            if (((gGameOptions.nGameType > 0) && (gHealthTemp[i] == 0)) || ((gameOptions->nGameType == 0) && gameOptions->bPitchforkOnly)) // if multiplayer and player is dead, or if pitchfork start mode is on, reset player between levels
+            {
+                playerReset(pPlayer); // reset ammo, weapons, etc
+                if (pPlayer->pDudeInfo != NULL) // if dude info is available, reset health
+                    pPlayer->pXSprite->health = pPlayer->pDudeInfo->startHealth<<4;
+                continue;
+            }
             pPlayer->pXSprite->health &= 0xf000;
             pPlayer->pXSprite->health |= gHealthTemp[i];
             pPlayer->weaponQav = gPlayerTemp[i].weaponQav;
@@ -783,14 +815,6 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             pPlayer->weaponTimer = gPlayerTemp[i].weaponTimer;
             pPlayer->nextWeapon = gPlayerTemp[i].nextWeapon;
             pPlayer->lastWeapon = gPlayerTemp[i].lastWeapon;
-            if((gameOptions->nGameType == 0) && gameOptions->bPitchforkOnly) // if pitchfork start mode is on
-            {
-                playerReset(pPlayer); // reset ammo, weapons, etc
-                if (pPlayer->pDudeInfo != NULL) // if dude info is available, reset health
-                {
-                    pPlayer->pXSprite->health = pPlayer->pDudeInfo->startHealth<<4;
-                }
-            }
         }
     }
     gameOptions->uGameFlags &= ~3;
@@ -862,11 +886,6 @@ void StartNetworkLevel(void)
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
         gGameOptions.bPitchforkOnly = false;
         ///////
-
-        gBlueFlagDropped = false;
-        gRedFlagDropped = false;
-        gView = gMe;
-        gViewIndex = myconnectindex;
 
         if (gPacketStartGame.userMap)
             levelAddUserMap(gPacketStartGame.userMapName);
