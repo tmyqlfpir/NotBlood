@@ -180,6 +180,7 @@ const char *zDiffStrings[] =
     "LIGHTLY BROILED",
     "WELL DONE",
     "EXTRA CRISPY",
+    "CUSTOM",
 };
 
 const char *pzShowWeaponStrings[] = {
@@ -2604,7 +2605,10 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", nSlot);
     strcpy(gGameOptions.szUserGameName, strRestoreGameStrings[nSlot]);
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
-    restoreGameDifficulty[nSlot] = gGameOptions.nDifficulty;
+    if ((gGameOptions.nDifficulty != gGameOptions.nEnemyHealth) || (gGameOptions.nDifficulty != gGameOptions.nEnemyQuantity) || gGameOptions.bPitchforkOnly)
+        restoreGameDifficulty[nSlot] = 5; // set to custom slot
+    else
+        restoreGameDifficulty[nSlot] = gGameOptions.nDifficulty;
     gGameOptions.nSaveGameSlot = nSlot;
     viewLoadingScreen(2518, "Saving", "Saving Your Game", strRestoreGameStrings[nSlot]);
     videoNextPage();
@@ -2629,7 +2633,10 @@ void QuickSaveGame(void)
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", gQuickSaveSlot);
     strcpy(gGameOptions.szUserGameName, strRestoreGameStrings[gQuickSaveSlot]);
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
-    restoreGameDifficulty[gQuickSaveSlot] = gGameOptions.nDifficulty;
+    if ((gGameOptions.nDifficulty != gGameOptions.nEnemyHealth) || (gGameOptions.nDifficulty != gGameOptions.nEnemyQuantity) || gGameOptions.bPitchforkOnly)
+        restoreGameDifficulty[gQuickSaveSlot] = 5; // set to custom slot
+    else
+        restoreGameDifficulty[gQuickSaveSlot] = gGameOptions.nDifficulty;
     gGameOptions.nSaveGameSlot = gQuickSaveSlot;
     viewLoadingScreen(2518, "Saving", "Saving Your Game", strRestoreGameStrings[gQuickSaveSlot]);
     videoNextPage();
@@ -2652,7 +2659,10 @@ void AutosaveGame(bool levelStartSave)
     sprintf(strRestoreGameStrings[nSlot], "%s %s", levelGetFilename(gGameOptions.nEpisode, gGameOptions.nLevel), nSlot == AUTOSAVESLOT_START ? "start": "key");
     sprintf(gGameOptions.szUserGameName, "%s %s", levelGetFilename(gGameOptions.nEpisode, gGameOptions.nLevel), nSlot == AUTOSAVESLOT_START ? "start": "key");
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
-    restoreGameDifficulty[nSlot] = gGameOptions.nDifficulty;
+    if ((gGameOptions.nDifficulty != gGameOptions.nEnemyHealth) || (gGameOptions.nDifficulty != gGameOptions.nEnemyQuantity) || gGameOptions.bPitchforkOnly)
+        restoreGameDifficulty[nSlot] = 5; // set to custom slot
+    else
+        restoreGameDifficulty[nSlot] = gGameOptions.nDifficulty;
     gGameOptions.nSaveGameSlot = nSlot;
     const PLAYER playerTemp = *gMe; // temp player struct while we make autosaving a little more easier (blood is stressful enough already)
     if (!levelStartSave && (gMe->throwTime || gMe->throwPower || gMe->fuseTime || gMe->qavCallback != -1)) // if key save, check if player has a volatile weapon out
