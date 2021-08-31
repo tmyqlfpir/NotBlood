@@ -2475,10 +2475,7 @@ bool actSpriteOwnerIsDude(spritetype *pSprite)
         return false;
     if (nOwner & kMaxSprites)
         return true;
-    spritetype *pOwner = &sprite[nOwner];
-    if (!pOwner)
-        return false;
-    return (pOwner->type >= kDudeBase) && (pOwner->type < kDudeMax);
+    return (sprite[nOwner].type >= kDudeBase) && (sprite[nOwner].type < kDudeMax);
 }
 
 bool actTypeInSector(int nSector, int nType)
@@ -7173,7 +7170,7 @@ int actGetRespawnTime(spritetype *pSprite) {
     if (pSprite->extra <= 0) return -1; 
     XSPRITE *pXSprite = &xsprite[pSprite->extra];
     if (IsDudeSprite(pSprite) && !IsPlayerSprite(pSprite)) {
-        if (pXSprite->respawn == 2 || (pXSprite->respawn != 1 && gGameOptions.nMonsterSettings == 2)) 
+        if (pXSprite->respawn == 2 || (pXSprite->respawn != 1 && gGameOptions.nMonsterSettings == 2))
             return gGameOptions.nMonsterRespawnTime;
         return -1;
     }
@@ -7186,7 +7183,7 @@ int actGetRespawnTime(spritetype *pSprite) {
     }
 
     if (IsAmmoSprite(pSprite)) {
-        if (pXSprite->respawn == 2 || (pXSprite->respawn != 1 && gGameOptions.nWeaponSettings != 0)) 
+        if (pXSprite->respawn == 2 || (pXSprite->respawn != 1 && gGameOptions.nWeaponSettings != 0))
             return gGameOptions.nWeaponRespawnTime;
         return -1;
     }

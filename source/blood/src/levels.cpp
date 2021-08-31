@@ -457,9 +457,9 @@ void LevelsLoadSave::Load(void)
         {
             gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
             if (gMonsterSettings >= 2)
-                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 1) * 15 * 180;
+                gGameOptions.nMonsterRespawnTime = divscale16((gMonsterSettings - 1) * 15 * 120, 0xa000);
             else
-                gGameOptions.nMonsterRespawnTime = 3600; // default
+                gGameOptions.nMonsterRespawnTime = 3600; // default (48 secs)
         }
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;

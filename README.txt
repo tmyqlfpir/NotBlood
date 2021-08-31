@@ -43,6 +43,7 @@ New features include:
 * Randomizer seed - Set the enemy/pickups randomizer's seed (an empty string will regenerate anew for every level start)
 
 ### New console variables for NotBlood
+* notarget
 * r_mirrormode
 * cl_interpolateweapon
 * cl_weaponhbob
@@ -50,6 +51,7 @@ New features include:
 * cl_shadowsfake3d
 * cl_smoketrail3d
 * cl_particlesduration
+* hud_powerupdurationticks
 * hud_showweaponselect
 * hud_showweaponselecttimestart
 * hud_showweaponselecttimehold

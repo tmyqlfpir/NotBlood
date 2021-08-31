@@ -350,7 +350,7 @@ static int osdcmd_resetcrosshair(osdcmdptr_t UNUSED(parm))
 
 static int osdcmd_give(osdcmdptr_t parm)
 {
-    if (numplayers != 1 || !gGameStarted || gMe->pXSprite->health == 0)
+    if (numplayers != 1 || !gGameStarted || gMe->pXSprite->health == 0 || gDemo.at1)
     {
         OSD_Printf("give: Cannot give while dead or not in a single-player game.\n");
         return OSDCMD_OK;
@@ -410,7 +410,7 @@ static int osdcmd_give(osdcmdptr_t parm)
 static int osdcmd_god(osdcmdptr_t UNUSED(parm))
 {
     UNREFERENCED_CONST_PARAMETER(parm);
-    if (numplayers == 1 && gGameStarted)
+    if (numplayers == 1 && gGameStarted && !gDemo.at1)
     {
         SetGodMode(!gMe->godMode);
         gCheatMgr.m_bPlayerCheated = true;
@@ -425,7 +425,7 @@ static int osdcmd_noclip(osdcmdptr_t UNUSED(parm))
 {
     UNREFERENCED_CONST_PARAMETER(parm);
 
-    if (numplayers == 1 && gGameStarted)
+    if (numplayers == 1 && gGameStarted && !gDemo.at1)
     {
         SetClipMode(!gNoClip);
         gCheatMgr.m_bPlayerCheated = true;
@@ -433,6 +433,23 @@ static int osdcmd_noclip(osdcmdptr_t UNUSED(parm))
     else
     {
         OSD_Printf("noclip: Not in a single-player game.\n");
+    }
+
+    return OSDCMD_OK;
+}
+
+static int osdcmd_notarget(osdcmdptr_t UNUSED(parm))
+{
+    UNREFERENCED_CONST_PARAMETER(parm);
+
+    if (numplayers == 1 && gGameStarted && !gDemo.at1)
+    {
+        SetTargetMode(!gNoTarget);
+        gCheatMgr.m_bPlayerCheated = true;
+    }
+    else
+    {
+        OSD_Printf("notarget: Not in a single-player game.\n");
     }
 
     return OSDCMD_OK;
@@ -1022,7 +1039,8 @@ int32_t registerosdcommands(void)
 //        { "hud_scale","changes the hud scale", (void *)&ud.statusbarscale, CVAR_INT|CVAR_FUNCPTR, 36, 100 },
 //        { "hud_showmapname", "enable/disable map name display on load", (void *)&hud_showmapname, CVAR_BOOL, 0, 1 },
         { "hud_stats", "enable/disable level statistics display", (void *)&gLevelStats, CVAR_BOOL, 0, 1 },
-        { "hud_powerupduration", "enable/disable displaying the remaining seconds for power-ups", (void *)&gPowerupDuration, CVAR_BOOL, 0, 1 },
+        { "hud_powerupduration", "enable/disable displaying the remaining time for power-ups", (void *)&gPowerupDuration, CVAR_BOOL, 0, 1 },
+        { "hud_powerupdurationticks", "set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)", (void *)&gPowerupTicks, CVAR_INT, 20, 240 },
         { "hud_showmaptitle", "enable/disable displaying the map title at the beginning of the maps", (void*)& gShowMapTitle, CVAR_BOOL, 0, 1 },
         { "hud_showweaponselect", "enable/disable weapon select bar display. (0: none, 1: bottom, 2: top)", (void*)&gShowWeaponSelect, CVAR_INT, 0, 2 },
         { "hud_showweaponselecttimestart", "length of time for selected weapon bar to appear", (void*)&gShowWeaponSelectTimeStart, CVAR_INT, 2, 25 },
@@ -1183,6 +1201,7 @@ int32_t registerosdcommands(void)
 //#endif
 //
     OSD_RegisterFunction("noclip","noclip: toggles clipping mode", osdcmd_noclip);
+    OSD_RegisterFunction("notarget","notarget: toggles ai player detection", osdcmd_notarget);
 //
 //#if !defined NETCODE_DISABLE
 //    OSD_RegisterFunction("password","password: sets multiplayer game password", osdcmd_password);

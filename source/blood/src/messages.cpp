@@ -80,6 +80,15 @@ void SetClipMode(bool noclip)
         viewSetMessage("Normal movement.");
 }
 
+void SetTargetMode(bool notarget)
+{
+    gNoTarget = notarget;
+    if (gNoTarget)
+        viewSetMessage("Notarget on.");
+    else
+        viewSetMessage("Notarget off.");
+}
+
 void packStuff(PLAYER *pPlayer)
 {
     for (int i = 0; i < 5; i++)
@@ -928,6 +937,7 @@ void CCheatMgr::sub_5BCF4(void)
     m_bPlayerCheated = 0;
     playerSetGodMode(gMe, 0);
     gNoClip = 0;
+    gNoTarget = 0;
     packClear(gMe);
     gInfiniteAmmo = 0;
     gFullMap = 0;

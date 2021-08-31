@@ -256,6 +256,8 @@ int powerupCheck(PLAYER *pPlayer, int nPowerUp)
 {
     dassert(pPlayer != NULL);
     dassert(nPowerUp >= 0 && nPowerUp < kMaxPowerUps);
+    if (gNoTarget && (nPowerUp == kPwUpShadowCloak)) // no target cheats
+        return gPowerUpInfo[kPwUpShadowCloak].bonusTime;
     int nPack = powerupToPackItem(nPowerUp);
     if (nPack >= 0 && !packItemActive(pPlayer, nPack))
         return 0;
@@ -270,7 +272,7 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
     if (!pPlayer->pwUpTime[nPowerUp]) {
         int bonusTime = gPowerUpInfo[nPowerUp].bonusTime;
         if ((nPowerUp == kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if picked up quad damage
-            bonusTime = 2500; // set to 25 seconds
+            bonusTime = kTicRate*22; // set to 22 seconds
         pPlayer->pwUpTime[nPowerUp] = bonusTime;
     }
     int nPack = powerupToPackItem(nPowerUp);

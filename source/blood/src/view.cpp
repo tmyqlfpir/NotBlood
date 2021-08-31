@@ -1346,7 +1346,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
     {
         if (powerups[i].remainingDuration)
         {
-            int remainingSeconds = powerups[i].remainingDuration / 100;
+            int remainingSeconds = powerups[i].remainingDuration / gPowerupTicks;
             if (remainingSeconds > warningTime || ((int)totalclock & 32))
             {
                 DrawStatMaskedSprite(powerups[i].nTile, x, y + powerups[i].yOffset, 0, 0, 256, (int)(65536 * powerups[i].nScaleRatio));
@@ -1368,20 +1368,20 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
 {
     const int weaponIcons[][3] =
     {
-        {-1, 0, 0x8000}, // NULL
+        {  -1, 0, 0x8000}, // NULL
         {3131, 0, 0x6000}, // 1: pitchfork
-        {524, 8, 0x8000}, // 2: flare gun
-        {559, 6, 0x8000}, // 3: shotgun
-        {558, 8, 0x8000}, // 4: tommy gun
-        {526, 2, 0x8000}, // 5: napalm launcher
-        {589, 8, 0xB000}, // 6: dynamite
-        {618, 9, 0x8000}, // 7: spray can
-        {539, 0, 0x8000}, // 8: tesla gun
-        {800, 0, 0x7000}, // 9: life leech
-        {525, 1, 0x8000}, // 10: voodoo doll
-        {811, 8, 0x8000}, // 11: proxy bomb
-        {810, 8, 0x8000}, // 12: remote bomb
-        {-1, 0, 0x8000}, // NULL
+        { 524, 8, 0x8000}, // 2: flare gun
+        { 559, 6, 0x8000}, // 3: shotgun
+        { 558, 8, 0x8000}, // 4: tommy gun
+        { 526, 2, 0x8000}, // 5: napalm launcher
+        { 589, 8, 0xB000}, // 6: dynamite
+        { 618, 9, 0x8000}, // 7: spray can
+        { 539, 0, 0x8000}, // 8: tesla gun
+        { 800, 0, 0x7000}, // 9: life leech
+        { 525, 1, 0x8000}, // 10: voodoo doll
+        { 811, 8, 0x8000}, // 11: proxy bomb
+        { 810, 8, 0x8000}, // 12: remote bomb
+        {  -1, 0, 0x8000}, // NULL
     };
 
     const int travelTime = gShowWeaponSelectTimeStart, holdTime = gShowWeaponSelectTimeHold, decayTime = gShowWeaponSelectTimeEnd;
