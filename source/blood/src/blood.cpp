@@ -584,8 +584,7 @@ int gDoQuickSave = 0;
 
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
-    const bool triggerAutosave = !gDemo.at0 && !gDemo.at1 && (gGameOptions.nGameType == 0) && // if demo isn't active and not in multiplayer session and we switched to new level
-    (gGameOptions.nLevel > 0) && ((gMusicPrevLoadedEpisode != gGameOptions.nEpisode) || (gMusicPrevLoadedLevel != gGameOptions.nLevel));
+    const bool triggerAutosave = !gDemo.at0 && !gDemo.at1 && (gGameOptions.nGameType == 0) && gameOptions->uGameFlags&1; // if demo isn't active and not in multiplayer session and we switched to new level
     EndLevel();
     gInput = {};
     gStartNewGame = 0;
@@ -797,7 +796,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         for (int i = connecthead; i >= 0; i = connectpoint2[i])
         {
             PLAYER *pPlayer = &gPlayer[i];
-            if (((gGameOptions.nGameType > 0) && (gHealthTemp[i] == 0)) || ((gameOptions->nGameType == 0) && gameOptions->bPitchforkOnly)) // if multiplayer and player is dead, or if pitchfork start mode is on, reset player between levels
+            if ((gHealthTemp[i] == 0) || gameOptions->bPitchforkOnly) // if player is dead, or if pitchfork start mode is on, reset player between levels
             {
                 playerReset(pPlayer); // reset ammo, weapons, etc
                 if (pPlayer->pDudeInfo != NULL) // if dude info is available, reset health
