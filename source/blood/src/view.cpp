@@ -3587,7 +3587,7 @@ void viewDrawScreen(void)
     if (delta < 0)
         delta = 0;
     lastUpdate = totalclock;
-    if (!gPaused && (!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW) || (gGameOptions.nGameType != 0)) || gDemo.at1)
+    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.at1)
     {
         gInterpolate = ((totalclock-gNetFifoClock)+4).toScale16()/4;
     }
@@ -3600,7 +3600,7 @@ void viewDrawScreen(void)
         CalcInterpolations();
     }
 
-    if (!gPaused && (!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW) || (gGameOptions.nGameType != 0)) || gDemo.at1)
+    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.at1)
         rotatespritesmoothratio = gInterpolate;
     else
         rotatespritesmoothratio = 65536;
