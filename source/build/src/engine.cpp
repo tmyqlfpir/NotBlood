@@ -127,7 +127,7 @@ int32_t r_usenewaspect = 1, newaspect_enable=0;
 uint32_t r_screenxy = 0;
 int32_t r_mirrormode = 0;
 
-int32_t r_rotatespriteinterp = 1;
+int32_t r_rotatespriteinterp = 2;
 int32_t r_fpgrouscan = 1;
 int32_t r_displayindex = 0;
 int32_t r_borderless = 2;
@@ -7388,6 +7388,10 @@ void dorotspr_handle_bit2(int32_t *sxptr, int32_t *syptr, int32_t *z, int32_t da
     }
 }
 
+static inline float lerpF(float v0, float v1, float t)
+{
+    return (1.f - t) * v0 + t * v1;
+}
 
 //
 // dorotatesprite (internal)
@@ -7422,41 +7426,62 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
     {
         Bassert(uniqid < MAXUNIQHUDID);
 
-        // r_rotatespriteinterp 1: only interpolate when explicitly requested with RS_LERP
+        // r_rotatespriteinterp 0: disabled
+        // r_rotatespriteinterp 1: only interpolate when explicitly requested with RS_LERP (half-step)
+        // r_rotatespriteinterp 2: only interpolate when explicitly requested with RS_LERP (full-step)
+        // r_rotatespriteinterp 3: interpolate if the picnum or size matches regardless of RS_LERP being set
+        // r_rotatespriteinterp 4: relax above picnum check to include the next tile, with potentially undesirable results
 
         static struct sm
         {
-            vec4_t lerp, goal;
+            float lerp[4];
+            vec4_t goal;
             int16_t picnum, flags;
         } smooth[MAXUNIQHUDID];
 
         auto &sm = smooth[uniqid];
+        auto &sm0 = smooth[0];
         vec4_t const goal = { sx, sy, z, a };
-        smooth[0] = { goal, goal, picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
-        
-        auto lerpWouldLookDerp = [&](void)
-        {
-            return !(dastat & RS_LERP)
+        sm0 = { {(float)goal.x, (float)goal.y, (float)goal.z, (float)goal.a}, sm.goal, picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
+
+        const bool lerpWouldLookDerp = (!(dastat & RS_LERP) && r_rotatespriteinterp < 3)
                    || (!(dastat & RS_FORCELERP) && (sm.flags != (dastat & ~RS_TRANS_MASK) || (tilesiz[picnum] != tilesiz[sm.picnum]
-                   && (unsigned)(picnum - sm.picnum)))) || klabs(a - sm.goal.a) == 1024;
-        };
-
-        if (!lerpWouldLookDerp())
+                   && ((unsigned)(picnum - sm.picnum) > (int)(r_rotatespriteinterp == 4)))));
+        if (lerpWouldLookDerp) // set to next keyframe position (no interpolation)
+            sm0.goal = goal;
+        else if (r_rotatespriteinterp)
         {
-            smooth[0].lerp = { sm.lerp.x + mulscale16(smooth[0].goal.x - sm.lerp.x, rotatespritesmoothratio),
-                               sm.lerp.y + mulscale16(smooth[0].goal.y - sm.lerp.y, rotatespritesmoothratio),
-                               sm.lerp.z + mulscale16(smooth[0].goal.z - sm.lerp.z, rotatespritesmoothratio),
-                              (sm.lerp.a + mulscale16(((smooth[0].goal.a + 1024 - sm.lerp.a) & 2047) - 1024, rotatespritesmoothratio)) & 2047 };
+            float rotatespritesmoothratioF = (float)rotatespritesmoothratio / 65536.f;
+            if ((sm.goal.x != goal.x) || (sm.goal.y != goal.y) || (sm.goal.z != goal.z)) // update goal to next frame
+            {
+                sm0.goal = goal;
+                if (r_rotatespriteinterp == 1)
+                    rotatespritesmoothratioF = -rotatespritesmoothratioF + 1.f;
+            }
+            else if (sm.goal.a != goal.a)
+            {
+                sm0.goal.a = goal.a;
+                if (r_rotatespriteinterp == 1)
+                    rotatespritesmoothratioF = -rotatespritesmoothratioF + 1.f;
+            }
+            sm0.lerp[0] = lerpF(sm.lerp[0], (float)sm0.goal.x, rotatespritesmoothratioF);
+            sm0.lerp[1] = lerpF(sm.lerp[1], (float)sm0.goal.y, rotatespritesmoothratioF);
+            sm0.lerp[2] = lerpF(sm.lerp[2], (float)sm0.goal.z, rotatespritesmoothratioF);
+            const int rotateDiff = (sm0.goal.a - sm.goal.a) + 1024;
+            const bool safeToLerp = (rotateDiff < (2048)) && (rotateDiff > (0));
+            if (!safeToLerp)
+                sm0.lerp[3] = (float)sm0.goal.a; // next keyframe is too big to transition smoothly, so set lerp to expected keyframe
+            else
+                sm0.lerp[3] = lerpF(sm.lerp[3], (float)sm0.goal.a, rotatespritesmoothratioF);
         }
-
-        sm = smooth[0];
+        sm = sm0;
 
         if (r_rotatespriteinterp)
         {
-            sx = sm.lerp.x;
-            sy = sm.lerp.y;
-            z  = sm.lerp.z;
-            a  = sm.lerp.a;
+            sx = (int)sm.lerp[0];
+            sy = (int)sm.lerp[1];
+            z  = (int)sm.lerp[2];
+            a  = (int)sm.lerp[3] & 2047;
         }
     }
 

@@ -45,6 +45,7 @@ New features include:
 ### New console variables for NotBlood
 * notarget
 * r_mirrormode
+* r_rotatespriteinterp
 * cl_interpolateweapon
 * cl_weaponhbob
 * cl_slowroomflicker
