@@ -7423,57 +7423,40 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
         Bassert(uniqid < MAXUNIQHUDID);
 
         // r_rotatespriteinterp 1: only interpolate when explicitly requested with RS_LERP
-        // r_rotatespriteinterp 2: interpolate if the picnum or size matches regardless of RS_LERP being set
-        // r_rotatespriteinterp 3: relax above picnum check to include the next tile, with potentially undesirable results
 
         static struct sm
         {
             vec4_t lerp, goal;
             int16_t picnum, flags;
-            uint32_t clock;
         } smooth[MAXUNIQHUDID];
 
-        auto &sm  = smooth[uniqid];
-        auto &sm0 = smooth[0];
-
-        vec4_t const goal  = { sx, sy, z, a };
-        auto const   clock = timer120();
-
-        sm0 = { goal, goal, picnum, (int16_t)(dastat & ~RS_TRANS_MASK), clock };
+        auto &sm = smooth[uniqid];
+        vec4_t const goal = { sx, sy, z, a };
+        smooth[0] = { goal, goal, picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
         
         auto lerpWouldLookDerp = [&](void)
         {
-            return !(dastat & RS_LERP) || !sm.clock || clock - sm.clock > 4
+            return !(dastat & RS_LERP)
                    || (!(dastat & RS_FORCELERP) && (sm.flags != (dastat & ~RS_TRANS_MASK) || (tilesiz[picnum] != tilesiz[sm.picnum]
                    && (unsigned)(picnum - sm.picnum)))) || klabs(a - sm.goal.a) == 1024;
         };
 
-        if (lerpWouldLookDerp())
-            sm.goal = sm0.goal;
-        else 
+        if (!lerpWouldLookDerp())
         {
-            sm0.lerp = { sm.goal.x - mulscale16(65536-rotatespritesmoothratio, sm.goal.x - sm.lerp.x),
-                         sm.goal.y - mulscale16(65536-rotatespritesmoothratio, sm.goal.y - sm.lerp.y),
-                         sm.goal.z - mulscale16(65536-rotatespritesmoothratio, sm.goal.z - sm.lerp.z),
-                        (sm.goal.a - mulscale16(65536-rotatespritesmoothratio, ((sm.goal.a + 1024 - sm.lerp.a) & 2047) - 1024)) & 2047 };
+            smooth[0].lerp = { sm.lerp.x + mulscale16(smooth[0].goal.x - sm.lerp.x, rotatespritesmoothratio),
+                               sm.lerp.y + mulscale16(smooth[0].goal.y - sm.lerp.y, rotatespritesmoothratio),
+                               sm.lerp.z + mulscale16(smooth[0].goal.z - sm.lerp.z, rotatespritesmoothratio),
+                              (sm.lerp.a + mulscale16(((smooth[0].goal.a + 1024 - sm.lerp.a) & 2047) - 1024, rotatespritesmoothratio)) & 2047 };
         }
 
-        sm.picnum = sm0.picnum;
-        sm.flags  = sm0.flags;
-
-        if (clock - sm.clock > 1 || sm0.goal != sm.goal)
-        {
-            sm.lerp  = sm.goal;
-            sm.goal  = sm0.goal;
-            sm.clock = sm0.clock;
-        }
+        sm = smooth[0];
 
         if (r_rotatespriteinterp)
         {
-            sx = sm0.lerp.x;
-            sy = sm0.lerp.y;
-            z  = sm0.lerp.z;
-            a  = sm0.lerp.a;
+            sx = sm.lerp.x;
+            sy = sm.lerp.y;
+            z  = sm.lerp.z;
+            a  = sm.lerp.a;
         }
     }
 
