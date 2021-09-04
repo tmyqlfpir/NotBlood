@@ -229,8 +229,8 @@ extern bool gRedFlagDropped;
 
 extern PROFILE gProfile[kMaxPlayers];
 
-extern int         dword_21EFB0[kMaxPlayers];
-extern ClockTicks  dword_21EFD0[kMaxPlayers];
+extern int         gPlayerScores[kMaxPlayers];
+extern ClockTicks  gPlayerScoreTicks[kMaxPlayers];
 extern AMMOINFO    gAmmoInfo[];
 extern POWERUPINFO gPowerUpInfo[kMaxPowerUps];
 
@@ -285,6 +285,7 @@ void        playerResetInertia(PLAYER *pPlayer);
 void        playerCorrectInertia(PLAYER *pPlayer, vec3_t const *oldpos);
 void        playerStart(int nPlayer, int bNewLevel = 0);
 void        playerReset(PLAYER *pPlayer);
+void        playerResetScores(int nPlayer);
 void        playerInit(int nPlayer, unsigned int a2);
 char        sub_3A158(PLAYER *a1, spritetype *a2);
 char        PickupItem(PLAYER *pPlayer, spritetype *pItem);
