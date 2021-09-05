@@ -2499,26 +2499,28 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     }
     case kViewEffectShadow:
     {
-        int yScale = 0;
-        if (!VanillaMode()) // if floor has ror, don't render shadow
-        {
-            if ((sector[pTSprite->sectnum].floorpicnum >= 4080) && (sector[pTSprite->sectnum].floorpicnum <= 4095))
-                break;
-        }
-        if (gShadowsFake3D) // fake parallax projection using height difference
-        {
-            yScale = viewDrawCalculateShadowSize(pTSprite);
-            if (yScale < 1) // scale is infinitely small, don't render shadow
-                break;
-        }
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
         pNSprite->z = getflorzofslope(pTSprite->sectnum, pNSprite->x, pNSprite->y);
+        if ((sector[pTSprite->sectnum].floorpicnum >= 4080) && (sector[pTSprite->sectnum].floorpicnum <= 4095) && !VanillaMode()) // if floor has ror, find actual floor
+        {
+            int cX = pNSprite->x, cY = pNSprite->y, cZ = pNSprite->z, nSectnum = pNSprite->sectnum;
+            for (int i = 0; i < 16; i++) // scan through max stacked sectors
+            {
+                if (!CheckLink(&cX, &cY, &cZ, &nSectnum))
+                    break;
+                cZ = getflorzofslope(nSectnum, cX, cY);
+            }
+            pNSprite->x = cX;
+            pNSprite->y = cY;
+            pNSprite->z = cZ;
+            pNSprite->sectnum = nSectnum;
+        }
         pNSprite->shade = 127;
         pNSprite->cstat |= 2;
         pNSprite->xrepeat = pTSprite->xrepeat;
-        pNSprite->yrepeat = gShadowsFake3D ? yScale : pTSprite->yrepeat>>2;
+        pNSprite->yrepeat = gShadowsFake3D ? viewDrawCalculateShadowSize(pNSprite) : pTSprite->yrepeat>>2; // fake parallax projection using height difference
         pNSprite->picnum = pTSprite->picnum;
         if (!VanillaMode() && (pTSprite->type == kThingDroppedLifeLeech)) // fix shadow for thrown lifeleech
             pNSprite->picnum = 800;

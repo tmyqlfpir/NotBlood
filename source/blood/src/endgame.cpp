@@ -67,10 +67,11 @@ void CEndGameMgr::Draw(void)
     if ((gGameOptions.nGameType == 0) || (gGameOptions.nGameType == 1))
     {
         char pBuffer[40];
+        const int levelTime = gLevelTime-1;
         sprintf(pBuffer, "LEVEL TIME: %d:%02d.%02d",
-            (gLevelTime/(kTicsPerSec*60)),
-            (gLevelTime/kTicsPerSec)%60,
-            ((gLevelTime%kTicsPerSec)*33)/10
+            (levelTime/(kTicsPerSec*60)),
+            (levelTime/kTicsPerSec)%60,
+            ((levelTime%kTicsPerSec)*33)/10
             );
         viewDrawText(3, pBuffer, 160, 121, -128, 0, 1, 1);
     }
