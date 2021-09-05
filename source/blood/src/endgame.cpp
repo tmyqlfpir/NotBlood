@@ -64,6 +64,16 @@ void CEndGameMgr::Draw(void)
         viewDrawText(1, "FRAG STATS", 160, nY, -128, 0, 1, 0);
         gKillMgr.Draw();
     }
+    if ((gGameOptions.nGameType == 0) || (gGameOptions.nGameType == 1))
+    {
+        char pBuffer[40];
+        sprintf(pBuffer, "LEVEL TIME: %d:%02d.%02d",
+            (gLevelTime/(kTicsPerSec*60)),
+            (gLevelTime/kTicsPerSec)%60,
+            ((gLevelTime%kTicsPerSec)*33)/10
+            );
+        viewDrawText(3, pBuffer, 160, 121, -128, 0, 1, 1);
+    }
     if (/*dword_28E3D4 != 1 && */((int)totalclock&32))
     {
         viewDrawText(3, "PRESS A KEY TO CONTINUE", 160, 134, -128, 0, 1, 1);
