@@ -1522,14 +1522,19 @@ int viewDrawCalculateShadowSize(tspritetype *pTSprite)
 {
     if (pTSprite == NULL)
         return 0;
+    int cX = gView->pSprite->x, cY = gView->pSprite->y, cZ = gView->zView, nSectnum = gView->pSprite->sectnum;
+    if (nSectnum >= 0 && nSectnum < kMaxSectors) // if valid sector, check if view is above/below sector (such as water)
+    {
+        CheckLink(&cX, &cY, &cZ, &nSectnum);
+    }
     const bool slopedFloor = sector[pTSprite->sectnum].floorstat&2;
-    int nDiff = getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) - gView->zView;
+    int nDiff = getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) - cZ;
     if (nDiff <= 0) // pov is below shadow, don't render shadow
         return 0;
     float dz = (float)nDiff / (float)(1<<8); // convert to real units
     dz = ClipRangeF(dz, 0.1f, 150.f) / 300.f; // convert to 0.0-0.5 range
 
-    float nDist = (float)ClipRange(approxDist(gView->pSprite->x-pTSprite->x, gView->pSprite->y-pTSprite->y, 0), 1, 512<<4) / (float)(1<<4);
+    float nDist = (float)ClipRange(approxDist(cX-pTSprite->x, cY-pTSprite->y, 0), 1, 512<<4) / (float)(1<<4);
     nDist /= 512 * 8;
     nDist = (nDist * (float)pTSprite->yrepeat) + (dz * (float)pTSprite->yrepeat);
     if (slopedFloor) // halve by 75% when sprite is on slope

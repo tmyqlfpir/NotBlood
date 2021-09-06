@@ -72,9 +72,19 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
     spritetype *pLink = NULL;
     const int nUpper = gUpperLink[srcsect], nLower = gLowerLink[srcsect];
     if (nUpper >= 0) // sector has a upper link
+    {
+        const int nSector = sprite[nUpper].sectnum;
+        if ((sector[nSector].floorpicnum < 4080) || (sector[nSector].floorpicnum > 4095)) // if source sector isn't ror
+            return;
         pLink = &sprite[nUpper];
+    }
     else if (nLower >= 0) // sector has a lower link
+    {
+        const int nSector = sprite[nUpper].sectnum;
+        if ((sector[nSector].ceilingpicnum < 4080) || (sector[nSector].ceilingpicnum > 4095)) // if source sector isn't ror
+            return;
         pLink = &sprite[nLower];
+    }
     if (!pLink) // no sector links found
         return;
 

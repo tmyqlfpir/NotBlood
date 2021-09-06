@@ -1,0 +1,33 @@
+name: Publish
+
+# Only trigger, when the build workflow succeeded
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: dawidd6/action-download-artifact@v2
+      with:
+        workflow: build.yml
+        workflow_conclusion: success
+        path: ./
+        
+    - name: Zipping artifacts for release
+      run: |
+        ls -R
+        for i in */; do cd "${i%/}"; zip -9 -r "../${i%/}.zip" ./; cd ..; done
+    - name: Publish artifacts to release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: "Latest Build"
+        files: |
+            ./*.zip
