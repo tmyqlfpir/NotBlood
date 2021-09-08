@@ -80,7 +80,7 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
     }
     else if (nLower >= 0) // sector has a lower link
     {
-        const int nSector = sprite[nUpper].sectnum;
+        const int nSector = sprite[nLower].sectnum;
         if ((sector[nSector].ceilingpicnum < 4080) || (sector[nSector].ceilingpicnum > 4095)) // if source sector isn't ror
             return;
         pLink = &sprite[nLower];
