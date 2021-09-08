@@ -2574,8 +2574,7 @@ void actInit(bool bSaveLoad) {
         int nSprite = headspritestat[kStatDude];
         while (nSprite >= 0) {
             spritetype *pSprite = &sprite[headspritestat[kStatDude]];
-            if (IsPlayerSprite(pSprite)) // do not delete player sprites (causes game to crash on load save)
-            {
+            if (IsPlayerSprite(pSprite)) { // do not delete player sprites (causes game to crash on load save)
                 nSprite = nextspritestat[nSprite];
                 continue;
             }
