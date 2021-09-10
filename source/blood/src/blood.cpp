@@ -679,7 +679,6 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             gHealthTemp[i] = xsprite[gPlayer[i].pSprite->extra].health;
         }
     }
-    enginecompatibilitymode = ENGINE_19960925;
     memset(xsprite,0,sizeof(xsprite));
     memset(sprite,0,kMaxSprites*sizeof(spritetype));
     drawLoadingScreen();
@@ -1881,6 +1880,7 @@ int app_main(int argc, char const * const * argv)
     ctrlInit();
     timerInit(120);
     timerSetCallback(ClockStrobe);
+    enginecompatibilitymode = ENGINE_19960925;
     // PORT-TODO: CD audio init
 
     initprintf("Initializing network users\n");
