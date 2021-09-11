@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "tile.h"
 #include "trig.h"
 #include "view.h"
+#include "warp.h"
 
 CFX gFX;
 
@@ -250,6 +251,22 @@ void CFX::fxProcess(void)
             }
             if (getflorzofslope(pSprite->sectnum, pSprite->x, pSprite->y) <= pSprite->z)
             {
+                if ((sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095) && !VanillaMode()) // if current sector is open air, find next floor
+                {
+                    int cX = pSprite->x, cY = pSprite->y, cZ = pSprite->z, nSectnum = nSector;
+                    if (CheckLink(&cX, &cY, &cZ, &nSectnum)) // if found floor underneath
+                    {
+                        pSprite->x = cX, pSprite->y = cY, pSprite->z = cZ, nSector = nSectnum;
+                        updatesector(pSprite->x, pSprite->y, &nSector);
+                        if (nSector < 0 || nSector >= kMaxSectors) // sprite out of bounds, delete
+                        {
+                            fxFree(nSprite);
+                            continue;
+                        }
+                        ChangeSpriteSect(nSprite, nSector);
+                        continue;
+                    }
+                }
                 if (pFXData->funcID < 0 || pFXData->funcID >= kCallbackMax)
                 {
                     fxFree(nSprite);

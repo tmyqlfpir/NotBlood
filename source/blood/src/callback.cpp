@@ -439,6 +439,21 @@ void fxBloodBits(int nSprite) // 14
     int nDist = Random(16)<<4;
     int x = pSprite->x+mulscale28(nDist, Cos(nAngle));
     int y = pSprite->y+mulscale28(nDist, Sin(nAngle));
+    if (!VanillaMode()) // check sector when creating splatter in random directions
+    {
+        int nSector = pSprite->sectnum;
+        if (!FindSector(pSprite->x, pSprite->y, &nSector))
+        {
+            gFX.fxFree(nSprite);
+            return;
+        }
+        if ((sector[nSector].floorpicnum >= 4080) && (sector[nSector].floorpicnum <= 4095)) // if sector is open air, delete fx
+        {
+            gFX.fxFree(nSprite);
+            return;
+        }
+        ChangeSpriteSect(nSprite, nSector);
+    }
     gFX.fxSpawn(FX_48, pSprite->sectnum, x, y, pSprite->z);
     if (pSprite->ang == 1024)
     {
