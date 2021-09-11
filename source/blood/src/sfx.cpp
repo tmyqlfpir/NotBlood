@@ -63,7 +63,7 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
 {
     if (srcsect == dstsect) // if source and listener are in same sector
         return;
-    if ((srcsect < 0) || (srcsect >= kMaxSectors) || (dstsect < 0) || (dstsect >= kMaxSectors))
+    if (!sectRangeIsFine(srcsect) || !sectRangeIsFine(dstsect))
         return;
     const int srcxsect = sector[srcsect].extra, dstxsect = sector[dstsect].extra;
     if (((srcxsect > 0) && xsector[srcxsect].Underwater) || ((dstxsect > 0) && xsector[dstxsect].Underwater)) // if either sectors are underwater
@@ -89,13 +89,13 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
         return;
 
     const int nLink = pLink->owner;
-    if ((nLink < 0) || (nLink >= kMaxSprites)) // if invalid link
+    if (!spriRangeIsFine(nLink)) // if invalid link
         return;
     const spritetype *pOtherLink = &sprite[nLink];
-    if ((pOtherLink->index < 0) || (pOtherLink->index >= kMaxSprites)) // if invalid sprite
+    if (!spriRangeIsFine(pOtherLink->index)) // if invalid sprite
         return;
     const int linksect = pLink->sectnum;
-    if ((linksect < 0) || (linksect >= kMaxSectors)) // if invalid sector
+    if (!sectRangeIsFine(linksect)) // if invalid sector
         return;
     if ((linksect > 0) && xsector[linksect].Underwater) // if other link is underwater
         return;
@@ -122,10 +122,8 @@ void Calc3DValues(BONKLE *pBonkle)
     int posX = pBonkle->curPos.x;
     int posY = pBonkle->curPos.y;
     int posZ = pBonkle->curPos.z;
-    if (!VanillaMode() && gStereo) // test to see if sound source is occurring in a linked sector (room over room)
-    {
+    if (!VanillaMode() && gStereo) // check if sound source is occurring in a linked sector (room over room)
         Calc3DSects(&posX, &posY, &posZ, pBonkle->sectnum, gMe->pSprite->sectnum);
-    }
     int dx = posX - gMe->pSprite->x;
     int dy = posY - gMe->pSprite->y;
     int dz = posZ - gMe->pSprite->z;

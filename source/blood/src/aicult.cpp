@@ -107,7 +107,7 @@ static void TommySeqCallback(int, int nXSprite)
     dy += Random3((5-gGameOptions.nDifficulty)*1000);
     dz += Random3((5-gGameOptions.nDifficulty)*500);
     bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode(); // if enemy hitscan projectiles are enabled, spawn bullet projectile
-    if (useProjectile && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if target is valid
+    if (useProjectile && spriRangeIsFine(pXSprite->target)) // if target is valid
     {
         spritetype *pTarget = &sprite[pXSprite->target];
         if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, calculate prediction for projectile
@@ -160,7 +160,7 @@ static void ShotSeqCallback(int, int nXSprite)
     dy += Random2((5-gGameOptions.nDifficulty)*1000-500);
     dz += Random2((5-gGameOptions.nDifficulty)*500);
     bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode(); // if enemy hitscan projectiles are enabled, spawn bullet projectile
-    if (useProjectile && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if target is valid
+    if (useProjectile && spriRangeIsFine(pXSprite->target)) // if target is valid
     {
         const spritetype *pTarget = &sprite[pXSprite->target];
         if ((klabs(pSprite->z-pTarget->z) < 30000)) // if height difference is under 30000, calculate prediction for projectile
@@ -195,7 +195,7 @@ static void ShotSeqCallback(int, int nXSprite)
 static void ThrowSeqCallback(int, int nXSprite)
 {
     XSPRITE *pXSprite = &xsprite[nXSprite];
-    if (!VanillaMode() && ((pXSprite->target < 0) || (pXSprite->target >= kMaxSprites))) // not a valid target, abort
+    if (!VanillaMode() && !spriRangeIsFine(pXSprite->target)) // not a valid target, abort
         return;
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
@@ -239,7 +239,7 @@ static void ThrowSeqCallback(int, int nXSprite)
 static void sub_68170(int, int nXSprite)
 {
     XSPRITE *pXSprite = &xsprite[nXSprite];
-    if (!VanillaMode() && ((pXSprite->target < 0) || (pXSprite->target >= kMaxSprites))) // not a valid target, abort
+    if (!VanillaMode() && !spriRangeIsFine(pXSprite->target)) // not a valid target, abort
         return;
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
@@ -270,7 +270,7 @@ static void sub_68170(int, int nXSprite)
 static void sub_68230(int, int nXSprite)
 {
     XSPRITE *pXSprite = &xsprite[nXSprite];
-    if (!VanillaMode() && ((pXSprite->target < 0) || (pXSprite->target >= kMaxSprites))) // not a valid target, abort
+    if (!VanillaMode() && !spriRangeIsFine(pXSprite->target)) // not a valid target, abort
         return;
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];

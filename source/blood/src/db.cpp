@@ -773,7 +773,7 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
 {
     if (pSprite == NULL) // invalid sprite, don't bother processing
         return false;
-    if ((pSprite->index < 0) || (pSprite->index >= kMaxSprites))
+    if (!spriRangeIsFine(pSprite->index))
         return false;
 
     if ((gGameOptions.nRandomizerMode >= 2) && (pSprite->type == kItemBeastVision)) // always replace beast vision if pickups or enemies+pickups mode

@@ -81,7 +81,7 @@ static void SeqAttackCallback(int, int nXSprite)
     dy += Random2(1500);
     dz += Random2(1500);
     bool useProjectile = gGameOptions.bHitscanProjectiles && !VanillaMode(); // if enemy hitscan projectiles are enabled, spawn bullet projectile
-    if (useProjectile && (pXSprite->target >= 0 && pXSprite->target < kMaxSprites)) // if target is valid
+    if (useProjectile && spriRangeIsFine(pXSprite->target)) // if target is valid
     {
         const spritetype *pTarget = &sprite[pXSprite->target];
         if (klabs(pSprite->z-pTarget->z) < 30000) // if height difference is under 30000, check target distance

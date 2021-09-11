@@ -51,13 +51,13 @@ static bool AreSectorsNeighborsDepthCheck(int sect1, int sect2, int depth, bool 
         const int nSprite[2] = {gUpperLink[sect1], gLowerLink[sect1]};
         for (int i = 0; i < 2; i++)
         {
-            if (nSprite[i] >= 0 && nSprite[i] < kMaxSprites) // valid sprite
+            if (spriRangeIsFine(nSprite[i])) // valid sprite
             {
                 const int nLink = sprite[nSprite[i]].owner & 0x0FFF;
-                if (nLink >= 0 && nLink < kMaxSprites) // valid sprite
+                if (spriRangeIsFine(nLink)) // valid sprite
                 {
                     const int nextSect = sprite[nLink].sectnum;
-                    if (nextSect >= 0 && nextSect < kMaxSectors) // valid sector
+                    if (sectRangeIsFine(nextSect)) // valid sector
                     {
                         const bool floorLinked = i == 0;
                         const int nextSectPic = floorLinked ? sector[nextSect].ceilingpicnum : sector[nextSect].floorpicnum;
@@ -85,6 +85,8 @@ static bool AreSectorsNeighborsDepthCheck(int sect1, int sect2, int depth, bool 
     {
         const int nextSect = wall[i].nextsector;
         if (nextSect < 0) // if next wall isn't linked to a sector, skip
+            continue;
+        if (!sectRangeIsFine(nextSect)) // invalid sector, skip
             continue;
         if (TestBitString(pSectBit, nextSect)) // if we've already checked this sector, skip
             continue;
