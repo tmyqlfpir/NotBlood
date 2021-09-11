@@ -439,10 +439,10 @@ void fxBloodBits(int nSprite) // 14
     int nDist = Random(16)<<4;
     int x = pSprite->x+mulscale28(nDist, Cos(nAngle));
     int y = pSprite->y+mulscale28(nDist, Sin(nAngle));
+    int nSector = pSprite->sectnum;
     if (!VanillaMode()) // check sector when creating splatter in random directions
     {
-        int nSector = pSprite->sectnum;
-        if (!FindSector(pSprite->x, pSprite->y, &nSector))
+        if (!FindSector(x, y, pSprite->z, &nSector)) // could not find valid sector, delete fx
         {
             gFX.fxFree(nSprite);
             return;
@@ -452,9 +452,9 @@ void fxBloodBits(int nSprite) // 14
             gFX.fxFree(nSprite);
             return;
         }
-        ChangeSpriteSect(nSprite, nSector);
+        GetZRangeAtXYZ(x, y, pSprite->z, nSector, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist, CLIPMASK0); // get new floor position of changed sector
     }
-    gFX.fxSpawn(FX_48, pSprite->sectnum, x, y, pSprite->z);
+    gFX.fxSpawn(FX_48, nSector, x, y, pSprite->z);
     if (pSprite->ang == 1024)
     {
         int nChannel = 28+(pSprite->index&2);
@@ -463,7 +463,7 @@ void fxBloodBits(int nSprite) // 14
     }
     if (Chance(0x5000))
     {
-        spritetype *pFX = gFX.fxSpawn(FX_36, pSprite->sectnum, x, y, floorZ-64);
+        spritetype *pFX = gFX.fxSpawn(FX_36, nSector, x, y, floorZ-64);
         if (pFX)
             pFX->ang = nAngle;
     }
