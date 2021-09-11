@@ -1766,7 +1766,7 @@ void FireLifeLeech(int nTrigger, PLAYER *pPlayer)
     int r3 = Random2(1000);
     int nMissileType = kMissileLifeLeechRegular;
     if (gLifeleechRnd && !VanillaMode()) // if random projectiles for lifeleech flag is on
-        nMissileType = kMissileBase + Random(18);
+        nMissileType = kMissileBase + Random(kMissileLifeLeechAltSmall-kMissileBase);
     spritetype *pMissile = playerFireMissile(pPlayer, 0, pPlayer->aim.dx+r1, pPlayer->aim.dy+r2, pPlayer->aim.dz+r3, nMissileType);
     if (pMissile)
     {

@@ -248,10 +248,34 @@ bool CanMove(spritetype *pSprite, int a2, int nAngle, int nRange)
     return 1;
 }
 
+static unsigned char gSpriteStuckage[kMaxSprites] = {0};
+static LOCATION gSpritePrevLoc[kMaxSprites] = {0};
+
 void aiChooseDirection(spritetype *pSprite, XSPRITE *pXSprite, int a3)
 {
     int nSprite = pSprite->index;
     dassert(pSprite->type >= kDudeBase && pSprite->type < kDudeMax);
+    LOCATION *pPrevLoc = &gSpritePrevLoc[nSprite];
+    if ((pSprite->x == pPrevLoc->x) && (pSprite->y == pPrevLoc->y) && (pSprite->z == pPrevLoc->z))
+    {
+        gSpriteStuckage[nSprite]++;
+        if (gSpriteStuckage[nSprite] > 10) // if enemy has been stuck for roughly more than a second
+        {
+            gSpriteStuckage[nSprite] = 0;
+            if (EnemiesNotBlood() && !VanillaMode()) // turn their direction by 90/180/270 degrees
+            {
+                pXSprite->goalAng = (pSprite->ang+((Random(3)+1)*512))&2047;
+                return;
+            }
+        }
+    }
+    else
+    {
+        gSpriteStuckage[nSprite] = 0;
+        pPrevLoc->x = pSprite->x;
+        pPrevLoc->y = pSprite->y;
+        pPrevLoc->z = pSprite->z;
+    }
     int vc = ((a3+1024-pSprite->ang)&2047)-1024;
     int nCos = Cos(pSprite->ang);
     int nSin = Sin(pSprite->ang);
@@ -1884,6 +1908,8 @@ void AILoadSave::Load(void)
 {
     Read(cumulDamage, sizeof(cumulDamage));
     Read(gDudeSlope, sizeof(gDudeSlope));
+    memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
+    memset(gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
 }
 
 void AILoadSave::Save(void)

@@ -286,7 +286,7 @@ void LifeLeechOperate(spritetype *pSprite, XSPRITE *pXSprite, EVENT event)
                         int dz = divscale(tz - top - 256, nDist, 10);
                         int nMissileType = kMissileLifeLeechAltNormal + (pXSprite->data3 ? 1 : 0);
                         if (gLifeleechRnd && !VanillaMode()) // if random projectiles for lifeleech flag is on
-                            nMissileType = kMissileBase + Random(18);
+                            nMissileType = kMissileBase + Random(kMissileLifeLeechAltSmall-kMissileBase);
                         int t2;
                         if (!pXSprite->data3)
                             t2 = 120 / 10.0;

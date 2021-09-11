@@ -1536,7 +1536,7 @@ int viewDrawCalculateShadowSize(tspritetype *pTSprite)
 
     float nDist = (float)ClipRange(approxDist(cX-pTSprite->x, cY-pTSprite->y, 0), 1, 512<<4) / (float)(1<<4);
     nDist /= 512 * 8;
-    nDist = (nDist * (float)pTSprite->yrepeat) + (dz * (float)pTSprite->yrepeat);
+    nDist = (nDist * (float)pTSprite->yrepeat) + ((dz * (float)pTSprite->yrepeat) / 1.25f);
     if (slopedFloor) // halve by 75% when sprite is on slope
         nDist *= 0.75f;
     return ClipRange((int)nDist, 0, pTSprite->yrepeat * 4);
