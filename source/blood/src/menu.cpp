@@ -539,7 +539,7 @@ const char *pzAutosaveModeStrings[] = {
 const char *pzVanillaModeStrings[] = {
     "OFF",
     "ON",
-    "ORIGINAL MOUSE+ON",
+    "DOS MOUSE+ON",
 };
 
 void SetAutoAim(CGameMenuItemZCycle *pItem);
