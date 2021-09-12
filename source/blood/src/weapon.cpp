@@ -203,6 +203,8 @@ char checkAmmo2(PLAYER *pPlayer, int ammotype, int amount)
 
 void SpawnBulletEject(PLAYER *pPlayer, int a2, int a3)
 {
+    if (r_mirrormode && (numplayers == 1) && !VanillaMode(true)) // mirror mode enabled, invert position for bullet ejection
+        a2 = -a2, a3 = -a3;
     POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
     pPlayer->zView = pPlayer->pSprite->z-pPosture->eyeAboveZ;
     int dz = pPlayer->zWeapon-(pPlayer->zWeapon-pPlayer->zView)/2;
@@ -211,6 +213,8 @@ void SpawnBulletEject(PLAYER *pPlayer, int a2, int a3)
 
 void SpawnShellEject(PLAYER *pPlayer, int a2, int a3)
 {
+    if (r_mirrormode && (numplayers == 1) && !VanillaMode(true)) // mirror mode enabled, invert position for shell ejection
+        a2 = -a2, a3 = -a3;
     POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
     pPlayer->zView = pPlayer->pSprite->z-pPosture->eyeAboveZ;
     int t = pPlayer->zWeapon - pPlayer->zView;
