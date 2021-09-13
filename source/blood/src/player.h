@@ -284,6 +284,7 @@ void        playerSetGodMode(PLAYER *pPlayer, char bGodMode);
 void        playerResetInertia(PLAYER *pPlayer);
 void        playerCorrectInertia(PLAYER *pPlayer, vec3_t const *oldpos);
 void        playerStart(int nPlayer, int bNewLevel = 0);
+void        playerResetScores(int nPlayer);
 void        playerReset(PLAYER *pPlayer);
 void        playerResetScores(int nPlayer);
 void        playerInit(int nPlayer, unsigned int a2);

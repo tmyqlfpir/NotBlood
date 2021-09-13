@@ -666,10 +666,10 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     }
     if (gGameOptions.nGameType > 0)
     {
-        gView = gMe;
-        gViewIndex = myconnectindex;
         gBlueFlagDropped = false;
         gRedFlagDropped = false;
+        gView = gMe;
+        gViewIndex = myconnectindex;
     }
     if (gameOptions->uGameFlags&1)
     {
