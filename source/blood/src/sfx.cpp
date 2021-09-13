@@ -100,7 +100,7 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
     if ((linksect > 0) && xsector[linksect].Underwater) // if other link is underwater
         return;
 
-    if (AreSectorsNeighbors(srcsect, dstsect, 4)) // if sectors are parallel to each other (search at a depth of 4)
+    if (!AreSectorsNeighbors(pOtherLink->sectnum, dstsect, 4, true)) // if linked sector is not parallel to destination sector, abort
         return;
 
     if (nUpper >= 0)
