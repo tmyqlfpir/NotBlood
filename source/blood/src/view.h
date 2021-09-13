@@ -203,3 +203,12 @@ inline void viewBackupSpriteLoc(int nSprite, spritetype *pSprite)
         SetBitString(gInterpolateSprite, nSprite);
     }
 }
+
+inline void viewOffsetBackupSpriteLoc(spritetype *pSprite, vec3_t *offsetPos)
+{
+    const int nSprite = pSprite->index;
+    LOCATION *pPrevLoc = &gPrevSpriteLoc[nSprite];
+    pPrevLoc->x = pSprite->x+(pPrevLoc->x-offsetPos->x);
+    pPrevLoc->y = pSprite->y+(pPrevLoc->y-offsetPos->y);
+    pPrevLoc->z = pSprite->z+(pPrevLoc->z-offsetPos->z);
+}
