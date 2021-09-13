@@ -249,13 +249,13 @@ bool CanMove(spritetype *pSprite, int a2, int nAngle, int nRange)
 }
 
 static unsigned char gSpriteStuckage[kMaxSprites] = {0};
-static LOCATION gSpritePrevLoc[kMaxSprites] = {0};
+static vec3_t gSpritePrevLoc[kMaxSprites] = {0, 0, 0};
 
 void aiChooseDirection(spritetype *pSprite, XSPRITE *pXSprite, int a3)
 {
     int nSprite = pSprite->index;
     dassert(pSprite->type >= kDudeBase && pSprite->type < kDudeMax);
-    LOCATION *pPrevLoc = &gSpritePrevLoc[nSprite];
+    vec3_t *pPrevLoc = &gSpritePrevLoc[nSprite];
     if ((pSprite->x == pPrevLoc->x) && (pSprite->y == pPrevLoc->y) && (pSprite->z == pPrevLoc->z))
     {
         gSpriteStuckage[nSprite]++;

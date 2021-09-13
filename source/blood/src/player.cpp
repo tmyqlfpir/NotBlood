@@ -549,6 +549,8 @@ void packUseItem(PLAYER *pPlayer, int nPack)
             ThrowError("Unhandled pack item %d", nPack);
             return;
         }
+        if ((gPackSlotSwitch || (gGameOptions.nGameType > 0)) && !pPlayer->packSlots[nPack].isActive && (nPack != 1) && !VanillaMode()) // switch current slot item to activated item (ignore diving suit)
+            pPlayer->packItemId = nPack;
     }
     pPlayer->packItemTime = 0;
     if (v4)
@@ -637,6 +639,8 @@ void playerCorrectInertia(PLAYER* pPlayer, vec3_t const *oldpos)
     pPlayer->zView += pPlayer->pSprite->z-oldpos->z;
     pPlayer->zWeapon += pPlayer->pSprite->z-oldpos->z;
     viewCorrectViewOffsets(pPlayer->nPlayer, oldpos);
+    if (pPlayer == gMe) // if player is listener, update ear position so audio pitch of surrounding sfx does not freak out when transitioning between ror sectors
+        sfxUpdateListenerPos(true);
 }
 
 void playerResetPowerUps(PLAYER* pPlayer)
@@ -846,6 +850,8 @@ void playerStart(int nPlayer, int bNewLevel)
         gViewMap.x = pPlayer->pSprite->x;
         gViewMap.y = pPlayer->pSprite->y;
         gViewMap.angle = pPlayer->pSprite->ang;
+        if (!VanillaMode())
+            sfxUpdateListenerPos(true);
     }
     if (IsUnderwaterSector(pSprite->sectnum))
     {
@@ -1439,12 +1445,12 @@ void ProcessInput(PLAYER *pPlayer)
                 actPostSprite(pPlayer->nSprite, kStatThing);
                 seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
                 playerReset(pPlayer);
-                if (gGameOptions.nGameType == 0 && numplayers == 1) // if singleplayer
+                if (gGameOptions.nGameType == 0 && numplayers == 1) // if single-player
                 {
                     if (gDemo.at0)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
-                    return; // return so ProcessFrame() can restart singleplayer
+                    return; // return so ProcessFrame() can restart single-player
                 }
                 else
                     playerStart(pPlayer->nPlayer);
@@ -2204,7 +2210,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         FragPlayer(pPlayer, nSource);
         trTriggerSprite(nSprite, pXSprite, kCmdOff);
 
-        if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode()) // if died in singleplayer and not playing demo
+        if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode()) // if died in single-player and not playing demo
         {
             viewSetMessage("press \"use\" to load last save or press \"enter\" to restart level"); // string borrowed from bloodgdx (thank you M210)
         }

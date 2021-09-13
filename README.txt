@@ -52,6 +52,7 @@ New features include:
 * cl_shadowsfake3d
 * cl_smoketrail3d
 * cl_particlesduration
+* cl_packitemswitch
 * hud_powerupdurationticks
 * hud_showweaponselect
 * hud_showweaponselecttimestart

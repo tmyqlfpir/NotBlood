@@ -1405,7 +1405,7 @@ void SetupOptionsMenu(void)
     itemOptionsChainEnhancements.bDisableForNet = 1;
     itemOptionsChainEnhancements.bEnable = !gVanilla;
     itemEnhancementMonsterSettings.tooltip_pzTextUpper = "Set the monster settings";
-    itemEnhancementMonsterSettings.tooltip_pzTextLower = "for singleplayer mode";
+    itemEnhancementMonsterSettings.tooltip_pzTextLower = "for single-player mode";
     itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
     itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
     itemEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
@@ -2717,7 +2717,7 @@ void AutosaveGame(bool levelStartSave)
     }
     LoadSave::SaveGame(strSaveGameName);
     *gMe = playerTemp; // restore current player struct
-    if (!levelStartSave) // only print autosave message on key saves
+    if (!levelStartSave) // don't print message on level start autosaves
         viewSetMessage("Autosaved...");
     gQuickLoadSlot = nSlot;
     gAutosaveInCurLevel = true;

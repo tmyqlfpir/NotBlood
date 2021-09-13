@@ -109,6 +109,7 @@ extern int32_t gShowWeaponSelectPosition;
 extern int32_t gShadowsFake3D;
 extern int32_t gSmokeTrail3D;
 extern int32_t gParticlesDuration;
+extern int32_t gPackSlotSwitch;
 
 ///////
 extern int gVanilla;

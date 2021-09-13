@@ -165,7 +165,7 @@ spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned i
     if (nFx < 0 || nFx >= kFXMax)
         return NULL;
     FXDATA *pFX = &gFXData[nFx];
-    if (gParticlesDuration && (gGameOptions.nGameType == 0) && !gModernMap && !VanillaMode()) // if singleplayer and not a modern map, extend violent effects duration
+    if (gParticlesDuration && (gGameOptions.nGameType == 0) && !gModernMap && !VanillaMode()) // if single-player and not a modern map, extend violent effects duration
     {
         switch (nFx)
         {

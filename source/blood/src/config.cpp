@@ -126,6 +126,7 @@ int32_t gShowWeaponSelectTimeStart;
 int32_t gShowWeaponSelectTimeHold;
 int32_t gShowWeaponSelectTimeEnd;
 int32_t gShowWeaponSelectPosition;
+int32_t gPackSlotSwitch;
 int32_t gShadowsFake3D;
 int32_t gSmokeTrail3D;
 int32_t gParticlesDuration;
@@ -382,6 +383,7 @@ void CONFIG_SetDefaults(void)
     gShadowsFake3D = 1;
     gSmokeTrail3D = 1;
     gParticlesDuration = 1;
+    gPackSlotSwitch = 1;
     //ud.lockout                = 0;
     //ud.m_marker               = 1;
     //ud.maxautosaves           = 5;

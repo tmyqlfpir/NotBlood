@@ -3077,7 +3077,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 if (gShowWeapon && gGameOptions.nGameType > 0 && gView) {
                     viewAddEffect(nTSprite, kViewEffectShowWeapon);
                     if (powerupCheck(pPlayer, kPwUpTwoGuns))
-                        viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active and not in singleplayer
+                        viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active and not in single-player
                 }
 
                 if (pPlayer->flashEffect && (gView != pPlayer || gViewPos != VIEWPOS_0)) {

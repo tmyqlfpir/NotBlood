@@ -34,9 +34,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "sound.h"
 #include "trig.h"
 
-POINT2D earL, earR, earL0, earR0; // Ear position
-VECTOR2D earVL, earVR; // Ear velocity ?
-int lPhase, rPhase, lVol, rVol, lPitch, rPitch;
+static POINT2D earL, earR, earLOld, earROld; // Ear position
+static VECTOR2D earVL, earVR; // Ear velocity
+static int lPhase, rPhase, lVol, rVol, lPitch, rPitch;
 
 BONKLE Bonkle[256];
 BONKLE *BonkleCache[256];
@@ -103,18 +103,9 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
     if (!AreSectorsNeighbors(pOtherLink->sectnum, dstsect, 4, true)) // if linked sector is not parallel to destination sector, abort
         return;
 
-    if (nUpper >= 0)
-    {
-        *srcx += pOtherLink->x-pLink->x;
-        *srcy += pOtherLink->y-pLink->y;
-        *srcz += pOtherLink->z-pLink->z;
-    }
-    else
-    {
-        *srcx += pOtherLink->x-pLink->x;
-        *srcy += pOtherLink->y-pLink->y;
-        *srcz += pOtherLink->z-pLink->z;
-    }
+    *srcx += pOtherLink->x-pLink->x;
+    *srcy += pOtherLink->y-pLink->y;
+    *srcz += pOtherLink->z-pLink->z;
 }
 
 void Calc3DValues(BONKLE *pBonkle)
@@ -517,20 +508,27 @@ void sfxKillSpriteSounds(spritetype *pSprite)
     }
 }
 
-void sfxUpdate3DSounds(void)
+void sfxUpdateListenerPos(bool resetPos)
 {
+    earLOld = earL;
+    earROld = earR;
     int dx = mulscale30(Cos(gMe->pSprite->ang + 512), 43);
-    earL0 = earL;
     int dy = mulscale30(Sin(gMe->pSprite->ang + 512), 43);
-    earR0 = earR;
     earL.x = gMe->pSprite->x - dx;
     earL.y = gMe->pSprite->y - dy;
     earR.x = gMe->pSprite->x + dx;
     earR.y = gMe->pSprite->y + dy;
-    earVL.dx = earL.x - earL0.x;
-    earVL.dy = earL.y - earL0.y;
-    earVR.dx = earR.x - earR0.x;
-    earVR.dy = earR.y - earR0.y;
+    if (resetPos) // only update ear positions (and retain velocity values)
+        return;
+    earVL.dx = earL.x - earLOld.x;
+    earVL.dy = earL.y - earLOld.y;
+    earVR.dx = earR.x - earROld.x;
+    earVR.dy = earR.y - earROld.y;
+}
+
+void sfxUpdate3DSounds(void)
+{
+    sfxUpdateListenerPos();
     for (int i = nBonkles - 1; i >= 0; i--)
     {
         BONKLE *pBonkle = BonkleCache[i];
