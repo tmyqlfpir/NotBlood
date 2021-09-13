@@ -1144,7 +1144,7 @@ void DrawStatNumber(const char *pFormat, int nNumber, int nTile, int x, int y, i
         int numTile, numScale, numY;
         if (tempbuf[i] == ' ')
             continue;
-        else if (tempbuf[i] == '-')
+        if (tempbuf[i] == '-')
         {
             switch (nTile)
             {

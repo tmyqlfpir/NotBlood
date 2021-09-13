@@ -1885,6 +1885,8 @@ void videoBeginDrawing(void)
 //
 // mirrorDrawing() -- mirrors the current framebuffer
 //
+static uint8_t mirroredFrame[1920*1080*4] = {0};
+
 void videoMirrorDrawing(void)
 {
     uint8_t *curFrame;
@@ -1905,9 +1907,14 @@ void videoMirrorDrawing(void)
         return;
 
     const int bufferSize = screenxy.x * screenxy.y;
-    uint8_t *tempFrame = (uint8_t *)Xmalloc(bufferSize);
-    if (!tempFrame)
-        return;
+    uint8_t *tempFrame = mirroredFrame;
+    const bool allocateFrame = bufferSize > sizeof(mirroredFrame); // if bigger than static 4k mirrored frame, allocate from memory (very slow!)
+    if (allocateFrame)
+    {
+        tempFrame = (uint8_t *)Xmalloc(bufferSize);
+        if (!tempFrame)
+            return;
+    }
     Bmemcpy(tempFrame, (void *)curFrame, bufferSize);
 
     for (int y = 0; y < screenxy.y; y++)
@@ -1918,7 +1925,8 @@ void videoMirrorDrawing(void)
             curFrame[curLine+x] = tempFrame[curLine+((screenxy.x-1)-x)];
         }
     }
-    Bfree(tempFrame);
+    if (allocateFrame)
+        Bfree(tempFrame);
 }
 
 //
