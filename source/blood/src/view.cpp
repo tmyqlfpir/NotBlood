@@ -1523,10 +1523,8 @@ int viewDrawCalculateShadowSize(tspritetype *pTSprite)
     if (pTSprite == NULL)
         return 0;
     int cX = gView->pSprite->x, cY = gView->pSprite->y, cZ = gView->zView, nSectnum = gView->pSprite->sectnum;
-    if (nSectnum >= 0 && nSectnum < kMaxSectors) // if valid sector, check if view is above/below sector (such as water)
-    {
+    if (sectRangeIsFine(nSectnum)) // if valid sector, check if view is above/below sector (such as water)
         CheckLink(&cX, &cY, &cZ, &nSectnum);
-    }
     const bool slopedFloor = sector[pTSprite->sectnum].floorstat&2;
     int nDiff = getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) - cZ;
     if (nDiff <= 0) // pov is below shadow, don't render shadow
@@ -2510,16 +2508,18 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->z = getflorzofslope(pTSprite->sectnum, pNSprite->x, pNSprite->y);
         if ((sector[pNSprite->sectnum].floorpicnum >= 4080) && (sector[pNSprite->sectnum].floorpicnum <= 4095) && !VanillaMode()) // if floor has ror, find actual floor
         {
-            int cX = pNSprite->x, cY = pNSprite->y, cZ = pNSprite->z, nSectnum = pNSprite->sectnum;
+            int cX = pNSprite->x, cY = pNSprite->y, cZ = pNSprite->z, cZrel = pNSprite->z, nSectnum = pNSprite->sectnum;
             for (int i = 0; i < 16; i++) // scan through max stacked sectors
             {
                 if (!CheckLink(&cX, &cY, &cZ, &nSectnum)) // if no more floors underneath, abort
                     break;
-                cZ = getflorzofslope(nSectnum, cX, cY);
+                const int newFloorZ = getflorzofslope(nSectnum, cX, cZ);
+                cZrel += newFloorZ - cZ; // get height difference for next sector's ceiling/floor, and add to relative height for shadow
                 if ((sector[nSectnum].floorpicnum < 4080) || (sector[nSectnum].floorpicnum > 4095)) // if current sector is not open air, use as floor for shadow casting, otherwise continue to next sector
                     break;
+                cZ = newFloorZ;
             }
-            pNSprite->x = cX, pNSprite->y = cY, pNSprite->z = cZ, pNSprite->sectnum = nSectnum;
+            pNSprite->z = cZrel;
         }
         pNSprite->shade = 127;
         pNSprite->cstat |= 2;
@@ -2639,7 +2639,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             pNSprite->picnum = nVoxel;
             if (pPlayer->curWeapon == 9) // position lifeleech behind player
             {
-                pNSprite->x +=  mulscale30(128, Cos(gView->pSprite->ang));
+                pNSprite->x += mulscale30(128, Cos(gView->pSprite->ang));
                 pNSprite->y += mulscale30(128, Sin(gView->pSprite->ang));
             }
             if ((pPlayer->curWeapon == 9) || (pPlayer->curWeapon == 10)) // make lifeleech/voodoo doll always face viewer like sprite
