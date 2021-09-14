@@ -34,7 +34,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "sound.h"
 #include "trig.h"
 
-static POINT2D earL, earR, earLOld, earROld; // Ear position
+static POINT2D earL, earR, earL0, earR0; // Ear position
 static VECTOR2D earVL, earVR; // Ear velocity
 static int lPhase, rPhase, lVol, rVol, lPitch, rPitch;
 
@@ -510,8 +510,8 @@ void sfxKillSpriteSounds(spritetype *pSprite)
 
 void sfxUpdateListenerPos(bool resetPos)
 {
-    earLOld = earL;
-    earROld = earR;
+    earL0 = earL;
+    earR0 = earR;
     int dx = mulscale30(Cos(gMe->pSprite->ang + 512), 43);
     int dy = mulscale30(Sin(gMe->pSprite->ang + 512), 43);
     earL.x = gMe->pSprite->x - dx;
@@ -520,10 +520,10 @@ void sfxUpdateListenerPos(bool resetPos)
     earR.y = gMe->pSprite->y + dy;
     if (resetPos) // only update ear positions (and retain velocity values)
         return;
-    earVL.dx = earL.x - earLOld.x;
-    earVL.dy = earL.y - earLOld.y;
-    earVR.dx = earR.x - earROld.x;
-    earVR.dy = earR.y - earROld.y;
+    earVL.dx = earL.x - earL0.x;
+    earVL.dy = earL.y - earL0.y;
+    earVR.dx = earR.x - earR0.x;
+    earVR.dy = earR.y - earR0.y;
 }
 
 void sfxUpdate3DSounds(void)

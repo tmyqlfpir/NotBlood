@@ -27,12 +27,6 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood.exe ./upload
-        cp ./notblood.pk3 ./upload
-        cp ./notblood.sf2 ./upload
-        cp ./TILES099.ART ./upload
-        cp ./README.txt ./upload
-        cp ./source/build/buildlic.txt ./upload
-        cp ./source/blood/gpl-2.0.txt ./upload
     - uses: actions/upload-artifact@v2
       with:
         name: notblood-win64
@@ -58,12 +52,6 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood.exe ./upload
-        cp ./notblood.pk3 ./upload
-        cp ./notblood.sf2 ./upload
-        cp ./TILES099.ART ./upload
-        cp ./README.txt ./upload
-        cp ./source/build/buildlic.txt ./upload
-        cp ./source/blood/gpl-2.0.txt ./upload
     - uses: actions/upload-artifact@v2
       with:
         name: notblood-win32
@@ -85,12 +73,6 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood ./upload
-        cp ./notblood.pk3 ./upload
-        cp ./notblood.sf2 ./upload
-        cp ./TILES099.ART ./upload
-        cp ./README.txt ./upload
-        cp ./source/build/buildlic.txt ./upload
-        cp ./source/blood/gpl-2.0.txt ./upload
     - uses: actions/upload-artifact@v2
       with:
         name: notblood-linux-gcc
@@ -112,12 +94,6 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood ./upload
-        cp ./notblood.pk3 ./upload
-        cp ./notblood.sf2 ./upload
-        cp ./TILES099.ART ./upload
-        cp ./README.txt ./upload
-        cp ./source/build/buildlic.txt ./upload
-        cp ./source/blood/gpl-2.0.txt ./upload
     - uses: actions/upload-artifact@v2
       with:
         name: notblood-linux-clang
@@ -139,12 +115,6 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood ./upload
-        cp ./notblood.pk3 ./upload
-        cp ./notblood.sf2 ./upload
-        cp ./TILES099.ART ./upload
-        cp ./README.txt ./upload
-        cp ./source/build/buildlic.txt ./upload
-        cp ./source/blood/gpl-2.0.txt ./upload
     - uses: actions/upload-artifact@v2
       with:
         name: notblood-macos

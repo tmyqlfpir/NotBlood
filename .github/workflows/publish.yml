@@ -12,15 +12,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
+    - name: 'Prepare files for upload'
+      run: |
+        mkdir -p ./upload
+        cp ./notblood.pk3 ./upload
+        cp ./notblood.sf2 ./upload
+        cp ./TILES099.ART ./upload
+        cp ./README.txt ./upload
+        cp ./source/build/buildlic.txt ./upload
+        cp ./source/blood/gpl-2.0.txt ./upload
     - uses: dawidd6/action-download-artifact@v2
       with:
         workflow: build.yml
         workflow_conclusion: success
-        path: ./
+        path: ./upload
         
     - name: Zipping artifacts for release
       run: |
+        cd ./upload
         ls -R
+        for i in */; do cp *.pk3 "${i%/}"; cp *.sf2 "${i%/}"; cp *.ART "${i%/}"; cp *.txt "${i%/}"; done
         for i in */; do cd "${i%/}"; zip -9 -r "../${i%/}.zip" ./; cd ..; done
     - name: Publish artifacts to release
       uses: "marvinpinto/action-automatic-releases@latest"
@@ -30,4 +42,4 @@ jobs:
         prerelease: false
         title: "Latest Build"
         files: |
-            ./*.zip
+            ./upload/*.zip
