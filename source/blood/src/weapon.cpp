@@ -665,6 +665,7 @@ void WeaponLower(PLAYER *pPlayer)
             {
                 if (pPlayer->input.newWeapon == 6) // do not put away lighter if TNT was selected while throwing a spray can
                 {
+                    pPlayer->lastWeapon = pPlayer->curWeapon;
                     pPlayer->weaponState = 2;
                     StartQAV(pPlayer, 11, -1, 0);
                     WeaponRaise(pPlayer);
@@ -686,6 +687,7 @@ void WeaponLower(PLAYER *pPlayer)
             }
             else
             {
+                pPlayer->lastWeapon = pPlayer->curWeapon;
                 if (pPlayer->input.newWeapon == 6)
                 {
                     pPlayer->weaponState = 2;
@@ -732,6 +734,7 @@ void WeaponLower(PLAYER *pPlayer)
         case 1:
             if (!VanillaMode() && (pPlayer->input.newWeapon == 7)) // do not put away lighter after TNT is thrown if while throwing the weapon was switched already to spray
             {
+                pPlayer->lastWeapon = pPlayer->curWeapon;
                 pPlayer->weaponState = 2;
                 StartQAV(pPlayer, 17, -1, 0);
                 WeaponRaise(pPlayer);
@@ -2185,6 +2188,8 @@ void WeaponProcess(PLAYER *pPlayer) {
         }
         WeaponLower(pPlayer);
         pPlayer->throwPower = 0;
+        if (pPlayer->lastWeapon && !BannedUnderwater(pPlayer->lastWeapon) && !VanillaMode()) // switch to last weapon if available
+            pPlayer->nextWeapon = pPlayer->lastWeapon;
     }
     WeaponPlay(pPlayer);
     UpdateAimVector(pPlayer);
@@ -2269,7 +2274,11 @@ void WeaponProcess(PLAYER *pPlayer) {
     if (pPlayer->input.keyFlags.lastWeapon)
     {
         pPlayer->input.keyFlags.lastWeapon = 0;
-        if (pPlayer->curWeapon && (pPlayer->curWeapon != pPlayer->lastWeapon) && !VanillaMode()) // if player is not currently switching weapons and current weapon is different to last weapon
+        if (VanillaMode())
+        {
+            viewSetMessage("Last weapon button disabled for vanilla mode...");
+        }
+        else if (pPlayer->curWeapon && (pPlayer->curWeapon != pPlayer->lastWeapon)) // if player is not currently switching weapons and current weapon is different to last weapon
         {
             if ((pPlayer->lastWeapon > 0) && (pPlayer->lastWeapon < 13) && !(pPlayer->isUnderwater && BannedUnderwater(pPlayer->lastWeapon))) // if last weapon is safe to switch to
             {

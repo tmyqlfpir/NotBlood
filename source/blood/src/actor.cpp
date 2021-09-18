@@ -4970,7 +4970,11 @@ void MoveDude(spritetype *pSprite)
             if (VanillaMode())
                 playerResetInertia(pPlayer);
             else
+            {
                 playerCorrectInertia(pPlayer, &oldpos);
+                if (pPlayer == gMe) // if player is listener, update ear position so audio pitch of surrounding sfx does not freak out when transitioning between ror sectors
+                    sfxUpdateListenerPos(true);
+            }
         }
         switch (nLink) {
         case kMarkerLowStack:
@@ -5905,7 +5909,7 @@ void MoveMissileBullet(spritetype *pSprite)
     if (weHitSomething) // if bullet hit anything, delete sprite
     {
         seqKill(3, nXMissile);
-        actPostSprite(pSprite->index, kStatFree);
+        actPostSprite(nSprite, kStatFree);
     }
     if (pOwner)
         pOwner->cstat = bakCstat;
