@@ -7458,11 +7458,11 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
             if (!safeToLerp)
                 sm0.lerp[3] = (float)goal.a; // next keyframe is too big to transition smoothly, so set lerp to expected keyframe
             else
-                sm0.lerp[3] = lerpF(sm.lerp[3], (float)(goal.a+2048), rotatespritesmoothratioF)-2048.f;
-            sx = (int)sm.lerp[0];
-            sy = (int)sm.lerp[1];
-            z  = (int)sm.lerp[2];
-            a  = (int)sm.lerp[3] & 2047;
+                sm0.lerp[3] = lerpF(sm0.lerp[3], (float)(goal.a+2048), rotatespritesmoothratioF)-2048.f;
+            sx = (int)sm0.lerp[0];
+            sy = (int)sm0.lerp[1];
+            z  = (int)sm0.lerp[2];
+            a  = (int)(sm0.lerp[3] + 2048.f) & 2047;
         }
         else // set to next keyframe position (no interpolation)
         {
