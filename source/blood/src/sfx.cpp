@@ -508,6 +508,22 @@ void sfxKillSpriteSounds(spritetype *pSprite)
     }
 }
 
+void sfxUpdateSpritePos(spritetype *pSprite)
+{
+    dassert(pSprite != NULL);
+    for (int i = nBonkles - 1; i >= 0; i--) // update all attached sprite sfx to new position
+    {
+        BONKLE *pBonkle = BonkleCache[i];
+        if (pBonkle->pSndSpr == pSprite)
+        {
+            pBonkle->curPos.x = pSprite->x;
+            pBonkle->curPos.y = pSprite->y;
+            pBonkle->curPos.z = pSprite->z;
+            pBonkle->oldPos = pBonkle->curPos;
+        }
+    }
+}
+
 void sfxUpdateListenerPos(bool resetPos)
 {
     earL0 = earL;
@@ -519,20 +535,7 @@ void sfxUpdateListenerPos(bool resetPos)
     earR.x = gMe->pSprite->x + dx;
     earR.y = gMe->pSprite->y + dy;
     if (resetPos) // only update ear positions (and retain velocity values)
-    {
-        for (int i = nBonkles - 1; i >= 0; i--) // update all attached player sfx to new position
-        {
-            BONKLE *pBonkle = BonkleCache[i];
-            if (pBonkle->pSndSpr == gMe->pSprite)
-            {
-                pBonkle->curPos.x = gMe->pSprite->x;
-                pBonkle->curPos.y = gMe->pSprite->y;
-                pBonkle->curPos.z = gMe->pSprite->z;
-                pBonkle->oldPos = pBonkle->curPos;
-            }
-        }
         return;
-    }
     earVL.dx = earL.x - earL0.x;
     earVL.dy = earL.y - earL0.y;
     earVR.dx = earR.x - earR0.x;

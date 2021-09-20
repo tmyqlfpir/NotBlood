@@ -849,7 +849,10 @@ void playerStart(int nPlayer, int bNewLevel)
         gViewMap.y = pPlayer->pSprite->y;
         gViewMap.angle = pPlayer->pSprite->ang;
         if (!VanillaMode())
-            sfxUpdateListenerPos(true);
+        {
+            sfxUpdateListenerPos(true); // if player is listener, update ear position
+            sfxUpdateSpritePos(pPlayer->pSprite); // update any assigned sfx to new player position
+        }
     }
     if (IsUnderwaterSector(pSprite->sectnum))
     {

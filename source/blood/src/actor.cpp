@@ -4978,6 +4978,7 @@ void MoveDude(spritetype *pSprite)
                 playerCorrectInertia(pPlayer, &oldpos);
                 if (pPlayer == gMe) // if player is listener, update ear position so audio pitch of surrounding sfx does not freak out when transitioning between ror sectors
                     sfxUpdateListenerPos(true);
+                sfxUpdateSpritePos(pSprite); // update any assigned sfx to new sprite position
             }
         }
         switch (nLink) {
