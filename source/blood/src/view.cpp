@@ -1385,17 +1385,20 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         {  -1, 0, 0x8000}, // NULL
     };
 
-    const int travelTime = gShowWeaponSelectTimeStart, holdTime = gShowWeaponSelectTimeHold, decayTime = gShowWeaponSelectTimeEnd;
-    const float animPosMax = gShowWeaponSelectPosition, animPosMin = -10;
+    const float animAdjustMinPos = 44 / 34; // adjusting the animation minimum position requires also adding a factor multiply to attack/decay speed so existing config settings are compatible
+    const float animPosMax = gShowWeaponSelectPosition, animPosMin = -20;
+    const int attackTime = (int)((float)(gShowWeaponSelectTimeStart*kTicsPerFrame)*animAdjustMinPos);
+    const int holdTime = gShowWeaponSelectTimeHold*kTicsPerFrame;
+    const int decayTime = (int)((float)(gShowWeaponSelectTimeEnd*kTicsPerFrame)*animAdjustMinPos);
 
     const float animPosRange = animPosMax + (-animPosMin);
-    const int curTime = gLevelTime;
+    const int lerpTime = gViewInterpolate ? rotatespritesmoothratio / (65536 / kTicsPerFrame) : 0; // don't use interpolate value if view interpolation is disabled
+    const int curTime = (gLevelTime*kTicsPerFrame)+lerpTime;
     static int animClock = 0, animState = 0;
-    static float animPosPrev;
     float animPos = 0;
 
-    const bool timeDiffTooBig = ((animClock - (travelTime+holdTime+decayTime)) > curTime) || ((animClock + (travelTime+holdTime+decayTime)) < curTime);
-    if ((curTime < 50) || (animState && timeDiffTooBig)) // if player just started level, or the clock is impossibly far ahead (eg player quickloaded)
+    const bool timeDiffTooBig = ((animClock - (attackTime+holdTime+decayTime)) > curTime) || ((animClock + (attackTime+holdTime+decayTime)) < curTime);
+    if ((curTime < (50*kTicsPerFrame)) || (animState && timeDiffTooBig)) // if player just started level, or the clock is impossibly far ahead (eg player quickloaded)
     {
         animClock = curTime;
         animState = 0;
@@ -1418,7 +1421,6 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         animClock = curTime;
         animState = 0;
         animPos = 0;
-        animPosPrev = 0;
         if (pPlayer->input.newWeapon != 0) // player switched weapon, set start weapon animation state
             animState = 1;
         return;
@@ -1426,14 +1428,11 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         if (curTime == animClock) // if we're at the same tick, wait for next frame
             return;
         animPos = 0;
-        animPosPrev = -(1.f / (float)travelTime); // this is needed for a smooth opening else it'll create an ugly 'pop'
-        if (gViewInterpolate)
-            animPosPrev = (float)interpolate(animPosPrev * 100000.f, animPos * 100000.f, gInterpolate) / 100000.f;
         animState = 2;
         break;
     case 2: // travel animation
-        animPos = (float)(curTime - animClock) / (float)travelTime;
-        if ((animClock + travelTime) <= curTime) // finish opening animation
+        animPos = (float)(curTime - animClock) / (float)attackTime;
+        if ((animClock + attackTime) <= curTime) // finish opening animation
         {
             animState = 3;
             animClock = curTime;
@@ -1460,7 +1459,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         if (pPlayer->input.newWeapon != 0) // changed weapon, set to opening state
         {
             animState = 2;
-            animClock = curTime - (int)(animPos * (float)travelTime);
+            animClock = curTime - (int)(animPos * (float)attackTime);
             return;
         }
         if ((animClock + decayTime) <= curTime) // finished closing
@@ -1471,9 +1470,6 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         }
         break;
     }
-    if (gViewInterpolate)
-        animPos = (float)interpolate(animPosPrev * 100000.f, animPos * 100000.f, gInterpolate) / 100000.f;
-    animPosPrev = animPos;
 
     PLAYER tmpPlayer = *pPlayer;
     if (pPlayer->curWeapon == 0) // if we're switching between weapons, use the next weapon value
@@ -1485,7 +1481,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
 
     const int x = 640/4;
     const int xoffset = 640/11;
-    int yPrimary = (int)((viewDrawParametricBlend(ClipRangeF(animPos, 0.f, 1.f) * 1.1f) * animPosRange) + animPosMin);
+    int yPrimary = (int)((viewDrawParametricBlend(animPos * 1.1f) * animPosRange) + animPosMin);
     if ((gViewSize > 2) && (gShowWeaponSelect == 1)) // if full hud is displayed, bump up by a few pixels
         yPrimary += 24;
     else if (gShowWeaponSelect == 2) // if drawn at the top, offset by the multiplayer stats bar height
@@ -1495,11 +1491,12 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         yPrimary = -yPrimary + 195, ySecondary = -ySecondary + 195;
     yPrimary += 6; // lower center icon
 
+    const bool bUnderwater = pPlayer->isUnderwater;
     const int picnumCur = weaponIcons[weaponCur][0];
     const int yCur = yPrimary + weaponIcons[weaponCur][1];
     const int scaleCur = weaponIcons[weaponCur][2];
     DrawStatMaskedSprite(picnumCur, x, yCur, 256, 0, 0, scaleCur);
-    if (pPlayer->isUnderwater && BannedUnderwater(weaponCur)) // if current weapon is unavailable, draw cross over icon
+    if (bUnderwater && BannedUnderwater(weaponCur)) // if current weapon is unavailable, draw cross over icon
         DrawStatMaskedSprite(1142, x, yCur, 256, 12, 0, 0x2000);
     if (showThreeWeapons)
     {
@@ -1511,9 +1508,9 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         const int scaleNext = weaponIcons[weaponNext][2];
         DrawStatMaskedSprite(picnumPrev, x-xoffset, yPrev, 256, 0, 0, scalePrev);
         DrawStatMaskedSprite(picnumNext, x+xoffset, yNext, 256, 0, 0, scaleNext);
-        if (pPlayer->isUnderwater && BannedUnderwater(weaponPrev)) // if previous weapon is unavailable, draw cross over icon
+        if (bUnderwater && BannedUnderwater(weaponPrev)) // if previous weapon is unavailable, draw cross over icon
             DrawStatMaskedSprite(1142, x-xoffset, ySecondary, 256, 12, 0, 0x2000);
-        if (pPlayer->isUnderwater && BannedUnderwater(weaponNext)) // if next weapon is unavailable, draw cross over icon
+        if (bUnderwater && BannedUnderwater(weaponNext)) // if next weapon is unavailable, draw cross over icon
             DrawStatMaskedSprite(1142, x+xoffset, ySecondary, 256, 12, 0, 0x2000);
     }
 }

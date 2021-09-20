@@ -180,6 +180,7 @@ const char *zDiffStrings[] =
     "LIGHTLY BROILED",
     "WELL DONE",
     "EXTRA CRISPY",
+    "CUSTOM",
 };
 
 const char *pzShowWeaponStrings[] = {
