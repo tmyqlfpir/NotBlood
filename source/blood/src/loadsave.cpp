@@ -516,7 +516,8 @@ void LoadSavedInfo(void)
 void UpdateSavedInfo(int nSlot)
 {
     strcpy(strRestoreGameStrings[gSaveGameOptions[nSlot].nSaveGameSlot], gSaveGameOptions[nSlot].szUserGameName);
-    restoreGameDifficulty[gSaveGameOptions[nSlot].nSaveGameSlot] = gSaveGameOptions[nSlot].nDifficulty;
+    const bool customDiff = (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyHealth) || (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyQuantity) || gSaveGameOptions[nSlot].bPitchforkOnly;
+    restoreGameDifficulty[gSaveGameOptions[nSlot].nSaveGameSlot] = customDiff ? 5 : gSaveGameOptions[nSlot].nDifficulty;
 }
 
 static MyLoadSave *myLoadSave;

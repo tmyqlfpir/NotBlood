@@ -2614,6 +2614,9 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     videoNextPage();
     gSaveGameNum = nSlot;
     LoadSave::SaveGame(strSaveGameName);
+    gGameOptions.picEntry = gSavedOffset;
+    gSaveGameOptions[nSlot] = gGameOptions;
+    UpdateSavedInfo(nSlot);
     gQuickSaveSlot = nSlot;
     gQuickLoadSlot = nSlot;
     gGameMenuMgr.Deactivate();
@@ -2656,8 +2659,8 @@ void AutosaveGame(bool levelStartSave)
     if (gGameOptions.nGameType > 0 || !gGameStarted)
         return;
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot - AUTOSAVESLOT_START);
-    sprintf(strRestoreGameStrings[nSlot], "%s %s", levelGetFilename(gGameOptions.nEpisode, gGameOptions.nLevel), nSlot == AUTOSAVESLOT_START ? "start": "key");
-    sprintf(gGameOptions.szUserGameName, "%s %s", levelGetFilename(gGameOptions.nEpisode, gGameOptions.nLevel), nSlot == AUTOSAVESLOT_START ? "start": "key");
+    sprintf(strRestoreGameStrings[nSlot], "%s %s", gGameOptions.zLevelName, nSlot == AUTOSAVESLOT_START ? "start": "key");
+    sprintf(gGameOptions.szUserGameName, "%s %s", gGameOptions.zLevelName, nSlot == AUTOSAVESLOT_START ? "start": "key");
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     if ((gGameOptions.nDifficulty != gGameOptions.nEnemyHealth) || (gGameOptions.nDifficulty != gGameOptions.nEnemyQuantity) || gGameOptions.bPitchforkOnly)
         restoreGameDifficulty[nSlot] = 5; // set to custom slot
@@ -2718,6 +2721,9 @@ void AutosaveGame(bool levelStartSave)
     *gMe = playerTemp; // restore current player struct
     if (!levelStartSave) // don't print message on level start autosaves
         viewSetMessage("Autosaved...");
+    gGameOptions.picEntry = gSavedOffset;
+    gSaveGameOptions[nSlot] = gGameOptions;
+    UpdateSavedInfo(nSlot);
     gQuickLoadSlot = nSlot;
     gAutosaveInCurLevel = true;
 }
