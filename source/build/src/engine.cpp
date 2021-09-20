@@ -127,7 +127,7 @@ int32_t r_usenewaspect = 1, newaspect_enable=0;
 uint32_t r_screenxy = 0;
 int32_t r_mirrormode = 0;
 
-int32_t r_rotatespriteinterp = 2;
+int32_t r_rotatespriteinterp = 1;
 int32_t r_fpgrouscan = 1;
 int32_t r_displayindex = 0;
 int32_t r_borderless = 2;
@@ -7427,62 +7427,51 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
         Bassert(uniqid < MAXUNIQHUDID);
 
         // r_rotatespriteinterp 0: disabled
-        // r_rotatespriteinterp 1: only interpolate when explicitly requested with RS_LERP (half-step)
-        // r_rotatespriteinterp 2: only interpolate when explicitly requested with RS_LERP (full-step)
-        // r_rotatespriteinterp 3: interpolate if the picnum or size matches regardless of RS_LERP being set
-        // r_rotatespriteinterp 4: relax above picnum check to include the next tile, with potentially undesirable results
+        // r_rotatespriteinterp 1: only interpolate when explicitly requested with RS_LERP
+        // r_rotatespriteinterp 2: interpolate if the picnum or size matches regardless of RS_LERP being set
+        // r_rotatespriteinterp 3: relax above picnum check to include the next tile, with potentially undesirable results
 
         static struct sm
         {
             float lerp[4];
-            vec4_t goal;
+            uint32_t clock;
             int16_t picnum, flags;
-        } smooth[MAXUNIQHUDID];
+        } smooth[MAXUNIQHUDID] = { {0}, {0}, 0, 0, 0 };
 
         auto &sm = smooth[uniqid];
         auto &sm0 = smooth[0];
         vec4_t const goal = { sx, sy, z, a };
-        sm0 = { {(float)goal.x, (float)goal.y, (float)goal.z, (float)goal.a}, sm.goal, picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
+        sm0 = { {sm.lerp[0], sm.lerp[1], sm.lerp[2], sm.lerp[3]}, timer120(), picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
+        const uint32_t delta = sm0.clock - sm.clock;
 
-        const bool lerpWouldLookDerp = (!(dastat & RS_LERP) && r_rotatespriteinterp < 3)
+        const bool lerpWouldLookDerp = (!(dastat & RS_LERP) && r_rotatespriteinterp < 2)
                    || (!(dastat & RS_FORCELERP) && (sm.flags != (dastat & ~RS_TRANS_MASK) || (tilesiz[picnum] != tilesiz[sm.picnum]
-                   && ((unsigned)(picnum - sm.picnum) > (int)(r_rotatespriteinterp == 4)))));
-        if (lerpWouldLookDerp) // set to next keyframe position (no interpolation)
-            sm0.goal = goal;
-        else if (r_rotatespriteinterp)
+                   && ((unsigned)(picnum - sm.picnum) > (int)(r_rotatespriteinterp == 3)))));
+        if (r_rotatespriteinterp && !(lerpWouldLookDerp || (delta > 4)))
         {
-            float rotatespritesmoothratioF = (float)rotatespritesmoothratio / 65536.f;
-            if ((sm.goal.x != goal.x) || (sm.goal.y != goal.y) || (sm.goal.z != goal.z)) // update goal to next frame
-            {
-                sm0.goal = goal;
-                if (r_rotatespriteinterp == 1)
-                    rotatespritesmoothratioF = -rotatespritesmoothratioF + 1.f;
-            }
-            else if (sm.goal.a != goal.a)
-            {
-                sm0.goal.a = goal.a;
-                if (r_rotatespriteinterp == 1)
-                    rotatespritesmoothratioF = -rotatespritesmoothratioF + 1.f;
-            }
-            sm0.lerp[0] = lerpF(sm.lerp[0], (float)sm0.goal.x, rotatespritesmoothratioF);
-            sm0.lerp[1] = lerpF(sm.lerp[1], (float)sm0.goal.y, rotatespritesmoothratioF);
-            sm0.lerp[2] = lerpF(sm.lerp[2], (float)sm0.goal.z, rotatespritesmoothratioF);
-            const int rotateDiff = (sm0.goal.a - sm.goal.a) + 1024;
-            const bool safeToLerp = (rotateDiff < (2048)) && (rotateDiff > (0));
+            const float rotatespritesmoothratioF = (float)delta / 4.f;
+            sm0.lerp[0] = lerpF(sm0.lerp[0], (float)goal.x, rotatespritesmoothratioF);
+            sm0.lerp[1] = lerpF(sm0.lerp[1], (float)goal.y, rotatespritesmoothratioF);
+            sm0.lerp[2] = lerpF(sm0.lerp[2], (float)goal.z, rotatespritesmoothratioF);
+            const int rotateDiff = (goal.a+1024) - (((int)sm.lerp[3] & 2047)+1024);
+            const bool safeToLerp = (rotateDiff < (1024+512)) && (rotateDiff > (512));
             if (!safeToLerp)
-                sm0.lerp[3] = (float)sm0.goal.a; // next keyframe is too big to transition smoothly, so set lerp to expected keyframe
+                sm0.lerp[3] = (float)goal.a; // next keyframe is too big to transition smoothly, so set lerp to expected keyframe
             else
-                sm0.lerp[3] = lerpF(sm.lerp[3], (float)sm0.goal.a, rotatespritesmoothratioF);
-        }
-        sm = sm0;
-
-        if (r_rotatespriteinterp)
-        {
+                sm0.lerp[3] = lerpF(sm.lerp[3], (float)(goal.a+2048), rotatespritesmoothratioF)-2048.f;
             sx = (int)sm.lerp[0];
             sy = (int)sm.lerp[1];
             z  = (int)sm.lerp[2];
             a  = (int)sm.lerp[3] & 2047;
         }
+        else // set to next keyframe position (no interpolation)
+        {
+            sm0.lerp[0] = (float)goal.x;
+            sm0.lerp[1] = (float)goal.y;
+            sm0.lerp[2] = (float)goal.z;
+            sm0.lerp[3] = (float)goal.a;
+        }
+        sm = sm0;
     }
 
     //============================================================================= //POLYMOST BEGINS

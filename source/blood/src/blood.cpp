@@ -834,7 +834,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     if (!gDemo.at1)
         gGameMenuMgr.Deactivate();
     levelTryPlayMusicOrNothing(gGameOptions.nEpisode, gGameOptions.nLevel);
-    // viewSetMessage("");
+    viewSetMessage("");
     viewSetErrorMessage("");
     viewResizeView(gViewSize);
     if ((gGameOptions.nGameType == 3) && VanillaMode())
@@ -1879,7 +1879,7 @@ int app_main(int argc, char const * const * argv)
     initprintf("There are %d demo(s) in the loop\n", gDemo.at59ef);
     initprintf("Loading control setup\n");
     ctrlInit();
-    timerInit(120);
+    timerInit(CLOCKTICKSPERSECOND);
     timerSetCallback(ClockStrobe);
     enginecompatibilitymode = ENGINE_19960925;
     // PORT-TODO: CD audio init

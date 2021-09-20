@@ -514,8 +514,7 @@ const char *pzWeaponHBobbingStrings[] = {
 const char *pzWeaponInterpolateStrings[] = {
     "OFF",
     "ONLY SWAYING",
-    "ONLY ANIMATION",
-    "FULL"
+    "ALL ANIMATION"
 };
 
 const char *pzWeaponSelectStrings[] = {

@@ -2210,7 +2210,12 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
 
         if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode()) // if died in single-player and not playing demo
         {
-            viewSetMessage("press \"use\" to load last save or press \"enter\" to restart level"); // string borrowed from bloodgdx (thank you M210)
+            extern short gQuickLoadSlot, gQuickSaveSlot;
+            const bool savedInSession = (gQuickLoadSlot != -1) || (gQuickSaveSlot != -1) || gAutosaveInCurLevel;
+            if (savedInSession)
+                viewSetMessage("press \"use\" to load last save or press \"enter\" to restart level"); // string borrowed from bloodgdx (thank you M210)
+            else
+                viewSetMessage("press \"use\" or \"enter\" to restart level");
         }
         #ifdef NOONE_EXTENSIONS
         // allow drop items and keys in multiplayer
