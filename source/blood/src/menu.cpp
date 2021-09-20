@@ -2659,9 +2659,9 @@ void AutosaveGame(bool levelStartSave)
     if (gGameOptions.nGameType > 0 || !gGameStarted)
         return;
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot - AUTOSAVESLOT_START);
-    sprintf(strRestoreGameStrings[nSlot], "%s %s", gGameOptions.zLevelName, nSlot == AUTOSAVESLOT_START ? "start": "key");
-    sprintf(gGameOptions.szUserGameName, "%s %s", gGameOptions.zLevelName, nSlot == AUTOSAVESLOT_START ? "start": "key");
-    sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
+    snprintf(strRestoreGameStrings[nSlot], sizeof(strRestoreGameStrings[nSlot]), "%s %s", gGameOptions.zLevelName, nSlot == AUTOSAVESLOT_START ? "start": "key");
+    snprintf(gGameOptions.szUserGameName, sizeof(gGameOptions.szUserGameName), "%s %s", gGameOptions.zLevelName, nSlot == AUTOSAVESLOT_START ? "start": "key");
+    snprintf(gGameOptions.szSaveGameName, sizeof(gGameOptions.szSaveGameName), "%s", strSaveGameName);
     if ((gGameOptions.nDifficulty != gGameOptions.nEnemyHealth) || (gGameOptions.nDifficulty != gGameOptions.nEnemyQuantity) || gGameOptions.bPitchforkOnly)
         restoreGameDifficulty[nSlot] = 5; // set to custom slot
     else

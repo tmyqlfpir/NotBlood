@@ -2033,11 +2033,11 @@ void CGameMenuItemZEditBitmap::Draw(void)
     if (at20)
     {
         int width;
-        char genericSave[32];
+        char genericSave[16];
         char *strSave = at20;
         if ((at20[0] == '\0') && (at28 < 10) && !bScan) // if save game name is blank, and is within first 10 slots
         {
-            sprintf(genericSave, "%s", gSaveGameOptions[at28].zLevelName);
+            snprintf(genericSave, sizeof(genericSave), "%s", gSaveGameOptions[at28].zLevelName);
             strSave = genericSave;
         }
         gMenuTextMgr.GetFontInfo(m_nFont, strSave, &width, NULL);
