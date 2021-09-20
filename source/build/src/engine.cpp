@@ -127,7 +127,7 @@ int32_t r_usenewaspect = 1, newaspect_enable=0;
 uint32_t r_screenxy = 0;
 int32_t r_mirrormode = 0;
 
-int32_t r_rotatespriteinterp = 1;
+int32_t r_rotatespriteinterp = 2;
 int32_t r_fpgrouscan = 1;
 int32_t r_displayindex = 0;
 int32_t r_borderless = 2;
@@ -7427,9 +7427,10 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
         Bassert(uniqid < MAXUNIQHUDID);
 
         // r_rotatespriteinterp 0: disabled
-        // r_rotatespriteinterp 1: only interpolate when explicitly requested with RS_LERP
-        // r_rotatespriteinterp 2: interpolate if the picnum or size matches regardless of RS_LERP being set
-        // r_rotatespriteinterp 3: relax above picnum check to include the next tile, with potentially undesirable results
+        // r_rotatespriteinterp 1: only interpolate when explicitly requested with RS_LERP (half-step)
+        // r_rotatespriteinterp 2: only interpolate when explicitly requested with RS_LERP (full-step)
+        // r_rotatespriteinterp 3: interpolate if the picnum or size matches regardless of RS_LERP being set
+        // r_rotatespriteinterp 4: relax above picnum check to include the next tile, with potentially undesirable results
 
         static struct sm
         {
@@ -7442,11 +7443,16 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
         auto &sm0 = smooth[0];
         vec4_t const goal = { sx, sy, z, a };
         sm0 = { {sm.lerp[0], sm.lerp[1], sm.lerp[2], sm.lerp[3]}, timer120(), picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
+        if (r_rotatespriteinterp == 1) // halve precision if half-step is set
+        {
+            sm0.clock >>= 1;
+            sm0.clock <<= 1;
+        }
         const uint32_t delta = sm0.clock - sm.clock;
 
-        const bool lerpWouldLookDerp = (!(dastat & RS_LERP) && r_rotatespriteinterp < 2)
+        const bool lerpWouldLookDerp = (!(dastat & RS_LERP) && r_rotatespriteinterp < 3)
                    || (!(dastat & RS_FORCELERP) && (sm.flags != (dastat & ~RS_TRANS_MASK) || (tilesiz[picnum] != tilesiz[sm.picnum]
-                   && ((unsigned)(picnum - sm.picnum) > (int)(r_rotatespriteinterp == 3)))));
+                   && ((unsigned)(picnum - sm.picnum) > (int)(r_rotatespriteinterp == 4)))));
         if (r_rotatespriteinterp && !(lerpWouldLookDerp || (delta > 4)))
         {
             const float rotatespritesmoothratioF = (float)delta / 4.f;
