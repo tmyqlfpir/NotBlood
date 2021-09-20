@@ -180,7 +180,6 @@ const char *zDiffStrings[] =
     "LIGHTLY BROILED",
     "WELL DONE",
     "EXTRA CRISPY",
-    "CUSTOM",
 };
 
 const char *pzShowWeaponStrings[] = {
@@ -2003,7 +2002,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     if (gDemo.at1)
         gDemo.StopPlayback();
     gStartNewGame = true;
-    gCheatMgr.sub_5BCF4();
+    gCheatMgr.ResetCheats();
     if (Bstrlen(gGameOptions.szUserMap))
     {
         levelAddUserMap(gGameOptions.szUserMap);
@@ -2026,7 +2025,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     if (gDemo.at1)
         gDemo.StopPlayback();
     gStartNewGame = true;
-    gCheatMgr.sub_5BCF4();
+    gCheatMgr.ResetCheats();
     if (Bstrlen(gGameOptions.szUserMap))
     {
         levelAddUserMap(gGameOptions.szUserMap);
@@ -2814,7 +2813,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     ////
     gPacketStartGame.unk = 0;
     Bstrncpy(gPacketStartGame.userMapName, zUserMapName, sizeof(zUserMapName));
-    gPacketStartGame.userMap = zUserMapName[0] != 0;
+    gPacketStartGame.userMap = gPacketStartGame.userMapName[0] != 0;
 
     netBroadcastNewGame();
     gStartNewGame = 1;

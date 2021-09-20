@@ -143,6 +143,7 @@ public:
         kCheatBigBertha,
         kCheatQskfa,
         kCheatZoomies,
+        kCheatSonic,
         kCheatNoU,
         kCheatMax
     };
@@ -156,7 +157,7 @@ public:
     CCheatMgr() {}
     bool Check(char *pzString);
     void Process(CHEATCODE nCheatCode, char* pzArgs);
-    void sub_5BCF4(void);
+    void ResetCheats(void);
 };
 
 extern CPlayerMsg gPlayerMsg;

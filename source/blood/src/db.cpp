@@ -717,7 +717,7 @@ void dbRandomizerModeInit(void)
         "OKBOOMER", // tnt cultists only
         "SNEAKYFU", // prone shotgun/tommy gun cultists only
         "GHSTBSTR", // no phantoms
-        "NOHANDS!", // no hands
+        "SAFEWORD", // no hands
         "SAFEWATR", // no hands/gill beasts
         "PESTCTRL", // no rats/hands/spiders
         "IH8PETS!", // no rats/hands/spiders/bats/hell hounds
@@ -866,7 +866,7 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 if (pSprite->type == kDudePhantasm)
                     erased = true;
                 break;
-            case 17: // "NOHANDS!" - no hands
+            case 17: // "SAFEWORD" - no hands
                 if (pSprite->type == kDudeHand)
                     erased = true;
                 break;

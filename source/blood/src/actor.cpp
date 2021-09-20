@@ -4033,17 +4033,16 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
             }
             break;
         case kMissileTeslaRegular:
-            if (hitCode == 3 && pSpriteHit)
+            if ((hitCode == 3) && pSpriteHit && WeaponsNotBlood() && !VanillaMode())
             {
-                spritetype *pObject = &sprite[gHitInfo.hitsprite];
-                if (WeaponsNotBlood() && IsPlayerSprite(pObject) && !VanillaMode()) // if player was shot, reflect back tesla projectile
+                if (IsPlayerSprite(pSpriteHit)) // if a player was shot, reflect tesla projectile
                 {
-                    if (powerupCheck(&gPlayer[pObject->type - kDudePlayer1], kPwUpReflectShots))
+                    if (powerupCheck(&gPlayer[pSpriteHit->type - kDudePlayer1], kPwUpReflectShots))
                     {
                         xvel[pMissile->index] = -xvel[pMissile->index]; // return to sender
                         yvel[pMissile->index] = -yvel[pMissile->index];
                         zvel[pMissile->index] = -zvel[pMissile->index];
-                        pMissile->owner = pObject->index; // set projectile owner as player with reflective shot
+                        pMissile->owner = pSpriteHit->index; // set projectile owner as player with reflective shot
                         break;
                     }
                 }
@@ -4771,6 +4770,11 @@ void MoveDude(spritetype *pSprite)
     {
         int vx = xvel[nSprite]>>12;
         int vy = yvel[nSprite]>>12;
+        if (gSonicMode && pPlayer && !VanillaMode()) // if sonic mode cheat is active
+        {
+            vx <<= 1; // double player velocity
+            vy <<= 1;
+        }
         if (pPlayer && gNoClip)
         {
             pSprite->x += vx;

@@ -29,6 +29,7 @@ New features include:
 * BIG BERTHA - Toggle randomized lifeleech projectiles (works for alt fire mode)
 * QSKFA - Toggle blood alpha alt fire missile for pitchfork
 * ZOOMIES - Toggle fast enemies
+* SONIC - Toggle fast player movement
 * NO U - Activates reflect shots power-up
 
 ### Enhancements Options
@@ -80,7 +81,7 @@ New features include:
 
 ### Additional randomizer seed cheats
 * GHSTBSTR - No phantoms
-* NOHANDS! - No hands
+* SAFEWORD - No hands
 * SAFEWATR - No hands/gill beasts
 * PESTCTRL - No rats/hands/spiders
 * IH8PETS! - No rats/hands/spiders/bats/hell hounds

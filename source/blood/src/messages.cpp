@@ -699,6 +699,7 @@ CCheatMgr::CHEATINFO CCheatMgr::s_CheatInfo[] = {
     {"CJH!CFSUIB", kCheatBigBertha, 0 }, // BIG BERTHA (Enable/Disable random projectiles for lifeleech's sentry mode)
     {"RTLGB", kCheatQskfa, 0 }, // QSKFA (Enable/Disable alpha pitchfork)
     {"[PPNJFT", kCheatZoomies, 0 }, // ZOOMIES (Enable/Disable enemy speed increase)
+    {"TPOJD", kCheatSonic, 0 }, // SONIC (Enable/Disable player speed increase)
     {"OP!V", kCheatNoU, 0 }, // NO U (Gives reflect shots power-up)
 };
 
@@ -711,7 +712,7 @@ bool CCheatMgr::Check(char *pzString)
     Bstrupr(buffer);
     for (size_t i = 0; i < strlen(pzString); i++)
         buffer[i]++;
-    for (int i = 0; i < 40; i++)
+    for (int i = 0; i < 41; i++)
     {
         int nCheatLen = strlen(s_CheatInfo[i].pzString);
         if (s_CheatInfo[i].flags & 1)
@@ -923,6 +924,10 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         gEnemyZoomies = !gEnemyZoomies;
         viewSetMessage(gEnemyZoomies ? "Fast boys active!" : "Normal enemy speed, yawn.");
         break;
+    case kCheatSonic:
+        gSonicMode = !gSonicMode;
+        viewSetMessage(gSonicMode ? "Sonic mode active!" : "Normal player speed, yawn.");
+        break;
     case kCheatNoU:
         powerupActivate(gMe, kPwUpReflectShots);
         break;
@@ -932,7 +937,7 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
     m_bPlayerCheated = true;
 }
 
-void CCheatMgr::sub_5BCF4(void)
+void CCheatMgr::ResetCheats(void)
 {
     m_bPlayerCheated = 0;
     playerSetGodMode(gMe, 0);
@@ -944,6 +949,7 @@ void CCheatMgr::sub_5BCF4(void)
     gLifeleechRnd = 0;
     gAlphaPitchfork = 0;
     gEnemyZoomies = 0;
+    gSonicMode = 0;
 }
 
 class MessagesLoadSave : public LoadSave

@@ -250,31 +250,27 @@ bool CanMove(spritetype *pSprite, int a2, int nAngle, int nRange)
 
 static unsigned char gSpriteStuckage[kMaxSprites] = {0};
 static vec3_t gSpritePrevLoc[kMaxSprites] = {0, 0, 0};
+static short gSpritePrevSect[kMaxSprites] = {0};
 
 void aiChooseDirection(spritetype *pSprite, XSPRITE *pXSprite, int a3)
 {
     int nSprite = pSprite->index;
     dassert(pSprite->type >= kDudeBase && pSprite->type < kDudeMax);
-    vec3_t *pPrevLoc = &gSpritePrevLoc[nSprite];
-    if ((pSprite->x == pPrevLoc->x) && (pSprite->y == pPrevLoc->y) && (pSprite->z == pPrevLoc->z))
+    if ((pSprite->pos == gSpritePrevLoc[nSprite]) && (pSprite->sectnum == gSpritePrevSect[nSprite]) && EnemiesNotBlood() && !VanillaMode())
     {
         gSpriteStuckage[nSprite]++;
         if (gSpriteStuckage[nSprite] > 10) // if enemy has been stuck for roughly more than a second
         {
             gSpriteStuckage[nSprite] = 0;
-            if (EnemiesNotBlood() && !VanillaMode()) // turn their direction by 90/180/270 degrees
-            {
-                pXSprite->goalAng = (pSprite->ang+((Random(3)+1)*512))&2047;
-                return;
-            }
+            pXSprite->goalAng = (pSprite->ang+((Random(3)+1)*512))&2047; // turn their direction by 90/180/270 degrees
+            return;
         }
     }
     else
     {
         gSpriteStuckage[nSprite] = 0;
-        pPrevLoc->x = pSprite->x;
-        pPrevLoc->y = pSprite->y;
-        pPrevLoc->z = pSprite->z;
+        gSpritePrevLoc[nSprite] = pSprite->pos;
+        gSpritePrevSect[nSprite] = pSprite->sectnum;
     }
     int vc = ((a3+1024-pSprite->ang)&2047)-1024;
     int nCos = Cos(pSprite->ang);
@@ -1883,6 +1879,7 @@ void AILoadSave::Load(void)
     Read(gDudeExtra, sizeof(gDudeExtra));
     memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
     memset(gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
+    memset(gSpritePrevSect, 0, sizeof(gSpritePrevSect));
 }
 
 void AILoadSave::Save(void)

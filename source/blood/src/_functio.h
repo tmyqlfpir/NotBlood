@@ -207,7 +207,7 @@ const char oldkeydefaults[NUMGAMEFUNCTIONS*2][MAXGAMEFUNCLEN] =
    "I", "",
    "'", "",
    ";", "",
-   "Q", "",
+   "", "",
    "ScrLck", "",
    "W", "",
    "B", "",
