@@ -5518,7 +5518,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
         nShooter = pShooter->index;
     dassert(vectorType >= 0 && vectorType < kVectorMax);
     VECTORDATA *pVectorData = &gVectorData[vectorType];
-    int hit = VectorScan(pSource, a2, a3, a4, a5, a6, nRange, 1);
+    int hit = VectorScanROR(pSource, a2, a3, a4, a5, a6, nRange, 1);
     if (hit == 3)
     {
         int nSprite = gHitInfo.hitsprite;
@@ -5856,12 +5856,15 @@ void MoveMissileBullet(spritetype *pSprite)
         }
         pSprite->x += vx;
         pSprite->y += vy;
-        if (!FindSector(pSprite->x, pSprite->y, pSprite->z, &nSector)) // we couldn't find where we're supposed to be, just delete the sprite to be safe
+        if (!FindSector(pSprite->x, pSprite->y, pSprite->z, &nSector)) // if we couldn't find where we're supposed to be
         {
-            weHitSomething = true;
-            break;
+            if (!CheckLink(pSprite)) // check if we clipped into a ror sector, if not just delete the sprite just to be safe
+            {
+                weHitSomething = true;
+                break;
+            }
         }
-        if (!cansee(bakX, bakY, bakZ, pSprite->sectnum, pSprite->x, pSprite->y, pSprite->z, nSector)) // if the new updated sector is broken (this will happen when there are shared sectors in the same XYZ location such as DWE2M8's skull key room)
+        else if (!cansee(bakX, bakY, bakZ, pSprite->sectnum, pSprite->x, pSprite->y, pSprite->z, nSector)) // if the new updated sector is broken (this will happen when there are shared sectors in the same XYZ location such as DWE2M8's skull key room)
             nSector = pSprite->sectnum; // restore sector and hope that everything will work out
         else if (pSprite->sectnum != nSector) // if sector was updated, update sprite's sector
         {
@@ -7279,7 +7282,11 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
     dassert(vectorType >= 0 && vectorType < kVectorMax);
     VECTORDATA *pVectorData = &gVectorData[vectorType];
     int nRange = pVectorData->maxDist;
-    int hit = VectorScan(pShooter, a2, a3, a4, a5, a6, nRange, 1);
+    int hit;
+    if (ProjectilesNotBlood() && !VanillaMode())
+        hit = VectorScanROR(pShooter, a2, a3, a4, a5, a6, nRange, 1);
+    else
+        hit = VectorScan(pShooter, a2, a3, a4, a5, a6, nRange, 1);
     bool returnedFire = false;
     if (hit == 3)
     {

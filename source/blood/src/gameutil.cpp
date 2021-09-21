@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "globals.h"
 #include "tile.h"
 #include "trig.h"
+#include "warp.h"
 
 POINT2D baseWall[kMaxWalls];
 POINT3D baseSprite[kMaxSprites];
@@ -735,6 +736,33 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
         return -1;
     }
     return -1;
+}
+
+int VectorScanROR(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, int dz, int nRange, int ac)
+{
+    // this function operates the same as VectorScan() but it'll check if initial starting position is clipping into a ror sector
+    const vec3_t bakPos = pSprite->pos;
+    const short bakSect = pSprite->sectnum;
+    bool firedThroughRor = false;
+    int x = pSprite->x+mulscale30(nOffset, Cos(pSprite->ang+512));
+    int y = pSprite->y+mulscale30(nOffset, Sin(pSprite->ang+512));
+    int z = pSprite->z+nZOffset;
+    int nSector = pSprite->sectnum;
+    if (CheckLink(&x, &y, &z, &nSector)) // if hitscan start position is overlapping into ror sector, move sprite to ror sector
+    {
+        pSprite->x = x-mulscale30(nOffset, Cos(pSprite->ang+512));
+        pSprite->y = y-mulscale30(nOffset, Sin(pSprite->ang+512));
+        pSprite->z = z-nZOffset;
+        pSprite->sectnum = nSector;
+        firedThroughRor = true;
+    }
+    int hit = VectorScan(pSprite, nOffset, nZOffset, dx, dy, dz, nRange, ac);
+    if (firedThroughRor) // restore sprite position and sectnum
+    {
+        pSprite->pos = bakPos;
+        pSprite->sectnum = bakSect;
+    }
+    return hit;
 }
 
 void GetZRange(spritetype *pSprite, int *ceilZ, int *ceilHit, int *floorZ, int *floorHit, int nDist, unsigned int nMask, unsigned int nClipParallax)
