@@ -20,8 +20,13 @@ New features include:
 * Fixed various original glitches with burning enemies
 * Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
+* Switch to last active weapon if TNT/spray can is active when entering water
+* Increased blood splatter duration and improved floor collision detection
+* Basic room over room support for positional audio
+* Fixed underwater issue with hitscan weapons
+* Respawning enemies option for singleplayer
 * Custom difficult options for singleplayer
-* Fixed buggy weapon switching behavior
+* Set item box selection to activated item
 * Weapon selection bar
 * Mirror mode
 

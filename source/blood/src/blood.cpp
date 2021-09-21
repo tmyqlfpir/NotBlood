@@ -2896,7 +2896,7 @@ bool WeaponsV10x(void) {
 }
 
 bool ExplosionsNotBlood(void) {
-    return gGameOptions.bExplosionBehavior == 0; // raze's explosions logic
+    return gGameOptions.bExplosionBehavior == 0; // raze's explosions logic (originally from notblood, thanks for accepting my awful PRs coelckers/mjr4077au)
 }
 
 bool ProjectilesNotBlood(void) {

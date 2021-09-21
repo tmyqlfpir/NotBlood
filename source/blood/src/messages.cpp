@@ -913,18 +913,26 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         gMe->nextWeapon = 1;
         break;
     case kCheatBigBertha:
+        if (VanillaMode()) // not supported by vanilla mode
+            break;
         gLifeleechRnd = !gLifeleechRnd;
         viewSetMessage(gLifeleechRnd ? "Big bertha lifeleech mode activated!" : "Big bertha lifeleech mode deactived.");
         break;
     case kCheatQskfa:
+        if (VanillaMode()) // not supported by vanilla mode
+            return;
         gAlphaPitchfork = !gAlphaPitchfork;
         viewSetMessage(gAlphaPitchfork ? "Q Studio's pitchfork activated!" : "Q Studio's pitchfork deactived.");
         break;
     case kCheatZoomies:
+        if (VanillaMode()) // not supported by vanilla mode
+            return;
         gEnemyZoomies = !gEnemyZoomies;
         viewSetMessage(gEnemyZoomies ? "Fast boys active!" : "Normal enemy speed, yawn.");
         break;
     case kCheatSonic:
+        if (VanillaMode()) // not supported by vanilla mode
+            return;
         gSonicMode = !gSonicMode;
         viewSetMessage(gSonicMode ? "Sonic mode active!" : "Normal player speed, yawn.");
         break;

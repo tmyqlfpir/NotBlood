@@ -2188,8 +2188,19 @@ void WeaponProcess(PLAYER *pPlayer) {
         }
         WeaponLower(pPlayer);
         pPlayer->throwPower = 0;
-        if (pPlayer->lastWeapon && !BannedUnderwater(pPlayer->lastWeapon) && !VanillaMode()) // switch to last weapon if available
-            pPlayer->nextWeapon = pPlayer->lastWeapon;
+        if (!VanillaMode()) // if not in vanilla mode, find next weapon to switch to
+        {
+            if (pPlayer->lastWeapon && !BannedUnderwater(pPlayer->lastWeapon)) // switch to last weapon if available
+            {
+                pPlayer->nextWeapon = pPlayer->lastWeapon;
+            }
+            else
+            {
+                const int nextWeapon = WeaponFindLoaded(pPlayer, NULL);
+                if (nextWeapon && !BannedUnderwater(nextWeapon))
+                    pPlayer->nextWeapon = nextWeapon;
+            }
+        }
     }
     WeaponPlay(pPlayer);
     UpdateAimVector(pPlayer);
