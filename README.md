@@ -4,7 +4,7 @@
 A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-engineer port NBlood
 
 New features include:
-* Default midi uses the excellent [SC55 soundfont by trevor0402](https://github.com/trevor0402/SC55Soundfont)
+* Default midi uses a [SC55 soundfont by trevor0402](https://github.com/trevor0402/SC55Soundfont)
 * Difficulty based invulnerability timer for player damage ([before](https://files.catbox.moe/ucs7gp.mp4)/[after](https://files.catbox.moe/8hyaqm.mp4))
 * Smaller hitboxes for player projectiles ([before](https://files.catbox.moe/3peiru.mp4)/[after](https://files.catbox.moe/zso8g4.mp4))
 * Raymarching collision testing for player projectiles ([before](https://files.catbox.moe/qxtv05.mp4)/[after](https://files.catbox.moe/vo03ck.mp4))
