@@ -743,21 +743,22 @@ int VectorScanROR(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy
     // this function operates the same as VectorScan() but it'll check if initial starting position is clipping into a ror sector
     const vec3_t bakPos = pSprite->pos;
     const short bakSect = pSprite->sectnum;
-    bool firedThroughRor = false;
+    bool restorePosSect = false;
     int x = pSprite->x+mulscale30(nOffset, Cos(pSprite->ang+512));
     int y = pSprite->y+mulscale30(nOffset, Sin(pSprite->ang+512));
     int z = pSprite->z+nZOffset;
     int nSector = pSprite->sectnum;
+    const int cX = x-pSprite->x, cY = y-pSprite->y, cZ = z-pSprite->z;
     if (CheckLink(&x, &y, &z, &nSector)) // if hitscan start position is overlapping into ror sector, move sprite to ror sector
     {
-        pSprite->x = x-mulscale30(nOffset, Cos(pSprite->ang+512));
-        pSprite->y = y-mulscale30(nOffset, Sin(pSprite->ang+512));
-        pSprite->z = z-nZOffset;
+        restorePosSect = true;
+        pSprite->x = x-cX;
+        pSprite->y = y-cY;
+        pSprite->z = z-cZ;
         pSprite->sectnum = nSector;
-        firedThroughRor = true;
     }
     int hit = VectorScan(pSprite, nOffset, nZOffset, dx, dy, dz, nRange, ac);
-    if (firedThroughRor) // restore sprite position and sectnum
+    if (restorePosSect) // restore sprite position and sectnum
     {
         pSprite->pos = bakPos;
         pSprite->sectnum = bakSect;

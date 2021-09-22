@@ -23,6 +23,7 @@ New features include:
 * Switch to last active weapon if TNT/spray can is active when entering water
 * Increased blood splatter duration and improved floor collision detection
 * Basic room over room support for positional audio
+* Fixed missiles colliding with water sector edges
 * Fixed underwater issue with hitscan weapons
 * Respawning enemies option for singleplayer
 * Custom difficult options for singleplayer

@@ -6688,7 +6688,7 @@ void actProcessSprites(void)
                         pPlayer->underwaterTime = 1200;
                     else
                         pPlayer->underwaterTime = ClipLow(pPlayer->underwaterTime-4, 0);
-                    if (pPlayer->underwaterTime < 1080 && packCheckItem(pPlayer, 1) && !bActive)
+                    if (pPlayer->underwaterTime < 1080 && packCheckItem(pPlayer, 1) && !bActive && ((pPlayer->pXSprite->health > 0) || VanillaMode())) // don't activate diving suit if player is dead
                         packUseItem(pPlayer, 1);
                     if (!pPlayer->underwaterTime)
                     {
@@ -7047,6 +7047,25 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     int clipdist = pMissileInfo->clipDist+pSprite->clipdist;
     x += mulscale28(clipdist, Cos(pSprite->ang));
     y += mulscale28(clipdist, Sin(pSprite->ang));
+    const vec3_t bakPos = pSprite->pos;
+    const short bakSect = pSprite->sectnum;
+    bool restorePosSect = false;
+    if (ProjectilesNotBlood() && IsPlayerSprite(pSprite) && !VanillaMode()) // fix weird edge case when spawning missiles above waterline while underwater
+    {
+        restorePosSect = true;
+        int nSector = pSprite->sectnum;
+        const int dx = x-pSprite->x, dy = y-pSprite->y, dz = z-pSprite->z;
+        if (CheckLink(&x, &y, &z, &nSector)) // if hitscan start position is overlapping into ror sector, move sprite to ror sector
+        {
+            pSprite->x = x-dx;
+            pSprite->y = y-dy;
+            pSprite->z = z-dz;
+        }
+        int nSector2 = nSector;
+        if (FindSector(pSprite->x, pSprite->y, pSprite->z, &nSector2) && AreSectorsNeighbors(nSector, nSector2, 0, true)) // sanity check missile spawn position (likely shifted over to new sector)
+            nSector = nSector2;
+        pSprite->sectnum = nSector;
+    }
     int hit = HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, CLIPMASK0, clipdist);
     if (hit != -1)
     {
@@ -7063,6 +7082,11 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
         }
     }
     spritetype *pMissile = actSpawnSprite(pSprite->sectnum, x, y, z, 5, 1);
+    if (restorePosSect)
+    {
+        pSprite->pos = bakPos;
+        pSprite->sectnum = bakSect;
+    }
     int nMissile = pMissile->index;
     SetBitString(show2dsprite, nMissile);
     pMissile->type = nType;
