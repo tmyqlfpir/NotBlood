@@ -1471,13 +1471,14 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         break;
     }
 
-    PLAYER tmpPlayer = *pPlayer;
+    const int bakCurWeapon = pPlayer->curWeapon;
     if (pPlayer->curWeapon == 0) // if we're switching between weapons, use the next weapon value
-        tmpPlayer.curWeapon = pPlayer->input.newWeapon;
-    const char weaponPrev = ClipRange(WeaponFindNext(&tmpPlayer, NULL, 0), 1, 12);
-    const char weaponCur = ClipRange(tmpPlayer.curWeapon, 0, 13);
-    const char weaponNext = ClipRange(WeaponFindNext(&tmpPlayer, NULL, 1), 1, 12);
+        pPlayer->curWeapon = pPlayer->input.newWeapon;
+    const char weaponPrev = ClipRange(WeaponFindNext(pPlayer, NULL, 0), 1, 12);
+    const char weaponCur = ClipRange(pPlayer->curWeapon, 0, 13);
+    const char weaponNext = ClipRange(WeaponFindNext(pPlayer, NULL, 1), 1, 12);
     const bool showThreeWeapons = (weaponPrev != weaponCur) && (weaponNext != weaponCur);
+    pPlayer->curWeapon = bakCurWeapon;
 
     const int x = 640/4;
     const int xoffset = 640/11;
@@ -1498,21 +1499,20 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     DrawStatMaskedSprite(picnumCur, x, yCur, 256, 0, 0, scaleCur);
     if (bUnderwater && BannedUnderwater(weaponCur)) // if current weapon is unavailable, draw cross over icon
         DrawStatMaskedSprite(1142, x, yCur, 256, 12, 0, 0x2000);
-    if (showThreeWeapons)
-    {
-        const int picnumPrev = weaponIcons[weaponPrev][0];
-        const int picnumNext = weaponIcons[weaponNext][0];
-        const int yPrev = ySecondary + weaponIcons[weaponPrev][1];
-        const int yNext = ySecondary + weaponIcons[weaponNext][1];
-        const int scalePrev = weaponIcons[weaponPrev][2];
-        const int scaleNext = weaponIcons[weaponNext][2];
-        DrawStatMaskedSprite(picnumPrev, x-xoffset, yPrev, 256, 0, 0, scalePrev);
-        DrawStatMaskedSprite(picnumNext, x+xoffset, yNext, 256, 0, 0, scaleNext);
-        if (bUnderwater && BannedUnderwater(weaponPrev)) // if previous weapon is unavailable, draw cross over icon
-            DrawStatMaskedSprite(1142, x-xoffset, ySecondary, 256, 12, 0, 0x2000);
-        if (bUnderwater && BannedUnderwater(weaponNext)) // if next weapon is unavailable, draw cross over icon
-            DrawStatMaskedSprite(1142, x+xoffset, ySecondary, 256, 12, 0, 0x2000);
-    }
+    if (!showThreeWeapons)
+        return;
+    const int picnumPrev = weaponIcons[weaponPrev][0];
+    const int picnumNext = weaponIcons[weaponNext][0];
+    const int yPrev = ySecondary + weaponIcons[weaponPrev][1];
+    const int yNext = ySecondary + weaponIcons[weaponNext][1];
+    const int scalePrev = weaponIcons[weaponPrev][2];
+    const int scaleNext = weaponIcons[weaponNext][2];
+    DrawStatMaskedSprite(picnumPrev, x-xoffset, yPrev, 256, 0, 0, scalePrev);
+    DrawStatMaskedSprite(picnumNext, x+xoffset, yNext, 256, 0, 0, scaleNext);
+    if (bUnderwater && BannedUnderwater(weaponPrev)) // if previous weapon is unavailable, draw cross over icon
+        DrawStatMaskedSprite(1142, x-xoffset, ySecondary, 256, 12, 0, 0x2000);
+    if (bUnderwater && BannedUnderwater(weaponNext)) // if next weapon is unavailable, draw cross over icon
+        DrawStatMaskedSprite(1142, x+xoffset, ySecondary, 256, 12, 0, 0x2000);
 }
 
 int viewDrawCalculateShadowSize(tspritetype *pTSprite)
