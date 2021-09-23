@@ -387,6 +387,7 @@ _DEMOPLAYBACK:
                 {
                     gProfile[i].nAutoAim = 1;
                     gProfile[i].nWeaponSwitch = 1;
+                    gProfile[i].bWeaponFastSwitch = 0;
                 }
             }
             ready2send = 0;

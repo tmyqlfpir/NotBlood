@@ -199,9 +199,10 @@ struct PLAYER
 
 struct PROFILE
 {
-    int  nAutoAim;
-    int  nWeaponSwitch;
-    int  skill;
+    char nAutoAim;
+    char nWeaponSwitch;
+    char bWeaponFastSwitch;
+    char skill;
     char name[MAXPLAYERNAME];
 };
 

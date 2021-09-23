@@ -546,6 +546,7 @@ void SetLevelStats(CGameMenuItemZBool *pItem);
 void SetPowerupDuration(CGameMenuItemZBool *pItem);
 void SetShowMapTitle(CGameMenuItemZBool *pItem);
 void SetWeaponSwitch(CGameMenuItemZCycle *pItem);
+void SetWeaponFastSwitch(CGameMenuItemZBool *pItem);
 void SetAutosaveMode(CGameMenuItemZCycle *pItem);
 void SetVanillaMode(CGameMenuItemZCycle *pItem);
 
@@ -566,18 +567,19 @@ CGameMenuItemZCycle itemEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 135
 CGameMenuItemZEdit itemEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 145, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
-CGameMenuItemZBool itemOptionsGameBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 50, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameShowWeapons("SHOW WEAPONS:", 3, 66, 60, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
-CGameMenuItemZBool itemOptionsGameBoolSlopeTilting("SLOPE TILTING:", 3, 66, 70, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
-CGameMenuItemZBool itemOptionsGameBoolViewBobbing("VIEW BOBBING:", 3, 66, 80, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
-CGameMenuItemZBool itemOptionsGameBoolViewSwaying("VIEW SWAYING:", 3, 66, 90, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameBoolWeaponSwaying("WEAPON SWAYING:", 3, 66, 100, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
-CGameMenuItemZCycle itemOptionsGameBoolWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 110, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
-CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 120, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
-CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 130, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
-CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 140, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
-CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 150, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
-//CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 160, 320, 1, &menuParentalLock, -1, NULL, 0);
+CGameMenuItemZBool itemOptionsGameBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 45, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameShowWeapons("SHOW WEAPONS:", 3, 66, 55, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
+CGameMenuItemZBool itemOptionsGameBoolSlopeTilting("SLOPE TILTING:", 3, 66, 65, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
+CGameMenuItemZBool itemOptionsGameBoolViewBobbing("VIEW BOBBING:", 3, 66, 75, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
+CGameMenuItemZBool itemOptionsGameBoolViewSwaying("VIEW SWAYING:", 3, 66, 85, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameBoolWeaponSwaying("WEAPON SWAYING:", 3, 66, 95, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
+CGameMenuItemZCycle itemOptionsGameBoolWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 105, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
+CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 115, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
+CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 125, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
+CGameMenuItemZBool itemOptionsGameWeaponFastSwitch("FAST WEAPON SWITCH:", 3, 66, 135, 180, 0, SetWeaponFastSwitch, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 145, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
+CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 155, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
+//CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 165, 320, 1, &menuParentalLock, -1, NULL, 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
@@ -1371,11 +1373,13 @@ void SetupOptionsMenu(void)
     menuOptionsGame.Add(&itemOptionsGameBoolWeaponInterpolation, false);
     menuOptionsGame.Add(&itemOptionsGameBoolAutoAim, false);
     menuOptionsGame.Add(&itemOptionsGameWeaponSwitch, false);
+    menuOptionsGame.Add(&itemOptionsGameWeaponFastSwitch, false);
     menuOptionsGame.Add(&itemOptionsGameAutosaveMode, false);
     menuOptionsGame.Add(&itemOptionsGameBoolVanillaMode, false);
     itemOptionsGameAutosaveMode.bDisableForNet = 1;
     itemOptionsGameBoolVanillaMode.bDisableForNet = 1;
     itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
+    itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
     itemOptionsGameBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's names";
     itemOptionsGameBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
     itemOptionsGameShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
@@ -1384,6 +1388,8 @@ void SetupOptionsMenu(void)
     itemOptionsGameBoolSlopeTilting.tooltip_pzTextLower = "towards a slope";
     itemOptionsGameBoolWeaponInterpolation.tooltip_pzTextUpper = "Set QAV interpolation for";
     itemOptionsGameBoolWeaponInterpolation.tooltip_pzTextLower = "weapon sprites";
+    itemOptionsGameWeaponFastSwitch.tooltip_pzTextUpper = "Allow weapon switching while";
+    itemOptionsGameWeaponFastSwitch.tooltip_pzTextLower = "weapon is being lowered/raised";
     itemOptionsGameAutosaveMode.tooltip_pzTextUpper = "Set when autosave will trigger";
     itemOptionsGameBoolVanillaMode.tooltip_pzTextUpper = "Forcefully disables all";
     itemOptionsGameBoolVanillaMode.tooltip_pzTextLower = "non-vanilla features/enhancements";
@@ -1435,6 +1441,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameBoolWeaponInterpolation.m_nFocus = gWeaponInterpolate % ARRAY_SSIZE(pzWeaponInterpolateStrings);
     itemOptionsGameBoolAutoAim.m_nFocus = gAutoAim;
     itemOptionsGameWeaponSwitch.m_nFocus = (gWeaponSwitch&1) ? ((gWeaponSwitch&2) ? 1 : 2) : 0;
+    itemOptionsGameWeaponFastSwitch.at20 = !!gWeaponFastSwitch;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
     itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
@@ -1967,6 +1974,16 @@ void SetWeaponSwitch(CGameMenuItemZCycle *pItem)
     }
 }
 
+void SetWeaponFastSwitch(CGameMenuItemZBool *pItem)
+{
+    gWeaponFastSwitch = pItem->at20;
+    if (!gDemo.at0 && !gDemo.at1)
+    {
+        gProfile[myconnectindex].bWeaponFastSwitch = gWeaponFastSwitch;
+        netBroadcastPlayerInfo(myconnectindex);
+    }
+}
+
 void SetAutosaveMode(CGameMenuItemZCycle *pItem)
 {
     gAutosave = pItem->m_nFocus % ARRAY_SSIZE(pzAutosaveModeStrings);
@@ -1980,6 +1997,7 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem)
         gVanilla = pItem->m_nFocus % ARRAY_SSIZE(pzVanillaModeStrings);
         itemOptionsChainEnhancements.bEnable = !gVanilla;
         itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
+        itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
     } else {
         pItem->m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
     }
@@ -2792,6 +2810,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
     itemOptionsChainEnhancements.bEnable = !gVanilla;
     itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
+    itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
     gPacketStartGame.bQuadDamagePowerup = itemNetEnhancementBoolQuadDamagePowerup.at20;
     gPacketStartGame.bDamageInvul = itemNetEnhancementBoolDamageInvul.at20;
     gPacketStartGame.bExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);

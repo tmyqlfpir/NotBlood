@@ -1871,6 +1871,8 @@ int OrderPrev[] = { 12, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1 };
 char WeaponFindNext(PLAYER *pPlayer, int *a2, char bDir)
 {
     int weapon = pPlayer->curWeapon;
+    if (!weapon && gProfile[pPlayer->nPlayer].bWeaponFastSwitch && !VanillaMode()) // if fast weapon select is on, and player is switching weapon, use new weapon as the current weapon
+        weapon = pPlayer->input.newWeapon;
     do
     {
         if (bDir)
@@ -2274,7 +2276,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             pPlayer->nextWeapon = 0;
         }
     }
-    if ((pPlayer->curWeapon == 0) && (pPlayer->input.newWeapon != 0) && !VanillaMode()) // if player is switching weapon (and not holstered), clear next/prev/last keyflags
+    if (!gProfile[pPlayer->nPlayer].bWeaponFastSwitch && (pPlayer->curWeapon == 0) && (pPlayer->input.newWeapon != 0) && !VanillaMode()) // if fast weapon select is off, and player is switching weapon (and not holstered), clear next/prev/last keyflags
     {
         pPlayer->input.keyFlags.nextWeapon = 0;
         pPlayer->input.keyFlags.prevWeapon = 0;
@@ -2289,17 +2291,23 @@ void WeaponProcess(PLAYER *pPlayer) {
         {
             viewSetMessage("Last weapon button disabled for vanilla mode...");
         }
-        else if (pPlayer->curWeapon && (pPlayer->curWeapon != pPlayer->lastWeapon)) // if player is not currently switching weapons and current weapon is different to last weapon
+        else
         {
-            if ((pPlayer->lastWeapon > 0) && (pPlayer->lastWeapon < 13) && !(pPlayer->isUnderwater && BannedUnderwater(pPlayer->lastWeapon))) // if last weapon is safe to switch to
+            int weapon = pPlayer->curWeapon;
+            if (!weapon && gProfile[pPlayer->nPlayer].bWeaponFastSwitch) // if fast weapon select is on, and player is switching weapon, use new weapon as the current weapon
+                weapon = pPlayer->input.newWeapon;
+            if (weapon && (weapon != pPlayer->lastWeapon)) // if current weapon is different to last weapon
             {
-                pPlayer->input.keyFlags.nextWeapon = 0;
-                pPlayer->input.keyFlags.prevWeapon = 0;
-                pPlayer->nextWeapon = 0;
-                pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
-                pPlayer->input.newWeapon = pPlayer->lastWeapon;
-                pPlayer->lastWeapon = pPlayer->curWeapon;
-                lastWeaponPressed = true;
+                if ((pPlayer->lastWeapon > 0) && (pPlayer->lastWeapon < 13) && !(pPlayer->isUnderwater && BannedUnderwater(pPlayer->lastWeapon))) // if last weapon is safe to switch to
+                {
+                    pPlayer->input.keyFlags.nextWeapon = 0;
+                    pPlayer->input.keyFlags.prevWeapon = 0;
+                    pPlayer->nextWeapon = 0;
+                    pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
+                    pPlayer->input.newWeapon = pPlayer->lastWeapon;
+                    pPlayer->lastWeapon = weapon;
+                    lastWeaponPressed = true;
+                }
             }
         }
     }

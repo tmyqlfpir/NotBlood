@@ -80,6 +80,7 @@ int32_t gDetail;
 int32_t gMouseAim;
 int32_t gAutoAim;
 int32_t gWeaponSwitch;
+int32_t gWeaponFastSwitch;
 int32_t gAutosave;
 bool gAutosaveInCurLevel;
 int32_t gAutoRun;
@@ -448,6 +449,7 @@ void CONFIG_SetDefaults(void)
     gMouseAim = 1;
     gAutoAim = 2;
     gWeaponSwitch = 0;
+    gWeaponFastSwitch = 0;
     gAutosave = 1;
     gAutosaveInCurLevel = false;
 
