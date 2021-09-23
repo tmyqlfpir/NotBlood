@@ -1866,6 +1866,20 @@ int app_main(int argc, char const * const * argv)
         initprintf("Definitions file \"%s\" loaded in %d ms.\n", defsfile, etime-stime);
     }
     loaddefinitions_game(defsfile, FALSE);
+    if (!bNoAutoLoad && !gSetup.noautoload) // autoload notblood#.def files
+    {
+        for (int i = 7; i >= 0; i--) // scan for 0-7 def files
+        {
+            char tempFilename[16] = "";
+            sprintf(tempFilename, "notblood%d.def", i);
+            stime = timerGetTicks();
+            if (loaddefinitionsfile(tempFilename) != 0) // def file not found, skip
+                continue;
+            uint32_t etime = timerGetTicks();
+            initprintf("Definitions file \"%s\" loaded in %d ms.\n", tempFilename, etime-stime);
+            loaddefinitions_game(tempFilename, FALSE);
+        }
+    }
     powerupInit();
     initprintf("Loading cosine table\n");
     trigInit(gSysRes);

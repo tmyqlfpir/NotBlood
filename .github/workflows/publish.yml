@@ -32,7 +32,7 @@ jobs:
       run: |
         cd ./upload
         ls -R
-        for i in */; do cp *.pk3 "${i%/}"; cp *.sf2 "${i%/}"; cp *.ART "${i%/}"; cp *.txt "${i%/}"; done
+        for i in */; do cp *.pk3 "${i%/}"; cp *.sf2 "${i%/}"; cp *.ART "${i%/}"; cp *.txt "${i%/}"; mkdir -p "${i%/}"/autoload; done
         for i in */; do cd "${i%/}"; zip -9 -r "../${i%/}.zip" ./; cd ..; done
     - name: Publish artifacts to release
       uses: "marvinpinto/action-automatic-releases@latest"

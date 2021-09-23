@@ -92,6 +92,18 @@ New features include:
 * PESTCTRL - No rats/hands/spiders
 * IH8PETS! - No rats/hands/spiders/bats/hell hounds
 
+### Support for multiple zips for autoload folder
+NotBlood automatically scans each zip in the autoload directory. While it does load blood.def by default, this does limit to a single definition file.
+To use more multiple custom asset packs at the same time change the following files:
+1. Open each zip within the autoload directory with a zip archive browser
+2. Locate the NBlood compatible definition file (usually called blood.def/nblood.def)
+3. Rename the definition file to notblood#.def, with # being a number between 0-7 (highest to lowest priority)
+   The # number must be unique for all zips within the autoload directory
+   Setting the number to 0 will overrule any previous definitions from other zips (0 is highest priority while 7 is lowest priority)
+   Only definition files are overruled - assets with matching filenames between zips will conflict
+4. Continue the same process for every zip in the autoload directory
+5. The notblood#.def file must be within the base directory of the zip or else it will not load
+
 ### Installing
 1. Extract NotBlood to a new directory
 2. Copy the following files from Blood 1.21 to NotBlood folder:
