@@ -172,7 +172,7 @@ void viewPrecacheTiles(void);
 
 inline void viewInterpolateSector(int nSector, sectortype *pSector)
 {
-    if (!TestBitString(gInterpolateSector, nSector))
+    if (gViewInterpolate && !TestBitString(gInterpolateSector, nSector))
     {
         viewAddInterpolation(&pSector->floorz, INTERPOLATE_TYPE_INT);
         viewAddInterpolation(&pSector->ceilingz, INTERPOLATE_TYPE_INT);
@@ -183,7 +183,7 @@ inline void viewInterpolateSector(int nSector, sectortype *pSector)
 
 inline void viewInterpolateWall(int nWall, walltype *pWall)
 {
-    if (!TestBitString(gInterpolateWall, nWall))
+    if (gViewInterpolate && !TestBitString(gInterpolateWall, nWall))
     {
         viewAddInterpolation(&pWall->x, INTERPOLATE_TYPE_INT);
         viewAddInterpolation(&pWall->y, INTERPOLATE_TYPE_INT);
@@ -193,7 +193,7 @@ inline void viewInterpolateWall(int nWall, walltype *pWall)
 
 inline void viewBackupSpriteLoc(int nSprite, spritetype *pSprite)
 {
-    if (!TestBitString(gInterpolateSprite, nSprite))
+    if (gViewInterpolate && !TestBitString(gInterpolateSprite, nSprite))
     {
         LOCATION *pPrevLoc = &gPrevSpriteLoc[nSprite];
         pPrevLoc->x = pSprite->x;

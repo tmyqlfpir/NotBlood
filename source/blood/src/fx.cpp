@@ -265,7 +265,7 @@ void CFX::fxProcess(void)
                             continue;
                         }
                         ChangeSpriteSect(nSprite, nSector);
-                        if (TestBitString(gInterpolateSprite, nSprite) && !(pSprite->flags&512)) // if sprite is set to be interpolated, update previous position
+                        if (gViewInterpolate && TestBitString(gInterpolateSprite, nSprite) && !(pSprite->flags&512)) // if sprite is set to be interpolated, update previous position
                             viewOffsetBackupSpriteLoc(pSprite, &oldPos);
                         else
                             ClearBitString(gInterpolateSprite, pSprite->index);
