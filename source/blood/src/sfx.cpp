@@ -59,6 +59,30 @@ int Vol3d(int angle, int dist)
     return dist - mulscale16(dist, 0x2000 - mulscale30(0x2000, Cos(angle)));
 }
 
+static bool Calc3DSectOffset(spritetype *pLink, int *srcx, int *srcy, int *srcz, const int srcsect, const int dstsect)
+{
+    const int nLink = pLink->owner;
+    if (!spriRangeIsFine(nLink)) // if invalid link
+        return false;
+    const spritetype *pOtherLink = &sprite[nLink];
+    if (!spriRangeIsFine(pOtherLink->index)) // if invalid sprite
+        return false;
+    const int linksect = pLink->sectnum;
+    if (!sectRangeIsFine(linksect)) // if invalid sector
+        return false;
+    const int nXSector = sector[linksect].extra;
+    if ((nXSector > 0) && xsector[nXSector].Underwater) // if other link is underwater
+        return false;
+
+    if (!AreSectorsNeighbors(pOtherLink->sectnum, dstsect, 4, true)) // if linked sector is not parallel to destination sector, abort
+        return false;
+
+    *srcx += pOtherLink->x-pLink->x;
+    *srcy += pOtherLink->y-pLink->y;
+    *srcz += pOtherLink->z-pLink->z;
+    return true;
+}
+
 static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, const int dstsect)
 {
     if (srcsect == dstsect) // if source and listener are in same sector
@@ -69,43 +93,16 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
     if (((srcxsect > 0) && xsector[srcxsect].Underwater) || ((dstxsect > 0) && xsector[dstxsect].Underwater)) // if either sectors are underwater
         return;
 
-    spritetype *pLink = NULL;
     const int nUpper = gUpperLink[srcsect], nLower = gLowerLink[srcsect];
-    if (nUpper >= 0) // sector has a upper link
+    if ((nUpper >= 0) && (sector[sprite[nUpper].sectnum].floorpicnum >= 4080) && (sector[sprite[nUpper].sectnum].floorpicnum <= 4095)) // sector has a ror upper link
     {
-        const int nSector = sprite[nUpper].sectnum;
-        if ((sector[nSector].floorpicnum < 4080) || (sector[nSector].floorpicnum > 4095)) // if source sector isn't ror
+        if (Calc3DSectOffset(&sprite[nUpper], srcx, srcy, srcz, srcsect, dstsect))
             return;
-        pLink = &sprite[nUpper];
     }
-    else if (nLower >= 0) // sector has a lower link
+    if ((nLower >= 0) && (sector[sprite[nLower].sectnum].ceilingpicnum >= 4080) && (sector[sprite[nLower].sectnum].ceilingpicnum <= 4095)) // sector has a ror lower link
     {
-        const int nSector = sprite[nLower].sectnum;
-        if ((sector[nSector].ceilingpicnum < 4080) || (sector[nSector].ceilingpicnum > 4095)) // if source sector isn't ror
-            return;
-        pLink = &sprite[nLower];
+        Calc3DSectOffset(&sprite[nLower], srcx, srcy, srcz, srcsect, dstsect);
     }
-    if (!pLink) // no sector links found
-        return;
-
-    const int nLink = pLink->owner;
-    if (!spriRangeIsFine(nLink)) // if invalid link
-        return;
-    const spritetype *pOtherLink = &sprite[nLink];
-    if (!spriRangeIsFine(pOtherLink->index)) // if invalid sprite
-        return;
-    const int linksect = pLink->sectnum;
-    if (!sectRangeIsFine(linksect)) // if invalid sector
-        return;
-    if ((linksect > 0) && xsector[linksect].Underwater) // if other link is underwater
-        return;
-
-    if (!AreSectorsNeighbors(pOtherLink->sectnum, dstsect, 4, true)) // if linked sector is not parallel to destination sector, abort
-        return;
-
-    *srcx += pOtherLink->x-pLink->x;
-    *srcy += pOtherLink->y-pLink->y;
-    *srcz += pOtherLink->z-pLink->z;
 }
 
 void Calc3DValues(BONKLE *pBonkle)

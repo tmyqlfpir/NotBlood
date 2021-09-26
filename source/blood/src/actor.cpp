@@ -6356,7 +6356,7 @@ void actProcessSprites(void)
                                 yvel[pObject->index] = yvel[pSprite->index] >> 2;
                                 xvel[pSprite->index] = -xvel[pSprite->index] >> 2; // invert direction and slow down
                                 yvel[pSprite->index] = -yvel[pSprite->index] >> 2;
-                                if (speed > 5)
+                                if (speed > 30)
                                     sfxPlay3DSound(pSprite, 357, 0, 0); // zombie head sfx
                                 break;
                             }
@@ -6374,16 +6374,18 @@ void actProcessSprites(void)
                             yvel[pObject->index] += 58254;
                             xvel[pSprite->index] = -xvel[pSprite->index] >> 2; // invert direction and slow down
                             yvel[pSprite->index] = -yvel[pSprite->index] >> 2;
+                            bool playKickSfx = true;
                             if (pObject->extra > 0) // if object has extra
                             {
                                 XSPRITE *pXObject = &xsprite[pObject->extra];
                                 if (pXObject->health <= 0) // if killed enemy, play meaty sfx
                                 {
                                     sfxPlay3DSound(pSprite, 318 + Random(1), 0, 0);
-                                    break;
+                                    playKickSfx = false; // don't play two sounds at once
                                 }
                             }
-                            sfxPlay3DSound(pSprite, 357, 0, 0); // zombie head sfx
+                            if (playKickSfx && (speed > 30))
+                                sfxPlay3DSound(pSprite, 357, 0, 0); // zombie head sfx
                             break;
                         }
                         }

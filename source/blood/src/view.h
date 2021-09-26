@@ -204,7 +204,7 @@ inline void viewBackupSpriteLoc(int nSprite, spritetype *pSprite)
     }
 }
 
-inline void viewOffsetBackupSpriteLoc(spritetype *pSprite, vec3_t *offsetPos)
+inline void viewOffsetSpriteLerpLoc(spritetype *pSprite, vec3_t *offsetPos)
 {
     const int nSprite = pSprite->index;
     LOCATION *pPrevLoc = &gPrevSpriteLoc[nSprite];
