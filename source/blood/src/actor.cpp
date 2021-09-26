@@ -6347,15 +6347,27 @@ void actProcessSprites(void)
                             if (((hit & 0xc000) != 0xc000) || !spriRangeIsFine(nObject))
                                 break;
                             spritetype *pObject = &sprite[nObject];
-                            if (pObject->type < kDudeBase || pObject->type >= kDudeMax) // only apply this for active enemies
-                                break;
                             const int nOwner = actSpriteOwnerToSpriteId(pSprite);
-                            if (nOwner == nObject) // stop hitting yourself
-                                break;
                             int speed = approxDist(xvel[pSprite->index], yvel[pSprite->index]);
                             speed = min(mulscale30r(speed, 0x10000), 125); // clamp values to a reasonable value
-                            if (speed < 5) // you're too slow!
+                            if (nOwner == nObject) // stop hitting yourself
+                            {
+                                xvel[pObject->index] = xvel[pSprite->index] >> 2; // push player back
+                                yvel[pObject->index] = yvel[pSprite->index] >> 2;
+                                xvel[pSprite->index] = -xvel[pSprite->index] >> 2; // invert direction and slow down
+                                yvel[pSprite->index] = -yvel[pSprite->index] >> 2;
+                                if (speed > 5)
+                                    sfxPlay3DSound(pSprite, 357, 0, 0); // zombie head sfx
                                 break;
+                            }
+                            if ((speed < 5) || !IsDudeSprite(pObject)) // if too slow or hit a non-dude sprite, break
+                            {
+                                xvel[pSprite->index] = -xvel[pSprite->index] >> 1; // invert direction and slow down
+                                yvel[pSprite->index] = -yvel[pSprite->index] >> 1;
+                                if (pObject->type >= kThingBase && pObject->type < kThingMax) // do damage to thing sprite
+                                    actDamageSprite(nOwner, pObject, kDamageFall, speed * 3);
+                                break;
+                            }
                             actDamageSprite(nOwner, pObject, (speed < 110) ? kDamageFall : kDamageExplode, speed * 12);
                             xvel[pObject->index] = xvel[pSprite->index] >> 2; // push enemy back
                             yvel[pObject->index] = yvel[pSprite->index] >> 2;

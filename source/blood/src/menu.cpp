@@ -1387,7 +1387,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameBoolSlopeTilting.tooltip_pzTextUpper = "Tilt view when looking";
     itemOptionsGameBoolSlopeTilting.tooltip_pzTextLower = "towards a slope";
     itemOptionsGameBoolWeaponInterpolation.tooltip_pzTextUpper = "Set QAV interpolation for";
-    itemOptionsGameBoolWeaponInterpolation.tooltip_pzTextLower = "weapon sprites";
+    itemOptionsGameBoolWeaponInterpolation.tooltip_pzTextLower = "weapon sprites (experimental)";
     itemOptionsGameWeaponFastSwitch.tooltip_pzTextUpper = "Allow weapon switching while";
     itemOptionsGameWeaponFastSwitch.tooltip_pzTextLower = "weapon is being lowered/raised";
     itemOptionsGameAutosaveMode.tooltip_pzTextUpper = "Set when autosave will trigger";
