@@ -2283,13 +2283,11 @@ void MGunFireSeqCallback(int, int nXSprite)
         int dz = Random2(1000);
         if (gGameOptions.bHitscanProjectiles && !VanillaMode()) // if enemy hitscan projectiles are enabled, spawn bullet projectile
         {
-            const int bakX = pSprite->x;
-            const int bakY = pSprite->y;
-            pSprite->x += mulscale(missileInfo[kMissileBullet-kMissileBase].velocity, dx, 14)>>14; // move origin away from attached wall so it doesn't collide on first tick (this happens with BB6 - twin fortress)
-            pSprite->y += mulscale(missileInfo[kMissileBullet-kMissileBase].velocity, dy, 14)>>14;
+            const int bakX = pSprite->x, bakY = pSprite->y;
+            pSprite->x += mulscale14(missileInfo[kMissileBullet-kMissileBase].velocity, dx)>>14; // move origin away from attached wall so it doesn't collide on first tick (this happens with BB6 - twin fortress)
+            pSprite->y += mulscale14(missileInfo[kMissileBullet-kMissileBase].velocity, dy)>>14;
             actFireMissile(pSprite, 0, 0, dx, dy, dz, kMissileBullet);
-            pSprite->x = bakX;
-            pSprite->y = bakY;
+            pSprite->x = bakX, pSprite->y = bakY;
         }
         else
             actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorBullet);
