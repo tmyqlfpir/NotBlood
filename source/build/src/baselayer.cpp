@@ -533,6 +533,7 @@ int32_t baselayer_init(void)
                          "   3 - interpolate if the picnum or size matches regardless of RS_LERP being set\n"
                          "   4 - relax above picnum check to include the next tile, with potentially undesirable results\n",
                          (void *)&r_rotatespriteinterp, CVAR_INT, 0, 4 },
+        { "r_rotatespriteinterpquantize","enable/disable position quantizing for interpolate repeated rotatesprite calls",(void *) &r_rotatespriteinterpquantize, CVAR_BOOL, 0, 1 },
         { "r_voxels","enable/disable automatic sprite->voxel rendering",(void *) &usevoxels, CVAR_BOOL, 0, 1 },
         { "r_maxfps", "limit the frame rate", (void *)&r_maxfps, CVAR_INT | CVAR_FUNCPTR, -1, 1000 },
         { "r_maxfpsoffset", "menu-controlled offset for r_maxfps", (void *)&r_maxfpsoffset, CVAR_INT | CVAR_FUNCPTR, -10, 10 },

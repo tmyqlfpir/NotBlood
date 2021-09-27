@@ -4029,7 +4029,7 @@ RORHACK:
             {
                 rotatesprite(160<<16, defaultHoriz<<16, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
             }
-            if (!gWeaponInterpolate) // if position interpolate weapon is off, crunchify the weapon positions
+            if (!gWeaponInterpolate) // if position interpolate weapon is off, quantize the weapon positions
             {
                 v4c >>= 8;
                 v4c <<= 8;

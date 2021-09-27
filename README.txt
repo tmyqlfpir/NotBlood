@@ -53,6 +53,7 @@ New features include:
 * notarget
 * r_mirrormode
 * r_rotatespriteinterp
+* r_rotatespriteinterpquantize
 * cl_interpolateweapon
 * cl_weaponhbob
 * cl_slowroomflicker

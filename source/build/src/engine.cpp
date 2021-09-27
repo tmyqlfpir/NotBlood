@@ -128,6 +128,7 @@ uint32_t r_screenxy = 0;
 int32_t r_mirrormode = 0;
 
 int32_t r_rotatespriteinterp = 2;
+bool r_rotatespriteinterpquantize = false;
 int32_t r_fpgrouscan = 1;
 int32_t r_displayindex = 0;
 int32_t r_borderless = 2;
@@ -7476,6 +7477,15 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
             sm0.lerp[1] = (float)goal.y;
             sm0.lerp[2] = (float)goal.z;
             sm0.lerp[3] = (float)goal.a;
+        }
+        if (r_rotatespriteinterp && r_rotatespriteinterpquantize) // quantize positions
+        {
+            sx >>= 16;
+            sx <<= 16;
+            sy >>= 16;
+            sy <<= 16;
+            z >>= 14;
+            z <<= 14;
         }
         sm = sm0;
     }
