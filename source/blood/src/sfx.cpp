@@ -59,7 +59,7 @@ int Vol3d(int angle, int dist)
     return dist - mulscale16(dist, 0x2000 - mulscale30(0x2000, Cos(angle)));
 }
 
-static bool Calc3DSectOffset(spritetype *pLink, int *srcx, int *srcy, int *srcz, const int srcsect, const int dstsect)
+static bool Calc3DSectOffset(spritetype *pLink, int *srcx, int *srcy, int *srcz, const int dstsect)
 {
     const int nLink = pLink->owner;
     if (!spriRangeIsFine(nLink)) // if invalid link
@@ -96,12 +96,12 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
     const int nUpper = gUpperLink[srcsect], nLower = gLowerLink[srcsect];
     if ((nUpper >= 0) && (sector[sprite[nUpper].sectnum].floorpicnum >= 4080) && (sector[sprite[nUpper].sectnum].floorpicnum <= 4095)) // sector has a ror upper link
     {
-        if (Calc3DSectOffset(&sprite[nUpper], srcx, srcy, srcz, srcsect, dstsect))
+        if (Calc3DSectOffset(&sprite[nUpper], srcx, srcy, srcz, dstsect))
             return;
     }
     if ((nLower >= 0) && (sector[sprite[nLower].sectnum].ceilingpicnum >= 4080) && (sector[sprite[nLower].sectnum].ceilingpicnum <= 4095)) // sector has a ror lower link
     {
-        Calc3DSectOffset(&sprite[nLower], srcx, srcy, srcz, srcsect, dstsect);
+        Calc3DSectOffset(&sprite[nLower], srcx, srcy, srcz, dstsect);
     }
 }
 

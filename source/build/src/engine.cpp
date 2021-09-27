@@ -7438,7 +7438,7 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
             float lerp[4];
             uint32_t clock;
             int16_t picnum, flags;
-        } smooth[MAXUNIQHUDID] = { {0}, {0}, 0, 0, 0 };
+        } smooth[MAXUNIQHUDID] = {{ {0}, 0, 0, 0 }};
 
         auto &sm = smooth[uniqid];
         auto &sm0 = smooth[0];
