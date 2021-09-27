@@ -1539,28 +1539,6 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         DrawStatMaskedSprite(1142, x+xoffset, ySecondary, 256, 12, 0, 0x2000);
 }
 
-int viewDrawCalculateShadowSize(tspritetype *pTSprite)
-{
-    if (pTSprite == NULL)
-        return 0;
-    int cX = gView->pSprite->x, cY = gView->pSprite->y, cZ = gView->zView, nSectnum = gView->pSprite->sectnum;
-    if (sectRangeIsFine(nSectnum)) // if valid sector, check if view is above/below sector (such as water)
-        CheckLink(&cX, &cY, &cZ, &nSectnum);
-    const bool slopedFloor = sector[pTSprite->sectnum].floorstat&2;
-    int nDiff = getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) - cZ;
-    if (nDiff <= 0) // pov is below shadow, don't render shadow
-        return 0;
-    float dz = (float)nDiff / (float)(1<<8); // convert to real units
-    dz = ClipRangeF(dz, 0.1f, 150.f) / 300.f; // convert to 0.0-0.5 range
-
-    float nDist = (float)ClipRange(approxDist(cX-pTSprite->x, cY-pTSprite->y, 0), 1, 512<<4) / (float)(1<<4);
-    nDist /= 512 * 8;
-    nDist = (nDist * (float)pTSprite->yrepeat) + ((dz * (float)pTSprite->yrepeat) / 1.25f);
-    if (slopedFloor) // halve by 75% when sprite is on slope
-        nDist *= 0.75f;
-    return ClipRange((int)nDist, 0, pTSprite->yrepeat * 4);
-}
-
 void viewDrawMapTitle(void)
 {
     if (!gShowMapTitle || gGameMenuMgr.m_bActive)
@@ -2543,16 +2521,27 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             pNSprite->z = cZrel;
         }
         pNSprite->shade = 127;
-        pNSprite->cstat |= 2;
+        pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
         pNSprite->xrepeat = pTSprite->xrepeat;
-        pNSprite->yrepeat = gShadowsFake3D ? viewDrawCalculateShadowSize(pNSprite) : pTSprite->yrepeat>>2; // fake parallax projection using height difference
+        pNSprite->yrepeat = pTSprite->yrepeat>>2;
         pNSprite->picnum = pTSprite->picnum;
         if (!VanillaMode() && (pTSprite->type == kThingDroppedLifeLeech)) // fix shadow for thrown lifeleech
             pNSprite->picnum = 800;
         pNSprite->pal = 5;
         int height = tilesiz[pNSprite->picnum].y;
         int center = height/2+picanm[pNSprite->picnum].yofs;
-        pNSprite->z -= (pNSprite->yrepeat<<2)*(height-center);
+        if (gShadowsFake3D)
+        {
+            const int nDist = (pTSprite->yrepeat*height)/34;
+            const int nDir = fix16_to_int(gView->q16ang);
+            pNSprite->cstat |= (pTSprite->cstat & (CSTAT_SPRITE_XFLIP|CSTAT_SPRITE_YFLIP)) | CSTAT_SPRITE_ALIGNMENT_FLOOR; // inherit flags from parent sprite and set to floor sprite render type
+            pNSprite->cstat &= ~CSTAT_SPRITE_YCENTER; // don't align by center
+            pNSprite->x += mulscale30(nDist, Cos(nDir));
+            pNSprite->y += mulscale30(nDist, Sin(nDir));
+            pNSprite->ang = nDir;
+        }
+        else
+            pNSprite->z -= (pNSprite->yrepeat<<2)*(height-center);
         break;
     }
     case kViewEffectFlareHalo:

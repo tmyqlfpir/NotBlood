@@ -253,18 +253,11 @@ void CFX::fxProcess(void)
             {
                 if ((sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095) && !VanillaMode()) // if current sector is open air, find next floor
                 {
-                    int cX = pSprite->x, cY = pSprite->y, cZ = pSprite->z, nSectnum = nSector;
-                    vec3_t oldPos = {cX, cY, cZ};
-                    if (CheckLink(&cX, &cY, &cZ, &nSectnum)) // if found floor underneath
+                    int nSectnum = nSector;
+                    vec3_t oldPos = pSprite->pos;
+                    if (CheckLink(&pSprite->x, &pSprite->y, &pSprite->z, &nSectnum)) // if found floor underneath
                     {
-                        pSprite->x = cX, pSprite->y = cY, pSprite->z = cZ, nSector = nSectnum;
-                        updatesector(pSprite->x, pSprite->y, &nSector);
-                        if (nSector < 0 || nSector >= kMaxSectors) // sprite out of bounds, delete
-                        {
-                            fxFree(nSprite);
-                            continue;
-                        }
-                        ChangeSpriteSect(nSprite, nSector);
+                        ChangeSpriteSect(nSprite, nSectnum);
                         if (gViewInterpolate && TestBitString(gInterpolateSprite, nSprite)) // if sprite is set to be interpolated, update previous position
                             viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
                         else
