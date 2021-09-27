@@ -54,6 +54,7 @@ New features include:
 * r_mirrormode
 * r_rotatespriteinterp
 * r_rotatespriteinterpquantize
+* cl_interpolatepanning
 * cl_interpolateweapon
 * cl_weaponhbob
 * cl_slowroomflicker

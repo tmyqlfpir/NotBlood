@@ -210,7 +210,7 @@ int CheckLink(spritetype *pSprite)
                 z2 = getceilzofslope(pSprite->sectnum, pSprite->x, pSprite->y);
             pSprite->z += z2-z;
             if (gViewInterpolate && TestBitString(gInterpolateSprite, pSprite->index) && !VanillaMode()) // if sprite is set to be interpolated, update previous position
-                viewOffsetSpriteLerpLoc(pSprite, &oldPos);
+                viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
             else
                 ClearBitString(gInterpolateSprite, pSprite->index);
             return pUpper->type;
@@ -241,7 +241,7 @@ int CheckLink(spritetype *pSprite)
                 z2 = getflorzofslope(pSprite->sectnum, pSprite->x, pSprite->y);
             pSprite->z += z2-z;
             if (gViewInterpolate && TestBitString(gInterpolateSprite, pSprite->index) && !VanillaMode()) // if sprite is set to be interpolated, update previous position
-                viewOffsetSpriteLerpLoc(pSprite, &oldPos);
+                viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
             else
                 ClearBitString(gInterpolateSprite, pSprite->index);
             return pLower->type;

@@ -982,6 +982,7 @@ int32_t registerosdcommands(void)
 //
 
         { "cl_interpolate", "enable/disable view interpolation", (void *)&gViewInterpolate, CVAR_BOOL, 0, 1 },
+        { "cl_interpolatepanning", "enable/disable sector texture panning interpolation (cl_interpolate must be set on)", (void *)&gPanningInterpolate, CVAR_BOOL, 0, 1 },
         { "cl_interpolateweapon", "enable/disable view interpolation for drawn weapon (0: disable, 1: position, 2: position/qav animation)", (void *)&gWeaponInterpolate, CVAR_INT, 0, 2 },
         { "cl_viewhbob", "enable/disable view horizontal bobbing", (void *)&gViewHBobbing, CVAR_BOOL, 0, 1 },
         { "cl_viewvbob", "enable/disable view vertical bobbing", (void *)&gViewVBobbing, CVAR_BOOL, 0, 1 },

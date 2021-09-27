@@ -63,6 +63,7 @@ enum VIEWPOS {
 enum INTERPOLATE_TYPE {
     INTERPOLATE_TYPE_INT = 0,
     INTERPOLATE_TYPE_SHORT,
+    INTERPOLATE_TYPE_CHAR,
 };
 
 #define CROSSHAIR_PAL (MAXPALOOKUPS-RESERVEDPALS-1)
@@ -102,6 +103,9 @@ extern int gShowFrameRate;
 extern char gInterpolateSprite[];
 extern char gInterpolateWall[];
 extern char gInterpolateSector[];
+extern char gInterpolatePanningWall[];
+extern char gInterpolatePanningCeiling[];
+extern char gInterpolatePanningFloor[];
 extern LOCATION gPrevSpriteLoc[kMaxSprites];
 extern int gViewSize;
 extern CGameMessageMgr gGameMessageMgr;
@@ -191,6 +195,36 @@ inline void viewInterpolateWall(int nWall, walltype *pWall)
     }
 }
 
+inline void viewInterpolatePanningWall(int nWall, walltype *pWall)
+{
+    if (gViewInterpolate && gPanningInterpolate && !TestBitString(gInterpolatePanningWall, nWall))
+    {
+        viewAddInterpolation(&pWall->xpanning, INTERPOLATE_TYPE_CHAR);
+        viewAddInterpolation(&pWall->ypanning, INTERPOLATE_TYPE_CHAR);
+        SetBitString(gInterpolatePanningWall, nWall);
+    }
+}
+
+inline void viewInterpolatePanningCeiling(int nSector, sectortype *pSector)
+{
+    if (gViewInterpolate && gPanningInterpolate && !TestBitString(gInterpolatePanningCeiling, nSector))
+    {
+        viewAddInterpolation(&pSector->ceilingxpanning, INTERPOLATE_TYPE_CHAR);
+        viewAddInterpolation(&pSector->ceilingypanning, INTERPOLATE_TYPE_CHAR);
+        SetBitString(gInterpolatePanningCeiling, nSector);
+    }
+}
+
+inline void viewInterpolatePanningFloor(int nSector, sectortype *pSector)
+{
+    if (gViewInterpolate && gPanningInterpolate && !TestBitString(gInterpolatePanningFloor, nSector))
+    {
+        viewAddInterpolation(&pSector->floorxpanning, INTERPOLATE_TYPE_CHAR);
+        viewAddInterpolation(&pSector->floorypanning, INTERPOLATE_TYPE_CHAR);
+        SetBitString(gInterpolatePanningFloor, nSector);
+    }
+}
+
 inline void viewBackupSpriteLoc(int nSprite, spritetype *pSprite)
 {
     if (gViewInterpolate && !TestBitString(gInterpolateSprite, nSprite))
@@ -204,7 +238,7 @@ inline void viewBackupSpriteLoc(int nSprite, spritetype *pSprite)
     }
 }
 
-inline void viewOffsetSpriteLerpLoc(spritetype *pSprite, vec3_t *offsetPos)
+inline void viewCorrectSpriteInterpolateOffsets(spritetype *pSprite, vec3_t *offsetPos)
 {
     const int nSprite = pSprite->index;
     LOCATION *pPrevLoc = &gPrevSpriteLoc[nSprite];

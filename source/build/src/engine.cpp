@@ -128,7 +128,7 @@ uint32_t r_screenxy = 0;
 int32_t r_mirrormode = 0;
 
 int32_t r_rotatespriteinterp = 2;
-bool r_rotatespriteinterpquantize = false;
+int32_t r_rotatespriteinterpquantize = 0;
 int32_t r_fpgrouscan = 1;
 int32_t r_displayindex = 0;
 int32_t r_borderless = 2;

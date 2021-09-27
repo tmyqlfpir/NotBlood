@@ -64,6 +64,7 @@ extern int32_t gAutosave;
 extern bool gAutosaveInCurLevel;
 extern int32_t gAutoRun;
 extern int32_t gViewInterpolate;
+extern int32_t gPanningInterpolate;
 extern int32_t gWeaponInterpolate;
 extern int32_t gViewHBobbing;
 extern int32_t gViewVBobbing;

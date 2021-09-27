@@ -127,8 +127,11 @@ int nInterpolations;
 char gInterpolateSprite[(kMaxSprites+7)>>3];
 char gInterpolateWall[(kMaxWalls+7)>>3];
 char gInterpolateSector[(kMaxSectors+7)>>3];
+char gInterpolatePanningWall[(kMaxWalls+7)>>3];
+char gInterpolatePanningCeiling[(kMaxSectors+7)>>3];
+char gInterpolatePanningFloor[(kMaxSectors+7)>>3];
 
-#define kMaxInterpolations 16384
+#define kMaxInterpolations (16384*2)
 
 INTERPOLATE gInterpolation[kMaxInterpolations];
 
@@ -995,6 +998,9 @@ void viewClearInterpolations(void)
     memset(gInterpolateSprite, 0, sizeof(gInterpolateSprite));
     memset(gInterpolateWall, 0, sizeof(gInterpolateWall));
     memset(gInterpolateSector, 0, sizeof(gInterpolateSector));
+    memset(gInterpolatePanningWall, 0, sizeof(gInterpolatePanningWall));
+    memset(gInterpolatePanningCeiling, 0, sizeof(gInterpolatePanningCeiling));
+    memset(gInterpolatePanningFloor, 0, sizeof(gInterpolatePanningFloor));
 }
 
 void viewAddInterpolation(void *data, INTERPOLATE_TYPE type)
@@ -1011,6 +1017,9 @@ void viewAddInterpolation(void *data, INTERPOLATE_TYPE type)
         break;
     case INTERPOLATE_TYPE_SHORT:
         pInterpolate->value = *((short*)data);
+        break;
+    case INTERPOLATE_TYPE_CHAR:
+        pInterpolate->value = *((char*)data);
         break;
     }
 }
@@ -1037,6 +1046,18 @@ void CalcInterpolations(void)
             *((short*)pInterpolate->pointer) = newValue;
             break;
         }
+        case INTERPOLATE_TYPE_CHAR:
+        {
+            pInterpolate->value2 = *((char*)pInterpolate->pointer);
+            const int nDiff = pInterpolate->value - pInterpolate->value2;
+            if (nDiff > 127) // handle overflow gracefully
+                pInterpolate->value -= 256;
+            else if (nDiff < -128) // handle overflow gracefully
+                pInterpolate->value += 256;
+            int newValue = interpolate(pInterpolate->value, *((char*)pInterpolate->pointer), gInterpolate);
+            *((char*)pInterpolate->pointer) = newValue;
+            break;
+        }
         }
     }
 }
@@ -1054,6 +1075,9 @@ void RestoreInterpolations(void)
             break;
         case INTERPOLATE_TYPE_SHORT:
             *((short*)pInterpolate->pointer) = pInterpolate->value2;
+            break;
+        case INTERPOLATE_TYPE_CHAR:
+            *((char*)pInterpolate->pointer) = pInterpolate->value2;
             break;
         }
     }

@@ -85,6 +85,7 @@ int32_t gAutosave;
 bool gAutosaveInCurLevel;
 int32_t gAutoRun;
 int32_t gViewInterpolate;
+int32_t gPanningInterpolate;
 int32_t gWeaponInterpolate;
 int32_t gViewHBobbing;
 int32_t gViewVBobbing;
@@ -426,6 +427,7 @@ void CONFIG_SetDefaults(void)
     gDetail = 4;
     gAutoRun = 1;
     gViewInterpolate = 1;
+    gPanningInterpolate = 1;
     gWeaponInterpolate = 0;
     gViewHBobbing = 1;
     gViewVBobbing = 1;
