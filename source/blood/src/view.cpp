@@ -2532,7 +2532,9 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         int center = height/2+picanm[pNSprite->picnum].yofs;
         if (gShadowsFake3D)
         {
-            const int nDist = (pTSprite->yrepeat*height)/34;
+            pNSprite->yrepeat += pTSprite->yrepeat>>4; // extend shadow by a quarter
+            const int nOffset = videoGetRenderMode() == REND_CLASSIC ? 24 : 30; // offset shadow distance depending on render mode
+            const int nDist = (pTSprite->yrepeat*height)/nOffset;
             const int nDir = fix16_to_int(gView->q16ang);
             pNSprite->cstat |= (pTSprite->cstat & (CSTAT_SPRITE_XFLIP|CSTAT_SPRITE_YFLIP)) | CSTAT_SPRITE_ALIGNMENT_FLOOR; // inherit flags from parent sprite and set to floor sprite render type
             pNSprite->cstat &= ~CSTAT_SPRITE_YCENTER; // don't align by center
