@@ -2535,12 +2535,11 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             pNSprite->yrepeat += pTSprite->yrepeat>>4; // extend shadow by a quarter
             const int nOffset = videoGetRenderMode() == REND_CLASSIC ? 24 : 30; // offset shadow distance depending on render mode
             const int nDist = (pTSprite->yrepeat*height)/nOffset;
-            const int nDir = fix16_to_int(gView->q16ang);
             pNSprite->cstat |= (pTSprite->cstat & (CSTAT_SPRITE_XFLIP|CSTAT_SPRITE_YFLIP)) | CSTAT_SPRITE_ALIGNMENT_FLOOR; // inherit flags from parent sprite and set to floor sprite render type
             pNSprite->cstat &= ~CSTAT_SPRITE_YCENTER; // don't align by center
-            pNSprite->x += mulscale30(nDist, Cos(nDir));
-            pNSprite->y += mulscale30(nDist, Sin(nDir));
-            pNSprite->ang = nDir;
+            pNSprite->x += mulscale30(nDist, Cos(gCameraAng));
+            pNSprite->y += mulscale30(nDist, Sin(gCameraAng));
+            pNSprite->ang = gCameraAng;
         }
         else
             pNSprite->z -= (pNSprite->yrepeat<<2)*(height-center);
@@ -2642,7 +2641,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->shade = pTSprite->shade;
         pNSprite->xrepeat = 32;
         pNSprite->yrepeat = 32;
-        pNSprite->ang = (gView->pSprite->ang + 512) & 2047; // always face viewer
+        pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
         const int nVoxel = voxelIndex[nTile];
         if (gShowWeapon == 2 && usevoxels && gDetail >= 4 && videoGetRenderMode() != REND_POLYMER && nVoxel != -1)
         {
@@ -2651,11 +2650,11 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             pNSprite->picnum = nVoxel;
             if (pPlayer->curWeapon == 9) // position lifeleech behind player
             {
-                pNSprite->x += mulscale30(128, Cos(gView->pSprite->ang));
-                pNSprite->y += mulscale30(128, Sin(gView->pSprite->ang));
+                pNSprite->x += mulscale30(128, Cos(gCameraAng));
+                pNSprite->y += mulscale30(128, Sin(gCameraAng));
             }
             if ((pPlayer->curWeapon == 9) || (pPlayer->curWeapon == 10)) // make lifeleech/voodoo doll always face viewer like sprite
-                pNSprite->ang = (gView->pSprite->ang + 1024) & 2047;
+                pNSprite->ang = (gCameraAng + 1024) & 2047;
         }
         break;
     }
@@ -2667,6 +2666,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             break;
         const short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
+        if (!pNSprite)
+            break;
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
         int heightOffset = 36;
@@ -2677,7 +2678,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->shade = pTSprite->shade;
         pNSprite->xrepeat = 32;
         pNSprite->yrepeat = 32;
-        pNSprite->ang = (gView->pSprite->ang + 512) & 2047; // always face viewer
+        pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
         break;
     }
     }
