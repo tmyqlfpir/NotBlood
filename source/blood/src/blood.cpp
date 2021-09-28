@@ -1892,7 +1892,7 @@ int app_main(int argc, char const * const * argv)
     LoadSaveSetup();
     LoadSavedInfo();
     gDemo.LoadDemoInfo();
-    initprintf("There are %d demo(s) in the loop\n", gDemo.at59ef);
+    initprintf("There are %d demo(s) in the loop\n", gDemo.nTotalDemos);
     initprintf("Loading control setup\n");
     ctrlInit();
     timerInit(CLOCKTICKSPERSECOND);
@@ -1939,7 +1939,7 @@ RESTART:
         goto RESTART;
     }
     UpdateNetworkMenus();
-    if (!gDemo.at0 && gDemo.at59ef > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
+    if (!gDemo.at0 && gDemo.nTotalDemos > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
         gDemo.SetupPlayback(NULL);
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     gQuitGame = 0;
@@ -1952,7 +1952,7 @@ RESTART:
     }
     else if (gDemo.at1 && !bAddUserMap && !bNoDemo)
         gDemo.Playback();
-    if (gDemo.at59ef > 0)
+    if (gDemo.nTotalDemos > 0)
         gGameMenuMgr.Deactivate();
     if (!bAddUserMap && !gGameStarted)
     {
@@ -2123,7 +2123,7 @@ RESTART:
         }
         if (gGameOptions.nGameType != 0)
         {
-            if (!gDemo.at0 && gDemo.at59ef > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
+            if (!gDemo.at0 && gDemo.nTotalDemos > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
                 gDemo.NextDemo();
             videoSetViewableArea(0,0,xdim-1,ydim-1);
             scrSetDac();

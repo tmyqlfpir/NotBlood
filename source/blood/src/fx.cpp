@@ -228,6 +228,8 @@ void CFX::fxProcess(void)
     for (int nSprite = headspritestat[kStatFX]; nSprite >= 0; nSprite = nextspritestat[nSprite])
     {
         spritetype *pSprite = &sprite[nSprite];
+        if (pSprite->statnum == kStatFree) // skip free'd fx sprite
+            continue;
         viewBackupSpriteLoc(nSprite, pSprite);
         short nSector = pSprite->sectnum;
         dassert(nSector >= 0 && nSector < kMaxSectors);
@@ -262,6 +264,11 @@ void CFX::fxProcess(void)
                             viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
                         else
                             ClearBitString(gInterpolateSprite, pSprite->index);
+                        continue;
+                    }
+                    else // something went terribly wrong, free sprite
+                    {
+                        fxFree(nSprite);
                         continue;
                     }
                 }
