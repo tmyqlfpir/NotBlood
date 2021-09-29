@@ -2673,54 +2673,10 @@ void AutosaveGame(bool levelStartSave)
     snprintf(gGameOptions.szSaveGameName, sizeof(gGameOptions.szSaveGameName), "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = nSlot;
     const PLAYER playerTemp = *gMe; // temp player struct while we make autosaving a little more easier (blood is stressful enough already)
-    if (!levelStartSave && (gMe->throwTime || gMe->throwPower || gMe->fuseTime || gMe->qavCallback != -1)) // if key save, check if player has a volatile weapon out
+    if (!levelStartSave) // if key save, reset problematic weapon states
     {
-        bool resetWeaponState = false;
+        playerResetWeaponState(gMe);
         gMe->invulTime = (int)gFrameClock; // in case they get hitscanned right after loading
-        switch (gMe->curWeapon) // set weapon state to something safe
-        {
-        case 1: // dynamite
-            gMe->weaponQav = 1;
-            gMe->weaponState = 0;
-            resetWeaponState = true;
-            break;
-        case 6: // dynamite
-            gMe->weaponQav = 20;
-            gMe->weaponState = 0;
-            resetWeaponState = true;
-            break;
-        case 7: // spray can
-            gMe->weaponQav = 9;
-            gMe->weaponState = 3;
-            resetWeaponState = true;
-            break;
-        case 11: // proximity
-            gMe->weaponQav = 27;
-            gMe->weaponState = 7;
-            resetWeaponState = true;
-            break;
-        case 12: // remote
-            gMe->weaponQav = 36;
-            gMe->weaponState = 10;
-            resetWeaponState = true;
-            break;
-        case 9: // life leech
-            gMe->weaponQav = 112;
-            gMe->weaponState = 2;
-            resetWeaponState = true;
-            break;
-        default:
-            break;
-        }
-        if (resetWeaponState)
-        {
-            gMe->qavCallback = -1;
-            gMe->weaponTimer = 0;
-            gMe->fuseTime = 0;
-            gMe->throwTime = 0;
-            gMe->throwPower = 0;
-            gMe->qavLoop = 0;
-        }
     }
     LoadSave::SaveGame(strSaveGameName);
     *gMe = playerTemp; // restore current player struct

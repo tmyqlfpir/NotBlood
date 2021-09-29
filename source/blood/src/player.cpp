@@ -1446,7 +1446,7 @@ void ProcessInput(PLAYER *pPlayer)
                 actPostSprite(pPlayer->nSprite, kStatThing);
                 seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
                 playerReset(pPlayer);
-                if (gGameOptions.nGameType == 0 && numplayers == 1) // if single-player
+                if ((gGameOptions.nGameType == 0) && (numplayers == 1)) // if single-player
                 {
                     if (gDemo.at0)
                         gDemo.Close();

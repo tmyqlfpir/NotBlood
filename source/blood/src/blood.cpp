@@ -817,6 +817,8 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             pPlayer->weaponTimer = gPlayerTemp[i].weaponTimer;
             pPlayer->nextWeapon = gPlayerTemp[i].nextWeapon;
             pPlayer->lastWeapon = gPlayerTemp[i].lastWeapon;
+            if (numplayers > 1) // reset problematic weapon states
+                playerResetWeaponState(pPlayer);
         }
     }
     gameOptions->uGameFlags &= ~3;

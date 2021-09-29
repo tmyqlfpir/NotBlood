@@ -1695,7 +1695,7 @@ MissileType missileInfo[] = {
         (char)-128,
         8,
     },
-    // Tommygun bullet projectile
+    // Tommy gun bullet projectile
     {
         30698, // use bullet sprite from TILES099.ART
         (625)<<12,

@@ -264,6 +264,71 @@ inline bool IsTargetTeammate(spritetype *pSourceSprite, spritetype *pTargetSprit
     return IsTargetTeammate(pSourcePlayer, pTargetSprite);
 }
 
+inline void playerResetWeaponState(PLAYER *pPlayer)
+{
+    if (!(pPlayer->throwTime || pPlayer->throwPower || pPlayer->fuseTime || pPlayer->qavCallback != -1))
+        return;
+    switch (pPlayer->curWeapon) // set weapon state to something safe
+    {
+    case 1: // pitchfork
+        pPlayer->weaponQav = 1;
+        pPlayer->weaponState = 0;
+        break;
+    case 2: // flare pistol
+        pPlayer->weaponQav = 42;
+        pPlayer->weaponState = 2;
+        break;
+    case 3: // shotgun
+        pPlayer->weaponQav = 53;
+        pPlayer->weaponState = 3;
+        break;
+    case 4: // tommy gun
+        pPlayer->weaponQav = 65;
+        pPlayer->weaponState = 0;
+        break;
+    case 5: // napalm launcher
+        pPlayer->weaponQav = 90;
+        pPlayer->weaponState = 2;
+        break;
+    case 6: // dynamite
+        pPlayer->weaponQav = 20;
+        pPlayer->weaponState = 0;
+        break;
+    case 7: // spray can
+        pPlayer->weaponQav = 9;
+        pPlayer->weaponState = 3;
+        break;
+    case 8: // tesla cannon
+        pPlayer->weaponQav = 75;
+        pPlayer->weaponState = 2;
+        break;
+    case 9: // life leech
+        pPlayer->weaponQav = 112;
+        pPlayer->weaponState = 2;
+        break;
+    case 10: // voodoo doll
+        pPlayer->weaponQav = 101;
+        pPlayer->weaponState = 2;
+        break;
+    case 11: // proximity
+        pPlayer->weaponQav = 27;
+        pPlayer->weaponState = 7;
+        break;
+    case 12: // remote
+        pPlayer->weaponQav = 36;
+        pPlayer->weaponState = 10;
+        break;
+    default:
+        return;
+    }
+    pPlayer->qavCallback = -1;
+    pPlayer->weaponTimer = 0;
+    pPlayer->fuseTime = 0;
+    pPlayer->throwTime = 0;
+    pPlayer->throwPower = 0;
+    pPlayer->qavLoop = 0;
+}
+
 int         powerupCheck(PLAYER *pPlayer, int nPowerUp);
 char        powerupActivate(PLAYER *pPlayer, int nPowerUp);
 void        powerupDeactivate(PLAYER *pPlayer, int nPowerUp);
