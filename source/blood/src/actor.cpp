@@ -5518,7 +5518,8 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
         nShooter = pShooter->index;
     dassert(vectorType >= 0 && vectorType < kVectorMax);
     VECTORDATA *pVectorData = &gVectorData[vectorType];
-    int hit = VectorScanROR(pSource, a2, a3, a4, a5, a6, nRange, 1);
+    vec3_t sourcePos;
+    int hit = VectorScanROR(pSource, a2, a3, a4, a5, a6, nRange, 1, &sourcePos);
     if (hit == 3)
     {
         int nSprite = gHitInfo.hitsprite;
@@ -5542,7 +5543,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
     int z = gHitInfo.hitz-mulscale(a6, 256, 14);
     short nSector = gHitInfo.hitsect;
     char nSurf = kSurfNone;
-    if (approxDist(gHitInfo.hitx-pSource->x, gHitInfo.hity-pSource->y) < nRange)
+    if (approxDist(gHitInfo.hitx-sourcePos.x, gHitInfo.hity-sourcePos.y) < nRange)
     {
         switch (hit)
         {
@@ -7320,10 +7321,14 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
     VECTORDATA *pVectorData = &gVectorData[vectorType];
     int nRange = pVectorData->maxDist;
     int hit;
+    vec3_t shooterPos;
     if (!VanillaMode())
-        hit = VectorScanROR(pShooter, a2, a3, a4, a5, a6, nRange, 1);
+        hit = VectorScanROR(pShooter, a2, a3, a4, a5, a6, nRange, 1, &shooterPos);
     else
+    {
         hit = VectorScan(pShooter, a2, a3, a4, a5, a6, nRange, 1);
+        shooterPos = pShooter->pos;
+    }
     bool returnedFire = false;
     if (hit == 3)
     {
@@ -7336,9 +7341,9 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
             if (powerupCheck(pPlayer, kPwUpReflectShots))
             {
                 gHitInfo.hitsprite = nShooter;
-                gHitInfo.hitx = pShooter->x;
-                gHitInfo.hity = pShooter->y;
-                gHitInfo.hitz = pShooter->z;
+                gHitInfo.hitx = shooterPos.x;
+                gHitInfo.hity = shooterPos.y;
+                gHitInfo.hitz = shooterPos.z;
                 if (WeaponsNotBlood() && !VanillaMode()) // invert impulse direction
                     returnedFire = true;
             }
@@ -7349,7 +7354,7 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
     int z = gHitInfo.hitz-mulscale14(a6, 256);
     short nSector = gHitInfo.hitsect;
     char nSurf = kSurfNone;
-    if (nRange == 0 || approxDist(gHitInfo.hitx-pShooter->x, gHitInfo.hity-pShooter->y) < nRange)
+    if (nRange == 0 || approxDist(gHitInfo.hitx-shooterPos.x, gHitInfo.hity-shooterPos.y) < nRange)
     {
         switch (hit)
         {
