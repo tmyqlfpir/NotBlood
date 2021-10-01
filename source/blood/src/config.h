@@ -124,6 +124,7 @@ extern int gProjectileBehavior;
 extern int gEnemyBehavior;
 extern int gEnemyRandomTNT;
 extern int gWeaponsVer;
+extern int gSectorBehavior;
 extern int gHitscanProjectiles;
 extern int gRandomizerMode;
 extern char gzRandomizerSeed[9];

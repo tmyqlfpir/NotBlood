@@ -620,6 +620,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gWeaponsVer;
+        gGameOptions.bSectorBehavior = gSectorBehavior;
         gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
         gGameOptions.nRandomizerMode = gRandomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
@@ -655,6 +656,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
+        gGameOptions.bSectorBehavior = gPacketStartGame.bSectorBehavior;
         gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
@@ -883,6 +885,7 @@ void StartNetworkLevel(void)
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
+        gGameOptions.bSectorBehavior = gPacketStartGame.bSectorBehavior;
         gGameOptions.bHitscanProjectiles = gPacketStartGame.bHitscanProjectiles;
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));

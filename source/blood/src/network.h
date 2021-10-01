@@ -82,6 +82,7 @@ struct PKT_STARTGAME {
     bool bEnemyBehavior;
     bool bEnemyRandomTNT;
     int nWeaponsVer;
+    bool bSectorBehavior;
     bool bHitscanProjectiles;
     bool bFriendlyFire;
     bool bKeepKeysOnRespawn;
