@@ -110,7 +110,7 @@ void Calc3DValues(BONKLE *pBonkle)
     int posX = pBonkle->curPos.x;
     int posY = pBonkle->curPos.y;
     int posZ = pBonkle->curPos.z;
-    if (!VanillaMode() && gStereo) // check if sound source is occurring in a linked sector (room over room)
+    if (!VanillaMode()) // check if sound source is occurring in a linked sector (room over room)
         Calc3DSects(&posX, &posY, &posZ, pBonkle->sectnum, gMe->pSprite->sectnum);
     int dx = posX - gMe->pSprite->x;
     int dy = posY - gMe->pSprite->y;
