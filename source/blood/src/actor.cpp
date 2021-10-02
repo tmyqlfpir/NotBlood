@@ -6322,7 +6322,7 @@ void actProcessSprites(void)
                             else
                             {
                                 int nObject = hit & 0x3fff;
-                                if ((hit&0xc000) != 0xc000 && ((VanillaMode() && (nObject < 0 || nObject >= 4096)) || !spriRangeIsFine(nObject)))
+                                if ((hit&0xc000) != 0xc000 && !spriRangeIsFine(nObject))
                                     break;
                                 dassert(nObject >= 0 && nObject < kMaxSprites);
                                 spritetype *pObject = &sprite[nObject];
@@ -6333,7 +6333,7 @@ void actProcessSprites(void)
                         case kThingPodFireBall:
                         {
                             int nObject = hit & 0x3fff;
-                            if ((hit&0xc000) != 0xc000 && ((VanillaMode() && (nObject < 0 || nObject >= 4096)) || !spriRangeIsFine(nObject)))
+                            if ((hit&0xc000) != 0xc000 && !spriRangeIsFine(nObject))
                                 break;
                             dassert(nObject >= 0 && nObject < kMaxSprites);
                             int UNUSED(nOwner) = actSpriteOwnerToSpriteId(pSprite);
