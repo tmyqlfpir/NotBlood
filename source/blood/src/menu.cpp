@@ -1145,7 +1145,7 @@ void SetupNetStartMenu(void)
     itemNetEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
     itemNetEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
     itemNetEnhancementSectorBehavior.tooltip_pzTextUpper = "Improve room over room sector handling";
-    itemNetEnhancementSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: shooting over water)";
+    itemNetEnhancementSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: firing above water)";
     itemNetEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
     itemNetEnhancementBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
     itemNetEnhancementRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
@@ -1437,7 +1437,7 @@ void SetupOptionsMenu(void)
     itemEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
     itemEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
     itemEnhancementSectorBehavior.tooltip_pzTextUpper = "Improve room over room sector handling";
-    itemEnhancementSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: shooting over water)";
+    itemEnhancementSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: firing above water)";
     itemEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
     itemEnhancementBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
     itemEnhancementRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";

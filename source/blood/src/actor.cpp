@@ -7064,7 +7064,7 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     const vec3_t bakPos = pSprite->pos;
     const short bakSect = pSprite->sectnum;
     bool restorePosSect = false;
-    if (ProjectilesNotBlood() && IsPlayerSprite(pSprite) && !VanillaMode()) // fix weird edge case when spawning missiles above waterline while underwater
+    if (gGameOptions.bSectorBehavior && IsPlayerSprite(pSprite) && !VanillaMode()) // fix weird edge case when spawning missiles above waterline while underwater
     {
         restorePosSect = true;
         int nSector = pSprite->sectnum;
