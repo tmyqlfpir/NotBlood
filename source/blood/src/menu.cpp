@@ -1468,7 +1468,7 @@ void SetupOptionsMenu(void)
     itemEnhancementBoolDamageInvul.at20 = !!gDamageInvul;
     itemEnhancementExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     itemEnhancementWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
-    itemEnhancementSectorBehavior.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzSectorBehaviorStrings);
+    itemEnhancementSectorBehavior.m_nFocus = gSectorBehavior % ARRAY_SSIZE(pzSectorBehaviorStrings);
     itemEnhancementProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     itemEnhancementEnemyBehavior.m_nFocus = gEnemyBehavior % ARRAY_SSIZE(pzEnemyBehaviorStrings);
     itemEnhancementBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
