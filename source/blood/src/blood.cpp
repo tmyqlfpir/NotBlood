@@ -1725,7 +1725,26 @@ int app_main(int argc, char const * const * argv)
     PrintBuildInfo();
 
     memcpy(&gGameOptions, &gSingleGameOptions, sizeof(GAMEOPTIONS));
-    ParseOptions();
+    bool parseArgs = true;
+#if defined(_WIN32) || defined(__linux__)
+    const char *arglastslash = argv[1];
+    if ((argc == 2) && (argv[1][0] != '-')) // if not provided any arguments and dragged folder over executable, automatically add as a potential mod path
+    {
+        const size_t arglen = strlen(argv[1]);
+        for (size_t i = arglen-1; i > 0; i--) // find last directory path name in argument 
+        {
+            if ((argv[1][i] == '\\') || (argv[1][i] == '/')) // found the slash, abort
+            {
+                arglastslash = &argv[1][i+1];
+                break;
+            }
+        }
+        G_AddPath(arglastslash);
+        parseArgs = false;
+    }
+#endif
+    if (parseArgs)
+        ParseOptions();
     G_ExtInit();
 
     if (!g_useCwd)
@@ -1777,6 +1796,13 @@ int app_main(int argc, char const * const * argv)
     }
 #endif
 
+#if defined(_WIN32) || defined(__linux__)
+    if (!parseArgs) // forcefully set game content directory to dragged folder
+    {
+        Bstrncpyz(g_modDir, arglastslash, sizeof(g_modDir));
+        gNoSetup = true; // set this so the content directory is not written to cfg on exit
+    }
+#endif
     G_LoadGroups(!bNoAutoLoad && !gSetup.noautoload);
 
     //if (!g_useCwd)

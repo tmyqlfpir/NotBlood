@@ -1423,8 +1423,8 @@ void videoGetModes(void)
 
     SDL_ADDMODE(320, 240, 8, 0); // add original resolution as a windowed only mode option
 #ifdef USE_OPENGL
-        if (!nogl)
-            SDL_ADDMODE(320, 240, 32, 0);
+    if (!nogl)
+        SDL_ADDMODE(320, 240, 32, 0);
 #endif
 
     // add windowed modes next

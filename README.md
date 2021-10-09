@@ -12,6 +12,7 @@ New features include:
 * Quad damage replacement for guns akimbo powerup
 * Increased enemy damage for lifeleech's sentry mode
 * Randomize mode for enemies and pickups (multiplayer supported)
+* Increase drawn sprites on screen limit from 2560 to 4096
 * Autosaving on collecting keys and start of level
 * Reflection sphere will reflect tesla fire
 * Throwable lifeleech alt fire
@@ -30,6 +31,7 @@ New features include:
 * Respawning enemies option for singleplayer
 * Custom difficult options for singleplayer
 * Set item box selection to activated item
+* Drag and drop folder mod support ([demo](https://files.catbox.moe/lb7nxb.mp4))
 * Weapon selection bar ([demo](https://files.catbox.moe/0zh37q.mp4))
 * Mirror mode
 
