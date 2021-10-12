@@ -701,6 +701,7 @@ void WeaponLower(PLAYER *pPlayer)
             }
             break;
         case 3:
+            pPlayer->lastWeapon = pPlayer->curWeapon;
             if (pPlayer->input.newWeapon == 6)
             {
                 pPlayer->weaponState = 2;
