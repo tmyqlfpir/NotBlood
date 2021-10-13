@@ -70,7 +70,7 @@ struct GAMEOPTIONS {
     int nEnemyHealth;
     bool bPitchforkOnly;
     bool bFriendlyFire;
-    bool bKeepKeysOnRespawn;
+    char nKeySettings;
     char szUserMap[BMAX_PATH];
 };
 

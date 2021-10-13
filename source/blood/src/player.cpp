@@ -782,7 +782,7 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->relAim.dz = 0;
     pPlayer->aimTarget = -1;
     pPlayer->zViewVel = pPlayer->zWeaponVel;
-    if (!(gGameOptions.nGameType == 1 && gGameOptions.bKeepKeysOnRespawn && !bNewLevel))
+    if (!(gGameOptions.nGameType == 1 && gGameOptions.nKeySettings && !bNewLevel))
         for (int i = 0; i < 8; i++)
             pPlayer->hasKey[i] = gGameOptions.nGameType >= 2;
     pPlayer->hasFlag = 0;
@@ -1144,6 +1144,14 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             pickupSnd = 781;
             if ((gAutosave > 0) && (gGameOptions.nGameType == 0) && !gDemo.at1) // if autosave is on and not currently in multiplayer/demo playback, autosave on key pickup
                 gDoQuickSave = 3;
+            if ((gGameOptions.nGameType == 1) && (gGameOptions.nKeySettings == 2)) { // if co-op and global key collection is on, also give key to all players
+                for (int i = connecthead; i >= 0; i = connectpoint2[i]) {
+                    gPlayer[i].hasKey[pItem->type-99] = 1;
+                }
+                if (pPlayer == gMe) break; // don't display message if self collected key
+                sprintf(buffer, "%s picked up %s", gProfile[pPlayer->nPlayer].name, gItemText[pItem->type - kItemBase]);            
+                viewSetMessage(buffer, 0, MESSAGE_PRIORITY_PICKUP);
+            }
             break;
         case kItemHealthMedPouch:
         case kItemHealthLifeEssense:
