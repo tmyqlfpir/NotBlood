@@ -6713,8 +6713,10 @@ void actProcessSprites(void)
                 {
                     if (pPlayer->pXSprite->health > 0 && pPlayer->restTime >= 1200 && Chance(0x200))
                     {
+                        const int nSound = 3100+Random(11);
                         pPlayer->restTime = -1;
-                        sfxPlay3DSound(pSprite, 3100+Random(11), 0, 2);
+                        if (gIdleTalk)
+                            sfxPlay3DSound(pSprite, nSound, 0, 2);
                     }
                 }
             }
