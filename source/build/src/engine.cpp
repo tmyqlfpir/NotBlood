@@ -82,6 +82,7 @@ int16_t pskybits_override = -1;
 void (*loadvoxel_replace)(int32_t voxindex) = NULL;
 int16_t tiletovox[MAXTILES];
 int32_t usevoxels = 1;
+int32_t r_shadowvoxels = 0;
 #ifdef USE_OPENGL
 static char *voxfilenames[MAXVOXELS];
 #endif
@@ -5344,8 +5345,19 @@ static void classicDrawSprite(int32_t snum)
         vtilenum = tilenum; // if the game wants voxels, it gets voxels
     else if ((cstat & 48) != 32 && usevoxels && tiletovox[tilenum] != -1 && spritenum != -1 && !(spriteext[spritenum].flags&SPREXT_NOTMD))
     {
-        vtilenum = tiletovox[tilenum];
-        cstat |= 48;
+        bool drawVoxel = true;
+        if (!r_shadowvoxels && bloodhack) // check if a voxel is likely being used as a shadow effect
+        {
+            const uint16_t cstatShadow = tspr->cstat & (CSTAT_SPRITE_TRANSLUCENT | CSTAT_SPRITE_ALIGNMENT_MASK);
+            const bool shadowVoxel = (cstatShadow & CSTAT_SPRITE_TRANSLUCENT) && (cstatShadow & (CSTAT_SPRITE_ALIGNMENT_WALL | CSTAT_SPRITE_ALIGNMENT_FLOOR));
+            if (shadowVoxel && (tspr->shade > 50)) // sprite is likely being used as a shadow, don't render
+                drawVoxel = false;
+        }
+        if (drawVoxel)
+        {
+            vtilenum = tiletovox[tilenum];
+            cstat |= 48;
+        }
     }
 
     if ((cstat&48) != 48)

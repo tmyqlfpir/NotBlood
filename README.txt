@@ -57,6 +57,7 @@ New features include:
 * r_mirrormode
 * r_rotatespriteinterp
 * r_rotatespriteinterpquantize
+* r_shadowvoxels
 * cl_idletalk
 * cl_interpolatepanning
 * cl_interpolateweapon

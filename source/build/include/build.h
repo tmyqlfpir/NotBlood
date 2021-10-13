@@ -1005,7 +1005,7 @@ extern float debug1, debug2;
 #endif
 
 extern int16_t tiletovox[MAXTILES];
-extern int32_t usevoxels, voxscale[MAXVOXELS];
+extern int32_t usevoxels, r_shadowvoxels, voxscale[MAXVOXELS];
 extern char g_haveVoxels;
 
 #ifdef USE_OPENGL

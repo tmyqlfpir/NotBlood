@@ -8219,6 +8219,13 @@ void polymost_drawsprite(int32_t snum)
 
         if (usevoxels && (tspr->cstat & 48) != 48 && tiletovox[tspr->picnum] >= 0 && voxmodels[tiletovox[tspr->picnum]])
         {
+            if (!r_shadowvoxels && bloodhack) // check if a voxel is likely being used as a shadow effect
+            {
+                const uint16_t cstatShadow = tspr->cstat & (CSTAT_SPRITE_TRANSLUCENT | CSTAT_SPRITE_ALIGNMENT_MASK);
+                const bool shadowVoxel = (cstatShadow & CSTAT_SPRITE_TRANSLUCENT) && (cstatShadow & (CSTAT_SPRITE_ALIGNMENT_WALL | CSTAT_SPRITE_ALIGNMENT_FLOOR));
+                if (shadowVoxel && (tspr->shade > 50)) // sprite is likely being used as a shadow, don't render
+                    break;
+            }
             if (polymost_voxdraw(voxmodels[tiletovox[tspr->picnum]], tspr))
             {
                 if (editstatus)
