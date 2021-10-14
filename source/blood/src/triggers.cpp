@@ -301,6 +301,8 @@ void LifeLeechOperate(spritetype *pSprite, XSPRITE *pXSprite, EVENT event)
                                 pXSprite->stateTimer = 3;
                             evPost(pSprite->index, 3, t2, kCallbackLeechStateTimer);
                             pXSprite->data3 = ClipLow(pXSprite->data3-1, 0);
+                            if (ProjectilesNotBlood() && !VanillaMode()) // disable collisions so lifeleech doesn't do that weird bobbing
+                                pMissile->cstat &= ~257;
                         }
                         pSprite->ang = angBak;
                     }
