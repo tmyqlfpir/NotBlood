@@ -58,7 +58,7 @@ hashtable_t h_gamefuncs    = { NUMGAMEFUNCTIONS<<1, NULL };
 
 int32_t MouseDeadZone, MouseBias;
 int32_t MouseFunctions[MAXMOUSEBUTTONS][2];
-int32_t MouseAnalogueAxes[MAXMOUSEAXES];
+//int32_t MouseAnalogueAxes[MAXMOUSEAXES];
 int32_t JoystickFunctions[MAXJOYBUTTONSANDHATS][2];
 int32_t JoystickDigitalFunctions[MAXJOYAXES][2];
 int32_t JoystickAnalogueAxes[MAXJOYAXES];
@@ -164,7 +164,7 @@ int32_t CONFIG_FunctionNameToNum(const char *func)
     {
         char *str = Bstrtolower(Xstrdup(func));
         i = hash_find(&h_gamefuncs,str);
-        Bfree(str);
+        Xfree(str);
 
         return i;
     }
@@ -502,13 +502,15 @@ void CONFIG_SetDefaults(void)
         CONTROL_MapButton(MouseFunctions[i][1], i, 1, controldevice_mouse);
     }
 
+#if 0
     for (int i=0; i<MAXMOUSEAXES; i++)
     {
         CONTROL_SetAnalogAxisScale(i, DEFAULTMOUSEANALOGUESCALE, controldevice_mouse);
 
         MouseAnalogueAxes[i] = CONFIG_AnalogNameToNum(mouseanalogdefaults[i]);
-        CONTROL_MapAnalogAxis(i, MouseAnalogueAxes[i], controldevice_mouse);
+        CONTROL_MapAnalogAxis(i, MouseAnalogueAxes[i]);
     }
+#endif
 
     for (int i=0; i<MAXJOYBUTTONSANDHATS; i++)
     {
@@ -527,11 +529,11 @@ void CONFIG_SetDefaults(void)
 
         JoystickDigitalFunctions[i][0] = CONFIG_FunctionNameToNum(joystickdigitaldefaults[i*2]);
         JoystickDigitalFunctions[i][1] = CONFIG_FunctionNameToNum(joystickdigitaldefaults[i*2+1]);
-        CONTROL_MapDigitalAxis(i, JoystickDigitalFunctions[i][0], 0, controldevice_joystick);
-        CONTROL_MapDigitalAxis(i, JoystickDigitalFunctions[i][1], 1, controldevice_joystick);
+        CONTROL_MapDigitalAxis(i, JoystickDigitalFunctions[i][0], 0);
+        CONTROL_MapDigitalAxis(i, JoystickDigitalFunctions[i][1], 1);
 
         JoystickAnalogueAxes[i] = CONFIG_AnalogNameToNum(joystickanalogdefaults[i]);
-        CONTROL_MapAnalogAxis(i, JoystickAnalogueAxes[i], controldevice_joystick);
+        CONTROL_MapAnalogAxis(i, JoystickAnalogueAxes[i]);
     }
 }
 
@@ -606,6 +608,7 @@ void CONFIG_SetupMouse(void)
             MouseFunctions[i][1] = CONFIG_FunctionNameToNum(temp);
     }
 
+#if 0
     // map over the axes
     for (int i=0; i<MAXMOUSEAXES; i++)
     {
@@ -615,14 +618,17 @@ void CONFIG_SetupMouse(void)
             if (CONFIG_AnalogNameToNum(temp) != -1 || (!temp[0] && CONFIG_FunctionNameToNum(temp) != -1))
                 MouseAnalogueAxes[i] = CONFIG_AnalogNameToNum(temp);
     }
+#endif
 
     for (int i=0; i<MAXMOUSEBUTTONS; i++)
     {
         CONTROL_MapButton(MouseFunctions[i][0], i, 0, controldevice_mouse);
         CONTROL_MapButton(MouseFunctions[i][1], i, 1,  controldevice_mouse);
     }
+#if 0
     for (int i=0; i<MAXMOUSEAXES; i++)
-        CONTROL_MapAnalogAxis(i, MouseAnalogueAxes[i], controldevice_mouse);
+        CONTROL_MapAnalogAxis(i, MouseAnalogueAxes[i]);
+#endif
 }
 
 
@@ -692,9 +698,9 @@ void CONFIG_SetupJoystick(void)
     }
     for (i=0; i<MAXJOYAXES; i++)
     {
-        CONTROL_MapAnalogAxis(i, JoystickAnalogueAxes[i], controldevice_joystick);
-        CONTROL_MapDigitalAxis(i, JoystickDigitalFunctions[i][0], 0, controldevice_joystick);
-        CONTROL_MapDigitalAxis(i, JoystickDigitalFunctions[i][1], 1, controldevice_joystick);
+        CONTROL_MapAnalogAxis(i, JoystickAnalogueAxes[i]);
+        CONTROL_MapDigitalAxis(i, JoystickDigitalFunctions[i][0], 0);
+        CONTROL_MapDigitalAxis(i, JoystickDigitalFunctions[i][1], 1);
         CONTROL_SetAnalogAxisScale(i, JoystickAnalogueScale[i], controldevice_joystick);
     }
 }
@@ -823,7 +829,7 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "ScreenWidth", &gSetup.xdim);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPosX", (int32_t *)&windowx);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPosY", (int32_t *)&windowy);
-    SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPositioning", (int32_t *)&windowpos);
+    SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPositioning", (int32_t *)&r_windowpositioning);
 
     if (gSetup.bpp < 8) gSetup.bpp = 32;
 
@@ -937,7 +943,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "MaxRefreshFreq", maxrefreshfreq, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPosX", windowx, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPosY", windowy, FALSE, FALSE);
-    SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPositioning", windowpos, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPositioning", r_windowpositioning, FALSE, FALSE);
 
     //if (!NAM_WW2GI)
     //{
@@ -969,6 +975,7 @@ void CONFIG_WriteSetup(uint32_t flags)
             }
         }
 
+#if 0
         for (int i=0; i<MAXMOUSEAXES; i++)
         {
             if (CONFIG_AnalogNumToName(MouseAnalogueAxes[i]))
@@ -977,6 +984,7 @@ void CONFIG_WriteSetup(uint32_t flags)
                 SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_AnalogNumToName(MouseAnalogueAxes[i]));
             }
         }
+#endif
     }
 
     if (gSetup.usejoystick)

@@ -467,14 +467,14 @@ int HitScan(spritetype *pSprite, int z, int dx, int dy, int dz, unsigned int nMa
     }
     vec3_t pos = { x, y, z };
     hitdata_t hitData;
-    hitData.pos.z = gHitInfo.hitz;
+    hitData.xyz.z = gHitInfo.hitz;
     hitscan(&pos, nSector, dx, dy, dz << 4, &hitData, nMask);
     gHitInfo.hitsect = hitData.sect;
     gHitInfo.hitwall = hitData.wall;
     gHitInfo.hitsprite = hitData.sprite;
-    gHitInfo.hitx = hitData.pos.x;
-    gHitInfo.hity = hitData.pos.y;
-    gHitInfo.hitz = hitData.pos.z;
+    gHitInfo.hitx = hitData.xyz.x;
+    gHitInfo.hity = hitData.xyz.y;
+    gHitInfo.hitz = hitData.xyz.z;
     hitscangoal.x = hitscangoal.y = 0x1ffffff;
     pSprite->cstat = bakCstat;
     if (gHitInfo.hitsprite >= kMaxSprites || gHitInfo.hitwall >= kMaxWalls || gHitInfo.hitsect >= kMaxSectors)
@@ -520,14 +520,14 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
     }
     vec3_t pos = { x1, y1, z1 };
     hitdata_t hitData;
-    hitData.pos.z = gHitInfo.hitz;
+    hitData.xyz.z = gHitInfo.hitz;
     hitscan(&pos, nSector, dx, dy, dz << 4, &hitData, CLIPMASK1);
     gHitInfo.hitsect = hitData.sect;
     gHitInfo.hitwall = hitData.wall;
     gHitInfo.hitsprite = hitData.sprite;
-    gHitInfo.hitx = hitData.pos.x;
-    gHitInfo.hity = hitData.pos.y;
-    gHitInfo.hitz = hitData.pos.z;
+    gHitInfo.hitx = hitData.xyz.x;
+    gHitInfo.hity = hitData.xyz.y;
+    gHitInfo.hitz = hitData.xyz.z;
     hitscangoal.x = hitscangoal.y = 0x1ffffff;
     pSprite->cstat = bakCstat;
     while (nNum--)
@@ -590,15 +590,15 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
             y1 = gHitInfo.hity;
             z1 = gHitInfo.hitz;
             pos = { x1, y1, z1 };
-            hitData.pos.z = gHitInfo.hitz;
+            hitData.xyz.z = gHitInfo.hitz;
             hitscan(&pos, pOther->sectnum,
                 dx, dy, dz << 4, &hitData, CLIPMASK1);
             gHitInfo.hitsect = hitData.sect;
             gHitInfo.hitwall = hitData.wall;
             gHitInfo.hitsprite = hitData.sprite;
-            gHitInfo.hitx = hitData.pos.x;
-            gHitInfo.hity = hitData.pos.y;
-            gHitInfo.hitz = hitData.pos.z;
+            gHitInfo.hitx = hitData.xyz.x;
+            gHitInfo.hity = hitData.xyz.y;
+            gHitInfo.hitz = hitData.xyz.z;
             pOther->cstat = bakCstat;
             continue;
         }
@@ -677,15 +677,15 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
                 y1 = gHitInfo.hity;
                 z1 = gHitInfo.hitz;
                 pos = { x1, y1, z1 };
-                hitData.pos.z = gHitInfo.hitz;
+                hitData.xyz.z = gHitInfo.hitz;
                 hitscan(&pos, pWall->nextsector,
                     dx, dy, dz << 4, &hitData, CLIPMASK1);
                 gHitInfo.hitsect = hitData.sect;
                 gHitInfo.hitwall = hitData.wall;
                 gHitInfo.hitsprite = hitData.sprite;
-                gHitInfo.hitx = hitData.pos.x;
-                gHitInfo.hity = hitData.pos.y;
-                gHitInfo.hitz = hitData.pos.z;
+                gHitInfo.hitx = hitData.xyz.x;
+                gHitInfo.hity = hitData.xyz.y;
+                gHitInfo.hitz = hitData.xyz.z;
                 pWall->cstat = bakCstat;
                 wall[pWall->nextwall].cstat = bakCstat2;
                 continue;
@@ -705,7 +705,6 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
             {
                 if (gLowerLink[gHitInfo.hitsect] < 0)
                     return 1;
-                nSprite = gLowerLink[gHitInfo.hitsect];
             }
             int nLink = sprite[nSprite].owner & 0xfff;
             gHitInfo.hitsect = -1;
@@ -721,14 +720,14 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
                 adjustedRORPos->z = adjustedRORPos->z + sprite[nLink].z - sprite[nSprite].z;
             }
             pos = { x1, y1, z1 };
-            hitData.pos.z = gHitInfo.hitz;
+            hitData.xyz.z = gHitInfo.hitz;
             hitscan(&pos, sprite[nLink].sectnum, dx, dy, dz<<4, &hitData, CLIPMASK1);
             gHitInfo.hitsect = hitData.sect;
             gHitInfo.hitwall = hitData.wall;
             gHitInfo.hitsprite = hitData.sprite;
-            gHitInfo.hitx = hitData.pos.x;
-            gHitInfo.hity = hitData.pos.y;
-            gHitInfo.hitz = hitData.pos.z;
+            gHitInfo.hitx = hitData.xyz.x;
+            gHitInfo.hity = hitData.xyz.y;
+            gHitInfo.hitz = hitData.xyz.z;
             continue;
         }
         return -1;
@@ -739,7 +738,7 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
 int VectorScanROR(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, int dz, int nRange, int ac, vec3_t *adjustedRORPos)
 {
     // this function operates the same as VectorScan() but it'll check if initial starting position is clipping into a ror sector, as well as accumulating offsets for every ror sector traversal
-    const vec3_t bakPos = pSprite->pos;
+    const vec3_t bakPos = pSprite->xyz;
     const short bakSect = pSprite->sectnum;
     bool restorePosSect = false;
     int x = pSprite->x+mulscale30(nOffset, Cos(pSprite->ang+512));
@@ -756,11 +755,11 @@ int VectorScanROR(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy
         pSprite->sectnum = nSector;
     }
     if (adjustedRORPos)
-        *adjustedRORPos = pSprite->pos;
+        *adjustedRORPos = pSprite->xyz;
     int hit = VectorScan(pSprite, nOffset, nZOffset, dx, dy, dz, nRange, ac, adjustedRORPos);
     if (restorePosSect) // restore sprite position and sectnum
     {
-        pSprite->pos = bakPos;
+        pSprite->xyz = bakPos;
         pSprite->sectnum = bakSect;
     }
     return hit;
@@ -930,7 +929,7 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
     bool seekSector = false;
     vec3_t pos = {origX, origY, origZ};
     hitdata_t hitData;
-    hitData.pos = pos;
+    hitData.xyz = pos;
     hitscangoal.x = *x;
     hitscangoal.y = *y;
     hitscan(&pos, origSect, Cos(raySprite->ang)>>16, Sin(raySprite->ang)>>16, 0, &hitData, nMask);
@@ -938,10 +937,10 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
         seekSector = true;
     else if (hitData.sprite >= 0 || hitData.wall >= 0) // did we hit something, and was it a sprite/wall
     {
-        const int distRay = approxDist(origX-hitData.pos.x, origY-hitData.pos.y);
-        *x = hitData.pos.x; // set to raycast position
-        *y = hitData.pos.y;
-        *z = hitData.pos.z;
+        const int distRay = approxDist(origX-hitData.xyz.x, origY-hitData.xyz.y);
+        *x = hitData.xyz.x; // set to raycast position
+        *y = hitData.xyz.y;
+        *z = hitData.xyz.z;
         *nSector = hitData.sect;
         wd = raySprite->clipdist<<2; // use the original wd values to offset from wall/sprite
         if ((distRay - ((wd+8)<<1)) > 0) // if there is enough room to offset from ray's hit surface

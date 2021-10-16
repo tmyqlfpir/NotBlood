@@ -2113,7 +2113,7 @@ void viewInit(void)
     }
     gViewMap.sub_25C38(0, 0, gZoom, 0, gFollowMap);
 
-    g_frameDelay = calcFrameDelay(r_maxfps + r_maxfpsoffset);
+    g_frameDelay = calcFrameDelay(r_maxfps);
 
     bLoadScreenCrcMatch = tileGetCRC32(kLoadScreen) == kLoadScreenCRC;
 }
@@ -3228,8 +3228,8 @@ void CalcOtherPosition(spritetype *pSprite, int *pX, int *pY, int *pZ, int *vsec
     hitdata_t hitdata;
     hitscan(&pos, *vsectnum, vX, vY, vZ, &hitdata, CLIPMASK1);
     nHSector = hitdata.sect;
-    hX = hitdata.pos.x;
-    hY = hitdata.pos.y;
+    hX = hitdata.xyz.x;
+    hY = hitdata.xyz.y;
     int dX = hX-*pX;
     int dY = hY-*pY;
     if (klabs(vX)+klabs(vY) > klabs(dX)+klabs(dY))
@@ -3277,8 +3277,8 @@ void CalcPosition(spritetype *pSprite, int *pX, int *pY, int *pZ, int *vsectnum,
     hitdata_t hitdata;
     hitscan(&pos, *vsectnum, vX, vY, vZ, &hitdata, CLIPMASK1);
     nHSector = hitdata.sect;
-    hX = hitdata.pos.x;
-    hY = hitdata.pos.y;
+    hX = hitdata.xyz.x;
+    hY = hitdata.xyz.y;
     int dX = hX-*pX;
     int dY = hY-*pY;
     if (klabs(vX)+klabs(vY) > klabs(dX)+klabs(dY))

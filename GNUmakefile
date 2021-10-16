@@ -140,6 +140,36 @@ ifeq ($(RENDERTYPE),WIN)
     glad_objs += glad_wgl.c
 endif
 
+#### mimalloc
+
+mimalloc := mimalloc
+
+mimalloc_objs := \
+    alloc.c \
+    alloc-aligned.c \
+    alloc-posix.c \
+    arena.c \
+    bitmap.c \
+    heap.c \
+    init.c \
+    options.c \
+    os.c \
+    page.c \
+    random.c \
+    region.c \
+    segment.c \
+    stats.c \
+
+ifeq ($(PLATFORM),APPLE)
+    mimalloc_objs += alloc-override-osx.c
+endif
+
+mimalloc_root := $(source)/$(mimalloc)
+mimalloc_src := $(mimalloc_root)/src
+mimalloc_inc := $(mimalloc_root)/include
+mimalloc_obj := $(obj)/$(mimalloc)
+
+mimalloc_cflags := -D_WIN32_WINNT=0x0600 -DMI_USE_RTLGENRANDOM -DMI_SHOW_ERRORS -I$(mimalloc_inc) -fexceptions -Wno-cast-qual -Wno-class-memaccess -Wno-unknown-pragmas
 
 #### Voidwrap
 
@@ -230,15 +260,16 @@ engine_src := $(engine_root)/src
 engine_inc := $(engine_root)/include
 engine_obj := $(obj)/$(engine)
 
-engine_cflags := -I$(engine_src)
+engine_cflags := -I$(engine_src) -I$(mimalloc_inc)
 
-engine_deps :=
+engine_deps := mimalloc
 
 ifneq (0,$(USE_PHYSFS))
     engine_deps += physfs
 endif
 
 engine_objs := \
+    asan_guarded_allocator.cpp \
     2d.cpp \
     baselayer.cpp \
     cache1d.cpp \
@@ -279,6 +310,9 @@ engine_objs := \
     scriptfile.cpp \
     sjson.cpp \
     smalltextfont.cpp \
+    smmalloc.cpp \
+    smmalloc_generic.cpp \
+    smmalloc_tls.cpp \
     softsurface.cpp \
     texcache.cpp \
     textfont.cpp \
@@ -286,7 +320,6 @@ engine_objs := \
     timer.cpp \
     vfs.cpp \
     xxhash.c \
-    zpl.cpp \
 
 engine_editor_objs := \
     build.cpp \
@@ -301,6 +334,9 @@ engine_tools_objs := \
     kplib.cpp \
     lz4.cpp \
     pragmas.cpp \
+    smmalloc.cpp \
+    smmalloc_generic.cpp \
+    smmalloc_tls.cpp \
     vfs.cpp \
 
 ifeq (0,$(NOASM))
@@ -416,9 +452,6 @@ ifeq ($(SUBPLATFORM),LINUX)
 endif
 
 ifeq ($(RENDERTYPE),SDL)
-    ifeq (,$(filter $(PLATFORM),DARWIN WINDOWS WII))
-        audiolib_cflags += `$(PKG_CONFIG) --cflags vorbis`
-    endif
     audiolib_objs += driver_sdl.cpp
 endif
 
@@ -472,15 +505,15 @@ endif
 #### Depends
 
 ifeq ($(SUBPLATFORM),LINUX)
-    LIBS += -lFLAC -lvorbisfile -lvorbis -logg -lasound
+    LIBS += -lFLAC -lasound
 endif
 
 ifeq ($(PLATFORM),BSD)
-    LIBS += -lFLAC -lvorbisfile -lvorbis -logg -lexecinfo
+    LIBS += -lFLAC -lexecinfo
 endif
 
 ifeq ($(PLATFORM),DARWIN)
-    LIBS += -lFLAC -lvorbisfile -lvorbis -logg -lm \
+    LIBS += -lFLAC -lm \
             -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,OpenGL \
             -Wl,-framework,CoreMIDI -Wl,-framework,AudioUnit \
             -Wl,-framework,AudioToolbox -Wl,-framework,IOKit -Wl,-framework,AGL
@@ -490,11 +523,7 @@ ifeq ($(PLATFORM),DARWIN)
 endif
 
 ifeq ($(PLATFORM),WINDOWS)
-    LIBS += -lFLAC -lvorbisfile -lvorbis -logg -ldsound
-endif
-
-ifeq ($(PLATFORM),WII)
-    LIBS += -lvorbisidec
+    LIBS += -lFLAC -ldsound
 endif
 
 
@@ -641,6 +670,7 @@ COMPILERFLAGS += \
     -I$(audiolib_inc) \
     -I$(glad_inc) \
     -I$(voidwrap_inc) \
+    -I$(mimalloc_inc) \
     -I$(libsmackerdec_inc) \
     -I$(hmpplay_inc) \
     -MP -MMD \
@@ -663,6 +693,7 @@ libraries := \
     engine \
     glad \
     libxmplite \
+    mimalloc \
     mact \
     voidwrap \
     libsmackerdec \
@@ -765,10 +796,10 @@ libklzw$(DLLSUFFIX): $(engine_src)/klzw.cpp
 	$(LINK_STATUS)
 	$(RECIPE_IF) $(LINKER) -o $@ $^ $(LIBDIRS) $(LIBS) $(RECIPE_RESULT_LINK)
 
-enumdisplay$(EXESUFFIX): $(tools_obj)/enumdisplay.$o
+enumdisplay$(EXESUFFIX): $(tools_obj)/enumdisplay.$o $(foreach i,tools $(tools_deps),$(call expandobjs,$i))
 	$(LINK_STATUS)
 	$(RECIPE_IF) $(LINKER) -o $@ $^ $(LIBDIRS) $(LIBS) -lgdi32 $(RECIPE_RESULT_LINK)
-getdxdidf$(EXESUFFIX): $(tools_obj)/getdxdidf.$o
+getdxdidf$(EXESUFFIX): $(tools_obj)/getdxdidf.$o $(foreach i,tools $(tools_deps),$(call expandobjs,$i))
 	$(LINK_STATUS)
 	$(RECIPE_IF) $(LINKER) -o $@ $^ $(LIBDIRS) $(LIBS) -ldinput $(RECIPE_RESULT_LINK)
 
