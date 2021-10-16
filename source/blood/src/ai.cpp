@@ -256,7 +256,7 @@ void aiChooseDirection(spritetype *pSprite, XSPRITE *pXSprite, int a3)
 {
     int nSprite = pSprite->index;
     dassert(pSprite->type >= kDudeBase && pSprite->type < kDudeMax);
-    if ((pSprite->pos == gSpritePrevLoc[nSprite]) && (pSprite->sectnum == gSpritePrevSect[nSprite]) && EnemiesNotBlood() && !VanillaMode())
+    if ((pSprite->xyz == gSpritePrevLoc[nSprite]) && (pSprite->sectnum == gSpritePrevSect[nSprite]) && EnemiesNotBlood() && !VanillaMode())
     {
         gSpriteStuckage[nSprite]++;
         if (gSpriteStuckage[nSprite] > 10) // if enemy has been stuck for roughly more than a second
@@ -269,7 +269,7 @@ void aiChooseDirection(spritetype *pSprite, XSPRITE *pXSprite, int a3)
     else
     {
         gSpriteStuckage[nSprite] = 0;
-        gSpritePrevLoc[nSprite] = pSprite->pos;
+        gSpritePrevLoc[nSprite] = pSprite->xyz;
         gSpritePrevSect[nSprite] = pSprite->sectnum;
     }
     int vc = ((a3+1024-pSprite->ang)&2047)-1024;

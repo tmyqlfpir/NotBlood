@@ -7056,7 +7056,7 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     int clipdist = pMissileInfo->clipDist+pSprite->clipdist;
     x += mulscale28(clipdist, Cos(pSprite->ang));
     y += mulscale28(clipdist, Sin(pSprite->ang));
-    const vec3_t bakPos = pSprite->pos;
+    const vec3_t bakPos = pSprite->xyz;
     const short bakSect = pSprite->sectnum;
     bool restorePosSect = false;
     if (gGameOptions.bSectorBehavior && IsPlayerSprite(pSprite) && !VanillaMode()) // fix weird edge case when spawning missiles above waterline while underwater
@@ -7093,7 +7093,7 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     spritetype *pMissile = actSpawnSprite(pSprite->sectnum, x, y, z, 5, 1);
     if (restorePosSect)
     {
-        pSprite->pos = bakPos;
+        pSprite->xyz = bakPos;
         pSprite->sectnum = bakSect;
     }
     int nMissile = pMissile->index;
@@ -7322,7 +7322,7 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
     else
     {
         hit = VectorScan(pShooter, a2, a3, a4, a5, a6, nRange, 1);
-        shooterPos = pShooter->pos;
+        shooterPos = pShooter->xyz;
     }
     bool returnedFire = false;
     if (hit == 3)

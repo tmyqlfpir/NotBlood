@@ -705,6 +705,7 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
             {
                 if (gLowerLink[gHitInfo.hitsect] < 0)
                     return 1;
+                nSprite = gLowerLink[gHitInfo.hitsect];
             }
             int nLink = sprite[nSprite].owner & 0xfff;
             gHitInfo.hitsect = -1;

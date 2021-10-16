@@ -256,7 +256,7 @@ void CFX::fxProcess(void)
                 if ((sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095) && !VanillaMode()) // if current sector is open air, find next floor
                 {
                     int nSectnum = nSector;
-                    vec3_t oldPos = pSprite->pos;
+                    vec3_t oldPos = pSprite->xyz;
                     if (CheckLink(&pSprite->x, &pSprite->y, &pSprite->z, &nSectnum)) // if found floor underneath
                     {
                         ChangeSpriteSect(nSprite, nSectnum);
