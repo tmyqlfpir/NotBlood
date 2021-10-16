@@ -474,7 +474,7 @@ tools_obj := $(obj)/$(tools)
 
 tools_cflags := $(engine_cflags)
 
-tools_deps := engine_tools
+tools_deps := engine_tools mimalloc
 
 tools_targets := \
     arttool \

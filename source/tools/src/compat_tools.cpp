@@ -25,6 +25,12 @@ void initputs (const char * str) { puts(str); }
 
 int16_t editstatus = 1;
 
+void engineDestroyAllocator(void)
+{
+    _sm_allocator_thread_cache_destroy(g_sm_heap);
+    _sm_allocator_destroy(g_sm_heap);
+}
+
 #ifdef __cplusplus
 }
 #endif
