@@ -1963,7 +1963,7 @@ void SetTurnSpeed(CGameMenuItemSlider *pItem)
 void SetAutoAim(CGameMenuItemZCycle *pItem)
 {
     gAutoAim = pItem->m_nFocus;
-    if (!gDemo.at0 && !gDemo.at1)
+    if (!gDemo.bRecording && !gDemo.bPlaying)
     {
         gProfile[myconnectindex].nAutoAim = gAutoAim;
         netBroadcastPlayerInfo(myconnectindex);
@@ -2000,7 +2000,7 @@ void SetWeaponSwitch(CGameMenuItemZCycle *pItem)
         gWeaponSwitch |= 1;
         break;
     }
-    if (!gDemo.at0 && !gDemo.at1)
+    if (!gDemo.bRecording && !gDemo.bPlaying)
     {
         gProfile[myconnectindex].nWeaponSwitch = gWeaponSwitch;
         netBroadcastPlayerInfo(myconnectindex);
@@ -2010,7 +2010,7 @@ void SetWeaponSwitch(CGameMenuItemZCycle *pItem)
 void SetWeaponFastSwitch(CGameMenuItemZBool *pItem)
 {
     gWeaponFastSwitch = pItem->at20;
-    if (!gDemo.at0 && !gDemo.at1)
+    if (!gDemo.bRecording && !gDemo.bPlaying)
     {
         gProfile[myconnectindex].bWeaponFastSwitch = gWeaponFastSwitch;
         netBroadcastPlayerInfo(myconnectindex);
@@ -2051,8 +2051,10 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.nLevel = 0;
-    if (gDemo.at1)
+    if (gDemo.bPlaying)
         gDemo.StopPlayback();
+    else if (gDemo.bRecording)
+        gDemo.Close();
     gStartNewGame = true;
     gCheatMgr.ResetCheats();
     if (Bstrlen(gGameOptions.szUserMap))
@@ -2074,8 +2076,10 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
     gGameOptions.nLevel = 0;
-    if (gDemo.at1)
+    if (gDemo.bPlaying)
         gDemo.StopPlayback();
+    else if (gDemo.bRecording)
+        gDemo.Close();
     gStartNewGame = true;
     gCheatMgr.ResetCheats();
     if (Bstrlen(gGameOptions.szUserMap))
@@ -2389,7 +2393,7 @@ void UpdateMusicToggle(CGameMenuItemZBool *pItem)
         sndStopSong();
     else
     {
-        if (gGameStarted || gDemo.at1)
+        if (gGameStarted || gDemo.bPlaying)
             sndPlaySong(gGameOptions.zLevelSong, true);
     }
 }
@@ -2397,7 +2401,7 @@ void UpdateMusicToggle(CGameMenuItemZBool *pItem)
 void UpdateCDToggle(CGameMenuItemZBool *pItem)
 {
     CDAudioToggle = pItem->at20;
-    if (gGameStarted || gDemo.at1)
+    if (gGameStarted || gDemo.bPlaying)
         levelTryPlayMusicOrNothing(gGameOptions.nEpisode, gGameOptions.nLevel);
 }
 
@@ -2448,7 +2452,7 @@ void SetSound(CGameMenuItemChain *pItem)
     sndInit();
     sfxInit();
 
-    if (MusicToggle && (gGameStarted || gDemo.at1))
+    if (MusicToggle && (gGameStarted || gDemo.bPlaying))
         sndPlaySong(gGameOptions.zLevelSong, true);
 }
 
@@ -2899,7 +2903,7 @@ void drawLoadingScreen(void)
     char buffer[80];
     if (gGameOptions.nGameType == 0)
     {
-        if (gDemo.at1)
+        if (gDemo.bPlaying)
             sprintf(buffer, "Loading Demo");
         else
             sprintf(buffer, "Loading Level");

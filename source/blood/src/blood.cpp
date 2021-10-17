@@ -452,7 +452,7 @@ void PrecacheExtraTextureMaps(int nTile)
 void PreloadCache(void)
 {
     char tempbuf[128];
-    if (gDemo.at1)
+    if (gDemo.bPlaying)
         return;
     gSysRes.PurgeCache();
     gSoundRes.PurgeCache();
@@ -585,14 +585,14 @@ int gDoQuickSave = 0;
 
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
-    const bool triggerAutosave = !gDemo.at0 && !gDemo.at1 && (gGameOptions.nGameType == 0) && gameOptions->uGameFlags&1; // if demo isn't active and not in multiplayer session and we switched to new level
+    const bool triggerAutosave = !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == 0) && gameOptions->uGameFlags&1; // if demo isn't active and not in multiplayer session and we switched to new level
     EndLevel();
     gInput = {};
     gStartNewGame = 0;
     ready2send = 0;
     gMusicPrevLoadedEpisode = gGameOptions.nEpisode;
     gMusicPrevLoadedLevel = gGameOptions.nLevel;
-    if (gDemo.at0 && gGameStarted)
+    if (gDemo.bRecording && gGameStarted)
         gDemo.Close();
     netWaitForEveryone(0);
     if (gGameOptions.nGameType == 0)
@@ -602,7 +602,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         if (gEpisodeInfo[gGameOptions.nEpisode].cutALevel == gGameOptions.nLevel
             && gEpisodeInfo[gGameOptions.nEpisode].cutsceneASmkPath)
             gGameOptions.uGameFlags |= 4;
-        if ((gGameOptions.uGameFlags&4) && gDemo.at1 == 0 && !Bstrlen(gGameOptions.szUserMap))
+        if ((gGameOptions.uGameFlags&4) && !gDemo.bPlaying && !gDemo.bRecording && !Bstrlen(gGameOptions.szUserMap))
             levelPlayIntroScene(gGameOptions.nEpisode);
 
         ///////
@@ -837,7 +837,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     gCacheMiss = 0;
     gFrame = 0;
     gChokeCounter = 0;
-    if (!gDemo.at1)
+    if (!gDemo.bPlaying)
         gGameMenuMgr.Deactivate();
     levelTryPlayMusicOrNothing(gGameOptions.nEpisode, gGameOptions.nLevel);
     if (VanillaMode())
@@ -859,7 +859,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
 void StartNetworkLevel(void)
 {
-    if (gDemo.at0)
+    if (gDemo.bRecording)
         gDemo.Close();
     if (!(gGameOptions.uGameFlags&1))
     {
@@ -1012,7 +1012,7 @@ void LocalKeys(void)
     if (gDoQuickSave)
     {
         keyFlushScans();
-        if ((gGameOptions.nGameType == 0) && !gDemo.at1) // if not in multiplayer session and not in demo playback, allow quicksave
+        if ((gGameOptions.nGameType == 0) && !gDemo.bPlaying && !gDemo.bRecording) // if not in multiplayer session and not in demo playback, allow quicksave
         {
             switch (gDoQuickSave)
             {
@@ -1139,6 +1139,17 @@ void ProcessFrame(void)
     char buffer[128];
     for (int i = connecthead; i >= 0; i = connectpoint2[i])
     {
+        if (gDemo.bRecording) // quantize to demo formatted input
+        {
+            gFifoInput[gNetFifoTail&255][i].strafe >>= 8;
+            gFifoInput[gNetFifoTail&255][i].strafe <<= 8;
+            gFifoInput[gNetFifoTail&255][i].forward >>= 8;
+            gFifoInput[gNetFifoTail&255][i].forward <<= 8;
+            const int mturn = fix16_to_int(gFifoInput[gNetFifoTail&255][i].q16turn<<2);
+            gFifoInput[gNetFifoTail&255][i].q16turn = fix16_from_int(mturn>>2);
+            const int mlook = ClipRange(fix16_to_int(gFifoInput[gNetFifoTail&255][i].q16mlook*4), -256, 255);
+            gFifoInput[gNetFifoTail&255][i].q16mlook = fix16_from_int(mlook/4);
+        }
         gPlayer[i].input.buttonFlags = gFifoInput[gNetFifoTail&255][i].buttonFlags;
         gPlayer[i].input.keyFlags.word |= gFifoInput[gNetFifoTail&255][i].keyFlags.word;
         gPlayer[i].input.useFlags.byte |= gFifoInput[gNetFifoTail&255][i].useFlags.byte;
@@ -1195,11 +1206,11 @@ void ProcessFrame(void)
         }
     }
     viewClearInterpolations();
-    if (!gDemo.at1)
+    if (!gDemo.bPlaying)
     {
         if (gPaused || gEndGameMgr.at0 || (gGameOptions.nGameType == 0 && (gGameMenuMgr.m_bActive || ((osd->flags & OSD_DRAW) == OSD_DRAW))))
             return;
-        if (gDemo.at0)
+        if (gDemo.bRecording)
             gDemo.Write(gFifoInput[(gNetFifoTail-1)&255]);
     }
     for (int i = connecthead; i >= 0; i = connectpoint2[i])
@@ -1247,7 +1258,7 @@ void ProcessFrame(void)
                 netMasterUpdate();
             }
         }
-        if (gDemo.at0)
+        if (gDemo.bRecording)
             gDemo.Close();
         sndFadeSong(4000);
         seqKillAll();
@@ -1971,7 +1982,7 @@ RESTART:
         goto RESTART;
     }
     UpdateNetworkMenus();
-    if (!gDemo.at0 && gDemo.nTotalDemos > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
+    if (!gDemo.bRecording && gDemo.nTotalDemos > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
         gDemo.SetupPlayback(NULL);
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     gQuitGame = 0;
@@ -1982,7 +1993,7 @@ RESTART:
         KB_FlushKeyboardQueue();
         keyFlushScans();
     }
-    else if (gDemo.at1 && !bAddUserMap && !bNoDemo)
+    else if (gDemo.bPlaying && !bAddUserMap && !bNoDemo)
         gDemo.Playback();
     if (gDemo.nTotalDemos > 0)
         gGameMenuMgr.Deactivate();
@@ -2130,7 +2141,7 @@ RESTART:
             StartLevel(&gGameOptions);
     }
     ready2send = 0;
-    if (gDemo.at0)
+    if (gDemo.bRecording)
         gDemo.Close();
     if (gRestartGame)
     {
@@ -2155,7 +2166,7 @@ RESTART:
         }
         if (gGameOptions.nGameType != 0)
         {
-            if (!gDemo.at0 && gDemo.nTotalDemos > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
+            if (!gDemo.bRecording && gDemo.nTotalDemos > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
                 gDemo.NextDemo();
             videoSetViewableArea(0,0,xdim-1,ydim-1);
             scrSetDac();
@@ -2918,16 +2929,12 @@ void LoadExtraArts(void)
     }
 }
 
-bool DemoRecordStatus(void) {
-    return gDemo.at0;
-}
-
 bool VanillaMode(const bool demoState) {
     if (gVanilla == 2) // vanilla mode override, always return true (except for multiplayer)
         return (gGameOptions.nGameType == 0) && (numplayers == 1);
-    if (demoState) // only check if a dos demo is active
-        return gDemo.at1 && gDemo.m_bLegacy;
-    return gDemo.at1 ? gDemo.m_bLegacy : gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1);
+    if (demoState) // only check if demo recording/playing is active
+        return gDemo.bPlaying || gDemo.bRecording;
+    return (gDemo.bPlaying || gDemo.bRecording) || gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1); // fallback on singleplayer global vanilla mode settings
 }
 
 bool WeaponsNotBlood(void) {

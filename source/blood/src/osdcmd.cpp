@@ -81,8 +81,10 @@ static int osdcmd_changelevel(osdcmdptr_t parm)
         return OSDCMD_SHOWHELP;
     }
 
-    if (gDemo.at1)
+    if (gDemo.bPlaying)
         gDemo.StopPlayback();
+    else if (gDemo.bRecording)
+        gDemo.Close();
 
     if (numplayers > 1)
     {
@@ -158,8 +160,10 @@ static int osdcmd_map(osdcmdptr_t parm)
         return OSDCMD_OK;
     }
 
-    if (gDemo.at1)
+    if (gDemo.bPlaying)
         gDemo.StopPlayback();
+    else if (gDemo.bRecording)
+        gDemo.Close();
 
     int bFound = 0;
     for (int i = 0; i < gEpisodeCount; i++)
@@ -350,7 +354,7 @@ static int osdcmd_resetcrosshair(osdcmdptr_t UNUSED(parm))
 
 static int osdcmd_give(osdcmdptr_t parm)
 {
-    if (numplayers != 1 || !gGameStarted || gDemo.at1 || gMe->pXSprite->health == 0)
+    if (numplayers != 1 || !gGameStarted || gDemo.bPlaying || gDemo.bRecording || gMe->pXSprite->health == 0)
     {
         OSD_Printf("give: Cannot give while dead or not in a single-player game.\n");
         return OSDCMD_OK;
@@ -410,7 +414,7 @@ static int osdcmd_give(osdcmdptr_t parm)
 static int osdcmd_god(osdcmdptr_t UNUSED(parm))
 {
     UNREFERENCED_CONST_PARAMETER(parm);
-    if (numplayers == 1 && gGameStarted && !gDemo.at1)
+    if (numplayers == 1 && gGameStarted && !gDemo.bPlaying && !gDemo.bRecording)
     {
         SetGodMode(!gMe->godMode);
         gCheatMgr.m_bPlayerCheated = true;
@@ -425,7 +429,7 @@ static int osdcmd_noclip(osdcmdptr_t UNUSED(parm))
 {
     UNREFERENCED_CONST_PARAMETER(parm);
 
-    if (numplayers == 1 && gGameStarted && !gDemo.at1)
+    if (numplayers == 1 && gGameStarted && !gDemo.bPlaying && !gDemo.bRecording)
     {
         SetClipMode(!gNoClip);
         gCheatMgr.m_bPlayerCheated = true;
@@ -442,7 +446,7 @@ static int osdcmd_notarget(osdcmdptr_t UNUSED(parm))
 {
     UNREFERENCED_CONST_PARAMETER(parm);
 
-    if (numplayers == 1 && gGameStarted && !gDemo.at1)
+    if (numplayers == 1 && gGameStarted && !gDemo.bPlaying && !gDemo.bRecording)
     {
         SetTargetMode(!gNoTarget);
         gCheatMgr.m_bPlayerCheated = true;
@@ -464,7 +468,7 @@ static int osdcmd_restartsound(osdcmdptr_t UNUSED(parm))
     sndInit();
     sfxInit();
 
-    if (MusicToggle && (gGameStarted || gDemo.at1))
+    if (MusicToggle && (gGameStarted || gDemo.bPlaying || gDemo.bRecording))
         sndPlaySong(gGameOptions.zLevelSong, true);
 
     return OSDCMD_OK;
@@ -756,7 +760,7 @@ static int osdcmd_unbound(osdcmdptr_t parm)
 static int osdcmd_quicksave(osdcmdptr_t UNUSED(parm))
 {
     UNREFERENCED_CONST_PARAMETER(parm);
-    if (!gGameStarted || gDemo.at1 || gGameMenuMgr.m_bActive)
+    if (!gGameStarted || gDemo.bPlaying || gDemo.bRecording || gGameMenuMgr.m_bActive)
         OSD_Printf("quicksave: not in a game.\n");
     else gDoQuickSave = 1;
     return OSDCMD_OK;
@@ -765,7 +769,7 @@ static int osdcmd_quicksave(osdcmdptr_t UNUSED(parm))
 static int osdcmd_quickload(osdcmdptr_t UNUSED(parm))
 {
     UNREFERENCED_CONST_PARAMETER(parm);
-    if (!gGameStarted || gDemo.at1 || gGameMenuMgr.m_bActive)
+    if (!gGameStarted || gDemo.bPlaying || gDemo.bRecording || gGameMenuMgr.m_bActive)
         OSD_Printf("quickload: not in a game.\n");
     else gDoQuickSave = 2;
     return OSDCMD_OK;

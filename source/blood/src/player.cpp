@@ -1142,7 +1142,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             if (pPlayer->hasKey[pItem->type-99]) return 0;
             pPlayer->hasKey[pItem->type-99] = 1;
             pickupSnd = 781;
-            if ((gAutosave > 0) && (gGameOptions.nGameType == 0) && !gDemo.at1) // if autosave is on and not currently in multiplayer/demo playback, autosave on key pickup
+            if ((gAutosave > 0) && (gGameOptions.nGameType == 0) && !gDemo.bPlaying && !gDemo.bRecording) // if autosave is on and not currently in multiplayer/demo playback, autosave on key pickup
                 gDoQuickSave = 3;
             if ((gGameOptions.nGameType == 1) && (gGameOptions.nKeySettings == 2)) { // if co-op and global key collection is on, also give key to all players
                 for (int i = connecthead; i >= 0; i = connectpoint2[i]) {
@@ -1456,7 +1456,7 @@ void ProcessInput(PLAYER *pPlayer)
                 playerReset(pPlayer);
                 if ((gGameOptions.nGameType == 0) && (numplayers == 1)) // if single-player
                 {
-                    if (gDemo.at0)
+                    if (gDemo.bRecording)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
                     return; // return so ProcessFrame() can restart single-player

@@ -3625,7 +3625,7 @@ void viewDrawScreen(void)
     if (delta < 0)
         delta = 0;
     lastUpdate = totalclock;
-    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.at1)
+    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.bPlaying)
     {
         gInterpolate = ((totalclock-gNetFifoClock)+4).toScale16()/4;
     }
@@ -3638,7 +3638,7 @@ void viewDrawScreen(void)
         CalcInterpolations();
     }
 
-    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.at1)
+    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.bPlaying)
         rotatespritesmoothratio = gInterpolate;
     else
         rotatespritesmoothratio = 65536;
@@ -4194,6 +4194,10 @@ RORHACK:
     if (gPaused)
     {
         viewDrawText(1, "PAUSED", 160, 10, 0, 0, 1, 0);
+    }
+    else if ((gView == gMe) && gDemo.bRecording && ((int)totalclock < (kTicRate*4)))
+    {
+        viewDrawText(0, "] DEMO STARTED [", 160, 10, -128, 7, 1, 1);
     }
     else if (gView != gMe)
     {

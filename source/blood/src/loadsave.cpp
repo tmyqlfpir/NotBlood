@@ -97,8 +97,8 @@ void LoadSave::Write(void *pData, int nSize)
 
 void LoadSave::LoadGame(char *pzFile)
 {
-    bool demoWasPlayed = gDemo.at1;
-    if (gDemo.at1)
+    bool demoWasPlayed = gDemo.bPlaying;
+    if (gDemo.bPlaying || gDemo.bRecording)
         gDemo.Close();
 
     gViewPos = VIEWPOS_0;

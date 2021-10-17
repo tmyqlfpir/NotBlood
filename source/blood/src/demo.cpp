@@ -72,9 +72,36 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.nWeaponRespawnTime = gameOptionsLegacy.nWeaponRespawnTime;
     gameOptions.nItemRespawnTime = gameOptionsLegacy.nItemRespawnTime;
     gameOptions.nSpecialRespawnTime = gameOptionsLegacy.nSpecialRespawnTime;
-    gameOptions.nEnemyQuantity = gameOptions.nDifficulty;
-    gameOptions.nEnemyHealth = gameOptions.nDifficulty;
+    gameOptions.nEnemyQuantity = gameOptionsLegacy.nDifficulty;
+    gameOptions.nEnemyHealth = gameOptionsLegacy.nDifficulty;
     gameOptions.bPitchforkOnly = false;
+}
+
+void WriteGameOptionsLegacy(GAMEOPTIONSLEGACY &gameOptionsLegacy, GAMEOPTIONS &gameOptions)
+{
+    gameOptionsLegacy.nGameType = gameOptions.nGameType;
+    gameOptionsLegacy.nDifficulty = gameOptions.nDifficulty;
+    gameOptionsLegacy.nEpisode = gameOptions.nEpisode;
+    gameOptionsLegacy.nLevel = gameOptions.nLevel;
+    strcpy(gameOptionsLegacy.zLevelName, gameOptions.zLevelName);
+    strcpy(gameOptionsLegacy.zLevelSong, gameOptions.zLevelSong);
+    gameOptionsLegacy.nTrackNumber = gameOptions.nTrackNumber;
+    strcpy(gameOptionsLegacy.szSaveGameName, gameOptions.szSaveGameName);
+    strcpy(gameOptionsLegacy.szUserGameName, gameOptions.szUserGameName);
+    gameOptionsLegacy.nSaveGameSlot = gameOptionsLegacy.nSaveGameSlot;
+    gameOptionsLegacy.picEntry = gameOptionsLegacy.picEntry;
+    gameOptionsLegacy.uMapCRC = gameOptionsLegacy.uMapCRC;
+    gameOptionsLegacy.nMonsterSettings = gameOptions.nMonsterSettings;
+    gameOptionsLegacy.uGameFlags = gameOptions.uGameFlags;
+    gameOptionsLegacy.uNetGameFlags = gameOptions.uNetGameFlags;
+    gameOptionsLegacy.nWeaponSettings = gameOptions.nWeaponSettings;
+    gameOptionsLegacy.nItemSettings = gameOptions.nItemSettings;
+    gameOptionsLegacy.nRespawnSettings = gameOptions.nRespawnSettings;
+    gameOptionsLegacy.nTeamSettings = gameOptions.nTeamSettings;
+    gameOptionsLegacy.nMonsterRespawnTime = gameOptions.nMonsterRespawnTime;
+    gameOptionsLegacy.nWeaponRespawnTime = gameOptions.nWeaponRespawnTime;
+    gameOptionsLegacy.nItemRespawnTime = gameOptions.nItemRespawnTime;
+    gameOptionsLegacy.nSpecialRespawnTime = gameOptions.nSpecialRespawnTime;
 }
 
 CDemo gDemo;
@@ -82,26 +109,25 @@ CDemo gDemo;
 CDemo::CDemo()
 {
     nBuild = 4;
-    at0 = 0;
-    at1 = 0;
+    bRecording = 0;
+    bPlaying = 0;
     at3 = 0;
     hPFile = -1;
     hRFile = NULL;
-    atb = 0;
+    nInputTicks = 0;
     pFirstDemo = NULL;
     pCurrentDemo = NULL;
     nTotalDemos = 0;
     at2 = 0;
     memset(&atf, 0, sizeof(atf));
-    m_bLegacy = false;
 }
 
 CDemo::~CDemo()
 {
-    at0 = 0;
-    at1 = 0;
+    bRecording = 0;
+    bPlaying = 0;
     at3 = 0;
-    atb = 0;
+    nInputTicks = 0;
     memset(&atf, 0, sizeof(atf));
     if (hPFile >= 0)
     {
@@ -122,14 +148,13 @@ CDemo::~CDemo()
     pFirstDemo = NULL;
     pCurrentDemo = NULL;
     nTotalDemos = 0;
-    m_bLegacy = false;
 }
 
 bool CDemo::Create(const char *pzFile)
 {
     char buffer[BMAX_PATH];
     char vc = 0;
-    if (at0 || at1)
+    if (bRecording || bPlaying)
         ThrowError("CDemo::Create called during demo record/playback process.");
     if (!pzFile)
     {
@@ -153,27 +178,29 @@ bool CDemo::Create(const char *pzFile)
         if (hRFile == NULL)
             return false;
     }
-    at0 = 1;
-    atb = 0;
+    bRecording = 1;
+    nInputTicks = 0;
     return true;
 }
 
 void CDemo::Write(GINPUT *pPlayerInputs)
 {
     dassert(pPlayerInputs != NULL);
-    if (!at0)
+    if (!bRecording)
         return;
-    if (atb == 0)
+    if (nInputTicks == 0)
     {
-        atf.signature = 0x1a4d4445; // '\x1aMDE';
-        atf.nVersion = BYTEVERSION;
+        atf.signature = 0x1a4d4544; // '\x1aMED';
+        atf.nVersion = BloodVersion;
         atf.nBuild = nBuild;
         atf.nInputCount = 0;
         atf.nNetPlayers = gNetPlayers;
         atf.nMyConnectIndex = myconnectindex;
         atf.nConnectHead = connecthead;
         memcpy(atf.connectPoints, connectpoint2, sizeof(atf.connectPoints));
-        memcpy(&m_gameOptions, &gGameOptions, sizeof(gGameOptions));
+        GAMEOPTIONSLEGACY gameOptions;
+        memset(&gameOptions, 0, sizeof(gameOptions));
+        WriteGameOptionsLegacy(gameOptions, gGameOptions);
 #if B_BIG_ENDIAN == 1
         atf.signature = B_LITTLE32(atf.signature);
         atf.nVersion = B_LITTLE16(atf.nVersion);
@@ -187,43 +214,60 @@ void CDemo::Write(GINPUT *pPlayerInputs)
 #endif
         fwrite(&atf, sizeof(DEMOHEADER), 1, hRFile);
 #if B_BIG_ENDIAN == 1
-        m_gameOptions.nEpisode = B_LITTLE32(m_gameOptions.nEpisode);
-        m_gameOptions.nLevel = B_LITTLE32(m_gameOptions.nLevel);
-        m_gameOptions.nTrackNumber = B_LITTLE32(m_gameOptions.nTrackNumber);
-        m_gameOptions.nSaveGameSlot = B_LITTLE16(m_gameOptions.nSaveGameSlot);
-        m_gameOptions.picEntry = B_LITTLE32(m_gameOptions.picEntry);
-        m_gameOptions.uMapCRC = B_LITTLE32(m_gameOptions.uMapCRC);
-        m_gameOptions.uGameFlags = B_LITTLE32(m_gameOptions.uGameFlags);
-        m_gameOptions.uNetGameFlags = B_LITTLE32(m_gameOptions.uNetGameFlags);
-        m_gameOptions.nMonsterRespawnTime = B_LITTLE32(m_gameOptions.nMonsterRespawnTime);
-        m_gameOptions.nWeaponRespawnTime = B_LITTLE32(m_gameOptions.nWeaponRespawnTime);
-        m_gameOptions.nItemRespawnTime = B_LITTLE32(m_gameOptions.nItemRespawnTime);
-        m_gameOptions.nSpecialRespawnTime = B_LITTLE32(m_gameOptions.nSpecialRespawnTime);
+        gameOptions.nEpisode = B_LITTLE32(gameOptions.nEpisode);
+        gameOptions.nLevel = B_LITTLE32(gameOptions.nLevel);
+        gameOptions.nTrackNumber = B_LITTLE32(gameOptions.nTrackNumber);
+        gameOptions.nSaveGameSlot = B_LITTLE16(gameOptions.nSaveGameSlot);
+        gameOptions.picEntry = B_LITTLE32(gameOptions.picEntry);
+        gameOptions.uMapCRC = B_LITTLE32(gameOptions.uMapCRC);
+        gameOptions.uGameFlags = B_LITTLE32(gameOptions.uGameFlags);
+        gameOptions.uNetGameFlags = B_LITTLE32(gameOptions.uNetGameFlags);
+        gameOptions.nMonsterRespawnTime = B_LITTLE32(gameOptions.nMonsterRespawnTime);
+        gameOptions.nWeaponRespawnTime = B_LITTLE32(gameOptions.nWeaponRespawnTime);
+        gameOptions.nItemRespawnTime = B_LITTLE32(gameOptions.nItemRespawnTime);
+        gameOptions.nSpecialRespawnTime = B_LITTLE32(gameOptions.nSpecialRespawnTime);
 #endif
-        fwrite(&m_gameOptions, sizeof(GAMEOPTIONS), 1, hRFile);
+        fwrite(&gameOptions, sizeof(GAMEOPTIONSLEGACY), 1, hRFile);
     }
     for (int p = connecthead; p >= 0; p = connectpoint2[p])
     {
-        memcpy(&at1aa[atb&1023], &pPlayerInputs[p], sizeof(GINPUT));
-        atb++;
-        if((atb&(kInputBufferSize-1))==0)
+        memcpy(&at1aa[nInputTicks&1023], &pPlayerInputs[p], sizeof(GINPUT));
+        nInputTicks++;
+        if((nInputTicks&(kInputBufferSize-1))==0)
             FlushInput(kInputBufferSize);
     }
 }
 
 void CDemo::Close(void)
 {
-    if (at0)
+    if (bRecording)
     {
-        if (atb&(kInputBufferSize-1))
-            FlushInput(atb&(kInputBufferSize-1));
-        atf.nInputCount = atb;
+        if (nInputTicks&(kInputBufferSize-1))
+            FlushInput(nInputTicks&(kInputBufferSize-1));
+        atf.nInputCount = nInputTicks;
 #if B_BIG_ENDIAN == 1
         atf.nInputCount = B_LITTLE32(atf.nInputCount);
 #endif
         fseek(hRFile, 0, SEEK_SET);
         fwrite(&atf, sizeof(DEMOHEADER), 1, hRFile);
-        fwrite(&m_gameOptions, sizeof(GAMEOPTIONS), 1, hRFile);
+        GAMEOPTIONSLEGACY gameOptions;
+        memset(&gameOptions, 0, sizeof(gameOptions));
+        WriteGameOptionsLegacy(gameOptions, gGameOptions);
+#if B_BIG_ENDIAN == 1
+        gameOptions.nEpisode = B_LITTLE32(gameOptions.nEpisode);
+        gameOptions.nLevel = B_LITTLE32(gameOptions.nLevel);
+        gameOptions.nTrackNumber = B_LITTLE32(gameOptions.nTrackNumber);
+        gameOptions.nSaveGameSlot = B_LITTLE16(gameOptions.nSaveGameSlot);
+        gameOptions.picEntry = B_LITTLE32(gameOptions.picEntry);
+        gameOptions.uMapCRC = B_LITTLE32(gameOptions.uMapCRC);
+        gameOptions.uGameFlags = B_LITTLE32(gameOptions.uGameFlags);
+        gameOptions.uNetGameFlags = B_LITTLE32(gameOptions.uNetGameFlags);
+        gameOptions.nMonsterRespawnTime = B_LITTLE32(gameOptions.nMonsterRespawnTime);
+        gameOptions.nWeaponRespawnTime = B_LITTLE32(gameOptions.nWeaponRespawnTime);
+        gameOptions.nItemRespawnTime = B_LITTLE32(gameOptions.nItemRespawnTime);
+        gameOptions.nSpecialRespawnTime = B_LITTLE32(gameOptions.nSpecialRespawnTime);
+#endif
+        fwrite(&gameOptions, sizeof(GAMEOPTIONSLEGACY), 1, hRFile);
     }
     if (hPFile >= 0)
     {
@@ -235,14 +279,14 @@ void CDemo::Close(void)
         fclose(hRFile);
         hRFile = NULL;
     }
-    at0 = 0;
-    at1 = 0;
+    bRecording = 0;
+    bPlaying = 0;
 }
 
 bool CDemo::SetupPlayback(const char *pzFile)
 {
-    at0 = 0;
-    at1 = 0;
+    bRecording = 0;
+    bPlaying = 0;
     if (pzFile)
     {
         hPFile = kopen4loadfrommod(pzFile, 0);
@@ -269,24 +313,13 @@ bool CDemo::SetupPlayback(const char *pzFile)
     for (int i = 0; i < 8; i++)
         atf.connectPoints[i] = B_LITTLE16(atf.connectPoints[i]);
 #endif
-    // if (aimHeight.signature != '\x1aMED' && aimHeight.signature != '\x1aMDE')
-    if (atf.signature != 0x1a4d4544 && atf.signature != 0x1a4d4445)
+    if (atf.signature != 0x1a4d4544)
         return 0;
-    m_bLegacy = atf.signature == 0x1a4d4544;
-    if (m_bLegacy)
-    {
-        GAMEOPTIONSLEGACY gameOptions;
-        if (BloodVersion != atf.nVersion)
-            return 0;
-        kread(hPFile, &gameOptions, sizeof(GAMEOPTIONSLEGACY));
-        ReadGameOptionsLegacy(m_gameOptions, gameOptions);
-    }
-    else
-    {
-        if (BYTEVERSION != atf.nVersion)
-            return 0;
-        kread(hPFile, &m_gameOptions, sizeof(GAMEOPTIONS));
-    }
+    GAMEOPTIONSLEGACY gameOptions;
+    if (BloodVersion != atf.nVersion)
+        return 0;
+    kread(hPFile, &gameOptions, sizeof(GAMEOPTIONSLEGACY));
+    ReadGameOptionsLegacy(m_gameOptions, gameOptions);
 #if B_BIG_ENDIAN == 1
     m_gameOptions.nEpisode = B_LITTLE32(m_gameOptions.nEpisode);
     m_gameOptions.nLevel = B_LITTLE32(m_gameOptions.nLevel);
@@ -301,8 +334,8 @@ bool CDemo::SetupPlayback(const char *pzFile)
     m_gameOptions.nItemRespawnTime = B_LITTLE32(m_gameOptions.nItemRespawnTime);
     m_gameOptions.nSpecialRespawnTime = B_LITTLE32(m_gameOptions.nSpecialRespawnTime);
 #endif
-    at0 = 0;
-    at1 = 1;
+    bRecording = 0;
+    bPlaying = 1;
     return 1;
 }
 
@@ -361,7 +394,7 @@ void CDemo::Playback(void)
     gNetFifoClock = totalclock;
     gViewMode = 3;
 _DEMOPLAYBACK:
-    while (at1 && !gQuitGame)
+    while (bPlaying && !gQuitGame)
     {
         while (totalclock >= gNetFifoClock && !gQuitGame)
         {
@@ -370,7 +403,7 @@ _DEMOPLAYBACK:
                 viewResizeView(gViewSize);
                 viewSetMessage("");
                 gNetPlayers = atf.nNetPlayers;
-                atb = atf.nInputCount;
+                nInputTicks = atf.nInputCount;
                 myconnectindex = atf.nMyConnectIndex;
                 connecthead = atf.nConnectHead;
                 for (int i = 0; i < 8; i++)
@@ -379,12 +412,12 @@ _DEMOPLAYBACK:
                 gNetFifoTail = 0;
                 //memcpy(connectpoint2, aimHeight.connectPoints, sizeof(aimHeight.connectPoints));
                 memcpy(&gGameOptions, &m_gameOptions, sizeof(GAMEOPTIONS));
-                gSkill = gGameOptions.nDifficulty;
                 for (int i = 0; i < 8; i++)
                     playerInit(i, 0);
                 StartLevel(&gGameOptions);
                 for (int i = 0; i < 8; i++)
                 {
+                    gProfile[i].skill = gGameOptions.nDifficulty;
                     gProfile[i].nAutoAim = 1;
                     gProfile[i].nWeaponSwitch = 1;
                     gProfile[i].bWeaponFastSwitch = 0;
@@ -392,14 +425,14 @@ _DEMOPLAYBACK:
             }
             ready2send = 0;
             OSD_DispatchQueued();
-            if (!gDemo.at1)
+            if (!gDemo.bPlaying)
                 break;
             ProcessKeys();
             for (int p = connecthead; p >= 0; p = connectpoint2[p])
             {
                 if ((v4&1023) == 0)
                 {
-                    unsigned int nSize = atb-v4;
+                    unsigned int nSize = nInputTicks-v4;
                     if (nSize > kInputBufferSize)
                         nSize = kInputBufferSize;
                     ReadInput(nSize);
@@ -420,7 +453,7 @@ _DEMOPLAYBACK:
                     }
                     else
                     {
-                        int const nOffset = sizeof(DEMOHEADER)+(m_bLegacy ? sizeof(GAMEOPTIONSLEGACY) : sizeof(GAMEOPTIONS));
+                        int const nOffset = sizeof(DEMOHEADER)+(sizeof(GAMEOPTIONSLEGACY));
                         klseek(hPFile, nOffset, SEEK_SET);
                         v4 = 0;
                     }
@@ -455,7 +488,7 @@ _DEMOPLAYBACK:
 
 void CDemo::StopPlayback(void)
 {
-    at1 = 0;
+    bPlaying = 0;
 }
 
 void CDemo::LoadDemoInfo(void)
@@ -479,8 +512,7 @@ void CDemo::LoadDemoInfo(void)
         atf.signature = B_LITTLE32(atf.signature);
         atf.nVersion = B_LITTLE16(atf.nVersion);
 #endif
-        if ((atf.signature == 0x1a4d4544 /* '\x1aMED' */&& atf.nVersion == BloodVersion)
-            || (atf.signature == 0x1a4d4445 /* '\x1aMDE' */ && atf.nVersion == BYTEVERSION))
+        if ((atf.signature == 0x1a4d4544 /* '\x1aMED' */&& atf.nVersion == BloodVersion))
         {
             *pDemo = new DEMOCHAIN;
             (*pDemo)->pNext = NULL;
@@ -506,7 +538,7 @@ const int nInputSizeLegacy = 22;
 
 void CDemo::FlushInput(int nCount)
 {
-    char pBuffer[nInputSize*kInputBufferSize];
+    char pBuffer[nInputSizeLegacy*kInputBufferSize];
     BitWriter bitWriter(pBuffer, sizeof(pBuffer));
     for (int i = 0; i < nCount; i++)
     {
@@ -517,15 +549,17 @@ void CDemo::FlushInput(int nCount)
         bitWriter.writeBit(pInput->syncFlags.weaponChange);
         bitWriter.writeBit(pInput->syncFlags.mlookChange);
         bitWriter.writeBit(pInput->syncFlags.run);
-        bitWriter.write(pInput->forward, 16);
-        bitWriter.write(pInput->q16turn, 32);
-        bitWriter.write(pInput->strafe, 16);
+        bitWriter.skipBits(26);
+        bitWriter.write(pInput->forward>>8, 8);
+        bitWriter.write(fix16_to_int(pInput->q16turn<<2), 16);
+        bitWriter.write(pInput->strafe>>8, 8);
         bitWriter.writeBit(pInput->buttonFlags.jump);
         bitWriter.writeBit(pInput->buttonFlags.crouch);
         bitWriter.writeBit(pInput->buttonFlags.shoot);
         bitWriter.writeBit(pInput->buttonFlags.shoot2);
         bitWriter.writeBit(pInput->buttonFlags.lookUp);
         bitWriter.writeBit(pInput->buttonFlags.lookDown);
+        bitWriter.skipBits(26);
         bitWriter.writeBit(pInput->keyFlags.action);
         bitWriter.writeBit(pInput->keyFlags.jab);
         bitWriter.writeBit(pInput->keyFlags.prevItem);
@@ -541,119 +575,68 @@ void CDemo::FlushInput(int nCount)
         bitWriter.writeBit(pInput->keyFlags.pause);
         bitWriter.writeBit(pInput->keyFlags.quit);
         bitWriter.writeBit(pInput->keyFlags.restart);
+        bitWriter.skipBits(17);
         bitWriter.writeBit(pInput->useFlags.useBeastVision);
         bitWriter.writeBit(pInput->useFlags.useCrystalBall);
         bitWriter.writeBit(pInput->useFlags.useJumpBoots);
         bitWriter.writeBit(pInput->useFlags.useMedKit);
+        bitWriter.skipBits(28);
         bitWriter.write(pInput->newWeapon, 8);
-        bitWriter.write(pInput->q16mlook, 32);
-        bitWriter.skipBits(1);
+        bitWriter.write(fix16_to_int(pInput->q16mlook*4), 8);
     }
-    fwrite(pBuffer, 1, nInputSize*nCount, hRFile);
+    fwrite(pBuffer, 1, nInputSizeLegacy*nCount, hRFile);
 }
 
 void CDemo::ReadInput(int nCount)
 {
-    if (m_bLegacy)
+    char pBuffer[nInputSizeLegacy*kInputBufferSize];
+    kread(hPFile, pBuffer, nInputSizeLegacy*nCount);
+    BitReader bitReader(pBuffer, sizeof(pBuffer));
+    memset(at1aa, 0, nCount * sizeof(GINPUT));
+    for (int i = 0; i < nCount; i++)
     {
-        char pBuffer[nInputSizeLegacy*kInputBufferSize];
-        kread(hPFile, pBuffer, nInputSizeLegacy*nCount);
-        BitReader bitReader(pBuffer, sizeof(pBuffer));
-        memset(at1aa, 0, nCount * sizeof(GINPUT));
-        for (int i = 0; i < nCount; i++)
-        {
-            GINPUT *pInput = &at1aa[i];
-            pInput->syncFlags.buttonChange = bitReader.readBit();
-            pInput->syncFlags.keyChange = bitReader.readBit();
-            pInput->syncFlags.useChange = bitReader.readBit();
-            pInput->syncFlags.weaponChange = bitReader.readBit();
-            pInput->syncFlags.mlookChange = bitReader.readBit();
-            pInput->syncFlags.run = bitReader.readBit();
-            bitReader.skipBits(26);
-            pInput->forward = bitReader.readSigned(8) << 8;
-            pInput->q16turn = fix16_from_int(bitReader.readSigned(16) >> 2);
-            pInput->strafe = bitReader.readSigned(8) << 8;
-            pInput->buttonFlags.jump = bitReader.readBit();
-            pInput->buttonFlags.crouch = bitReader.readBit();
-            pInput->buttonFlags.shoot = bitReader.readBit();
-            pInput->buttonFlags.shoot2 = bitReader.readBit();
-            pInput->buttonFlags.lookUp = bitReader.readBit();
-            pInput->buttonFlags.lookDown = bitReader.readBit();
-            bitReader.skipBits(26);
-            pInput->keyFlags.action = bitReader.readBit();
-            pInput->keyFlags.jab = bitReader.readBit();
-            pInput->keyFlags.prevItem = bitReader.readBit();
-            pInput->keyFlags.nextItem = bitReader.readBit();
-            pInput->keyFlags.useItem = bitReader.readBit();
-            pInput->keyFlags.prevWeapon = bitReader.readBit();
-            pInput->keyFlags.nextWeapon = bitReader.readBit();
-            pInput->keyFlags.holsterWeapon = bitReader.readBit();
-            pInput->keyFlags.lookCenter = bitReader.readBit();
-            pInput->keyFlags.lookLeft = bitReader.readBit();
-            pInput->keyFlags.lookRight = bitReader.readBit();
-            pInput->keyFlags.spin180 = bitReader.readBit();
-            pInput->keyFlags.pause = bitReader.readBit();
-            pInput->keyFlags.quit = bitReader.readBit();
-            pInput->keyFlags.restart = bitReader.readBit();
-            pInput->keyFlags.lastWeapon = 0;
-            bitReader.skipBits(17);
-            pInput->useFlags.useBeastVision = bitReader.readBit();
-            pInput->useFlags.useCrystalBall = bitReader.readBit();
-            pInput->useFlags.useJumpBoots = bitReader.readBit();
-            pInput->useFlags.useMedKit = bitReader.readBit();
-            bitReader.skipBits(28);
-            pInput->newWeapon = bitReader.readUnsigned(8);
-            int mlook = bitReader.readSigned(8);
-            pInput->q16mlook = fix16_from_int(mlook / 4);
-        }
-    }
-    else
-    {
-        char pBuffer[nInputSize*kInputBufferSize];
-        kread(hPFile, pBuffer, nInputSize*nCount);
-        BitReader bitReader(pBuffer, sizeof(pBuffer));
-        memset(at1aa, 0, nCount * sizeof(GINPUT));
-        for (int i = 0; i < nCount; i++)
-        {
-            GINPUT *pInput = &at1aa[i];
-            pInput->syncFlags.buttonChange = bitReader.readBit();
-            pInput->syncFlags.keyChange = bitReader.readBit();
-            pInput->syncFlags.useChange = bitReader.readBit();
-            pInput->syncFlags.weaponChange = bitReader.readBit();
-            pInput->syncFlags.mlookChange = bitReader.readBit();
-            pInput->syncFlags.run = bitReader.readBit();
-            pInput->forward = bitReader.readSigned(16);
-            pInput->q16turn = bitReader.readSigned(32);
-            pInput->strafe = bitReader.readSigned(16);
-            pInput->buttonFlags.jump = bitReader.readBit();
-            pInput->buttonFlags.crouch = bitReader.readBit();
-            pInput->buttonFlags.shoot = bitReader.readBit();
-            pInput->buttonFlags.shoot2 = bitReader.readBit();
-            pInput->buttonFlags.lookUp = bitReader.readBit();
-            pInput->buttonFlags.lookDown = bitReader.readBit();
-            pInput->keyFlags.action = bitReader.readBit();
-            pInput->keyFlags.jab = bitReader.readBit();
-            pInput->keyFlags.prevItem = bitReader.readBit();
-            pInput->keyFlags.nextItem = bitReader.readBit();
-            pInput->keyFlags.useItem = bitReader.readBit();
-            pInput->keyFlags.prevWeapon = bitReader.readBit();
-            pInput->keyFlags.nextWeapon = bitReader.readBit();
-            pInput->keyFlags.holsterWeapon = bitReader.readBit();
-            pInput->keyFlags.lookCenter = bitReader.readBit();
-            pInput->keyFlags.lookLeft = bitReader.readBit();
-            pInput->keyFlags.lookRight = bitReader.readBit();
-            pInput->keyFlags.spin180 = bitReader.readBit();
-            pInput->keyFlags.pause = bitReader.readBit();
-            pInput->keyFlags.quit = bitReader.readBit();
-            pInput->keyFlags.restart = bitReader.readBit();
-            pInput->keyFlags.lastWeapon = 0;
-            pInput->useFlags.useBeastVision = bitReader.readBit();
-            pInput->useFlags.useCrystalBall = bitReader.readBit();
-            pInput->useFlags.useJumpBoots = bitReader.readBit();
-            pInput->useFlags.useMedKit = bitReader.readBit();
-            pInput->newWeapon = bitReader.readUnsigned(8);
-            pInput->q16mlook = bitReader.readSigned(32);
-            bitReader.skipBits(1);
-        }
+        GINPUT *pInput = &at1aa[i];
+        pInput->syncFlags.buttonChange = bitReader.readBit();
+        pInput->syncFlags.keyChange = bitReader.readBit();
+        pInput->syncFlags.useChange = bitReader.readBit();
+        pInput->syncFlags.weaponChange = bitReader.readBit();
+        pInput->syncFlags.mlookChange = bitReader.readBit();
+        pInput->syncFlags.run = bitReader.readBit();
+        bitReader.skipBits(26);
+        pInput->forward = bitReader.readSigned(8) << 8;
+        pInput->q16turn = fix16_from_int(bitReader.readSigned(16) >> 2);
+        pInput->strafe = bitReader.readSigned(8) << 8;
+        pInput->buttonFlags.jump = bitReader.readBit();
+        pInput->buttonFlags.crouch = bitReader.readBit();
+        pInput->buttonFlags.shoot = bitReader.readBit();
+        pInput->buttonFlags.shoot2 = bitReader.readBit();
+        pInput->buttonFlags.lookUp = bitReader.readBit();
+        pInput->buttonFlags.lookDown = bitReader.readBit();
+        bitReader.skipBits(26);
+        pInput->keyFlags.action = bitReader.readBit();
+        pInput->keyFlags.jab = bitReader.readBit();
+        pInput->keyFlags.prevItem = bitReader.readBit();
+        pInput->keyFlags.nextItem = bitReader.readBit();
+        pInput->keyFlags.useItem = bitReader.readBit();
+        pInput->keyFlags.prevWeapon = bitReader.readBit();
+        pInput->keyFlags.nextWeapon = bitReader.readBit();
+        pInput->keyFlags.holsterWeapon = bitReader.readBit();
+        pInput->keyFlags.lookCenter = bitReader.readBit();
+        pInput->keyFlags.lookLeft = bitReader.readBit();
+        pInput->keyFlags.lookRight = bitReader.readBit();
+        pInput->keyFlags.spin180 = bitReader.readBit();
+        pInput->keyFlags.pause = bitReader.readBit();
+        pInput->keyFlags.quit = bitReader.readBit();
+        pInput->keyFlags.restart = bitReader.readBit();
+        pInput->keyFlags.lastWeapon = 0;
+        bitReader.skipBits(17);
+        pInput->useFlags.useBeastVision = bitReader.readBit();
+        pInput->useFlags.useCrystalBall = bitReader.readBit();
+        pInput->useFlags.useJumpBoots = bitReader.readBit();
+        pInput->useFlags.useMedKit = bitReader.readBit();
+        bitReader.skipBits(28);
+        pInput->newWeapon = bitReader.readUnsigned(8);
+        int mlook = bitReader.readSigned(8);
+        pInput->q16mlook = fix16_from_int(mlook / 4);
     }
 }

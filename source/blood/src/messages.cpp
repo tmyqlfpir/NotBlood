@@ -306,10 +306,22 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     char buffer[BMAX_PATH];
     levelSetupOptions(nEpisode, nLevel);
     gGameStarted = false;
+    gCheatMgr.ResetCheats();
     strcpy(buffer, levelGetFilename(nEpisode, nLevel));
     ChangeExtension(buffer, ".DEM");
     gDemo.Create(buffer);
+    gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
+    gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
+    gGameOptions.bPitchforkOnly = false;
+    gGameOptions.uGameFlags &= ~1;
     StartLevel(&gGameOptions);
+    for (int i = 0; i < 8; i++) // set to 1.21 defaults so demo playback syncs
+    {
+        gProfile[i].skill = gGameOptions.nDifficulty;
+        gProfile[i].nAutoAim = 1;
+        gProfile[i].nWeaponSwitch = 1;
+        gProfile[i].bWeaponFastSwitch = 0;
+    }
     viewResizeView(gViewSize);
 }
 
@@ -751,7 +763,7 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
 {
     dassert(nCheatCode > kCheatNone && nCheatCode < kCheatMax);
 
-    if (gDemo.at0) return;
+    if (gDemo.bRecording) return;
     if (nCheatCode == kCheatRate)
     {
         gShowFps = !gShowFps;

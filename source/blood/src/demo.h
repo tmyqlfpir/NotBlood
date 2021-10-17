@@ -90,14 +90,13 @@ public:
     void NextDemo(void);
     void FlushInput(int nCount);
     void ReadInput(int nCount);
-    bool at0; // record
-    bool at1; // playback
-    bool m_bLegacy;
+    bool bRecording;
+    bool bPlaying;
     char at2;
     int at3;
     int hPFile;
     FILE *hRFile;
-    int atb;
+    int nInputTicks;
     DEMOHEADER atf;
     GAMEOPTIONS m_gameOptions;
     GINPUT at1aa[kInputBufferSize];
