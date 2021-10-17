@@ -1151,9 +1151,15 @@ void DrawStatSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned 
 {
     rotatesprite(x<<16, y<<16, nScale, 0, nTile, nShade, nPalette, nStat | 74, 0, 0, xdim-1, ydim-1);
 }
-void DrawStatMaskedSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned int nStat, int nScale)
+void DrawStatMaskedSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned int nStat, int nScale, bool mirror)
 {
-    rotatesprite(x<<16, y<<16, nScale, 0, nTile, nShade, nPalette, nStat | 10, 0, 0, xdim-1, ydim-1);
+    short int ang = 0;
+    if (mirror)
+    {
+        nStat |= RS_YFLIP;
+        ang = 1024;
+    }
+    rotatesprite(x<<16, y<<16, nScale, ang, nTile, nShade, nPalette, nStat | 10, 0, 0, xdim-1, ydim-1);
 }
 
 void DrawStatNumber(const char *pFormat, int nNumber, int nTile, int x, int y, int nShade, int nPalette, unsigned int nStat, int nScale)
@@ -1391,22 +1397,22 @@ static float viewDrawParametricBlend(const float t)
 
 void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
 {
-    const int weaponIcons[][3] =
+    const int weaponIcons[][4] =
     {
-        {  -1, 0, 0x8000}, // NULL
-        {3131, 0, 0x6000}, // 1: pitchfork
-        { 524, 8, 0x8000}, // 2: flare gun
-        { 559, 6, 0x8000}, // 3: shotgun
-        { 558, 8, 0x8000}, // 4: tommy gun
-        { 526, 2, 0x8000}, // 5: napalm launcher
-        { 589, 8, 0xB000}, // 6: dynamite
-        { 618, 9, 0x8000}, // 7: spray can
-        { 539, 0, 0x8000}, // 8: tesla gun
-        { 800, 0, 0x7000}, // 9: life leech
-        { 525, 1, 0x8000}, // 10: voodoo doll
-        { 811, 8, 0x8000}, // 11: proxy bomb
-        { 810, 8, 0x8000}, // 12: remote bomb
-        {  -1, 0, 0x8000}, // NULL
+        {  -1, 0, 0x8000, 0}, // NULL
+        {3131, 0, 0x6000, 0}, // 1: pitchfork
+        { 524, 8, 0x8000, 0}, // 2: flare gun
+        { 559, 6, 0x8000, 0}, // 3: shotgun
+        { 558, 8, 0x8000, 0}, // 4: tommy gun
+        { 526, 2, 0x8000, 1}, // 5: napalm launcher
+        { 589, 8, 0xB000, 0}, // 6: dynamite
+        { 618, 9, 0x8000, 0}, // 7: spray can
+        { 539, 0, 0x8000, 0}, // 8: tesla gun
+        { 800, 0, 0x7000, 0}, // 9: life leech
+        { 525, 1, 0x8000, 0}, // 10: voodoo doll
+        { 811, 8, 0x8000, 0}, // 11: proxy bomb
+        { 810, 8, 0x8000, 0}, // 12: remote bomb
+        {  -1, 0, 0x8000, 0}, // NULL
     };
 
     const float animAdjustMinPos = 44 / 34; // adjusting the animation minimum position requires also adding a factor multiply to attack/decay speed so existing config settings are compatible
@@ -1520,7 +1526,8 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     const int picnumCur = weaponIcons[weaponCur][0];
     const int yCur = yPrimary + weaponIcons[weaponCur][1];
     const int scaleCur = weaponIcons[weaponCur][2];
-    DrawStatMaskedSprite(picnumCur, x, yCur, 256, 0, 0, scaleCur);
+    const bool mirrorCur = weaponIcons[weaponCur][3];
+    DrawStatMaskedSprite(picnumCur, x, yCur, 256, 0, 0, scaleCur, mirrorCur);
     if (bUnderwater && BannedUnderwater(weaponCur)) // if current weapon is unavailable, draw cross over icon
         DrawStatMaskedSprite(1142, x, yCur, 256, 12, 0, 0x2000);
     if (!showThreeWeapons)
@@ -1531,8 +1538,10 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     const int yNext = ySecondary + weaponIcons[weaponNext][1];
     const int scalePrev = weaponIcons[weaponPrev][2];
     const int scaleNext = weaponIcons[weaponNext][2];
-    DrawStatMaskedSprite(picnumPrev, x-xoffset, yPrev, 256, 0, 0, scalePrev);
-    DrawStatMaskedSprite(picnumNext, x+xoffset, yNext, 256, 0, 0, scaleNext);
+    const bool mirrorPrev = weaponIcons[weaponPrev][3];
+    const bool mirrorNext = weaponIcons[weaponNext][3];
+    DrawStatMaskedSprite(picnumPrev, x-xoffset, yPrev, 256, 0, 0, scalePrev, mirrorPrev);
+    DrawStatMaskedSprite(picnumNext, x+xoffset, yNext, 256, 0, 0, scaleNext, mirrorNext);
     if (bUnderwater && BannedUnderwater(weaponPrev)) // if previous weapon is unavailable, draw cross over icon
         DrawStatMaskedSprite(1142, x-xoffset, ySecondary, 256, 12, 0, 0x2000);
     if (bUnderwater && BannedUnderwater(weaponNext)) // if next weapon is unavailable, draw cross over icon
@@ -3321,15 +3330,15 @@ struct {
     int nScale;
     short nX, nY;
 } burnTable[9] = {
-     { 2101, 2, 0, 118784, 10, 220 },
-     { 2101, 2, 0, 110592, 40, 220 },
-     { 2101, 2, 0, 81920, 85, 220 },
-     { 2101, 2, 0, 69632, 120, 220 },
-     { 2101, 2, 0, 61440, 160, 220 },
-     { 2101, 2, 0, 73728, 200, 220 },
-     { 2101, 2, 0, 77824, 235, 220 },
-     { 2101, 2, 0, 110592, 275, 220 },
-     { 2101, 2, 0, 122880, 310, 220 }
+     { 2101, RS_AUTO, 0, 118784, 10, 220 },
+     { 2101, RS_AUTO, 0, 110592, 40, 220 },
+     { 2101, RS_AUTO, 0, 81920, 85, 220 },
+     { 2101, RS_AUTO, 0, 69632, 120, 220 },
+     { 2101, RS_AUTO, 0, 61440, 160, 220 },
+     { 2101, RS_AUTO, 0, 73728, 200, 220 },
+     { 2101, RS_AUTO, 0, 77824, 235, 220 },
+     { 2101, RS_AUTO, 0, 110592, 275, 220 },
+     { 2101, RS_AUTO, 0, 122880, 310, 220 }
 };
 
 void viewBurnTime(int gScale)
