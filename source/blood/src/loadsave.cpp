@@ -109,7 +109,7 @@ void LoadSave::LoadGame(char *pzFile)
     seqKillAll();
     if (!gGameStarted)
     {
-        memset(xsprite, 0, sizeof(xsprite));
+        memset(xsprite, 0, sizeof(XSPRITE)*kMaxXSprites);
         memset(sprite, 0, sizeof(spritetype)*kMaxSprites);
         automapping = 1;
     }
@@ -324,15 +324,12 @@ void MyLoadSave::Load(void)
     Read(nextXSprite, sizeof(nextXSprite));
     Read(nextXWall, sizeof(nextXWall));
     Read(nextXSector, sizeof(nextXSector));
-    memset(xsprite, 0, sizeof(xsprite));
+    memset(xsprite, 0, sizeof(xsprite[0])*kMaxXSprites);
     for (int nSprite = 0; nSprite < kMaxSprites; nSprite++)
     {
-        if (sprite[nSprite].statnum < kMaxStatus)
-        {
-            int nXSprite = sprite[nSprite].extra;
-            if (nXSprite > 0)
-                Read(&xsprite[nXSprite], sizeof(XSPRITE));
-        }
+        int nXSprite = sprite[nSprite].extra;
+        if (nXSprite > 0)
+            Read(&xsprite[nXSprite], sizeof(XSPRITE));
     }
     memset(xwall, 0, sizeof(xwall));
     for (int nWall = 0; nWall < numwalls; nWall++)
@@ -442,12 +439,9 @@ void MyLoadSave::Save(void)
     Write(nextXSector, sizeof(nextXSector));
     for (int nSprite = 0; nSprite < kMaxSprites; nSprite++)
     {
-        if (sprite[nSprite].statnum < kMaxStatus)
-        {
-            int nXSprite = sprite[nSprite].extra;
-            if (nXSprite > 0)
-                Write(&xsprite[nXSprite], sizeof(XSPRITE));
-        }
+        int nXSprite = sprite[nSprite].extra;
+        if (nXSprite > 0)
+            Write(&xsprite[nXSprite], sizeof(XSPRITE));
     }
     for (int nWall = 0; nWall < numwalls; nWall++)
     {
