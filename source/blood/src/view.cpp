@@ -2266,50 +2266,33 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         int top, bottom;
         GetSpriteExtents(pTSprite, &top, &bottom);
 
-        if (videoGetRenderMode() != REND_CLASSIC) {
-            
-            auto pNSprite2 = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
-            if (!pNSprite2)
-                break;
+        auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
+        auto pNSprite2 = viewInsertTSprite(pTSprite->sectnum, 32766, pTSprite);
+        if (!pNSprite || !pNSprite2)
+            break;
+        pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT_INVERT | CSTAT_SPRITE_TRANSLUCENT;
 
-            pNSprite2->picnum = 2203;
+        pNSprite->picnum = 2229;
+        pNSprite2->picnum = 2203;
 
-            pNSprite2->xrepeat = width;
-            pNSprite2->yrepeat = 20;
-            pNSprite2->pal = 10;
-            if (perc >= 75) pNSprite2->pal = 0;
-            else if (perc >= 50) pNSprite2->pal = 6;
-            
-            pNSprite2->z = top - 2048;
-            pNSprite2->shade = -128;
+        pNSprite->xoffset = -1;
+        pNSprite->xrepeat = 40;
+        pNSprite->yrepeat = 64;
+        pNSprite->pal = 5;
 
+        pNSprite2->xrepeat = width;
+        pNSprite2->yrepeat = 34;
+        pNSprite2->pal = 10;
+        if (perc >= 75) pNSprite2->pal = 0;
+        else if (perc >= 50) pNSprite2->pal = 6;
 
-        } else {
-            
+        pNSprite->z = pNSprite2->z = top - 2048;
+        pNSprite->shade = pNSprite2->shade = -128;
 
-            auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
-            auto pNSprite2 = viewInsertTSprite(pTSprite->sectnum, 32766, pTSprite);
-            if (!pNSprite || !pNSprite2)
-                break;
-            pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT_INVERT | CSTAT_SPRITE_TRANSLUCENT;
-
-            pNSprite->picnum = 2229;
-            pNSprite2->picnum = 2203;
-
-            pNSprite->xoffset = -1;
-            pNSprite->xrepeat = 40;
-            pNSprite->yrepeat = 64;
-            pNSprite->pal = 5;
-
-            pNSprite2->xrepeat = width;
-            pNSprite2->yrepeat = 34;
-            pNSprite2->pal = 10;
-            if (perc >= 75) pNSprite2->pal = 0;
-            else if (perc >= 50) pNSprite2->pal = 6;
-
-            pNSprite->z = pNSprite2->z = top - 2048;
-            pNSprite->shade = pNSprite2->shade = -128;
-
+        if (videoGetRenderMode() != REND_CLASSIC) { // move border sprite back a touch so it doesn't z-fight with bar
+            pNSprite->x += mulscale30(4, Cos(gCameraAng));
+            pNSprite->y += mulscale30(4, Sin(gCameraAng));
+            pNSprite->z -= 3<<5; // align so from ground level the bar looks correct
         }
         break;
     }
