@@ -125,6 +125,7 @@ int gQuitRequest;
 bool gPaused;
 bool gSaveGameActive;
 int gCacheMiss;
+int gMenuPicnum;
 
 enum gametokens
 {
@@ -1896,6 +1897,11 @@ int app_main(int argc, char const * const * argv)
 
     levelLoadDefaults();
 
+    if (!Bstrcmp(pINISelected->zName, "CRYPTIC.INI")) // if currently selected cryptic passage
+        gMenuPicnum = 2046;
+    else
+        gMenuPicnum = 2518; // default menu picnum
+
     loaddefinitionsfile(BLOODWIDESCREENDEF);
     loaddefinitions_game(BLOODWIDESCREENDEF, FALSE);
     loaddefinitionsfile(NOTBLOODDEF);
@@ -2073,7 +2079,7 @@ RESTART:
             {
                 videoClearScreen(0);
                 if (numplayers == 1) // do not render for multiplayer menu
-                    rotatesprite(160<<16,100<<16,65536,0,2518,0,0,0x4a,0,0,xdim-1,ydim-1);
+                    rotatesprite(160<<16,100<<16,65536,0,gMenuPicnum,0,0,0x4a,0,0,xdim-1,ydim-1);
             }
             if (gQuitRequest && !gQuitGame)
                 netBroadcastMyLogoff(gQuitRequest == 2);
@@ -2934,7 +2940,7 @@ bool VanillaMode(const bool demoState) {
         return (gGameOptions.nGameType == 0) && (numplayers == 1);
     if (demoState) // only check if demo recording/playing is active
         return gDemo.bPlaying || gDemo.bRecording;
-    return (gDemo.bPlaying || gDemo.bRecording) || gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1); // fallback on singleplayer global vanilla mode settings
+    return (gDemo.bPlaying || gDemo.bRecording) || (gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1)); // fallback on singleplayer global vanilla mode settings
 }
 
 bool WeaponsNotBlood(void) {
