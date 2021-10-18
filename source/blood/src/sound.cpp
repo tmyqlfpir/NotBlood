@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "fx_man.h"
 #include "al_midi.h"
 #include "common_game.h"
+#include "blood.h"
 #include "config.h"
 #include "levels.h"
 #include "resource.h"
@@ -291,6 +292,8 @@ void sndStartSample(unsigned int nSound, int nVolume, int nChannel, bool bLoop)
     if (!SoundToggle)
         return;
     dassert(nChannel >= -1 && nChannel < kChannelMax);
+    if ((nSound == 3017) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not play quote about having two guns
+        nSound = 3016;
     DICTNODE *hSfx = gSoundRes.Lookup(nSound, "SFX");
     if (!hSfx)
         return;
@@ -337,6 +340,8 @@ void sndStartWavID(unsigned int nSound, int nVolume, int nChannel)
     if (!SoundToggle)
         return;
     dassert(nChannel >= -1 && nChannel < kChannelMax);
+    if ((nSound == 3017) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not play quote about having two guns
+        nSound = 3016;
     SAMPLE2D *pChannel;
     if (nChannel == -1)
         pChannel = FindChannel();
