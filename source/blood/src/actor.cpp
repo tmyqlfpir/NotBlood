@@ -4488,7 +4488,6 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
         break;
     case kMissileFireballNapalm:
     case kMissileTeslaRegular:
-    case kMissileLifeLeechRegular:
         smallwd = min(walldist, 48); // unless sprite is less than 48 units, clamp at 48 units
         break;
     default: // unexpected sprite, don't use small hitbox
