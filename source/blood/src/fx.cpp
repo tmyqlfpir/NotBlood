@@ -235,6 +235,7 @@ void CFX::fxProcess(void)
         dassert(nSector >= 0 && nSector < kMaxSectors);
         dassert(pSprite->type < kFXMax);
         FXDATA *pFXData = &gFXData[pSprite->type];
+        vec3_t oldPos = pSprite->xyz;
         actAirDrag(pSprite, pFXData->airdrag);
         if (xvel[nSprite])
             pSprite->x += xvel[nSprite]>>12;
@@ -242,6 +243,17 @@ void CFX::fxProcess(void)
             pSprite->y += yvel[nSprite]>>12;
         if (zvel[nSprite])
             pSprite->z += zvel[nSprite]>>8;
+        const bool casingType = (pSprite->type >= 37) && (pSprite->type <= 42);
+        if (casingType && !VanillaMode()) // check if new xy position is within a wall
+        {
+            if (!cansee(oldPos.x, oldPos.y, oldPos.z, pSprite->sectnum, pSprite->x, pSprite->y, oldPos.z, pSprite->sectnum)) // if new position has clipped into wall, invert velocity and continue
+            {
+                xvel[nSprite] = -xvel[nSprite];
+                yvel[nSprite] = -yvel[nSprite];
+                pSprite->x = oldPos.x + (xvel[nSprite]>>12);
+                pSprite->y = oldPos.y + (yvel[nSprite]>>12);
+            }
+        }
         // Weird...
         if (xvel[nSprite] || (yvel[nSprite] && pSprite->z >= sector[pSprite->sectnum].floorz))
         {
@@ -253,23 +265,27 @@ void CFX::fxProcess(void)
             }
             if (getflorzofslope(pSprite->sectnum, pSprite->x, pSprite->y) <= pSprite->z)
             {
-                if ((sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095) && !VanillaMode()) // if current sector is open air, find next floor
+                if (!VanillaMode())
                 {
                     int nSectnum = nSector;
-                    vec3_t oldPos = pSprite->xyz;
-                    if (CheckLink(&pSprite->x, &pSprite->y, &pSprite->z, &nSectnum)) // if found floor underneath
+                    oldPos = pSprite->xyz;
+                    const bool openaAirROR = (sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095);
+                    if (casingType || openaAirROR) // if casing type/current sector is open air, find next floor
                     {
-                        ChangeSpriteSect(nSprite, nSectnum);
-                        if (gViewInterpolate && TestBitString(gInterpolateSprite, nSprite)) // if sprite is set to be interpolated, update previous position
-                            viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
-                        else
-                            ClearBitString(gInterpolateSprite, pSprite->index);
-                        continue;
-                    }
-                    else // something went terribly wrong, free sprite
-                    {
-                        fxFree(nSprite);
-                        continue;
+                        if (CheckLink(&pSprite->x, &pSprite->y, &pSprite->z, &nSectnum)) // if found ror floor underneath
+                        {
+                            ChangeSpriteSect(nSprite, nSectnum);
+                            if (gViewInterpolate && TestBitString(gInterpolateSprite, nSprite)) // if sprite is set to be interpolated, update previous position
+                                viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
+                            else
+                                ClearBitString(gInterpolateSprite, pSprite->index);
+                            continue;
+                        }
+                        else if (openaAirROR) // something went terribly wrong, free sprite
+                        {
+                            fxFree(nSprite);
+                            continue;
+                        }
                     }
                 }
                 if (pFXData->funcID < 0 || pFXData->funcID >= kCallbackMax)
