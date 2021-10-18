@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "gameutil.h"
 #include "levels.h"
 #include "loadsave.h"
+#include "sfx.h"
 #include "view.h"
 #include "warp.h"
 #ifdef NOONE_EXTENSIONS
@@ -213,6 +214,8 @@ int CheckLink(spritetype *pSprite)
                 viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
             else
                 ClearBitString(gInterpolateSprite, pSprite->index);
+            if (!VanillaMode())
+                sfxUpdateSpritePos(pSprite, &oldPos); // update any assigned sfx to new sprite position
             return pUpper->type;
         }
     }
@@ -244,6 +247,8 @@ int CheckLink(spritetype *pSprite)
                 viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
             else
                 ClearBitString(gInterpolateSprite, pSprite->index);
+            if (!VanillaMode())
+                sfxUpdateSpritePos(pSprite, &oldPos); // update any assigned sfx to new sprite position
             return pLower->type;
         }
     }

@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "gameutil.h"
 #include "levels.h"
 #include "seq.h"
+#include "sfx.h"
 #include "tile.h"
 #include "trig.h"
 #include "view.h"
@@ -279,6 +280,7 @@ void CFX::fxProcess(void)
                                 viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
                             else
                                 ClearBitString(gInterpolateSprite, pSprite->index);
+                            sfxUpdateSpritePos(pSprite, &oldPos); // update any assigned sfx to new sprite position
                             continue;
                         }
                         else if (openaAirROR) // something went terribly wrong, free sprite

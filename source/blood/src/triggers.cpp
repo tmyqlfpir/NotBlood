@@ -1496,9 +1496,10 @@ void OperateTeleport(unsigned int nSector, XSECTOR *pXSector)
                             sfxUpdateListenerPos();
                             sfxUpdateListenerVel(true);
                         }
-                        sfxUpdateSpritePos(pPlayer->pSprite); // update any assigned sfx to new player position
                     }
                 }
+                if (!VanillaMode())
+                    sfxUpdateSpritePos(pSprite); // update any assigned sfx to new position
             }
         }
     }
