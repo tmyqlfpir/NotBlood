@@ -292,7 +292,8 @@ void DoSectorPanning(void)
                 px += mulscale30(speed<<2, Cos(angle))>>xBits;
                 int yBits = (picsiz[nTile]/16)-((pSector->floorstat&8)!=0);
                 py -= mulscale30(speed<<2, Sin(angle))>>yBits;
-                viewInterpolatePanningFloor(nSector, pSector);
+                if (!VanillaMode())
+                    viewInterpolatePanningFloor(nSector, pSector);
                 pSector->floorxpanning = px>>8;
                 pSector->floorypanning = py>>8;
                 pXSector->floorXPanFrac = px&255;
@@ -309,7 +310,8 @@ void DoSectorPanning(void)
                 px += mulscale30(speed<<2, Cos(angle))>>xBits;
                 int yBits = (picsiz[nTile]/16)-((pSector->ceilingstat&8)!=0);
                 py -= mulscale30(speed<<2, Sin(angle))>>yBits;
-                viewInterpolatePanningCeiling(nSector, pSector);
+                if (!VanillaMode())
+                    viewInterpolatePanningCeiling(nSector, pSector);
                 pSector->ceilingxpanning = px>>8;
                 pSector->ceilingypanning = py>>8;
                 pXSector->ceilXPanFrac = px&255;

@@ -2532,7 +2532,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->pal = 5;
         int height = tilesiz[pNSprite->picnum].y;
         int center = height/2+picanm[pNSprite->picnum].yofs;
-        if (gShadowsFake3D)
+        if (gShadowsFake3D && !VanillaMode())
         {
             pNSprite->yrepeat += pTSprite->yrepeat>>4; // extend shadow by a quarter
             const int nOffset = videoGetRenderMode() == REND_CLASSIC ? 24 : 30; // offset shadow distance depending on render mode
