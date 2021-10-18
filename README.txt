@@ -29,6 +29,7 @@ New features include:
 * Respawning enemies option for singleplayer
 * Custom difficult options for singleplayer
 * Set item box selection to activated item
+* Interpolated level texture panning
 * Drag and drop folder mod support
 * Weapon selection bar
 * Mirror mode

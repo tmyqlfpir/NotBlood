@@ -521,7 +521,7 @@ void sfxUpdateSpritePos(spritetype *pSprite)
     }
 }
 
-void sfxUpdateListenerPos(bool resetPos)
+void sfxUpdateListenerPos(void)
 {
     earL0 = earL;
     earR0 = earR;
@@ -531,8 +531,15 @@ void sfxUpdateListenerPos(bool resetPos)
     earL.y = gMe->pSprite->y - dy;
     earR.x = gMe->pSprite->x + dx;
     earR.y = gMe->pSprite->y + dy;
-    if (resetPos) // only update ear positions (and retain velocity values)
+}
+
+void sfxUpdateListenerVel(bool resetVel)
+{
+    if (resetVel)
+    {
+        earVL.dx = earVL.dy = earVR.dx = earVR.dy = 0;
         return;
+    }
     earVL.dx = earL.x - earL0.x;
     earVL.dy = earL.y - earL0.y;
     earVR.dx = earR.x - earR0.x;
@@ -542,6 +549,7 @@ void sfxUpdateListenerPos(bool resetPos)
 void sfxUpdate3DSounds(void)
 {
     sfxUpdateListenerPos();
+    sfxUpdateListenerVel(false);
     for (int i = nBonkles - 1; i >= 0; i--)
     {
         BONKLE *pBonkle = BonkleCache[i];
