@@ -6321,7 +6321,7 @@ void actProcessSprites(void)
                             else
                             {
                                 int nObject = hit & 0x3fff;
-                                if (((hit&0xc000) == 0xc000) || VanillaMode() && (nObject >= 0 && nObject < 4096))
+                                if (((hit&0xc000) == 0xc000) || (VanillaMode() && (nObject >= 0 && nObject < 4096)))
                                 {
                                     dassert(nObject >= 0 && nObject < kMaxSprites);
                                     spritetype *pObject = &sprite[nObject];

@@ -328,8 +328,13 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
             pPlayer->damageControl[1]++;
             break;
         case kItemTwoGuns:
-            if (gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not switch weapon
-                break;
+            if (!VanillaMode())
+            {
+                if (gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not switch weapon
+                    break;
+                if ((pPlayer->curWeapon == 1) || (pPlayer->curWeapon == 6) || (pPlayer->curWeapon == 7) || (pPlayer->curWeapon >= 9)) // if weapon doesn't have a akimbo state, don't raise weapon
+                    break;
+            }
             pPlayer->input.newWeapon = pPlayer->curWeapon;
             WeaponRaise(pPlayer);
             break;
@@ -381,8 +386,13 @@ void powerupDeactivate(PLAYER *pPlayer, int nPowerUp)
             pPlayer->damageControl[1]--;
             break;
         case kItemTwoGuns:
-            if (gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not switch weapon
-                break;
+            if (!VanillaMode())
+            {
+                if (gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not switch weapon
+                    break;
+                if ((pPlayer->curWeapon == 1) || (pPlayer->curWeapon == 6) || (pPlayer->curWeapon == 7) || (pPlayer->curWeapon >= 9)) // if weapon doesn't have a akimbo state, don't raise weapon
+                    break;
+            }
             pPlayer->input.newWeapon = pPlayer->curWeapon;
             WeaponRaise(pPlayer);
             break;
@@ -743,7 +753,8 @@ void playerStart(int nPlayer, int bNewLevel)
     GetSpriteExtents(pSprite, &top, &bottom);
     pSprite->z -= bottom - pSprite->z;
     pSprite->pal = 11+(pPlayer->teamId&3);
-    if (gGameOptions.nGameType == 3) pSprite->pal = (pPlayer->teamId & 1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
+    if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+        pSprite->pal = (pPlayer->teamId&1) ? kMediumGoo : 10;
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
     pSprite->type = kDudePlayer1+nPlayer;
