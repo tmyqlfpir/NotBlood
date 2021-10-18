@@ -646,7 +646,8 @@ void WeaponLower(PLAYER *pPlayer)
     if (checkFired6or7(pPlayer))
         return;
     pPlayer->throwPower = 0;
-    int prevState = pPlayer->weaponState;
+    const int prevWeapon = pPlayer->curWeapon;
+    const int prevState = pPlayer->weaponState;
     switch (pPlayer->curWeapon)
     {
     case 1:
@@ -661,16 +662,13 @@ void WeaponLower(PLAYER *pPlayer)
             {
                 StartQAV(pPlayer, 7, -1, 0);
             }
-            else
+            else if (pPlayer->input.newWeapon == 6) // do not put away lighter if TNT was selected while throwing a spray can
             {
-                if (pPlayer->input.newWeapon == 6) // do not put away lighter if TNT was selected while throwing a spray can
-                {
-                    pPlayer->lastWeapon = pPlayer->curWeapon;
-                    pPlayer->weaponState = 2;
-                    StartQAV(pPlayer, 11, -1, 0);
-                    WeaponRaise(pPlayer);
-                    return;
-                }
+                pPlayer->lastWeapon = pPlayer->curWeapon;
+                pPlayer->weaponState = 2;
+                StartQAV(pPlayer, 11, -1, 0);
+                WeaponRaise(pPlayer);
+                return;
             }
             break;
         case 2:
@@ -721,7 +719,7 @@ void WeaponLower(PLAYER *pPlayer)
                 StartQAV(pPlayer, 11, -1, 0);
             }
             break;
-        case 7: // throwing ignited alt fire spray
+        case 7: // throwing ignited alt fire spray (this happens when submerging underwater while holding down throw spray can)
             if (VanillaMode() || (pPlayer->input.newWeapon != 0))
                 break;
             pPlayer->weaponState = 1;
@@ -822,6 +820,9 @@ void WeaponLower(PLAYER *pPlayer)
     }
     pPlayer->curWeapon = 0;
     pPlayer->qavLoop = 0;
+
+    if ((prevWeapon != 6) && (prevWeapon != 7) && !VanillaMode()) // clear weapon state after switching weapon (except when switching from tnt/spray)
+        pPlayer->weaponState = 0;
 }
 
 void WeaponUpdateState(PLAYER *pPlayer)
