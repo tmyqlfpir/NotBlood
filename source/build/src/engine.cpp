@@ -7448,8 +7448,8 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
         Bassert(uniqid < MAXUNIQHUDID);
 
         // r_rotatespriteinterp 0: disabled
-        // r_rotatespriteinterp 1: only interpolate when explicitly requested with RS_LERP (half-step)
-        // r_rotatespriteinterp 2: only interpolate when explicitly requested with RS_LERP (full-step)
+        // r_rotatespriteinterp 1: only interpolate when explicitly requested with RS_LERP (half-step 60 ticks)
+        // r_rotatespriteinterp 2: only interpolate when explicitly requested with RS_LERP (full-step 1000 ticks)
         // r_rotatespriteinterp 3: interpolate if the picnum or size matches regardless of RS_LERP being set
         // r_rotatespriteinterp 4: relax above picnum check to include the next tile, with potentially undesirable results
 
@@ -7460,23 +7460,25 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
             int16_t picnum, flags;
         } smooth[MAXUNIQHUDID] = {{ {0}, 0, 0, 0 }};
 
+        const float tick4diff = (r_rotatespriteinterp == 1) ? 4.f : (1000.f/(120.f/4.f)); // used to check when lerp frame has taken more than 4 ticks (or a single blood game tick)
         auto &sm = smooth[uniqid];
         auto &sm0 = smooth[0];
         vec4_t const goal = { sx, sy, z, a };
-        sm0 = { {sm.lerp[0], sm.lerp[1], sm.lerp[2], sm.lerp[3]}, timer120(), picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
-        if (r_rotatespriteinterp == 1) // halve precision if half-step is set
+        sm0 = { {sm.lerp[0], sm.lerp[1], sm.lerp[2], sm.lerp[3]}, (r_rotatespriteinterp > 1) ? timerGetTicks() : timer120(), picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
+        if (r_rotatespriteinterp == 1) // if half-step is set, set precision to 60 ticks
         {
             sm0.clock >>= 1;
             sm0.clock <<= 1;
         }
         const uint32_t delta = sm0.clock - sm.clock;
 
+        const bool tooLongSinceLastLerp = delta > (int)tick4diff; // if too long since last lerp frame, don't interpolate
         const bool lerpWouldLookDerp = (!(dastat & RS_LERP) && r_rotatespriteinterp < 3)
                    || (!(dastat & RS_FORCELERP) && (sm.flags != (dastat & ~RS_TRANS_MASK) || (tilesiz[picnum] != tilesiz[sm.picnum]
                    && ((unsigned)(picnum - sm.picnum) > (int)(r_rotatespriteinterp == 4)))));
-        if (r_rotatespriteinterp && !(lerpWouldLookDerp || (delta > 4)))
+        if (r_rotatespriteinterp && !(lerpWouldLookDerp || tooLongSinceLastLerp))
         {
-            const float rotatespritesmoothratioF = (float)delta / 4.f;
+            const float rotatespritesmoothratioF = (float)delta / tick4diff;
             sm0.lerp[0] = lerpF(sm0.lerp[0], (float)goal.x, rotatespritesmoothratioF);
             sm0.lerp[1] = lerpF(sm0.lerp[1], (float)goal.y, rotatespritesmoothratioF);
             sm0.lerp[2] = lerpF(sm0.lerp[2], (float)goal.z, rotatespritesmoothratioF);
