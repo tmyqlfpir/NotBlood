@@ -344,6 +344,7 @@ void UpdateAimVector(PLAYER * pPlayer)
     int x = pPSprite->x;
     int y = pPSprite->y;
     int z = pPlayer->zWeapon;
+    int nSector = pPSprite->sectnum;
     Aim aim;
     aim.dx = Cos(pPSprite->ang)>>16;
     aim.dy = Sin(pPSprite->ang)>>16;
@@ -353,6 +354,8 @@ void UpdateAimVector(PLAYER * pPlayer)
     pPlayer->aimTargetsCount = 0;
     if (gProfile[pPlayer->nPlayer].nAutoAim == 1 || (gProfile[pPlayer->nPlayer].nAutoAim == 2 && !pWeaponTrack->bIsProjectile) || pPlayer->curWeapon == 10 || pPlayer->curWeapon == 9)
     {
+        if (gGameOptions.bSectorBehavior && !VanillaMode()) // check for ror so autoaim can work peering above water
+            CheckLink(&x, &y, &z, &nSector);
         int nClosest = 0x7fffffff;
         for (nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite])
         {
@@ -389,7 +392,7 @@ void UpdateAimVector(PLAYER * pPlayer)
             int angle = getangle(x2-x,y2-y);
             if (klabs(((angle-pPSprite->ang+1024)&2047)-1024) > pWeaponTrack->at8)
                 continue;
-            if (pPlayer->aimTargetsCount < 16 && cansee(x,y,z,pPSprite->sectnum,x2,y2,z2,pSprite->sectnum))
+            if (pPlayer->aimTargetsCount < 16 && cansee(x,y,z,nSector,x2,y2,z2,pSprite->sectnum))
                 pPlayer->aimTargets[pPlayer->aimTargetsCount++] = nSprite;
             // Inlined?
             int dz = (lz-z2)>>8;
@@ -401,7 +404,7 @@ void UpdateAimVector(PLAYER * pPlayer)
             DUDEINFO *pDudeInfo = getDudeInfo(pSprite->type);
             int center = (pSprite->yrepeat*pDudeInfo->aimHeight)<<2;
             int dzCenter = (z2-center)-z;
-            if (cansee(x, y, z, pPSprite->sectnum, x2, y2, z2, pSprite->sectnum))
+            if (cansee(x, y, z, nSector, x2, y2, z2, pSprite->sectnum))
             {
                 nClosest = nDist2;
                 aim.dx = Cos(angle)>>16;
@@ -439,7 +442,7 @@ void UpdateAimVector(PLAYER * pPlayer)
                 int angle = getangle(dx,dy);
                 if (klabs(((angle-pPSprite->ang+1024)&2047)-1024) > pWeaponTrack->atc)
                     continue;
-                if (pPlayer->aimTargetsCount < 16 && cansee(x,y,z,pPSprite->sectnum,pSprite->x,pSprite->y,pSprite->z,pSprite->sectnum))
+                if (pPlayer->aimTargetsCount < 16 && cansee(x,y,z,nSector,pSprite->x,pSprite->y,pSprite->z,pSprite->sectnum))
                     pPlayer->aimTargets[pPlayer->aimTargetsCount++] = nSprite;
                 // Inlined?
                 int dz2 = (lz-z2)>>8;
@@ -448,7 +451,7 @@ void UpdateAimVector(PLAYER * pPlayer)
                 int nDist2 = ksqrt(dx2*dx2+dy2*dy2+dz2*dz2);
                 if (nDist2 >= nClosest)
                     continue;
-                if (cansee(x, y, z, pPSprite->sectnum, pSprite->x, pSprite->y, pSprite->z, pSprite->sectnum))
+                if (cansee(x, y, z, nSector, pSprite->x, pSprite->y, pSprite->z, pSprite->sectnum))
                 {
                     nClosest = nDist2;
                     aim.dx = Cos(angle)>>16;
@@ -1571,6 +1574,13 @@ void FireVoodoo(int nTrigger, PLAYER *pPlayer)
 
 void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
 {
+    vec3_t pos = pPlayer->pSprite->xyz;
+    if (gGameOptions.bSectorBehavior && !VanillaMode()) // check for ror so voodoo doll attack can work peering above water
+    {
+        pos.z = pPlayer->zWeapon; // offset view height to weapon level
+        int nSector = pPlayer->pSprite->sectnum;
+        CheckLink(&pos.x, &pos.y, &pos.z, &nSector);
+    }
     if (nTrigger == 2) {
 
         // by NoOne: trying to simulate v1.0x voodoo here.
@@ -1585,7 +1595,7 @@ void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
                     spritetype* pTarget = &sprite[nTarget];
                     if (!gGameOptions.bFriendlyFire && IsTargetTeammate(pPlayer, pTarget))
                         continue;
-                    int nDist = approxDist(pTarget->x - pPlayer->pSprite->x, pTarget->y - pPlayer->pSprite->y);
+                    int nDist = approxDist(pTarget->x - pos.x, pTarget->y - pos.y);
                     if (nDist > 0 && nDist < 51200)
                     {
                         int vc = pPlayer->ammoCount[9] >> 3;
@@ -1623,7 +1633,7 @@ void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
                     continue;
                 if (v4 > 0)
                     v4--;
-                int nDist = approxDist(pTarget->x - pPlayer->pSprite->x, pTarget->y - pPlayer->pSprite->y);
+                int nDist = approxDist(pTarget->x - pos.x, pTarget->y - pos.y);
                 if (nDist > 0 && nDist < 51200)
                 {
                     int vc = pPlayer->ammoCount[9] >> 3;
