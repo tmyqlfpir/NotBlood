@@ -526,6 +526,8 @@ void WeaponRaise(PLAYER *pPlayer)
     case 6: // dynamite
         if (gInfiniteAmmo || checkAmmo2(pPlayer, 5, 1))
         {
+            if ((pPlayer->weaponState == 2) && !prevWeapon && !VanillaMode()) // if quickly switching from tnt to spray can and back, don't put away lighter
+                pPlayer->lastWeapon = prevWeapon = 7;
             pPlayer->weaponState = 3;
             if (prevWeapon == 7)
                 StartQAV(pPlayer, 16, -1, 0);
@@ -706,6 +708,15 @@ void WeaponLower(PLAYER *pPlayer)
                 }
             }
             break;
+        case 0:
+            if ((pPlayer->input.newWeapon == 6) && !VanillaMode()) // if switched to tnt before lighter is ignited, don't execute spray can equip qav
+            {
+                pPlayer->weaponState = 3;
+                StartQAV(pPlayer, 16, -1, 0);
+                WeaponRaise(pPlayer);
+                return;
+            }
+            break;
         case 3:
             pPlayer->lastWeapon = pPlayer->curWeapon;
             if (pPlayer->input.newWeapon == 6)
@@ -714,17 +725,12 @@ void WeaponLower(PLAYER *pPlayer)
                 StartQAV(pPlayer, 11, -1, 0);
                 return;
             }
-            else if (pPlayer->input.newWeapon == 7)
+            pPlayer->weaponState = 1;
+            StartQAV(pPlayer, 11, -1, 0);
+            if (pPlayer->input.newWeapon == 7)
             {
-                pPlayer->weaponState = 1;
-                StartQAV(pPlayer, 11, -1, 0);
                 pPlayer->input.newWeapon = 0;
                 WeaponLower(pPlayer);
-            }
-            else
-            {
-                pPlayer->weaponState = 1;
-                StartQAV(pPlayer, 11, -1, 0);
             }
             break;
         case 7: // throwing ignited alt fire spray (this happens when submerging underwater while holding down throw spray can)
