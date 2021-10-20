@@ -1459,7 +1459,7 @@ void ProcessInput(PLAYER *pPlayer)
                 if (pPlayer->deathTime > 360)
                     seqSpawn(pPlayer->pDudeInfo->seqStartID+14, 3, pPlayer->pSprite->extra, nPlayerSurviveClient);
             }
-            else if (seqGetStatus(3, pPlayer->pSprite->extra) < 0)
+            else if (!gDemo.bPlaying && (seqGetStatus(3, pPlayer->pSprite->extra) < 0))
             {
                 if (pPlayer->pSprite)
                     pPlayer->pSprite->type = kThingBloodChunks;
@@ -1473,8 +1473,7 @@ void ProcessInput(PLAYER *pPlayer)
                     pInput->keyFlags.restart = 1;
                     return; // return so ProcessFrame() can restart single-player
                 }
-                else
-                    playerStart(pPlayer->nPlayer);
+                playerStart(pPlayer->nPlayer);
             }
             pInput->keyFlags.useItem = 0;
             pInput->keyFlags.action = 0;
