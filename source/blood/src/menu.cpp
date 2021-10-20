@@ -2051,6 +2051,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.nLevel = 0;
+    gGameOptions.uGameFlags = 0;
     if (gDemo.bPlaying)
         gDemo.StopPlayback();
     else if (gDemo.bRecording)
@@ -2076,6 +2077,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
     gGameOptions.nLevel = 0;
+    gGameOptions.uGameFlags = 0;
     if (gDemo.bPlaying)
         gDemo.StopPlayback();
     else if (gDemo.bRecording)
