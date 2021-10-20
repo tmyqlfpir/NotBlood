@@ -314,10 +314,10 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.uGameFlags &= ~1;
+    gSkill = gGameOptions.nDifficulty;
     StartLevel(&gGameOptions);
     for (int i = 0; i < 8; i++) // set to 1.21 defaults so demo playback syncs
     {
-        gProfile[i].skill = gGameOptions.nDifficulty;
         gProfile[i].nAutoAim = 1;
         gProfile[i].nWeaponSwitch = 1;
         gProfile[i].bWeaponFastSwitch = 0;

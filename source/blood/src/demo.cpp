@@ -72,8 +72,8 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.nWeaponRespawnTime = gameOptionsLegacy.nWeaponRespawnTime;
     gameOptions.nItemRespawnTime = gameOptionsLegacy.nItemRespawnTime;
     gameOptions.nSpecialRespawnTime = gameOptionsLegacy.nSpecialRespawnTime;
-    gameOptions.nEnemyQuantity = gameOptionsLegacy.nDifficulty;
-    gameOptions.nEnemyHealth = gameOptionsLegacy.nDifficulty;
+    gameOptions.nEnemyQuantity = gameOptions.nDifficulty;
+    gameOptions.nEnemyHealth = gameOptions.nDifficulty;
     gameOptions.bPitchforkOnly = false;
 }
 
@@ -250,24 +250,6 @@ void CDemo::Close(void)
 #endif
         fseek(hRFile, 0, SEEK_SET);
         fwrite(&atf, sizeof(DEMOHEADER), 1, hRFile);
-        GAMEOPTIONSLEGACY gameOptions;
-        memset(&gameOptions, 0, sizeof(gameOptions));
-        WriteGameOptionsLegacy(gameOptions, gGameOptions);
-#if B_BIG_ENDIAN == 1
-        gameOptions.nEpisode = B_LITTLE32(gameOptions.nEpisode);
-        gameOptions.nLevel = B_LITTLE32(gameOptions.nLevel);
-        gameOptions.nTrackNumber = B_LITTLE32(gameOptions.nTrackNumber);
-        gameOptions.nSaveGameSlot = B_LITTLE16(gameOptions.nSaveGameSlot);
-        gameOptions.picEntry = B_LITTLE32(gameOptions.picEntry);
-        gameOptions.uMapCRC = B_LITTLE32(gameOptions.uMapCRC);
-        gameOptions.uGameFlags = B_LITTLE32(gameOptions.uGameFlags);
-        gameOptions.uNetGameFlags = B_LITTLE32(gameOptions.uNetGameFlags);
-        gameOptions.nMonsterRespawnTime = B_LITTLE32(gameOptions.nMonsterRespawnTime);
-        gameOptions.nWeaponRespawnTime = B_LITTLE32(gameOptions.nWeaponRespawnTime);
-        gameOptions.nItemRespawnTime = B_LITTLE32(gameOptions.nItemRespawnTime);
-        gameOptions.nSpecialRespawnTime = B_LITTLE32(gameOptions.nSpecialRespawnTime);
-#endif
-        fwrite(&gameOptions, sizeof(GAMEOPTIONSLEGACY), 1, hRFile);
     }
     if (hPFile >= 0)
     {
@@ -315,9 +297,10 @@ bool CDemo::SetupPlayback(const char *pzFile)
 #endif
     if (atf.signature != 0x1a4d4544)
         return 0;
-    GAMEOPTIONSLEGACY gameOptions;
     if (BloodVersion != atf.nVersion)
         return 0;
+    m_gameOptions = gGameOptions;
+    GAMEOPTIONSLEGACY gameOptions;
     kread(hPFile, &gameOptions, sizeof(GAMEOPTIONSLEGACY));
     ReadGameOptionsLegacy(m_gameOptions, gameOptions);
 #if B_BIG_ENDIAN == 1
@@ -412,12 +395,12 @@ _DEMOPLAYBACK:
                 gNetFifoTail = 0;
                 //memcpy(connectpoint2, aimHeight.connectPoints, sizeof(aimHeight.connectPoints));
                 memcpy(&gGameOptions, &m_gameOptions, sizeof(GAMEOPTIONS));
+                gSkill = gGameOptions.nDifficulty;
                 for (int i = 0; i < 8; i++)
                     playerInit(i, 0);
                 StartLevel(&gGameOptions);
                 for (int i = 0; i < 8; i++)
                 {
-                    gProfile[i].skill = gGameOptions.nDifficulty;
                     gProfile[i].nAutoAim = 1;
                     gProfile[i].nWeaponSwitch = 1;
                     gProfile[i].bWeaponFastSwitch = 0;
@@ -453,7 +436,7 @@ _DEMOPLAYBACK:
                     }
                     else
                     {
-                        int const nOffset = sizeof(DEMOHEADER)+(sizeof(GAMEOPTIONSLEGACY));
+                        int const nOffset = sizeof(DEMOHEADER)+sizeof(GAMEOPTIONSLEGACY);
                         klseek(hPFile, nOffset, SEEK_SET);
                         v4 = 0;
                     }
