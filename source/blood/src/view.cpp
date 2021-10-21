@@ -1529,7 +1529,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     const bool mirrorCur = weaponIcons[weaponCur][3];
     DrawStatMaskedSprite(picnumCur, x, yCur, 256, 0, 0, scaleCur, mirrorCur);
     if (bUnderwater && BannedUnderwater(weaponCur)) // if current weapon is unavailable, draw cross over icon
-        DrawStatMaskedSprite(1142, x, yCur, 256, 12, 0, 0x2000);
+        DrawStatMaskedSprite(1142, x, yPrimary, 256, 12, 0, 0x2000);
     if (!showThreeWeapons)
         return;
     const int picnumPrev = weaponIcons[weaponPrev][0];
