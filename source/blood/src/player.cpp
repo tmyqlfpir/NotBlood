@@ -808,7 +808,7 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->throwPower = 0;
     pPlayer->deathTime = 0;
     pPlayer->nextWeapon = 0;
-    pPlayer->lastWeapon = 0;
+    pPlayer->lastWeapon = 1;
     xvel[pSprite->index] = yvel[pSprite->index] = zvel[pSprite->index] = 0;
     pInput->q16turn = 0;
     pInput->keyFlags.word = 0;
@@ -1831,10 +1831,7 @@ void playerProcess(PLAYER *pPlayer)
             ChangeSpriteSect(nSprite, nSector);
         }
     }
-    const int prevWeapon = pPlayer->curWeapon;
     ProcessInput(pPlayer);
-    if (prevWeapon && !pPlayer->curWeapon) // save current weapon to last weapon state on weapon change
-        pPlayer->lastWeapon = prevWeapon;
     int nSpeed = approxDist(xvel[nSprite], yvel[nSprite]);
     pPlayer->zViewVel = interpolate(pPlayer->zViewVel, zvel[nSprite], 0x7000);
     int dz = pPlayer->pSprite->z-pPosture->eyeAboveZ-pPlayer->zView;

@@ -527,7 +527,7 @@ void WeaponRaise(PLAYER *pPlayer)
         if (gInfiniteAmmo || checkAmmo2(pPlayer, 5, 1))
         {
             if ((pPlayer->weaponState == 2) && !prevWeapon && !VanillaMode()) // if quickly switching from tnt to spray can and back, don't put away lighter
-                pPlayer->lastWeapon = prevWeapon = 7;
+                prevWeapon = 7;
             pPlayer->weaponState = 3;
             if (prevWeapon == 7)
                 StartQAV(pPlayer, 16, -1, 0);
@@ -674,7 +674,6 @@ void WeaponLower(PLAYER *pPlayer)
             }
             else if (pPlayer->input.newWeapon == 6) // do not put away lighter if TNT was selected while throwing a spray can
             {
-                pPlayer->lastWeapon = pPlayer->curWeapon;
                 pPlayer->weaponState = 2;
                 StartQAV(pPlayer, 11, -1, 0);
                 WeaponRaise(pPlayer);
@@ -693,19 +692,15 @@ void WeaponLower(PLAYER *pPlayer)
                 pPlayer->input.newWeapon = 0;
                 WeaponLower(pPlayer);
             }
+            else if (pPlayer->input.newWeapon == 6)
+            {
+                pPlayer->weaponState = 2;
+                StartQAV(pPlayer, 11, -1, 0);
+                return;
+            }
             else
             {
-                pPlayer->lastWeapon = pPlayer->curWeapon;
-                if (pPlayer->input.newWeapon == 6)
-                {
-                    pPlayer->weaponState = 2;
-                    StartQAV(pPlayer, 11, -1, 0);
-                    return;
-                }
-                else
-                {
-                    WeaponLower(pPlayer);
-                }
+                WeaponLower(pPlayer);
             }
             break;
         case 0:
@@ -718,7 +713,6 @@ void WeaponLower(PLAYER *pPlayer)
             }
             break;
         case 3:
-            pPlayer->lastWeapon = pPlayer->curWeapon;
             if (pPlayer->input.newWeapon == 6)
             {
                 pPlayer->weaponState = 2;
@@ -745,18 +739,14 @@ void WeaponLower(PLAYER *pPlayer)
         switch (prevState)
         {
         case 1:
-            if (VanillaMode())
+            if ((pPlayer->input.newWeapon == 7) && !VanillaMode()) // do not put away lighter if switched to spray can
             {
-                StartQAV(pPlayer, 7, -1, 0);
-            }
-            else if (pPlayer->input.newWeapon == 7) // do not put away lighter if switched to spray can
-            {
-                pPlayer->lastWeapon = pPlayer->curWeapon;
                 pPlayer->weaponState = 2;
                 StartQAV(pPlayer, 11, -1, 0);
                 WeaponRaise(pPlayer);
                 return;
             }
+            StartQAV(pPlayer, 7, -1, 0);
             break;
         case 2:
             WeaponRaise(pPlayer);
@@ -1867,6 +1857,23 @@ void FireBeast(int nTrigger, PLAYER * pPlayer)
     actFireVector(pPlayer->pSprite, 0, pPlayer->zWeapon-pPlayer->pSprite->z, pPlayer->aim.dx+r1, pPlayer->aim.dy+r2, pPlayer->aim.dz+r3, kVectorBeastSlash);
 }
 
+char WeaponIsEquipable(PLAYER *pPlayer, int nWeapon)
+{
+    if ((nWeapon < 1) || (nWeapon > 12)) // invalid weapon
+        return 0;
+    if (pPlayer->isUnderwater && BannedUnderwater(nWeapon))
+        return 0;
+    if (pPlayer->hasWeapon[nWeapon])
+    {
+        for (int j = 0; j < weaponModes[nWeapon].at0; j++)
+        {
+            if (CheckWeaponAmmo(pPlayer, nWeapon, weaponModes[nWeapon].at4, 1))
+                return 1;
+        }
+    }
+    return 0;
+}
+
 char gWeaponUpgrade[][13] = {
     { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -2192,6 +2199,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     #endif
 
+    bool lastWeaponPressed = false; // needed to bypass weapon cycle issues with tnt->remote->proxy and check when to set last weapon
     if (pPlayer->pXSprite->health == 0)
     {
         pPlayer->qavLoop = 0;
@@ -2199,6 +2207,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->curWeapon))
     {
+        const int prevWeapon = pPlayer->curWeapon;
         if (checkFired6or7(pPlayer))
         {
             if (pPlayer->curWeapon == 7)
@@ -2218,16 +2227,26 @@ void WeaponProcess(PLAYER *pPlayer) {
         pPlayer->throwPower = 0;
         if (!VanillaMode()) // if not in vanilla mode, find next weapon to switch to
         {
-            if (pPlayer->lastWeapon && !BannedUnderwater(pPlayer->lastWeapon)) // switch to last weapon if available
+            if (WeaponIsEquipable(pPlayer, pPlayer->lastWeapon)) // switch to last weapon if available
             {
                 pPlayer->nextWeapon = pPlayer->lastWeapon;
             }
-            else
+            else // find a suitable next weapon
             {
-                const int nextWeapon = WeaponFindLoaded(pPlayer, NULL);
-                if (nextWeapon && !BannedUnderwater(nextWeapon))
-                    pPlayer->nextWeapon = nextWeapon;
+                int t;
+                const char weapon = WeaponFindLoaded(pPlayer, &t);
+                if (WeaponIsEquipable(pPlayer, weapon))
+                {
+                    pPlayer->weaponMode[weapon] = t;
+                    pPlayer->nextWeapon = weapon;
+                }
+                else // couldn't find anything, use pitchfork
+                {
+                    pPlayer->nextWeapon = 1;
+                }
             }
+            pPlayer->lastWeapon = prevWeapon;
+            lastWeaponPressed = true;
         }
     }
     WeaponPlay(pPlayer);
@@ -2309,22 +2328,17 @@ void WeaponProcess(PLAYER *pPlayer) {
         pPlayer->input.keyFlags.lastWeapon = 0;
     }
     const KEYFLAGS oldKeyFlags = pPlayer->input.keyFlags; // used to fix next/prev weapon issue for banned weapons
-    bool lastWeaponPressed = false; // needed to bypass weapon cycle issues with tnt->remote->proxy
     if (pPlayer->input.keyFlags.lastWeapon)
     {
         pPlayer->input.keyFlags.lastWeapon = 0;
-        if (VanillaMode())
-        {
-            viewSetMessage("Last weapon button disabled for vanilla mode...");
-        }
-        else
+        if (!VanillaMode())
         {
             int weapon = pPlayer->curWeapon;
             if (!weapon && gProfile[pPlayer->nPlayer].bWeaponFastSwitch) // if fast weapon select is on, and player is switching weapon, use new weapon as the current weapon
                 weapon = pPlayer->input.newWeapon;
             if (weapon && (weapon != pPlayer->lastWeapon)) // if current weapon is different to last weapon
             {
-                if ((pPlayer->lastWeapon > 0) && (pPlayer->lastWeapon < 13) && !(pPlayer->isUnderwater && BannedUnderwater(pPlayer->lastWeapon))) // if last weapon is safe to switch to
+                if (WeaponIsEquipable(pPlayer, pPlayer->lastWeapon)) // if last weapon can be switched to
                 {
                     pPlayer->input.keyFlags.nextWeapon = 0;
                     pPlayer->input.keyFlags.prevWeapon = 0;
@@ -2335,6 +2349,10 @@ void WeaponProcess(PLAYER *pPlayer) {
                     lastWeaponPressed = true;
                 }
             }
+        }
+        else
+        {
+            viewSetMessage("Last weapon button disabled for vanilla mode...");
         }
     }
     if (pPlayer->input.keyFlags.nextWeapon)
@@ -2398,6 +2416,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         pPlayer->weaponMode[weapon] = t;
         if (pPlayer->curWeapon)
         {
+            pPlayer->lastWeapon = pPlayer->curWeapon;
             WeaponLower(pPlayer);
             pPlayer->nextWeapon = weapon;
             return;
@@ -2469,6 +2488,14 @@ void WeaponProcess(PLAYER *pPlayer) {
         }
         if (pPlayer->pXSprite->health == 0 || pPlayer->hasWeapon[pPlayer->input.newWeapon] == 0)
         {
+            if ((pPlayer->hasWeapon[pPlayer->input.newWeapon] == 0) && !pPlayer->curWeapon && !VanillaMode()) // if trying to switch to missing/out of ammo weapon, switch to loaded weapon instead of holstering
+            {
+                int t;
+                char weapon = WeaponFindLoaded(pPlayer, &t);
+                pPlayer->weaponMode[weapon] = t;
+                pPlayer->input.newWeapon = weapon;
+                return;
+            }
             pPlayer->input.newWeapon = 0;
             return;
         }
@@ -2522,6 +2549,8 @@ void WeaponProcess(PLAYER *pPlayer) {
             int v6c = (pPlayer->weaponMode[nWeapon]+i)%v4c;
             if (CheckWeaponAmmo(pPlayer, nWeapon, weaponModes[nWeapon].at4, 1))
             {
+                if (!lastWeaponPressed) // set new weapon to last weapon slot
+                    pPlayer->lastWeapon = pPlayer->curWeapon;
                 WeaponLower(pPlayer);
                 pPlayer->weaponMode[nWeapon] = v6c;
                 return;
