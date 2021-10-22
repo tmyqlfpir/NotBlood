@@ -2536,13 +2536,14 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         int center = height/2+picanm[pNSprite->picnum].yofs;
         if (gShadowsFake3D && !VanillaMode())
         {
-            pNSprite->yrepeat += (pTSprite->yrepeat>>4)+(pTSprite->yrepeat>>5); // extend shadow by a 10th
-            const int nOffset = videoGetRenderMode() == REND_CLASSIC ? 23 : 26; // offset shadow distance depending on render mode
-            const int nDist = (pTSprite->yrepeat*height)/nOffset;
+            height -= picanm[pNSprite->picnum].yofs*2;
+            pNSprite->yrepeat = (int)((float)pTSprite->yrepeat*0.375f); // set shadows 37.5% tall of original sprite
+            const float nOffset = videoGetRenderMode() == REND_CLASSIC ? 8.f : 9.15f; // offset shadow distance depending on render mode
+            const float nDist = (float)(pNSprite->yrepeat*height)/nOffset;
             pNSprite->cstat |= (pTSprite->cstat & (CSTAT_SPRITE_XFLIP|CSTAT_SPRITE_YFLIP)) | CSTAT_SPRITE_ALIGNMENT_FLOOR; // inherit flags from parent sprite and set to floor sprite render type
             pNSprite->cstat &= ~CSTAT_SPRITE_YCENTER; // don't align by center
-            pNSprite->x += mulscale30(nDist, Cos(gCameraAng));
-            pNSprite->y += mulscale30(nDist, Sin(gCameraAng));
+            pNSprite->x += mulscale30((int)nDist, Cos(gCameraAng));
+            pNSprite->y += mulscale30((int)nDist, Sin(gCameraAng));
             pNSprite->ang = gCameraAng;
         }
         else
