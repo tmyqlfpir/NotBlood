@@ -1850,7 +1850,7 @@ void videoMirrorDrawing(void)
     if (!curFrame)
         return;
 
-    const int bufferSize = screenxy.x * screenxy.y;
+    const size_t bufferSize = screenxy.x * screenxy.y;
     uint8_t *tempFrame = mirroredFrame;
     const bool allocateFrame = bufferSize > sizeof(mirroredFrame); // if bigger than static 4k mirrored frame, allocate from memory (very slow!)
     if (allocateFrame)

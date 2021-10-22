@@ -114,9 +114,6 @@ void CEndGameMgr::Setup(void)
 
 //int gNextLevel;
 
-extern int gInitialNetPlayers;
-extern bool gStartNewGame;
-
 void CEndGameMgr::Finish(void)
 {
     levelSetupOptions(gGameOptions.nEpisode, gNextLevel);

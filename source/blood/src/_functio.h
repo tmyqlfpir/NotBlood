@@ -234,12 +234,13 @@ static const char * mouseclickeddefaults[MAXMOUSEBUTTONS] =
    {
    };
 
-
+#if 0
 static const char * mouseanalogdefaults[MAXMOUSEAXES] =
    {
    "analog_turning",
    "analog_moving",
    };
+#endif
 
 #if defined(GEKKO)
 static const char * joystickdefaults[MAXJOYBUTTONSANDHATS] =

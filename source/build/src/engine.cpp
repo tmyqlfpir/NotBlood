@@ -7472,7 +7472,7 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
         }
         const uint32_t delta = sm0.clock - sm.clock;
 
-        const bool tooLongSinceLastLerp = delta > (int)tick4diff; // if too long since last lerp frame, don't interpolate
+        const bool tooLongSinceLastLerp = delta > (uint32_t)tick4diff; // if too long since last lerp frame, don't interpolate
         const bool lerpWouldLookDerp = (!(dastat & RS_LERP) && r_rotatespriteinterp < 3)
                    || (!(dastat & RS_FORCELERP) && (sm.flags != (dastat & ~RS_TRANS_MASK) || (tilesiz[picnum] != tilesiz[sm.picnum]
                    && ((unsigned)(picnum - sm.picnum) > (int)(r_rotatespriteinterp == 4)))));

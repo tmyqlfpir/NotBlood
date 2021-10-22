@@ -2036,7 +2036,6 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem)
     }
 }
 
-extern bool gStartNewGame;
 short gQuickLoadSlot = -1;
 short gQuickSaveSlot = -1;
 
@@ -2487,7 +2486,7 @@ void SetupOptionsSound(CGameMenuItemChain *pItem)
     }
     itemOptionsSoundNumVoices.nValue = NumVoices;
     itemOptionsSoundMusicDevice.m_nFocus = 0;
-    for (int i = 0; i < ARRAY_SIZE(nMusicDeviceValues); i++)
+    for (int i = 0; i < (int)ARRAY_SIZE(nMusicDeviceValues); i++)
     {
         if (nMusicDeviceValues[i] == MusicDevice)
         {

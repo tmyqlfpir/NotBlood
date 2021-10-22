@@ -1982,7 +1982,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
 int dbSaveMap(const char *pPath, int nX, int nY, int nZ, short nAngle, short nSector)
 {
     char sMapExt[BMAX_PATH];
-    char sBakExt[BMAX_PATH];
+    //char sBakExt[BMAX_PATH];
     int16_t tpskyoff[256];
     int nSpriteNum;
     psky_t *pSky = tileSetupSky(0);
