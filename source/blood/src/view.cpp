@@ -1444,6 +1444,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         }
     }
 
+    const bool playerIsDead = !pXSprite || (pXSprite->health == 0);
     switch (animState)
     {
     default:
@@ -1451,6 +1452,8 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         animClock = curTime;
         animState = 0;
         animPos = 0;
+        if (playerIsDead) // if player is dead, don't allow weapon bar to start animation
+            return;
         if (pPlayer->input.newWeapon != 0) // player switched weapon, set start weapon animation state
             animState = 1;
         return;
@@ -1471,7 +1474,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         break;
     case 3: // hold animation
         animPos = 1;
-        if (!pXSprite || pXSprite->health == 0) // player died, transition to closing
+        if (playerIsDead) // player has died, transition to closing
         {
             animState = 4;
             animClock = curTime;
