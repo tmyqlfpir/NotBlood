@@ -400,6 +400,7 @@ void levelRestart(void)
 {
     levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
     gStartNewGame = true;
+    gAutosaveInCurLevel = false;
 }
 
 int levelGetMusicIdx(const char *str)

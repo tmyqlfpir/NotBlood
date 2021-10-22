@@ -2037,6 +2037,8 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem)
 }
 
 extern bool gStartNewGame;
+short gQuickLoadSlot = -1;
+short gQuickSaveSlot = -1;
 
 void ShowDifficulties()
 {
@@ -2057,6 +2059,8 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     else if (gDemo.bRecording)
         gDemo.Close();
     gStartNewGame = true;
+    gAutosaveInCurLevel = false;
+    gQuickLoadSlot = gQuickSaveSlot = -1;
     gCheatMgr.ResetCheats();
     if (Bstrlen(gGameOptions.szUserMap))
     {
@@ -2083,6 +2087,8 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     else if (gDemo.bRecording)
         gDemo.Close();
     gStartNewGame = true;
+    gAutosaveInCurLevel = false;
+    gQuickLoadSlot = gQuickSaveSlot = -1;
     gCheatMgr.ResetCheats();
     if (Bstrlen(gGameOptions.szUserMap))
     {
@@ -2644,9 +2650,6 @@ void TenProcess(CGameMenuItem7EA1C *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
 }
-
-short gQuickLoadSlot = -1;
-short gQuickSaveSlot = -1;
 
 void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
 {
