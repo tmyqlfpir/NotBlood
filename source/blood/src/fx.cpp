@@ -249,8 +249,8 @@ void CFX::fxProcess(void)
         {
             if (!cansee(oldPos.x, oldPos.y, oldPos.z, pSprite->sectnum, pSprite->x, pSprite->y, oldPos.z, pSprite->sectnum)) // if new position has clipped into wall, invert velocity and continue
             {
-                xvel[nSprite] = -xvel[nSprite];
-                yvel[nSprite] = -yvel[nSprite];
+                xvel[nSprite] = -((xvel[nSprite]>>1)+(xvel[nSprite]>>2)); // lower velocity by 75% and invert
+                yvel[nSprite] = -((yvel[nSprite]>>1)+(yvel[nSprite]>>2));
                 pSprite->x = oldPos.x + (xvel[nSprite]>>12);
                 pSprite->y = oldPos.y + (yvel[nSprite]>>12);
             }
@@ -270,8 +270,8 @@ void CFX::fxProcess(void)
                 {
                     int nSectnum = nSector;
                     oldPos = pSprite->xyz;
-                    const bool openaAirROR = (sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095);
-                    if (casingType || openaAirROR) // if casing type/current sector is open air, find next floor
+                    const bool openAirROR = (sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095);
+                    if (casingType || openAirROR) // if casing type/current sector is open air, find next floor
                     {
                         if (CheckLink(&pSprite->x, &pSprite->y, &pSprite->z, &nSectnum)) // if found ror floor underneath
                         {
@@ -283,7 +283,7 @@ void CFX::fxProcess(void)
                             sfxUpdateSpritePos(pSprite, &oldPos); // update any assigned sfx to new sprite position
                             continue;
                         }
-                        else if (openaAirROR) // something went terribly wrong, free sprite
+                        else if (openAirROR) // something went terribly wrong, free sprite
                         {
                             fxFree(nSprite);
                             continue;
