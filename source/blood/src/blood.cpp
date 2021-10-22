@@ -920,7 +920,7 @@ static void DoQuickLoad(void)
             QuickLoadGame();
             return;
         }
-        else if (gAutosave == 2) // if quicksave slot is not set, and autosave mode set to disable manual saving, load autosave
+        else if ((gAutosave == 2) && gAutosaveInCurLevel) // if quicksave slot is not set, and autosave mode set to disable manual saving, load autosave
         {
             gQuickLoadSlot = AUTOSAVESLOT_START;
             QuickLoadGame();
@@ -953,18 +953,18 @@ int DoRestoreSave(void)
 {
     if (gGameOptions.nGameType > 0 || numplayers > 1) // in multiplayer game, do not save
         return 0;
-    if (gQuickLoadSlot != -1) // if quickload has slot set, load save
+    if (SavedInCurrentSession(gQuickLoadSlot)) // if quickload is set to save from current session, load save
     {
         QuickLoadGame();
         return 1;
     }
-    else if (gQuickLoadSlot == -1 && gQuickSaveSlot != -1) // if quickload is not set, and player has quicksaved before, load save
+    else if (SavedInCurrentSession(gQuickSaveSlot)) // if quicksaved has saved in session, load save
     {
         gQuickLoadSlot = gQuickSaveSlot;
         QuickLoadGame();
         return 1;
     }
-    else if (gAutosaveInCurLevel) // if quicksave slot is not set, and autosave mode set to disable manual saving, load autosave
+    else if (gAutosaveInCurLevel) // if autosaved in session, load autosave
     {
         gQuickLoadSlot = AUTOSAVESLOT_START;
         QuickLoadGame();
@@ -1940,6 +1940,7 @@ int app_main(int argc, char const * const * argv)
     WeaponInit();
     LoadSaveSetup();
     LoadSavedInfo();
+    LoadAutosavedInfo();
     gDemo.LoadDemoInfo();
     initprintf("There are %d demo(s) in the loop\n", gDemo.nTotalDemos);
     initprintf("Loading control setup\n");

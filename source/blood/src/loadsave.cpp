@@ -508,6 +508,52 @@ void LoadSavedInfo(void)
     klistfree(pList);
 }
 
+void LoadAutosavedInfo(void)
+{
+    auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "gameautosave*.sav", BUILDVFS_FIND_FILE);
+    int nCount = 0;
+    for (auto pIterator = pList; pIterator != NULL && nCount < 2; pIterator = pIterator->next, nCount++)
+    {
+        int hFile = kopen4loadfrommod(pIterator->name, 0);
+        if (hFile == -1)
+            ThrowError("Error loading save file header.");
+        int vc;
+        short v4;
+        vc = 0;
+        v4 = word_27AA54;
+        if ((uint32_t)kread(hFile, &vc, sizeof(vc)) != sizeof(vc))
+        {
+            kclose(hFile);
+            continue;
+        }
+        if (vc != 0x5653424e/*'VSBN'*/)
+        {
+            kclose(hFile);
+            continue;
+        }
+        kread(hFile, &v4, sizeof(v4));
+        if (v4 != BYTEVERSION)
+        {
+            kclose(hFile);
+            continue;
+        }
+        if ((uint32_t)kread(hFile, &gSaveGameOptions[AUTOSAVESLOT_START+nCount], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
+            ThrowError("Error reading save file.");
+        UpdateSavedInfo(nCount);
+        kclose(hFile);
+    }
+    klistfree(pList);
+}
+
+bool SavedInCurrentSession(int nSlot)
+{
+    if (nSlot < 0)
+        return false;
+    if (nSlot > AUTOSAVESLOT_KEY)
+        return false;
+    return (gSaveGameOptions[nSlot].nEpisode == gGameOptions.nEpisode) && (gSaveGameOptions[nSlot].nLevel == gGameOptions.nLevel) && (gSaveGameOptions[nSlot].nDifficulty == gGameOptions.nDifficulty) && (gSaveGameOptions[nSlot].nEnemyHealth == gGameOptions.nEnemyHealth) && (gSaveGameOptions[nSlot].nEnemyQuantity == gGameOptions.nEnemyQuantity) && (gSaveGameOptions[nSlot].bPitchforkOnly == gGameOptions.bPitchforkOnly) && !strcmp(gSaveGameOptions[nSlot].zLevelName, gGameOptions.zLevelName);
+}
+
 void UpdateSavedInfo(int nSlot)
 {
     strcpy(strRestoreGameStrings[gSaveGameOptions[nSlot].nSaveGameSlot], gSaveGameOptions[nSlot].szUserGameName);

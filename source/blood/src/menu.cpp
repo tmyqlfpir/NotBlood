@@ -2744,12 +2744,13 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot == AUTOSAVESLOT_START ? 0 : 1);
     if (!testkopen(strLoadGameName, 0))
         return;
+    if (SavedInCurrentSession(nSlot)) // if save slot is from a different session, set autosave state to false
+        gAutosaveInCurLevel = false;
     viewLoadingScreen(2518, "Loading", "Loading Saved Game", strRestoreGameStrings[nSlot]);
     videoNextPage();
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();
     gQuickLoadSlot = nSlot;
-    gAutosaveInCurLevel = false;
 }
 
 void QuickLoadGame(void)
@@ -2763,11 +2764,12 @@ void QuickLoadGame(void)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", gQuickLoadSlot == AUTOSAVESLOT_START ? 0 : 1);
     if (!testkopen(strLoadGameName, 0))
         return;
+    if (!SavedInCurrentSession(gQuickLoadSlot)) // if save slot is from a different session, set autosave state to false
+        gAutosaveInCurLevel = false;
     viewLoadingScreen(2518, "Loading", "Loading Saved Game", strRestoreGameStrings[gQuickLoadSlot]);
     videoNextPage();
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();
-    gAutosaveInCurLevel = false;
 }
 
 void SetupLevelMenuItem(int nEpisode)

@@ -57,6 +57,8 @@ public:
 extern unsigned int gSavedOffset;
 extern GAMEOPTIONS gSaveGameOptions[];
 extern char *gSaveGamePic[12];
+bool SavedInCurrentSession(int nSlot);
 void UpdateSavedInfo(int nSlot);
 void LoadSavedInfo(void);
+void LoadAutosavedInfo(void);
 void LoadSaveSetup(void);

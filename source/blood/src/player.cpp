@@ -2230,8 +2230,10 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode()) // if died in single-player and not playing demo
         {
             extern short gQuickLoadSlot, gQuickSaveSlot;
-            const bool savedInSession = (gQuickLoadSlot != -1) || (gQuickSaveSlot != -1) || gAutosaveInCurLevel;
-            if (savedInSession)
+            bool autosavedInSession = gAutosaveInCurLevel;
+            if (!autosavedInSession) // if player has not triggered autosave in current level, check if last manual save/load was in current level
+                autosavedInSession = SavedInCurrentSession(gQuickLoadSlot) || SavedInCurrentSession(gQuickSaveSlot);
+            if (autosavedInSession)
                 viewSetMessage("press \"use\" to load last save or press \"enter\" to restart level"); // string borrowed from bloodgdx (thank you M210)
             else
                 viewSetMessage("press \"use\" or \"enter\" to restart level");
