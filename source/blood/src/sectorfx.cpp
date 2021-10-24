@@ -339,7 +339,8 @@ void DoSectorPanning(void)
             int py = (wall[nWall].ypanning<<8)+pXWall->ypanFrac;
             px += (psx<<2)>>((uint8_t)picsiz[nTile]&15);
             py += (psy<<2)>>((uint8_t)picsiz[nTile]/16);
-            viewInterpolatePanningWall(nWall, &wall[nWall]);
+            if (!VanillaMode())
+                viewInterpolatePanningWall(nWall, &wall[nWall]);
             wall[nWall].xpanning = px>>8;
             wall[nWall].ypanning = py>>8;
             pXWall->xpanFrac = px&255;
