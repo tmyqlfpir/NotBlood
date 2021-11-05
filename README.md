@@ -31,6 +31,7 @@ New features include:
 * Respawning enemies option for singleplayer
 * Custom difficult options for singleplayer
 * Set item box selection to activated item
+* Ability to record 1.21 compatible demos
 * Interpolated level texture panning
 * Drag and drop folder mod support ([demo](https://files.catbox.moe/lb7nxb.mp4))
 * Weapon selection bar ([demo](https://files.catbox.moe/0zh37q.mp4))

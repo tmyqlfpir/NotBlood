@@ -1525,11 +1525,17 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         yPrimary = -yPrimary + 195, ySecondary = -ySecondary + 195;
     yPrimary += 6; // lower center icon
 
+    const int nShadeTicks = 75;
+    char nShade = (char)(curTime%nShadeTicks)-(nShadeTicks/2);
+    if (nShade > (nShadeTicks/2)) // ping-pong fade effect
+        nShade = -nShade;
+    nShade = (nShade>>2)+(nShade>>3); // decrease overall shade difference by 37.5%
+
     const int picnumCur = weaponIcons[weaponCur][0];
     const int yCur = yPrimary + weaponIcons[weaponCur][1];
     const int scaleCur = weaponIcons[weaponCur][2];
     const bool mirrorCur = weaponIcons[weaponCur][3];
-    DrawStatMaskedSprite(picnumCur, x, yCur, 256, 0, 0, scaleCur, mirrorCur);
+    DrawStatMaskedSprite(picnumCur, x, yCur, 256+nShade, 0, 0, scaleCur, mirrorCur);
     if (!WeaponIsEquipable(pPlayer, weaponCur)) // if current weapon is unavailable, draw cross over icon
         DrawStatMaskedSprite(1142, x, yPrimary, 256, 12, 0, 0x2000);
     if (!showThreeWeapons)
