@@ -424,10 +424,9 @@ void ctrlGetInput(void)
     if (gInput.forward < keyMove && gInput.forward > -keyMove)
     {
         if (BUTTON(gamefunc_Move_Forward))
-            gInput.forward += keyMove;
-
+            input.forward += keyMove;
         if (BUTTON(gamefunc_Move_Backward))
-            gInput.forward -= keyMove;
+            input.forward -= keyMove;
     }
 
     if (gInput.strafe < keyMove && gInput.strafe > -keyMove)
@@ -514,7 +513,7 @@ void ctrlGetInput(void)
     if (!gViewMap.bFollowMode && gViewMode == 4)
     {
         gViewMap.turn += input.q16turn<<2;
-        gViewMap.forward += gMouseAim ? gInput.forward : clamp(gInput.forward + fix16_sadd(input.forward, fix16_sdiv(fix16_from_int(-info.mousey), F16(8192))), -2048, 2048);
+        gViewMap.forward += gMouseAim ? input.forward : clamp(input.forward + fix16_sadd(input.forward, fix16_sdiv(fix16_from_int(-info.mousey), F16(8192))), -2048, 2048);
         gViewMap.strafe += input.strafe;
         input.q16turn = 0;
         input.forward = 0;
