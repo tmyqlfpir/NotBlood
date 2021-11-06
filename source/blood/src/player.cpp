@@ -1926,7 +1926,14 @@ void playerProcess(PLAYER *pPlayer)
 
 spritetype *playerFireMissile(PLAYER *pPlayer, int a2, int a3, int a4, int a5, int a6)
 {
-    return actFireMissile(pPlayer->pSprite, a2, pPlayer->zWeapon-pPlayer->pSprite->z, a3, a4, a5, a6);
+    int zAimOffset = pPlayer->zWeapon-pPlayer->pSprite->z;
+    if (WeaponsNotBlood() && !VanillaMode()) // adjust z height offset for pitch angle
+    {
+        CONSTEXPR int upAngle = 289;
+        CONSTEXPR int downAngle = -347;
+        zAimOffset -= fix16_clamp(pPlayer->q16look, F16(downAngle), F16(upAngle))>>13;
+    }
+    return actFireMissile(pPlayer->pSprite, a2, zAimOffset, a3, a4, a5, a6);
 }
 
 spritetype * playerFireThing(PLAYER *pPlayer, int a2, int a3, int thingType, int a5)
