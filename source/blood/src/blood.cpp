@@ -586,7 +586,7 @@ int gDoQuickSave = 0;
 
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
-    const bool triggerAutosave = !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == 0) && gameOptions->uGameFlags&1; // if demo isn't active and not in multiplayer session and we switched to new level
+    const bool triggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == 0) && gameOptions->uGameFlags&1; // if demo isn't active and not in multiplayer session and we switched to new level
     EndLevel();
     gInput = {};
     gStartNewGame = 0;
@@ -920,7 +920,7 @@ static void DoQuickLoad(void)
             QuickLoadGame();
             return;
         }
-        else if ((gAutosave == 2) && gAutosaveInCurLevel) // if quicksave slot is not set, and autosave mode set to disable manual saving, load autosave
+        else if ((gAutosave == 3) && gAutosaveInCurLevel) // if quicksave slot is not set, and autosave mode set to disable manual saving, load autosave
         {
             gQuickLoadSlot = AUTOSAVESLOT_START;
             QuickLoadGame();
@@ -934,7 +934,7 @@ static void DoQuickSave(void)
 {
     if (gGameStarted && !gGameMenuMgr.m_bActive && gPlayer[myconnectindex].pXSprite->health != 0)
     {
-        if (gAutosave == 2) // if autosave mode set to disable manual saving
+        if (gAutosave == 3) // if autosave mode set to disable manual saving
         {
             viewSetMessage("Quicksaving is locked!");
             viewSetMessage("Change autosave settings to save...");
@@ -1081,9 +1081,9 @@ void LocalKeys(void)
             break;
         case sc_F2:
             keyFlushScans();
-            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == 0 && gAutosave != 2)
+            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == 0 && gAutosave != 3)
                 gGameMenuMgr.Push(&menuSaveGame,-1);
-            else if (gAutosave == 2 && gGameOptions.nGameType == 0) // if autosave mode set to disable manual saving and not currently in multiplayer
+            else if (gAutosave == 3 && gGameOptions.nGameType == 0) // if autosave mode set to disable manual saving and not currently in multiplayer
             {
                 viewSetMessage("Saving is locked!");
                 viewSetMessage("Change autosave settings to save...");

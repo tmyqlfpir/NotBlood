@@ -544,9 +544,10 @@ const char *pzWeaponSwitchStrings[] = {
 };
 
 const char *pzAutosaveModeStrings[] = {
-    "New Level",
-    "Keys+New Level",
-    "Only Keys+New Level",
+    "OFF",
+    "NEW LEVEL",
+    "KEYS+NEW LEVEL",
+    "ONLY KEYS+NEW LEVEL",
 };
 
 const char *pzVanillaModeStrings[] = {
@@ -1094,7 +1095,7 @@ void SetupMainMenuWithSave(void)
     menuMainWithSave.Add(&itemMainSave8, false);
     menuMainWithSave.Add(&itemBloodQAV, false);
 
-    itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
+    itemMainSave3.bEnable = gAutosave != 3; // hide save option in main menu if autosave mode set to disable manual saving
     itemMainSave3.bDisableForNet = 1;
     itemMainSave4.bDisableForNet = 1;
     itemMainSave5.bDisableForNet = 1;
@@ -1465,7 +1466,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameWeaponSwitch.m_nFocus = (gWeaponSwitch&1) ? ((gWeaponSwitch&2) ? 1 : 2) : 0;
     itemOptionsGameWeaponFastSwitch.at20 = !!gWeaponFastSwitch;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
-    itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
+    itemMainSave3.bEnable = gAutosave != 3; // hide save option in main menu if autosave mode set to disable manual saving
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
 
     ///////
@@ -2021,7 +2022,7 @@ void SetAutosaveMode(CGameMenuItemZCycle *pItem)
 {
     gAutosave = pItem->m_nFocus % ARRAY_SSIZE(pzAutosaveModeStrings);
 
-    itemMainSave3.bEnable = gAutosave != 2; // hide save option in main menu if autosave mode set to disable manual saving
+    itemMainSave3.bEnable = gAutosave != 3; // hide save option in main menu if autosave mode set to disable manual saving
 }
 
 void SetVanillaMode(CGameMenuItemZCycle *pItem)

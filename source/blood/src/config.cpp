@@ -455,7 +455,7 @@ void CONFIG_SetDefaults(void)
     gAutoAim = 2;
     gWeaponSwitch = 0;
     gWeaponFastSwitch = 0;
-    gAutosave = 1;
+    gAutosave = 2;
     gAutosaveInCurLevel = false;
 
     gVanilla = 0;
