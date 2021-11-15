@@ -2569,6 +2569,8 @@ void WeaponProcess(PLAYER *pPlayer) {
         switch (pPlayer->curWeapon)
         {
         case 1:
+            if ((pPlayer->weaponState >= 3) && WeaponsNotBlood() && !VanillaMode()) // do not allow player to use pitchfork while charging up attack
+                break;
             StartQAV(pPlayer, 2, nClientFirePitchfork, 0);
             return;
         case 7:
