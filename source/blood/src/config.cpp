@@ -134,6 +134,7 @@ int32_t gPackSlotSwitch;
 int32_t gShadowsFake3D;
 int32_t gSmokeTrail3D;
 int32_t gParticlesDuration;
+int32_t gFMPianoFix;
 
 //////////
 int gVanilla;
@@ -364,6 +365,7 @@ void CONFIG_SetDefaults(void)
     CDAudioToggle = 0;
     MusicDevice = ASS_SF2;
     Bstrcpy(SF2_BankFile, "notblood.sf2");
+    gFMPianoFix = 1;
     //ud.config.VoiceToggle     = 5;  // bitfield, 1 = local, 2 = dummy, 4 = other players in DM
     useprecache     = 1;
     configversion          = 0;
