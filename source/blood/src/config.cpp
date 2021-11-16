@@ -130,6 +130,7 @@ int32_t gShowWeaponSelectTimeStart;
 int32_t gShowWeaponSelectTimeHold;
 int32_t gShowWeaponSelectTimeEnd;
 int32_t gShowWeaponSelectPosition;
+int32_t gShowWeaponSelectScale;
 int32_t gPackSlotSwitch;
 int32_t gShadowsFake3D;
 int32_t gSmokeTrail3D;
@@ -387,6 +388,7 @@ void CONFIG_SetDefaults(void)
     gShowWeaponSelectTimeHold = 38;
     gShowWeaponSelectTimeEnd = 6;
     gShowWeaponSelectPosition = 24;
+    gShowWeaponSelectScale = 10;
     gShadowsFake3D = 1;
     gSmokeTrail3D = 1;
     gParticlesDuration = 1;

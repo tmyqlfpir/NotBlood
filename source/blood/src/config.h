@@ -110,6 +110,7 @@ extern int32_t gShowWeaponSelectTimeStart;
 extern int32_t gShowWeaponSelectTimeHold;
 extern int32_t gShowWeaponSelectTimeEnd;
 extern int32_t gShowWeaponSelectPosition;
+extern int32_t gShowWeaponSelectScale;
 extern int32_t gShadowsFake3D;
 extern int32_t gSmokeTrail3D;
 extern int32_t gParticlesDuration;

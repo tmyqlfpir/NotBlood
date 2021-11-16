@@ -1513,8 +1513,9 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     const bool showThreeWeapons = (weaponPrev != weaponCur) && (weaponNext != weaponCur);
     pPlayer->curWeapon = bakCurWeapon;
 
+    const float nScale = (float)gShowWeaponSelectScale/10.f;
     const int x = 640/4;
-    const int xoffset = 640/11;
+    const int xoffset = (int)(640.f/(11.f/nScale));
     int yPrimary = (int)((viewDrawParametricBlend(animPos * 1.1f) * animPosRange) + animPosMin);
     if ((gViewSize > 2) && (gShowWeaponSelect == 1)) // if full hud is displayed, bump up by a few pixels
         yPrimary += 24;
@@ -1523,7 +1524,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     int ySecondary = yPrimary;
     if (gShowWeaponSelect == 1) // draw at the bottom instead
         yPrimary = -yPrimary + 195, ySecondary = -ySecondary + 195;
-    yPrimary += 6; // lower center icon
+    yPrimary += (int)(6.f*nScale); // lower center icon
 
     const int nShadeTicks = 75;
     char nShade = (char)(curTime%nShadeTicks)-(nShadeTicks/2);
@@ -1532,8 +1533,8 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     nShade = (nShade>>2)+(nShade>>3); // decrease overall shade difference by 37.5%
 
     const int picnumCur = weaponIcons[weaponCur][0];
-    const int yCur = yPrimary + weaponIcons[weaponCur][1];
-    const int scaleCur = weaponIcons[weaponCur][2];
+    const int yCur = yPrimary + (int)((float)weaponIcons[weaponCur][1]*nScale);
+    const int scaleCur = (int)((float)weaponIcons[weaponCur][2]*nScale);
     const bool mirrorCur = weaponIcons[weaponCur][3];
     DrawStatMaskedSprite(picnumCur, x, yCur, 256+nShade, 0, 0, scaleCur, mirrorCur);
     if (!WeaponIsEquipable(pPlayer, weaponCur)) // if current weapon is unavailable, draw cross over icon
@@ -1542,10 +1543,10 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         return;
     const int picnumPrev = weaponIcons[weaponPrev][0];
     const int picnumNext = weaponIcons[weaponNext][0];
-    const int yPrev = ySecondary + weaponIcons[weaponPrev][1];
-    const int yNext = ySecondary + weaponIcons[weaponNext][1];
-    const int scalePrev = weaponIcons[weaponPrev][2];
-    const int scaleNext = weaponIcons[weaponNext][2];
+    const int yPrev = ySecondary + (int)((float)weaponIcons[weaponPrev][1]*nScale);
+    const int yNext = ySecondary + (int)((float)weaponIcons[weaponNext][1]*nScale);
+    const int scalePrev = (int)((float)weaponIcons[weaponPrev][2]*nScale);
+    const int scaleNext = (int)((float)weaponIcons[weaponNext][2]*nScale);
     const bool mirrorPrev = weaponIcons[weaponPrev][3];
     const bool mirrorNext = weaponIcons[weaponNext][3];
     DrawStatMaskedSprite(picnumPrev, x-xoffset, yPrev, 256, 0, 0, scalePrev, mirrorPrev);

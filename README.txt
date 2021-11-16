@@ -75,6 +75,7 @@ New features include:
 * hud_showweaponselecttimehold
 * hud_showweaponselecttimeend
 * hud_showweaponselectposition
+* hud_showweaponselectscale
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only
