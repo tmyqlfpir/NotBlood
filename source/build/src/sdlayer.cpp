@@ -1861,13 +1861,46 @@ void videoMirrorDrawing(void)
     }
     Bmemcpy(tempFrame, (void *)curFrame, bufferSize);
 
-    for (int y = 0; y < screenxy.y; y++)
+    switch (r_mirrormode)
     {
-        const int curLine = y*screenxy.x;
-        for (int x = 0; x < screenxy.x; x++)
+        case 1: // mirror mode (horiz)
         {
-            curFrame[curLine+x] = tempFrame[curLine+((screenxy.x-1)-x)];
+            for (int y = 0; y < screenxy.y; y++)
+            {
+                const int curLine = y*screenxy.x;
+                for (int x = 0; x < screenxy.x; x++)
+                {
+                    curFrame[curLine+x] = tempFrame[curLine+((screenxy.x-1)-x)];
+                }
+            }
+            break;
         }
+        case 2: // mirror mode (vert)
+        {
+            for (int y = 0; y < screenxy.y; y++)
+            {
+                const int curLine = y*screenxy.x, inveredLine = (screenxy.y-y-1)*screenxy.x;
+                for (int x = 0; x < screenxy.x; x++)
+                {
+                    curFrame[curLine+x] = tempFrame[inveredLine+x];
+                }
+            }
+            break;
+        }
+        case 3: // mirror mode (horiz+vert)
+        {
+            for (int y = 0; y < screenxy.y; y++)
+            {
+                const int curLine = y*screenxy.x, inveredLine = (screenxy.y-y-1)*screenxy.x;
+                for (int x = 0; x < screenxy.x; x++)
+                {
+                    curFrame[curLine+x] = tempFrame[inveredLine+((screenxy.x-1)-x)];
+                }
+            }
+            break;
+        }
+        default:
+            break;
     }
     if (allocateFrame)
         Bfree(tempFrame);

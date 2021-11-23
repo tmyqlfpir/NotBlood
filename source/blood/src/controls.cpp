@@ -457,12 +457,16 @@ void ctrlGetInput(void)
         if (BUTTON(gamefunc_Turn_Right))
             turnRight = 1;
     }
-    if (r_mirrormode) // mirror mode, invert controls
+    if (r_mirrormode & 1) // mirror mode (horiz), invert controls
     {
         input.strafe = -input.strafe;
         info.mousex = -info.mousex;
         turnLeft = !turnLeft;
         turnRight = !turnRight;
+    }
+    if ((r_mirrormode > 1) && gMouseAim) // mirror mode (vert), invert y axis for mouse aiming
+    {
+        info.mousey = -info.mousey;
     }
 
     static int32_t turnHeldTime;
@@ -513,7 +517,7 @@ void ctrlGetInput(void)
     if (!gViewMap.bFollowMode && gViewMode == 4)
     {
         gViewMap.turn += input.q16turn<<2;
-        gViewMap.forward += gMouseAim ? input.forward : clamp(input.forward + fix16_sadd(input.forward, fix16_sdiv(fix16_from_int(-info.mousey), F16(8192))), -2048, 2048);
+        gViewMap.forward += gMouseAim ? input.forward : clamp(fix16_sadd(input.forward, fix16_sdiv(fix16_from_int(-info.mousey), F16(8192))), -2048, 2048);
         gViewMap.strafe += input.strafe;
         input.q16turn = 0;
         input.forward = 0;

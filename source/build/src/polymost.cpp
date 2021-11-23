@@ -1502,11 +1502,17 @@ static void resizeglcheck(void)
     m[2][2] = (farclip + nearclip) / (farclip - nearclip);
     m[2][3] = 1.f;
     m[3][2] = -(2.f * farclip * nearclip) / (farclip - nearclip);
-    if (r_mirrormode) // mirror mode, invert eye matrix
+    if (r_mirrormode & 1) // mirror mode (horiz), invert eye matrix
     {
         m[0][0] = -m[0][0];
         m[1][0] = -m[1][0];
         m[2][0] = -m[2][0];
+    }
+    if (r_mirrormode > 1) // mirror mode (vert), invert eye matrix
+    {
+        m[0][1] = -m[0][1];
+        m[1][1] = -m[1][1];
+        m[2][1] = -m[2][1];
     }
     glLoadMatrixf(&m[0][0]);
 
@@ -9816,7 +9822,7 @@ int32_t polymost_printtext256(int32_t xpos, int32_t ypos, int16_t col, int16_t b
     r_mirrormode = 0;
     polymostSet2dView();	// disables blending, texturing, and depth testing
     r_mirrormode = r_mirrormode_temp;
-    if (r_mirrormode) // set flag so polymost_fillpolygon() will recall polymostSet2dView and setup mirror view
+    if (r_mirrormode & 1) // set flag so polymost_fillpolygon() will recall polymostSet2dView and setup mirror view
         polymost2d = 0;
 
     glDisable(GL_ALPHA_TEST);

@@ -194,7 +194,7 @@ void CViewMap::sub_25C74(void)
     renderDrawMapView(x,y,nZoom>>2,angle);
     sub_2541C(x,y,nZoom>>2,angle);
 
-    if (videoGetRenderMode() == REND_CLASSIC && r_mirrormode) // mirror framebuffer for classic renderer
+    if (videoGetRenderMode() == REND_CLASSIC && (r_mirrormode & 1)) // mirror framebuffer for classic renderer
         videoMirrorDrawing();
 
     char *pTitle = levelGetTitle();

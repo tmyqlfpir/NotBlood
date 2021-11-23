@@ -150,7 +150,7 @@ static void drawlinegl(int32_t x1, int32_t y1, int32_t x2, int32_t y2, palette_t
     glViewport(0, 0, xdim, ydim);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (!r_mirrormode)
+    if (!(r_mirrormode & 1))
         glOrtho(0, xdim, ydim, 0, -1, 1);
     else // mirror mode, invert 2d view
         glOrtho(xdim, 0, ydim, 0, -1, 1);
@@ -1594,7 +1594,7 @@ void polymostSet2dView(void)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (!r_mirrormode)
+    if (!(r_mirrormode & 1))
         glOrtho(0, xdim, ydim, 0, -1, 1);
     else // mirror mode, invert 2d view
         glOrtho(xdim, 0, ydim, 0, -1, 1);
