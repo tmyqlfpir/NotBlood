@@ -745,6 +745,7 @@ void UpdateDetailTex(CGameMenuItemZBool *pItem);
 void UpdateGlowTex(CGameMenuItemZBool *pItem);
 void Update3DModels(CGameMenuItemZBool *pItem);
 void UpdateDeliriumBlur(CGameMenuItemZBool *pItem);
+void UpdateTexColorIndex(CGameMenuItemZBool *pItem);
 #ifdef USE_OPENGL
 void PreDrawDisplayPolymost(CGameMenuItem *pItem);
 CGameMenuItemTitle itemOptionsDisplayPolymostTitle("POLYMOST SETUP", 1, 160, 20, 2038);
@@ -758,6 +759,7 @@ CGameMenuItemZBool itemOptionsDisplayPolymostDetailTex("DETAIL TEXTURES:", 3, 66
 CGameMenuItemZBool itemOptionsDisplayPolymostGlowTex("GLOW TEXTURES:", 3, 66, 130, 180, 0, UpdateGlowTex, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayPolymost3DModels("3D MODELS:", 3, 66, 140, 180, 0, Update3DModels, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayPolymostDeliriumBlur("DELIRIUM EFFECT BLUR:", 3, 66, 150, 180, 0, UpdateDeliriumBlur, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayPolymostUseColorIndexedTex("RENDER WITH COLOR INDEXING:", 3, 66, 160, 180, 0, UpdateTexColorIndex, NULL, NULL);
 #endif
 
 void UpdateSoundToggle(CGameMenuItemZBool *pItem);
@@ -1608,6 +1610,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostGlowTex, false);
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymost3DModels, false);
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostDeliriumBlur, false);
+    menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostUseColorIndexedTex, false);
     menuOptionsDisplayPolymost.Add(&itemBloodQAV, false);
 
     itemOptionsDisplayPolymostTexQuality.pPreDrawCallback = PreDrawDisplayPolymost;
@@ -2286,6 +2289,15 @@ void UpdateVideoPalette(void)
 {
     scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
     videoSetPalette(gBrightness>>2, gLastPal, 0);
+#ifdef USE_OPENGL
+    if (!r_useindexedcolortextures && (videoGetRenderMode() != REND_CLASSIC))
+    {
+        videoResetMode();
+        if (videoSetGameMode(fullscreen, xres, yres, bpp, upscalefactor))
+            ThrowError("restartvid: Reset failed...\n");
+        onvideomodechange(gSetup.bpp>8);
+    }
+#endif
 }
 
 void UpdateVideoPaletteCycleMenu(CGameMenuItemZCycle *pItem)
@@ -2319,7 +2331,21 @@ void ResetVideoColor(CGameMenuItemChain *pItem)
     g_videoBrightness = DEFAULT_BRIGHTNESS;
     gBrightness = 0;
     r_ambientlight = r_ambientlightrecip = 1.f;
+    gCustomPalette = itemOptionsDisplayColorPaletteCustom.m_nFocus = 0;
+    gCustomPaletteCIEDE2000 = itemOptionsDisplayColorPaletteCIEDE2000.at20 = 1;
+    gCustomPaletteGrayscale = itemOptionsDisplayColorPaletteGrayscale.at20 = 0;
+    gCustomPaletteInvert = itemOptionsDisplayColorPaletteInvert.at20 = 0;
+    scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
     videoSetPalette(gBrightness>>2, gLastPal, 0);
+#ifdef USE_OPENGL
+    if (!r_useindexedcolortextures && (videoGetRenderMode() != REND_CLASSIC))
+    {
+        videoResetMode();
+        if (videoSetGameMode(fullscreen, xres, yres, bpp, upscalefactor))
+            ThrowError("restartvid: Reset failed...\n");
+        onvideomodechange(gSetup.bpp>8);
+    }
+#endif
 }
 
 #ifdef USE_OPENGL
@@ -2352,6 +2378,7 @@ void SetupVideoPolymostMenu(CGameMenuItemChain *pItem)
     itemOptionsDisplayPolymostGlowTex.at20 = r_glowmapping;
     itemOptionsDisplayPolymost3DModels.at20 = usemodels;
     itemOptionsDisplayPolymostDeliriumBlur.at20 = gDeliriumBlur;
+    itemOptionsDisplayPolymostUseColorIndexedTex.at20 = r_useindexedcolortextures;
 }
 
 void UpdateTextureMode(CGameMenuItemZCycle *pItem)
@@ -2417,6 +2444,11 @@ void Update3DModels(CGameMenuItemZBool *pItem)
 void UpdateDeliriumBlur(CGameMenuItemZBool *pItem)
 {
     gDeliriumBlur = pItem->at20;
+}
+
+void UpdateTexColorIndex(CGameMenuItemZBool *pItem)
+{
+    r_useindexedcolortextures = pItem->at20;
 }
 
 void PreDrawDisplayPolymost(CGameMenuItem *pItem)
