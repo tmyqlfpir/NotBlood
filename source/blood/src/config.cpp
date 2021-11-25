@@ -362,7 +362,7 @@ void CONFIG_SetDefaults(void)
 #endif
     gBrightness = 8;
     gCustomPalette = 0;
-    gCustomPaletteCIEDE2000 = 1;
+    gCustomPaletteCIEDE2000 = 0;
     gCustomPaletteGrayscale = 0;
     gCustomPaletteInvert = 0;
     //ud.config.ShowWeapons     = 0;

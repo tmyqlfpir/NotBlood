@@ -1953,7 +1953,8 @@ int app_main(int argc, char const * const * argv)
     initprintf("Initializing network users\n");
     netInitialize(true);
     scrSetGameMode(gSetup.fullscreen, gSetup.xdim, gSetup.ydim, gSetup.bpp);
-    scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
+    if (gCustomPalette || gCustomPaletteGrayscale || gCustomPaletteInvert) // load modified palette
+        scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
     scrSetGamma(gGamma);
     viewResizeView(gViewSize);
     initprintf("Initializing sound system\n");

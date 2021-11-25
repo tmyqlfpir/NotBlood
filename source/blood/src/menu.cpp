@@ -2277,11 +2277,6 @@ void UpdateVideoColorMenu(CGameMenuItemSliderFloat *pItem)
     r_ambientlight = itemOptionsDisplayColorVisibility.fValue;
     r_ambientlightrecip = 1.f/r_ambientlight;
     gBrightness = GAMMA_CALC<<2;
-    gCustomPalette = itemOptionsDisplayColorPaletteCustom.m_nFocus % ARRAY_SSIZE(srcCustomPaletteStr);
-    gCustomPaletteCIEDE2000 = itemOptionsDisplayColorPaletteCIEDE2000.at20;
-    gCustomPaletteGrayscale = itemOptionsDisplayColorPaletteGrayscale.at20;
-    gCustomPaletteInvert = itemOptionsDisplayColorPaletteInvert.at20;
-    scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
     videoSetPalette(gBrightness>>2, gLastPal, 0);
 }
 
@@ -2332,7 +2327,7 @@ void ResetVideoColor(CGameMenuItemChain *pItem)
     gBrightness = 0;
     r_ambientlight = r_ambientlightrecip = 1.f;
     gCustomPalette = itemOptionsDisplayColorPaletteCustom.m_nFocus = 0;
-    gCustomPaletteCIEDE2000 = itemOptionsDisplayColorPaletteCIEDE2000.at20 = 1;
+    gCustomPaletteCIEDE2000 = itemOptionsDisplayColorPaletteCIEDE2000.at20 = 0;
     gCustomPaletteGrayscale = itemOptionsDisplayColorPaletteGrayscale.at20 = 0;
     gCustomPaletteInvert = itemOptionsDisplayColorPaletteInvert.at20 = 0;
     scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
