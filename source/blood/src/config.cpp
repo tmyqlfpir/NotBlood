@@ -361,6 +361,10 @@ void CONFIG_SetDefaults(void)
     ReverseStereo   = 0;
 #endif
     gBrightness = 8;
+    gCustomPalette = 0;
+    gCustomPaletteCIEDE2000 = 1;
+    gCustomPaletteGrayscale = 0;
+    gCustomPaletteInvert = 0;
     //ud.config.ShowWeapons     = 0;
     SoundToggle     = 1;
     CDAudioToggle = 0;
@@ -834,6 +838,10 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPosX", (int32_t *)&windowx);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPosY", (int32_t *)&windowy);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPositioning", (int32_t *)&r_windowpositioning);
+    SCRIPT_GetNumber(scripthandle, "Screen Setup", "CustomPalette", (int32_t *)&gCustomPalette);
+    SCRIPT_GetNumber(scripthandle, "Screen Setup", "CustomPaletteCIEDE2000", (int32_t *)&gCustomPaletteCIEDE2000);
+    SCRIPT_GetNumber(scripthandle, "Screen Setup", "CustomPaletteGrayscale", (int32_t *)&gCustomPaletteGrayscale);
+    SCRIPT_GetNumber(scripthandle, "Screen Setup", "CustomPaletteInvert", (int32_t *)&gCustomPaletteInvert);
 
     if (gSetup.bpp < 8) gSetup.bpp = 32;
 
@@ -948,6 +956,10 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPosX", windowx, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPosY", windowy, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPositioning", r_windowpositioning, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Screen Setup", "CustomPalette", gCustomPalette, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Screen Setup", "CustomPaletteCIEDE2000", gCustomPaletteCIEDE2000, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Screen Setup", "CustomPaletteGrayscale", gCustomPaletteGrayscale, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Screen Setup", "CustomPaletteInvert", gCustomPaletteInvert, FALSE, FALSE);
 
     //if (!NAM_WW2GI)
     //{

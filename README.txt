@@ -32,6 +32,7 @@ New features include:
 * Ability to record 1.21 compatible demos
 * Interpolated level texture panning
 * Drag and drop folder mod support
+* Customizable palette adjustment
 * Weapon selection bar
 * Mirror mode
 

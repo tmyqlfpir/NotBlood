@@ -98,6 +98,8 @@ void SetFOV(CGameMenuItemSlider *);
 void UpdateVideoModeMenuFrameLimit(CGameMenuItemZCycle *pItem);
 //void UpdateVideoModeMenuFPSOffset(CGameMenuItemSlider *pItem);
 void UpdateVideoColorMenu(CGameMenuItemSliderFloat *);
+void UpdateVideoPaletteCycleMenu(CGameMenuItemZCycle *);
+void UpdateVideoPaletteBoolMenu(CGameMenuItemZBool *);
 void ResetVideoColor(CGameMenuItemChain *);
 #ifdef USE_OPENGL
 void SetupVideoPolymostMenu(CGameMenuItemChain *);
@@ -681,6 +683,10 @@ CGameMenuItemChain itemOptionsDisplayModeApply("APPLY CHANGES", 3, 66, 115, 180,
 void PreDrawDisplayColor(CGameMenuItem *);
 
 CGameMenuItemTitle itemOptionsDisplayColorTitle("COLOR CORRECTION", 1, 160, 20, -1);
+CGameMenuItemZCycle itemOptionsDisplayColorPaletteCustom("PALETTE:", 3, 66, 100, 180, 0, UpdateVideoPaletteCycleMenu, srcCustomPaletteStr, ARRAY_SSIZE(srcCustomPaletteStr), 0);
+CGameMenuItemZBool itemOptionsDisplayColorPaletteCIEDE2000("CIEDE2000 COMPARE:", 3, 66, 110, 180, 0, UpdateVideoPaletteBoolMenu, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayColorPaletteGrayscale("GRAYSCALE PALETTE:", 3, 66, 120, 180, 0, UpdateVideoPaletteBoolMenu, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayColorPaletteInvert("INVERT PALETTE:", 3, 66, 130, 180, 0, UpdateVideoPaletteBoolMenu, NULL, NULL);
 CGameMenuItemSliderFloat itemOptionsDisplayColorGamma("GAMMA:", 3, 66, 140, 180, &g_videoGamma, 0.3f, 4.f, 0.1f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
 CGameMenuItemSliderFloat itemOptionsDisplayColorContrast("CONTRAST:", 3, 66, 150, 180, &g_videoContrast, 0.1f, 2.7f, 0.05f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
 CGameMenuItemSliderFloat itemOptionsDisplayColorBrightness("BRIGHTNESS:", 3, 66, 160, 180, &g_videoBrightness, -0.8f, 0.8f, 0.05f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
@@ -1572,13 +1578,21 @@ void SetupOptionsMenu(void)
     //itemOptionsDisplayModeFPSOffset.pPreDrawCallback = PreDrawVideoModeMenu;
 
     menuOptionsDisplayColor.Add(&itemOptionsDisplayColorTitle, false);
-    menuOptionsDisplayColor.Add(&itemOptionsDisplayColorGamma, true);
+    menuOptionsDisplayColor.Add(&itemOptionsDisplayColorPaletteCustom, true);
+    menuOptionsDisplayColor.Add(&itemOptionsDisplayColorPaletteCIEDE2000, false);
+    menuOptionsDisplayColor.Add(&itemOptionsDisplayColorPaletteGrayscale, false);
+    menuOptionsDisplayColor.Add(&itemOptionsDisplayColorPaletteInvert, false);
+    menuOptionsDisplayColor.Add(&itemOptionsDisplayColorGamma, false);
     menuOptionsDisplayColor.Add(&itemOptionsDisplayColorContrast, false);
     menuOptionsDisplayColor.Add(&itemOptionsDisplayColorBrightness, false);
     menuOptionsDisplayColor.Add(&itemOptionsDisplayColorVisibility, false);
     menuOptionsDisplayColor.Add(&itemOptionsDisplayColorReset, false);
     menuOptionsDisplayColor.Add(&itemBloodQAV, false);
 
+    itemOptionsDisplayColorPaletteCustom.m_nFocus = gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr);
+    itemOptionsDisplayColorPaletteCIEDE2000.at20 = gCustomPaletteCIEDE2000;
+    itemOptionsDisplayColorPaletteGrayscale.at20 = gCustomPaletteGrayscale;
+    itemOptionsDisplayColorPaletteInvert.at20 = gCustomPaletteInvert;
     itemOptionsDisplayColorContrast.pPreDrawCallback = PreDrawDisplayColor;
     itemOptionsDisplayColorBrightness.pPreDrawCallback = PreDrawDisplayColor;
 
@@ -2260,7 +2274,33 @@ void UpdateVideoColorMenu(CGameMenuItemSliderFloat *pItem)
     r_ambientlight = itemOptionsDisplayColorVisibility.fValue;
     r_ambientlightrecip = 1.f/r_ambientlight;
     gBrightness = GAMMA_CALC<<2;
+    gCustomPalette = itemOptionsDisplayColorPaletteCustom.m_nFocus % ARRAY_SSIZE(srcCustomPaletteStr);
+    gCustomPaletteCIEDE2000 = itemOptionsDisplayColorPaletteCIEDE2000.at20;
+    gCustomPaletteGrayscale = itemOptionsDisplayColorPaletteGrayscale.at20;
+    gCustomPaletteInvert = itemOptionsDisplayColorPaletteInvert.at20;
+    scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
     videoSetPalette(gBrightness>>2, gLastPal, 0);
+}
+
+void UpdateVideoPalette(void)
+{
+    scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
+    videoSetPalette(gBrightness>>2, gLastPal, 0);
+}
+
+void UpdateVideoPaletteCycleMenu(CGameMenuItemZCycle *pItem)
+{
+    gCustomPalette = pItem->m_nFocus % ARRAY_SSIZE(srcCustomPaletteStr);
+    UpdateVideoPalette();
+}
+
+void UpdateVideoPaletteBoolMenu(CGameMenuItemZBool *pItem)
+{
+    UNREFERENCED_PARAMETER(pItem);
+    gCustomPaletteCIEDE2000 = itemOptionsDisplayColorPaletteCIEDE2000.at20;
+    gCustomPaletteGrayscale = itemOptionsDisplayColorPaletteGrayscale.at20;
+    gCustomPaletteInvert = itemOptionsDisplayColorPaletteInvert.at20;
+    UpdateVideoPalette();
 }
 
 void PreDrawDisplayColor(CGameMenuItem *pItem)

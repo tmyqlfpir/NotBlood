@@ -933,7 +933,9 @@ void playerResetScores(int nPlayer)
     pPlayer->fragCount = 0;
     memset(pPlayer->fragInfo, 0, sizeof(pPlayer->fragInfo));
     memset(gPlayerScores, 0, sizeof(gPlayerScores));
-    memset(gPlayerScoreTicks, 0, sizeof(gPlayerScoreTicks));
+    for (int i = 0; i < kMaxPlayers; i++) {
+        gPlayerScoreTicks[i] = 0;
+    }
 }
 
 void playerInit(int nPlayer, unsigned int a2)
