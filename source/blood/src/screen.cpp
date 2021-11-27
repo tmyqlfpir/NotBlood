@@ -517,9 +517,9 @@ static void scrTweakPalette(uint8_t *curPal, int replacePal, bool useCIEDE2000, 
     {
         if (invertPal)
         {
-            curPal[j+0] = -curPal[j+0];
-            curPal[j+1] = -curPal[j+1];
-            curPal[j+2] = -curPal[j+2];
+            curPal[j+0] = 255-curPal[j+0];
+            curPal[j+1] = 255-curPal[j+1];
+            curPal[j+2] = 255-curPal[j+2];
         }
         if (replacePal == 1) // sepia tone
         {
