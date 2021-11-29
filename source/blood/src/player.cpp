@@ -662,6 +662,7 @@ void playerResetPowerUps(PLAYER* pPlayer)
 
 void playerResetPosture(PLAYER* pPlayer) {
     memcpy(pPlayer->pPosture, gPostureDefaults, sizeof(gPostureDefaults));
+    gCrouchToggleState = 0; // clear crouch toggle state
 }
 
 void playerStart(int nPlayer, int bNewLevel)
@@ -2417,6 +2418,7 @@ void PlayerLoadSave::Load(void)
     #endif
 
     }
+    gCrouchToggleState = 0;
 }
 
 void PlayerLoadSave::Save(void)

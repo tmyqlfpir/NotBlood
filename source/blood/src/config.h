@@ -56,6 +56,7 @@ extern int32_t useprecache;
 extern char CommbatMacro[MAXRIDECULE][MAXRIDECULELENGTH];
 extern char szPlayerName[MAXPLAYERNAME];
 extern int32_t gTurnSpeed;
+extern int32_t gCrouchToggle;
 extern int32_t gDetail;
 extern int32_t gAutoAim;
 extern int32_t gWeaponSwitch;

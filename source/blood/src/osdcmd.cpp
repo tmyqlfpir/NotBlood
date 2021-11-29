@@ -1070,6 +1070,7 @@ int32_t registerosdcommands(void)
         { "in_mouse","enables input from the mouse if it is present",(void *)&gSetup.usemouse, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
 
         { "in_aimmode", "0:toggle, 1:hold to aim", (void *)&gMouseAiming, CVAR_BOOL, 0, 1 },
+        { "in_crouchmode", "toggles crouch button (0:hold, 1:toggle)", (void *)&gCrouchToggle, CVAR_BOOL, 0, 1 },
         {
             "in_mousebias", "emulates the original mouse code's weighting of input towards whichever axis is moving the most at any given time",
             (void *)&MouseBias, CVAR_INT, 0, 32
@@ -1080,6 +1081,7 @@ int32_t registerosdcommands(void)
 
         { "in_mousexsensitivity", "horizontal mouse sensitivity", (void*)&CONTROL_MouseAxesSensitivity[0], CVAR_FLOAT, 0, 25 },
         { "in_mouseysensitivity", "vertical mouse sensitivity",   (void*)&CONTROL_MouseAxesSensitivity[1], CVAR_FLOAT, 0, 25 },
+        { "in_keyboardturnspeed", "keyboard turning speed (default: 92, range: 64-128)", (void *)&gTurnSpeed, CVAR_INT, 64, 128 },
 //
         { "mus_enabled", "enables/disables music", (void *)&MusicToggle, CVAR_BOOL, 0, 1 },
         { "mus_restartonload", "restart the music when loading a saved game with the same map or not", (void *)&MusicRestartsOnLoadToggle, CVAR_BOOL, 0, 1 },

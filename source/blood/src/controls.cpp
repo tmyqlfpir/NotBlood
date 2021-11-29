@@ -144,6 +144,7 @@ fix16_t gViewLook, gViewAngle;
 float gViewAngleAdjust;
 float gViewLookAdjust;
 int gViewLookRecenter;
+int gCrouchToggleState = 0;
 
 void ctrlGetInput(void)
 {
@@ -313,7 +314,26 @@ void ctrlGetInput(void)
         gInput.buttonFlags.jump = 1;
 
     if (BUTTON(gamefunc_Crouch))
+    {
         gInput.buttonFlags.crouch = 1;
+        if (gCrouchToggle)
+        {
+            if (gCrouchToggleState == 0)
+                gCrouchToggleState = 1;
+            else if (gCrouchToggleState == 2)
+                gCrouchToggleState = 3;
+        }
+    }
+    else if (gCrouchToggle && (gCrouchToggleState > 0) && (gCrouchToggleState < 3))
+    {
+        gInput.buttonFlags.crouch = 1;
+        gCrouchToggleState = 2;
+    }
+    else
+        gCrouchToggleState = 0;
+
+    if (gCrouchToggle && gInput.buttonFlags.jump && gInput.buttonFlags.crouch) // allow player to jump while crouching (only if crouch toggle is enabled)
+        gInput.buttonFlags.crouch = 0;
 
     if (BUTTON(gamefunc_Weapon_Fire))
         gInput.buttonFlags.shoot = 1;
