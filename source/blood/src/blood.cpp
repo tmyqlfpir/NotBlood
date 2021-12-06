@@ -1739,7 +1739,7 @@ int app_main(int argc, char const * const * argv)
 
     memcpy(&gGameOptions, &gSingleGameOptions, sizeof(GAMEOPTIONS));
     bool parseArgs = true;
-#if defined(_WIN32) || defined(__linux__)
+#if defined(_WIN32)
     const char *arglastslash = argv[1];
     if ((argc == 2) && (argv[1][0] != '-')) // if not provided any arguments and dragged folder over executable, automatically add as a potential mod path
     {
@@ -1809,7 +1809,7 @@ int app_main(int argc, char const * const * argv)
     }
 #endif
 
-#if defined(_WIN32) || defined(__linux__)
+#if defined(_WIN32)
     if (!parseArgs) // forcefully set game content directory to dragged folder
     {
         Bstrncpyz(g_modDir, arglastslash, sizeof(g_modDir));
