@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //-------------------------------------------------------------------------
 #pragma once
 
+#define CUSTOMPALETTESMAX 24
 
 struct LOADITEM {
     int id;
@@ -45,7 +46,7 @@ extern int32_t gCustomPalette;
 extern int32_t gCustomPaletteCIEDE2000;
 extern int32_t gCustomPaletteGrayscale;
 extern int32_t gCustomPaletteInvert;
-extern const char *srcCustomPaletteStr[23];
+extern const char *srcCustomPaletteStr[CUSTOMPALETTESMAX];
 void scrCreateStdColors(void);
 void scrResetPalette(void);
 void gSetDacRange(int start, int end, RGB *pPal);

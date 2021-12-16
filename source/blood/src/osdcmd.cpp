@@ -984,6 +984,7 @@ int32_t registerosdcommands(void)
 //        { "cl_idplayers", "enable/disable name display when aiming at opponents", (void *)&ud.idplayers, CVAR_BOOL, 0, 1 },
 //
 
+        { "cl_chatsnd", "enable/disable multiplayer chat message beep", (void *)&gChatSnd, CVAR_BOOL, 0, 1 },
         { "cl_idletalk", "enable/disable Caleb's idle dialog lines", (void *)&gIdleTalk, CVAR_BOOL, 0, 1 },
         { "cl_interpolate", "enable/disable view interpolation", (void *)&gViewInterpolate, CVAR_BOOL, 0, 1 },
         { "cl_interpolatepanning", "enable/disable sector texture panning interpolation (cl_interpolate must be set on)", (void *)&gPanningInterpolate, CVAR_BOOL, 0, 1 },

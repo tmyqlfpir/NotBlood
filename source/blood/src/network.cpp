@@ -476,7 +476,8 @@ void netGetPackets(void)
             {
                 sprintf(buffer, VanillaMode() ? "%s : %s" : "%s: %s", gProfile[nPlayer].name, pPacket);
                 viewSetMessage(buffer, VanillaMode() ? 0 : 10); // 10: dark blue
-                sndStartSample("DMRADIO", 128, -1);
+                if (gChatSnd) // trigger message beep
+                    sndStartSample("DMRADIO", 128, -1);
             }
             break;
         case 4:
