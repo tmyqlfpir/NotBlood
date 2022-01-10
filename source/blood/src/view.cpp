@@ -1505,7 +1505,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     }
 
     const int bakCurWeapon = pPlayer->curWeapon;
-    if (pPlayer->curWeapon == 0) // if we're switching between weapons, use the next weapon value
+    if (pPlayer->curWeapon == kWeaponNone) // if we're switching between weapons, use the next weapon value
         pPlayer->curWeapon = pPlayer->input.newWeapon;
     const char weaponPrev = ClipRange(WeaponFindNext(pPlayer, NULL, 0), 1, 12);
     const char weaponCur = ClipRange(pPlayer->curWeapon, 0, 13);
