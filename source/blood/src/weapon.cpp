@@ -2496,7 +2496,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 pPlayer->input.newWeapon = weapon;
                 return;
             }
-            pPlayer->input.newWeapon = kWeaponTNT;
+            pPlayer->input.newWeapon = kWeaponNone;
             return;
         }
         if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkFired6or7(pPlayer))
