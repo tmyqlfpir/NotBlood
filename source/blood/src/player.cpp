@@ -332,7 +332,7 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
             {
                 if (gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not switch weapon
                     break;
-                if ((pPlayer->curWeapon == 1) || (pPlayer->curWeapon == 6) || (pPlayer->curWeapon == 7) || (pPlayer->curWeapon >= 9)) // if weapon doesn't have a akimbo state, don't raise weapon
+                if ((pPlayer->curWeapon == kWeaponPitchfork) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponSprayCan) || (pPlayer->curWeapon >= kWeaponLifeLeech)) // if weapon doesn't have a akimbo state, don't raise weapon
                     break;
             }
             pPlayer->input.newWeapon = pPlayer->curWeapon;
@@ -390,7 +390,7 @@ void powerupDeactivate(PLAYER *pPlayer, int nPowerUp)
             {
                 if (gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not switch weapon
                     break;
-                if ((pPlayer->curWeapon == 1) || (pPlayer->curWeapon == 6) || (pPlayer->curWeapon == 7) || (pPlayer->curWeapon >= 9)) // if weapon doesn't have a akimbo state, don't raise weapon
+                if ((pPlayer->curWeapon == kWeaponPitchfork) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponSprayCan) || (pPlayer->curWeapon >= kWeaponLifeLeech)) // if weapon doesn't have a akimbo state, don't raise weapon
                     break;
             }
             pPlayer->input.newWeapon = pPlayer->curWeapon;
@@ -809,8 +809,8 @@ void playerStart(int nPlayer, int bNewLevel)
     gFullMap = 0;
     pPlayer->throwPower = 0;
     pPlayer->deathTime = 0;
-    pPlayer->nextWeapon = 0;
-    pPlayer->lastWeapon = 1;
+    pPlayer->nextWeapon = kWeaponNone;
+    pPlayer->lastWeapon = kWeaponPitchfork;
     xvel[pSprite->index] = yvel[pSprite->index] = zvel[pSprite->index] = 0;
     pInput->q16turn = 0;
     pInput->keyFlags.word = 0;
@@ -889,11 +889,11 @@ void playerReset(PLAYER *pPlayer)
         pPlayer->hasWeapon[i] = gInfiniteAmmo;
         pPlayer->weaponMode[i] = 0;
     }
-    pPlayer->hasWeapon[1] = 1;
-    pPlayer->curWeapon = 0;
+    pPlayer->hasWeapon[kWeaponPitchfork] = 1;
+    pPlayer->curWeapon = kWeaponNone;
     pPlayer->qavCallback = -1;
-    pPlayer->input.newWeapon = 1;
-    pPlayer->lastWeapon = 1;
+    pPlayer->input.newWeapon = kWeaponPitchfork;
+    pPlayer->lastWeapon = kWeaponPitchfork;
     for (int i = 0; i < 14; i++)
     {
         pPlayer->weaponOrder[0][i] = dword_136400[i];
@@ -2200,7 +2200,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         }
         pPlayer->deathTime = 0;
         pPlayer->qavLoop = 0;
-        pPlayer->curWeapon = 0;
+        pPlayer->curWeapon = kWeaponNone;
         pPlayer->fraggerId = nSource;
         pPlayer->voodooTargets = 0;
         pPlayer->invulTime = 0;
@@ -2379,7 +2379,7 @@ void PlayerSurvive(int, int nXSprite)
                 sprintf(buffer, "%s lives again!", gProfile[pPlayer->nPlayer].name);
                 viewSetMessage(buffer);
             }
-            pPlayer->input.newWeapon = 1;
+            pPlayer->input.newWeapon = kWeaponPitchfork;
         }
     }
 }

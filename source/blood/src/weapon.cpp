@@ -252,7 +252,7 @@ void WeaponDraw(PLAYER *pPlayer, int a2, int x, int y, int a5)
     int v4;
     if (pPlayer->weaponTimer == 0)
     {
-        if (((pPlayer->weaponState == -1) || (pPlayer->curWeapon == 3 && pPlayer->weaponState == 7)) && !VanillaMode()) // if shotgun with guns akimbo, or ran out of ammo, set to last seq frame
+        if (((pPlayer->weaponState == -1) || (pPlayer->curWeapon == kWeaponShotgun && pPlayer->weaponState == 7)) && !VanillaMode()) // if shotgun with guns akimbo, or ran out of ammo, set to last seq frame
             v4 = pQAV->at10-1;
         else
             v4 = (int)totalclock % pQAV->at10;
@@ -527,7 +527,7 @@ void WeaponRaise(PLAYER *pPlayer)
         if (gInfiniteAmmo || checkAmmo2(pPlayer, 5, 1))
         {
             if ((pPlayer->weaponState == 2) && !prevWeapon && !VanillaMode()) // if quickly switching from tnt to spray can and back, don't put away lighter
-                prevWeapon = 7;
+                prevWeapon = kWeaponSprayCan;
             pPlayer->weaponState = 3;
             if (prevWeapon == kWeaponSprayCan)
                 StartQAV(pPlayer, 16, -1, 0);
@@ -1652,7 +1652,7 @@ void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
             }
         }
         UseAmmo(pPlayer, 9, pPlayer->ammoCount[9]);
-        pPlayer->hasWeapon[10] = 0;
+        pPlayer->hasWeapon[kWeaponVoodoo] = 0;
         pPlayer->weaponState = -1;
     }
 }
@@ -1670,7 +1670,7 @@ void DropVoodoo(int nTrigger, PLAYER *pPlayer)
         evPost(pSprite->index, 3, 90, kCallbackDropVoodoo);
         UseAmmo(pPlayer, 6, gAmmoItemData[0].count);
         UseAmmo(pPlayer, 9, pPlayer->ammoCount[9]);
-        pPlayer->hasWeapon[10] = 0;
+        pPlayer->hasWeapon[kWeaponVoodoo] = 0;
     }
 }
 
@@ -1844,7 +1844,7 @@ void AltFireLifeLeech(int nTrigger, PLAYER *pPlayer)
             pXSprite->data3 = pPlayer->ammoCount[8];
             pPlayer->ammoCount[8] = 0;
         }
-        pPlayer->hasWeapon[9] = 0;
+        pPlayer->hasWeapon[kWeaponLifeLeech] = 0;
     }
 }
 
@@ -2242,7 +2242,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 }
                 else // couldn't find anything, use pitchfork
                 {
-                    pPlayer->nextWeapon = 1;
+                    pPlayer->nextWeapon = kWeaponPitchfork;
                 }
             }
             pPlayer->lastWeapon = prevWeapon;
