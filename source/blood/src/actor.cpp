@@ -7442,10 +7442,10 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                     }
                 }
             }
-            if ((vectorType == kVectorTine) && pShooter && IsPlayerSprite(pShooter) && !IsPlayerSprite(pSprite) && WeaponsNotBlood() && !VanillaMode()) // apply double damage for pitchfork when attacking rear of enemy
+            if ((vectorType == kVectorTine) && pShooter && IsPlayerSprite(pShooter) && !IsPlayerSprite(pSprite) && IsDudeSprite(pSprite) && WeaponsNotBlood() && !VanillaMode()) // apply double damage for pitchfork when attacking rear of enemy
             {
                 const int nDiff = (klabs(pShooter->ang-pSprite->ang)%2048+2048)%2048;
-                if (nDiff < 256) // if attacker is within 45 degree behind victim, apply double damage
+                if (nDiff < 256) // if attacker is within 45 degrees behind victim, apply double damage
                     shift++;
             }
             actDamageSprite(nShooter, pSprite, dmgType, pVectorData->dmg<<shift);
