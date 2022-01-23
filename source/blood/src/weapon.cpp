@@ -208,6 +208,12 @@ void SpawnBulletEject(PLAYER *pPlayer, int a2, int a3)
     POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
     pPlayer->zView = pPlayer->pSprite->z-pPosture->eyeAboveZ;
     int dz = pPlayer->zWeapon-(pPlayer->zWeapon-pPlayer->zView)/2;
+    if ((pPlayer->q16look < 0) && WeaponsNotBlood() && !VanillaMode()) // adjust z height offset for pitch angle
+    {
+        CONSTEXPR int upAngle = 289;
+        CONSTEXPR int downAngle = -347;
+        dz -= fix16_clamp(pPlayer->q16look, F16(downAngle), F16(upAngle))>>13;
+    }
     fxSpawnEjectingBrass(pPlayer->pSprite, dz, a2, a3);
 }
 
@@ -219,6 +225,12 @@ void SpawnShellEject(PLAYER *pPlayer, int a2, int a3)
     pPlayer->zView = pPlayer->pSprite->z-pPosture->eyeAboveZ;
     int t = pPlayer->zWeapon - pPlayer->zView;
     int dz = pPlayer->zWeapon-t+(t>>2);
+    if ((pPlayer->q16look < 0) && WeaponsNotBlood() && !VanillaMode()) // adjust z height offset for pitch angle
+    {
+        CONSTEXPR int upAngle = 289;
+        CONSTEXPR int downAngle = -347;
+        dz -= fix16_clamp(pPlayer->q16look, F16(downAngle), F16(upAngle))>>13;
+    }
     fxSpawnEjectingShell(pPlayer->pSprite, dz, a2, a3);
 }
 
