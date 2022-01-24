@@ -48,6 +48,8 @@ enum MouseButtonFlags : uint8_t
 
 extern float   CONTROL_MouseSensitivity;
 extern float   CONTROL_MouseAxesSensitivity[2];
+extern float   CONTROL_MouseSensitivityUnit;
+extern float   CONTROL_JoySensitivityUnit;
 
 static inline bool MOUSE_Startup(void)
 {
