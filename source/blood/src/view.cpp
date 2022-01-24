@@ -3720,7 +3720,11 @@ void viewDrawScreen(void)
         cZ += shakeZ;
         v4c += shakeBobX;
         v48 += shakeBobY;
-        q16horiz += fix16_from_int(mulscale30(0x40000000-Cos(gView->tiltEffect<<2), 30));
+        const fix16_t q16tilt = fix16_from_int(mulscale30(0x40000000-Cos(gView->tiltEffect<<2), 30));
+        if (gViewInterpolate && (gView->tiltEffect > 0))
+            q16horiz += interpolate(fix16_from_int(mulscale30(0x40000000-Cos((gView->tiltEffect+4)<<2), 30)), q16tilt, gInterpolate);
+        else
+            q16horiz += q16tilt;
         if (gViewPos == 0)
         {
             if (gViewHBobbing)
