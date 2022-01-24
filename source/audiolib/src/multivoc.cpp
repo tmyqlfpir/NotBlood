@@ -101,7 +101,7 @@ int MV_ErrorCode = MV_NotInstalled;
 fix16_t MV_GlobalVolume = fix16_one;
 fix16_t MV_VolumeSmoothFactor = fix16_one;
 
-thread_local int MV_Locked;
+int MV_Locked;
 char *MV_MusicBuffer;
 static void (*MV_MusicCallback)(void);
 
