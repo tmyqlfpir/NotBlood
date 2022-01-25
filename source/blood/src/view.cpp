@@ -2552,9 +2552,9 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             pNSprite->x += mulscale30((int)nDist, Cos(gCameraAng));
             pNSprite->y += mulscale30((int)nDist, Sin(gCameraAng));
             pNSprite->ang = gCameraAng;
+            break;
         }
-        else
-            pNSprite->z -= (pNSprite->yrepeat<<2)*(height-center);
+        pNSprite->z -= (pNSprite->yrepeat<<2)*(height-center);
         break;
     }
     case kViewEffectFlareHalo:
