@@ -2497,7 +2497,9 @@ int DudeDifficulty[5] = {
 };
 
 void actInit(bool bSaveLoad) {
-    memset(gPost, 0, sizeof(gPost));
+    if (!bSaveLoad) { // reset postpone count on new level
+        gPostCount = 0;
+    }
 
     #ifdef NOONE_EXTENSIONS
     if (!gModernMap) {
