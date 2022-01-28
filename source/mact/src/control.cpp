@@ -736,6 +736,18 @@ bool CONTROL_Startup(controltype which, int32_t(*TimeFunction)(void), int32_t ti
     if (initinput(CONTROL_ScanForControllers))
         return true;
 
+    static osdcvardata_t cvars_mact [] =
+    {
+        { "in_mousexsens", "horizontal mouse sensitivity multiplier", (void *)&CONTROL_MouseAxesSensitivity[0], CVAR_FLOAT, 0, 100 },
+        { "in_mouseysens", "vertical mouse sensitivity multiplier",   (void *)&CONTROL_MouseAxesSensitivity[1], CVAR_FLOAT, 0, 100 },
+        { "in_mouseunit",  "base mouse input unit",                   (void *)&CONTROL_MouseSensitivityUnit,    CVAR_FLOAT, 0, 1 },
+        { "in_joyunit",    "base controller input unit",              (void *)&CONTROL_JoySensitivityUnit,      CVAR_FLOAT, 0, 1 },
+        { "sensitivity",   "master mouse sensitivity multiplier",     (void *)&CONTROL_MouseSensitivity,        CVAR_FLOAT, 0, 100 },
+    };
+
+    for (auto& cv : cvars_mact)
+        OSD_RegisterCvar(&cv, osdcmd_cvar_set);
+
     KB_Startup();
 
     CONTROL_NumMouseButtons = MAXMOUSEBUTTONS;
