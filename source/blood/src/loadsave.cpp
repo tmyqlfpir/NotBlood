@@ -271,6 +271,7 @@ void MyLoadSave::Load(void)
     memset(sector, 0, sizeof(sector[0])*kMaxSectors);
     memset(wall, 0, sizeof(wall[0])*kMaxWalls);
     memset(sprite, 0, sizeof(sprite[0])*kMaxSprites);
+    memset(spriteext, 0, sizeof(spriteext[0])*kMaxSprites);
     Read(sector, sizeof(sector[0])*numsectors);
     Read(wall, sizeof(wall[0])*numwalls);
     Read(sprite, sizeof(sprite[0])*kMaxSprites);
