@@ -1340,7 +1340,7 @@ void netPlayerQuit(int nPlayer)
             gQuitGame = true;
             gRestartGame = true;
             gNetPlayers = 1;
-            gQuitRequest = 2;
+            gQuitRequest = gNetMode == NETWORK_SERVER ? gQuitRequest : 2;
         }
     }
     else
