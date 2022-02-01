@@ -68,7 +68,7 @@ enum MV_Errors
 
 const char *MV_ErrorString(int ErrorNumber);
 
-extern int MV_Locked;
+extern thread_local int MV_Locked;
 static FORCE_INLINE void MV_Lock(void)
 {
     extern void SoundDriver_PCM_Lock(void);
