@@ -2117,7 +2117,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         {
             const DUDEINFO *pDudeInfo = getDudeInfo(pPlayer->pSprite->type);
             const XSPRITE *pXSprite = pPlayer->pXSprite;
-            const int nHealth = clamp(pXSprite->health / (pDudeInfo->startHealth<<4>>3), 0, INVUL_LEVELS-1); // divide health into invul array range (0-7)
+            const int nHealth = clamp(pXSprite->health / ((pDudeInfo->startHealth<<4)>>3), 0, INVUL_LEVELS-1); // divide health into invul array range (0-7)
             const int nInvulTicks = ((invulTimers[nHealth]/4) * (4-gGameOptions.nDifficulty+1))>>1; // scale invul ticks depending on current difficulty
             const bool invulState = pPlayer->invulTime > gFrameClock - nInvulTicks;
             if ((pPlayer->invulTime != gFrameClock) && invulState) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation

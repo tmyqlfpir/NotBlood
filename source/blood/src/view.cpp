@@ -1354,7 +1354,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
     if (!gPowerupDuration)
         return;
 
-    short int akimboQuadDamagePicnum = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
+    const short int akimboQuadDamagePicnum = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30703 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
 
     POWERUPDISPLAY powerups[nPowerUps];
     powerups[0] = { gPowerUpInfo[kPwUpShadowCloak].picnum,  0.4f, 0, pPlayer->pwUpTime[kPwUpShadowCloak] }; // Invisibility
@@ -2658,7 +2658,11 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->yrepeat = 32;
         pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
         const int nVoxel = voxelIndex[nTile];
-        if (gShowWeapon == 2 && usevoxels && gDetail >= 4 && videoGetRenderMode() != REND_POLYMER && nVoxel != -1)
+        if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
+        {
+            pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
+        }
+        else if (gShowWeapon == 2 && usevoxels && gDetail >= 4 && videoGetRenderMode() != REND_POLYMER && nVoxel != -1)
         {
             pNSprite->cstat |= 48;
             pNSprite->cstat &= ~8;
@@ -2694,6 +2698,10 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->xrepeat = 32;
         pNSprite->yrepeat = 32;
         pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
+        if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite/voxel to transparent
+        {
+            pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
+        }
         break;
     }
     }
@@ -3125,6 +3133,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                         {
                             pNTSprite->pal = 10;
                             pNTSprite->cstat |= 4;
+                            if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
+                                pNTSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
                         }
                     }
                     if (pPlayer->hasFlag&2) {
@@ -3133,6 +3143,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                         {
                             pNTSprite->pal = 7;
                             pNTSprite->cstat |= 4;
+                            if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
+                                pNTSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
                         }
                     }
                 }
