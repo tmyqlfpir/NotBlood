@@ -81,7 +81,6 @@ bool LoadArtFile(const char *pzFile);
 void LoadExtraArts(void);
 bool VanillaMode(const bool demoState = false);
 bool WeaponsNotBlood(void);
-bool WeaponsNBlood(void);
 bool WeaponsV10x(void);
 bool ExplosionsNotBlood(void);
 bool ProjectilesNotBlood(void);

@@ -2948,11 +2948,7 @@ bool VanillaMode(const bool demoState) {
 }
 
 bool WeaponsNotBlood(void) {
-    return gGameOptions.nWeaponsVer == 0; // notblood's enhanced weapon behavior
-}
-
-bool WeaponsNBlood(void) {
-    return gGameOptions.nWeaponsVer == 1; // nblood's original weapon behavior
+    return gGameOptions.nWeaponsVer == 1; // notblood's enhanced weapon behavior
 }
 
 bool WeaponsV10x(void) {
@@ -2960,11 +2956,11 @@ bool WeaponsV10x(void) {
 }
 
 bool ProjectilesNotBlood(void) {
-    return gGameOptions.bProjectileBehavior == 0; // notblood's projectile collision
+    return gGameOptions.bProjectileBehavior == 1; // notblood's projectile collision
 }
 
 bool EnemiesNotBlood(void) {
-    return gGameOptions.bEnemyBehavior == 0; // notblood's enemies
+    return gGameOptions.bEnemyBehavior == 1; // notblood's enemies
 }
 
 bool fileExistsRFF(int id, const char *ext) {

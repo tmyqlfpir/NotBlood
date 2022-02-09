@@ -467,18 +467,18 @@ void CONFIG_SetDefaults(void)
     gAutoAim = 2;
     gWeaponSwitch = 0;
     gWeaponFastSwitch = 0;
-    gAutosave = 2;
+    gAutosave = 1;
     gAutosaveInCurLevel = false;
 
     gVanilla = 0;
     gMonsterSettings = 1;
     gQuadDamagePowerup = 0;
     gDamageInvul = 0;
-    gExplosionBehavior = 0;
-    gProjectileBehavior = 0;
-    gEnemyBehavior = 0;
+    gExplosionBehavior = 1;
+    gProjectileBehavior = 1;
+    gEnemyBehavior = 1;
     gEnemyRandomTNT = 0;
-    gWeaponsVer = 1;
+    gWeaponsVer = 0;
     gSectorBehavior = 1;
     gHitscanProjectiles = 0;
     gRandomizerMode = 0;

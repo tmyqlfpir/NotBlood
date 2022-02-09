@@ -217,18 +217,18 @@ const char *pzExplosionBehaviorStrings[] = {
 };
 
 const char *pzProjectileBehaviorStrings[] = {
-    "NotBlood",
     "Original",
+    "NotBlood",
 };
 
 const char *pzEnemyBehaviorStrings[] = {
-    "NotBlood",
     "Original",
+    "NotBlood",
 };
 
 const char *pzWeaponsVersionStrings[] = {
-    "NotBlood",
     "Original",
+    "NotBlood",
     "V1.0x",
 };
 
