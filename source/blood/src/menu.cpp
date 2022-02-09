@@ -211,8 +211,9 @@ const char *pzMonsterStrings[] =
 };
 
 const char *pzExplosionBehaviorStrings[] = {
-    "Raze",
     "Original",
+    "NotBlood",
+    "Raze",
 };
 
 const char *pzProjectileBehaviorStrings[] = {
@@ -1162,7 +1163,7 @@ void SetupNetStartMenu(void)
     itemNetEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
     itemNetEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
     itemNetEnhancementBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
-    itemNetEnhancementExplosionBehavior.tooltip_pzTextUpper = "Uses Raze's enhanced explosion calculation";
+    itemNetEnhancementExplosionBehavior.tooltip_pzTextUpper = "Uses enhanced explosion calculation";
     itemNetEnhancementProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
     itemNetEnhancementProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
     itemNetEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
@@ -1454,7 +1455,7 @@ void SetupOptionsMenu(void)
     itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
     itemEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
     itemEnhancementBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
-    itemEnhancementExplosionBehavior.tooltip_pzTextUpper = "Uses Raze's enhanced explosion calculation";
+    itemEnhancementExplosionBehavior.tooltip_pzTextUpper = "Uses enhanced explosion calculation";
     itemEnhancementProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
     itemEnhancementProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
     itemEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
@@ -1825,7 +1826,7 @@ void SetExplosionBehavior(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gExplosionBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
-        gGameOptions.bExplosionBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
+        gGameOptions.nExplosionBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     } else {
         pItem->m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     }
@@ -2900,7 +2901,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
     gPacketStartGame.bQuadDamagePowerup = itemNetEnhancementBoolQuadDamagePowerup.at20;
     gPacketStartGame.bDamageInvul = itemNetEnhancementBoolDamageInvul.at20;
-    gPacketStartGame.bExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
+    gPacketStartGame.nExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     gPacketStartGame.bProjectileBehavior = itemNetEnhancementProjectileBehavior.m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     gPacketStartGame.bEnemyBehavior = itemNetEnhancementEnemyBehavior.m_nFocus % ARRAY_SSIZE(pzEnemyBehaviorStrings);
     gPacketStartGame.bEnemyRandomTNT = itemNetEnhancementBoolEnemyRandomTNT.at20;

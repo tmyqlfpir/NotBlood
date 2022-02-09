@@ -77,7 +77,7 @@ struct PKT_STARTGAME {
     char userMap, userMapName[BMAX_PATH];
     bool bQuadDamagePowerup;
     bool bDamageInvul;
-    bool bExplosionBehavior;
+    int nExplosionBehavior;
     bool bProjectileBehavior;
     bool bEnemyBehavior;
     bool bEnemyRandomTNT;

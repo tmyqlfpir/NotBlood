@@ -617,7 +617,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         }
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
-        gGameOptions.bExplosionBehavior = gExplosionBehavior;
+        gGameOptions.nExplosionBehavior = gExplosionBehavior;
         gGameOptions.bProjectileBehavior = gProjectileBehavior;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
@@ -653,7 +653,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         ///////
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
-        gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
+        gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
@@ -882,7 +882,7 @@ void StartNetworkLevel(void)
         ///////
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
-        gGameOptions.bExplosionBehavior = gPacketStartGame.bExplosionBehavior;
+        gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
         gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
@@ -2957,10 +2957,6 @@ bool WeaponsNBlood(void) {
 
 bool WeaponsV10x(void) {
     return gGameOptions.nWeaponsVer == 2; // V1.0x style weapon behavior
-}
-
-bool ExplosionsNotBlood(void) {
-    return gGameOptions.bExplosionBehavior == 0; // raze's explosions logic (originally from notblood, thanks for accepting my awful PRs coelckers/mjr4077au)
 }
 
 bool ProjectilesNotBlood(void) {

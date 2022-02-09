@@ -2742,8 +2742,8 @@ void actRadiusDamage(int nSprite, int x, int y, int z, int nSector, int nDist, i
     int nOwner = actSpriteIdToOwnerId(nSprite);
     gAffectedSectors[0] = 0;
     gAffectedXWalls[0] = 0;
-    const bool newSectCheckMethod = ExplosionsNotBlood() && (nOwner != -1) && actSpriteOwnerIsDude(&sprite[nOwner]) && !VanillaMode(); // use new sector checking logic
-    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
+    const bool newSectCheckMethod = gGameOptions.nExplosionBehavior && (nOwner != -1) && actSpriteOwnerIsDude(&sprite[nOwner]) && !VanillaMode(); // use new sector checking logic
+    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod, gGameOptions.nExplosionBehavior == 2);
     nDist <<= 4;
     if (flags & 2)
     {
@@ -6439,8 +6439,8 @@ void actProcessSprites(void)
         // GetClosestSpriteSectors() has issues checking some sectors due to optimizations
         // the new flag newSectCheckMethod for GetClosestSpriteSectors() does rectify these issues, but this may cause unintended side effects for level scripted explosions
         // so only allow this new checking method for dude spawned explosions
-        const bool newSectCheckMethod = ExplosionsNotBlood() && actSpriteOwnerIsDude(pSprite) && !VanillaMode(); // use new sector checking logic
-        GetClosestSpriteSectors(nSector, x, y, radius, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
+        const bool newSectCheckMethod = gGameOptions.nExplosionBehavior && actSpriteOwnerIsDude(pSprite) && !VanillaMode(); // use new sector checking logic
+        GetClosestSpriteSectors(nSector, x, y, radius, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod, gGameOptions.nExplosionBehavior == 2);
 
         for (int i = 0; i < kMaxXWalls; i++)
         {
