@@ -351,7 +351,7 @@ CGameMenuItem7EE34 itemOption2("VIDEO MODE...", 3, 0, 160, 320, 1);
 CGameMenuItemChain itemChainParentalLock("PARENTAL LOCK", 3, 0, 170, 320, 1, &menuParentalLock, -1, NULL, 0);
 
 CGameMenuItemTitle itemControlsTitle("CONTROLS", 1, 160, 20, 2038);
-CGameMenuItemSliderFloat sliderMouseSpeed("Mouse Sensitivity:", 1, 10, 70, 300, CONTROL_MouseSensitivity, 0.25f, 100.f, 0.25f, SetMouseSensitivity, -1,-1);
+CGameMenuItemSliderFloat sliderMouseSpeed("Mouse Sensitivity:", 1, 10, 70, 300, CONTROL_MouseSensitivity, 1.f, 100.f, 1.f, SetMouseSensitivity, -1,-1);
 CGameMenuItemZBool boolMouseFlipped("Invert Mouse Aim:", 1, 10, 90, 300, gMouseAimingFlipped, SetMouseAimFlipped, NULL, NULL);
 CGameMenuItemSlider sliderTurnSpeed("Key Turn Speed:", 1, 10, 110, 300, gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
 CGameMenuItemChain itemChainKeyList("Configure Keys...", 1, 0, 130, 320, 1, &menuKeys, -1, NULL, 0);
@@ -621,7 +621,7 @@ CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 120, 1
 CGameMenuItemZCycle itemOptionsDisplayMirrorMode("MIRROR MODE:", 3, 66, 130, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
 CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 140, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
 CGameMenuItemZBool itemOptionsDisplayBoolSlowRoomFlicker("SLOW DOWN FLICKERING LIGHTS:", 3, 66, 150, 180, gSlowRoomFlicker, SetSlowRoomFlicker, NULL, NULL);
-CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 160, 180, &gFov, 75, 140, 5, SetFOV, -1, -1, kMenuSliderValue);
+CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 160, 180, &gFov, 75, 140, 1, SetFOV, -1, -1, kMenuSliderValue);
 #ifdef USE_OPENGL
 CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 170, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
 #endif
@@ -855,7 +855,7 @@ void SetupMouseButtonMenu(CGameMenuItemChain *pItem);
 
 CGameMenuItemTitle itemOptionsControlMouseTitle("MOUSE SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsControlMouseButton("BUTTON ASSIGNMENT", 3, 66, 60, 180, 0, &menuOptionsControlMouseButtonAssignment, 0, SetupMouseButtonMenu, 0);
-CGameMenuItemSliderFloat itemOptionsControlMouseSensitivity("SENSITIVITY:", 3, 66, 70, 180, &CONTROL_MouseSensitivity, 0.25f, 100.f, 0.25f, SetMouseSensitivity, -1, -1, kMenuSliderValue);
+CGameMenuItemSliderFloat itemOptionsControlMouseSensitivity("SENSITIVITY:", 3, 66, 70, 180, &CONTROL_MouseSensitivity, 1.f, 100.f, 1.f, SetMouseSensitivity, -1, -1, kMenuSliderValue);
 CGameMenuItemZBool itemOptionsControlMouseAimFlipped("INVERT AIMING:", 3, 66, 80, 180, false, SetMouseAimFlipped, NULL, NULL);
 CGameMenuItemZBool itemOptionsControlMouseAimMode("AIMING TYPE:", 3, 66, 90, 180, false, SetMouseAimMode, "HOLD", "TOGGLE");
 CGameMenuItemZBool itemOptionsControlMouseVerticalAim("VERTICAL AIMING:", 3, 66, 100, 180, false, SetMouseVerticalAim, NULL, NULL);
