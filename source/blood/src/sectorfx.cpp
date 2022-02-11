@@ -307,9 +307,9 @@ void DoSectorPanning(void)
                 if (pSector->ceilingstat&64)
                     angle -= 512;
                 int xBits = (picsiz[nTile]&15)-((pSector->ceilingstat&8)!=0);
-                px += mulscale30(speed<<2, Cos(angle))>>xBits;
+                px += mulscale30(speed<<2, Cos(-angle))>>xBits;
                 int yBits = (picsiz[nTile]/16)-((pSector->ceilingstat&8)!=0);
-                py -= mulscale30(speed<<2, Sin(angle))>>yBits;
+                py -= mulscale30(speed<<2, Sin(-angle))>>yBits;
                 if (!VanillaMode())
                     viewInterpolatePanningCeiling(nSector, pSector);
                 pSector->ceilingxpanning = px>>8;
