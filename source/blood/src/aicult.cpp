@@ -446,37 +446,37 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         switch (hit)
                         {
                         case -1:
-                            if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTFire);
-                            else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTProneFire);
-                            else if (sub_5BDA8(pSprite, 13) && (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo))
+                            else if (dudeIsPlayingSeq(pSprite, 13) && (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo))
                                 aiNewState(pSprite, pXSprite, &cultistTSwimFire);
                             break;
                         case 3:
                             if (pSprite->type != sprite[gHitInfo.hitsprite].type && sprite[gHitInfo.hitsprite].type != kDudeCultistShotgun)
                             {
-                                if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistTFire);
-                                else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistTProneFire);
                                 else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                     aiNewState(pSprite, pXSprite, &cultistTSwimFire);
                             }
                             else
                             {
-                                if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistDodge);
-                                else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistProneDodge);
                                 else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                     aiNewState(pSprite, pXSprite, &cultistSwimDodge);
                             }
                             break;
                         default:
-                            if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTFire);
-                            else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTProneFire);
                             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                 aiNewState(pSprite, pXSprite, &cultistTSwimFire);
@@ -514,9 +514,9 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         switch (hit)
                         {
                         case -1:
-                            if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistSFire);
-                            else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistSProneFire);
                             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                 aiNewState(pSprite, pXSprite, &cultistSSwimFire);
@@ -524,27 +524,27 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         case 3:
                             if (pSprite->type != sprite[gHitInfo.hitsprite].type && sprite[gHitInfo.hitsprite].type != kDudeCultistTommy)
                             {
-                                if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistSFire);
-                                else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistSProneFire);
                                 else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                     aiNewState(pSprite, pXSprite, &cultistSSwimFire);
                             }
                             else
                             {
-                                if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistDodge);
-                                else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistProneDodge);
                                 else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                     aiNewState(pSprite, pXSprite, &cultistSwimDodge);
                             }
                             break;
                         default:
-                            if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistSFire);
-                            else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistSProneFire);
                             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                 aiNewState(pSprite, pXSprite, &cultistSSwimFire);
@@ -582,9 +582,9 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         switch (hit)
                         {
                         case -1:
-                            if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTsFire);
-                            else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTsProneFire);
                             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                 aiNewState(pSprite, pXSprite, &cultistTsSwimFire);
@@ -592,27 +592,27 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         case 3:
                             if (pSprite->type != sprite[gHitInfo.hitsprite].type && sprite[gHitInfo.hitsprite].type != kDudeCultistTommy)
                             {
-                                if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistTsFire);
-                                else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistTsProneFire);
                                 else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                     aiNewState(pSprite, pXSprite, &cultistTsSwimFire);
                             }
                             else
                             {
-                                if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistDodge);
-                                else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistProneDodge);
                                 else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                     aiNewState(pSprite, pXSprite, &cultistSwimDodge);
                             }
                             break;
                         default:
-                            if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTsFire);
-                            else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTsProneFire);
                             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                 aiNewState(pSprite, pXSprite, &cultistTsSwimFire);
@@ -694,9 +694,9 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         switch (hit)
                         {
                         case -1:
-                            if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistSFire);
-                            else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistSProneFire);
                             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                 aiNewState(pSprite, pXSprite, &cultistSSwimFire);
@@ -704,27 +704,27 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         case 3:
                             if (pSprite->type != sprite[gHitInfo.hitsprite].type && sprite[gHitInfo.hitsprite].type != kDudeCultistTommy)
                             {
-                                if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistSFire);
-                                else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistSProneFire);
                                 else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                     aiNewState(pSprite, pXSprite, &cultistSSwimFire);
                             }
                             else
                             {
-                                if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistDodge);
-                                else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                                else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistProneDodge);
                                 else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                     aiNewState(pSprite, pXSprite, &cultistSwimDodge);
                             }
                             break;
                         default:
-                            if (!sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistSFire);
-                            else if (sub_5BDA8(pSprite, 14) && pXSprite->medium == kMediumNormal)
+                            else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistSProneFire);
                             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                 aiNewState(pSprite, pXSprite, &cultistSSwimFire);
