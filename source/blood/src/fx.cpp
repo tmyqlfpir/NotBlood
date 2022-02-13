@@ -326,6 +326,11 @@ void CFX::fxProcess(void)
                 continue;
             }
         }
+        if (!VanillaMode() && casingType && IsUnderwaterSector(pSprite->sectnum)) // lower gravity by 75% underwater (only for bullet casings)
+        {
+            zvel[nSprite] += pFXData->gravity>>2;
+            continue;
+        }
         zvel[nSprite] += pFXData->gravity;
     }
 }

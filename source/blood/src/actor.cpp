@@ -4609,7 +4609,19 @@ int MoveThing(spritetype *pSprite)
         FindSector(pSprite->x, pSprite->y, pSprite->z, &nSector);
     }
     if (zvel[nSprite])
-        pSprite->z += zvel[nSprite]>>8;
+    {
+        char bUnderwater = 0;
+        if ((sector[nSector].extra > 0) && EnemiesNotBlood() && !VanillaMode()) // lower gravity for underwater bodies/things
+        {
+            XSECTOR *pXSector = &xsector[sector[nSector].extra];
+            if (pXSector->Underwater)
+                bUnderwater = 1;
+        }
+        if (bUnderwater && !actSpriteOwnerIsPlayer(pSprite))
+            pSprite->z += zvel[nSprite]>>10;
+        else
+            pSprite->z += zvel[nSprite]>>8;
+    }
     int ceilZ, ceilHit, floorZ, floorHit;
     GetZRange(pSprite, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist<<2, CLIPMASK0);
     GetSpriteExtents(pSprite, &top, &bottom);
@@ -4687,7 +4699,6 @@ int MoveThing(spritetype *pSprite)
             v8 = 0x4000|nSector;
         }
         else if (zvel[nSprite] == 0)
-
             pSprite->flags &= ~4;
     }
     else
