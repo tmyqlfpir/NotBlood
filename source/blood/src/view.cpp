@@ -1906,24 +1906,24 @@ void UpdateStatusBar(ClockTicks arg)
         }
         DrawPackItemInStatusBar(pPlayer, 286, 186, 302, 183, 512);
 
-        for (int i = 0; i < 6; i++)
+        if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
         {
-            int nTile = 2220+i;
-            int x, nStat = 0;
-            int y = 200-6;
-            if (i&1)
+            for (int i = 0; i < 6; i++)
             {
-                x = 320-(78+(i>>1)*10);
-                nStat |= 512;
-            }
-            else
-            {
-                x = 73+(i>>1)*10;
-                nStat |= 256;
-            }
+                int nTile = 2220+i;
+                int x, nStat = 0;
+                int y = 200-6;
+                if (i&1)
+                {
+                    x = 320-(78+(i>>1)*10);
+                    nStat |= 512;
+                }
+                else
+                {
+                    x = 73+(i>>1)*10;
+                    nStat |= 256;
+                }
 
-            if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
-            {
                 if (pPlayer->hasKey[i+1])
                     DrawStatSprite(nTile, x, y, 0, 0, nStat);
 #if 0
