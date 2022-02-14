@@ -35,6 +35,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "db.h"
 #include "iob.h"
 #include "eventq.h"
+#include "actor.h"
+#include "config.h"
+#include "gameutil.h"
 #ifdef NOONE_EXTENSIONS
 #include "nnexts.h"
 #endif

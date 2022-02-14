@@ -45,6 +45,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "sfx.h"
 #include "sound.h"
 #include "trig.h"
+#include "warp.h"
 #ifdef NOONE_EXTENSIONS
 #include "nnexts.h"
 #endif
