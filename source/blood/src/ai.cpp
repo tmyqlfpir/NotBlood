@@ -276,7 +276,7 @@ void aiChooseDirection(spritetype *pSprite, XSPRITE *pXSprite, int a3)
     const int nCos = Cos(pSprite->ang);
     const int nSin = Sin(pSprite->ang);
     const int nVel = dmulscale30(xvel[nSprite], nCos, yvel[nSprite], nSin); // find vel relative to current angle
-    const int nDist = ((nVel*15)>>12)/2;
+    const int nDist = ((nVel*15)>>12) / 2;
     int turnDir = 341;
     if (nDeltaAngle < 0)
         turnDir = -341;
