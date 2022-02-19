@@ -272,37 +272,29 @@ void aiChooseDirection(spritetype *pSprite, XSPRITE *pXSprite, int a3)
         gSpritePrevLoc[nSprite] = pSprite->xyz;
         gSpritePrevSect[nSprite] = pSprite->sectnum;
     }
-    int vc = ((a3+1024-pSprite->ang)&2047)-1024;
-    int nCos = Cos(pSprite->ang);
-    int nSin = Sin(pSprite->ang);
-    int dx = xvel[nSprite];
-    int dy = yvel[nSprite];
-    int t1 = dmulscale30(dx, nCos, dy, nSin);
-    int UNUSED(t2) = dmulscale30(dx, nSin, -dy, nCos);
-    int vsi = ((t1*15)>>12) / 2;
-    int v8 = 341;
-    if (vc < 0)
-        v8 = -341;
-    if (CanMove(pSprite, pXSprite->target, pSprite->ang+vc, vsi))
-        pXSprite->goalAng = pSprite->ang+vc;
-    else if (CanMove(pSprite, pXSprite->target, pSprite->ang+vc/2, vsi))
-        pXSprite->goalAng = pSprite->ang+vc/2;
-    else if (CanMove(pSprite, pXSprite->target, pSprite->ang-vc/2, vsi))
-        pXSprite->goalAng = pSprite->ang-vc/2;
-    else if (CanMove(pSprite, pXSprite->target, pSprite->ang+v8, vsi))
-        pXSprite->goalAng = pSprite->ang+v8;
-    else if (CanMove(pSprite, pXSprite->target, pSprite->ang, vsi))
+    const int nDeltaAngle = ((a3+1024-pSprite->ang)&2047)-1024;
+    const int nCos = Cos(pSprite->ang);
+    const int nSin = Sin(pSprite->ang);
+    const int nVel = dmulscale30(xvel[nSprite], nCos, yvel[nSprite], nSin); // find vel relative to current angle
+    const int nDist = ((nVel*15)>>12)/2;
+    int turnDir = 341;
+    if (nDeltaAngle < 0)
+        turnDir = -341;
+    if (CanMove(pSprite, pXSprite->target, pSprite->ang+nDeltaAngle, nDist))
+        pXSprite->goalAng = (pSprite->ang+nDeltaAngle)&2047;
+    else if (CanMove(pSprite, pXSprite->target, pSprite->ang+nDeltaAngle/2, nDist))
+        pXSprite->goalAng = (pSprite->ang+nDeltaAngle/2)&2047;
+    else if (CanMove(pSprite, pXSprite->target, pSprite->ang-nDeltaAngle/2, nDist))
+        pXSprite->goalAng = (pSprite->ang-nDeltaAngle/2)&2047;
+    else if (CanMove(pSprite, pXSprite->target, pSprite->ang+turnDir, nDist))
+        pXSprite->goalAng = (pSprite->ang+turnDir)&2047;
+    else if (CanMove(pSprite, pXSprite->target, pSprite->ang, nDist))
         pXSprite->goalAng = pSprite->ang;
-    else if (CanMove(pSprite, pXSprite->target, pSprite->ang-v8, vsi))
-        pXSprite->goalAng = pSprite->ang-v8;
-    //else if (pSprite->flags&2)
-        //pXSprite->goalAng = pSprite->ang+341;
-    else // Weird..
-        pXSprite->goalAng = pSprite->ang+341;
-    if (Chance(0x8000))
-        pXSprite->dodgeDir = 1;
+    else if (CanMove(pSprite, pXSprite->target, pSprite->ang-turnDir, nDist))
+        pXSprite->goalAng = (pSprite->ang-turnDir)&2047;
     else
-        pXSprite->dodgeDir = -1;
+        pXSprite->goalAng = (pSprite->ang+341)&2047;
+    pXSprite->dodgeDir = Chance(0x8000) ? 1 : -1;
     if (!CanMove(pSprite, pXSprite->target, pSprite->ang+pXSprite->dodgeDir*512, 512))
     {
         pXSprite->dodgeDir = -pXSprite->dodgeDir;
@@ -911,7 +903,6 @@ void aiSetTarget(XSPRITE *pXSprite, int nTarget)
         }
     }
 }
-
 
 int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_TYPE nDmgType, int nDamage)
 {
