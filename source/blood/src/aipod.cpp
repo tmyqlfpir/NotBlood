@@ -138,7 +138,7 @@ static void sub_6FFA0(int, int nXSprite)
         break;
     }
     for (int i = 0; i < 4; i++)
-        fxSpawnBloodPod(pSprite, 240);
+        fxSpawnPodBlood(pSprite, 240);
 }
 
 static void sub_70284(int, int nXSprite)

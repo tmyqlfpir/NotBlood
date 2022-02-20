@@ -181,7 +181,7 @@ CDemo::CDemo()
     nInputTicks = 0;
     pFirstDemo = NULL;
     pCurrentDemo = NULL;
-    nTotalDemos = 0;
+    nDemosFound = 0;
     at2 = 0;
     memset(&atf, 0, sizeof(atf));
 }
@@ -211,7 +211,7 @@ CDemo::~CDemo()
     }
     pFirstDemo = NULL;
     pCurrentDemo = NULL;
-    nTotalDemos = 0;
+    nDemosFound = 0;
 }
 
 bool CDemo::Create(const char *pzFile)
@@ -524,7 +524,7 @@ _DEMOPLAYBACK:
                             OSD_Printf("Demo Synced\n");
                         break;
                     }
-                    if (nTotalDemos > 1)
+                    if (nDemosFound > 1)
                     {
                         v4 = 0;
                         Close();
@@ -582,7 +582,7 @@ void CDemo::LoadDemoInfo(void)
 {
     auto pDemo = &pFirstDemo;
     const int opsm = pathsearchmode;
-    nTotalDemos = 0;
+    nDemosFound = 0;
     pathsearchmode = 0;
     char zFN[BMAX_PATH];
     Bsnprintf(zFN, BMAX_PATH, "%s*.dem", BloodIniPre);
@@ -613,7 +613,7 @@ void CDemo::LoadDemoInfo(void)
             *pDemo = new DEMOCHAIN;
             (*pDemo)->pNext = NULL;
             Bstrncpy((*pDemo)->zName, !gDemoRunValidation ? pIterator->name : zFN, BMAX_PATH);
-            nTotalDemos++;
+            nDemosFound++;
             pDemo = &(*pDemo)->pNext;
         }
         pIterator = pIterator->next;

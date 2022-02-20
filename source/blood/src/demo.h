@@ -103,7 +103,7 @@ public:
     const char **pzDemoFile;
     DEMOCHAIN *pFirstDemo;
     DEMOCHAIN *pCurrentDemo;
-    int nTotalDemos;
+    int nDemosFound;
 };
 
 extern CDemo gDemo;

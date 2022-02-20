@@ -6063,7 +6063,7 @@ void actExplodeSprite(spritetype *pSprite)
         seqSpawn(9, 3, nXSprite, -1);
         sfxPlay3DSound(pSprite, 307, -1, 0);
         GibSprite(pSprite, GIBTYPE_5, NULL, NULL);
-        fxSpawnBloodPod(pSprite, 240);
+        fxSpawnPodBlood(pSprite, 240);
         break;
     default:
         nType = kExplosionStandard;
