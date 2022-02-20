@@ -107,3 +107,4 @@ public:
 };
 
 extern CDemo gDemo;
+extern bool gDemoRunValidation;

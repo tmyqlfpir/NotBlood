@@ -1291,6 +1291,7 @@ SWITCH switches[] = {
     { "nodudes", 5, 1 },
     { "playback", 6, 1 },
     { "record", 7, 1 },
+    { "validate", 44, 1 },
     { "robust", 8, 0 },
     { "setupfile", 9, 1 },
     { "skill", 10, 1 },
@@ -1359,6 +1360,7 @@ void PrintHelp(void)
         "-playback\tPlay back a demo\n"
         "-pname\t\tOverride player name setting from config file\n"
         "-record\t\tRecord demo\n"
+        "-validate\t\tRun DOS 1.21 compatibility unit test\n"
         "-rff\t\tSpecify an RFF file for Blood game resources\n"
         "-server [players]\tStart a multiplayer server\n"
 #ifdef STARTUP_SETUP_WINDOW
@@ -1395,6 +1397,7 @@ void PrintHelp(void)
     puts("-map          Specify a user map");
     puts("-playback     Play back a demo");
     puts("-record       Record a demo");
+    puts("-validate     Run DOS 1.21 compatibility unit test");
     puts("-art          Specify an art base file name");
     puts("-snd          Specify an RFF Sound file name");
     puts("-RFF          Specify an RFF file for Blood game resources");
@@ -1645,6 +1648,9 @@ void ParseOptions(void)
             G_AddPath(OptArgv[0]);
             break;
         case 43: // conf, noconsole
+            break;
+        case 44: // validate
+            gDemoRunValidation = true;
             break;
         }
     }
