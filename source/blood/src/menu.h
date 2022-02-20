@@ -54,6 +54,8 @@ extern short gQuickSaveSlot;
 extern char strRestoreGameStrings[][16];
 extern char restoreGameDifficulty[];
 extern const char *zDiffStrings[];
+extern char zNetAddressBuffer[16];
+extern char zNetPortBuffer[6];
 void drawLoadingScreen(void);
 void SetupMenus(void);
 void UpdateNetworkMenus(void);

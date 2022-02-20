@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "gamemenu.h"
 #include "globals.h"
 #include "levels.h"
+#include "menu.h"
 #include "messages.h"
 #include "network.h"
 #include "osdcmds.h"
@@ -1111,6 +1112,8 @@ int32_t registerosdcommands(void)
         { "snd_mixrate", "sound mixing rate", (void *)&MixRate, CVAR_INT, 0, 48000 },
         { "snd_numchannels", "the number of sound channels (1: mono, 2: stereo)", (void *)&NumChannels, CVAR_INT, 1, 2 },
         { "snd_numvoices", "the number of concurrent sounds", (void *)&NumVoices, CVAR_INT, 1, 255 },
+        { "net_address","sets network address used for multiplayer", (void *)zNetAddressBuffer, CVAR_STRING|CVAR_FUNCPTR, 0, 16 },
+        { "net_port","sets network port used for multiplayer", (void *)zNetPortBuffer, CVAR_STRING|CVAR_FUNCPTR, 0, 6 },
 #ifdef ASS_REVERSESTEREO
         { "snd_reversestereo", "reverses the stereo channels", (void *)&ReverseStereo, CVAR_BOOL, 0, 1 },
 #endif
