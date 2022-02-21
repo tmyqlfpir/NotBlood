@@ -43,6 +43,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "network.h"
 #include "player.h"
 #include "screen.h"
+#include "sound.h"
 #include "view.h"
 
 bool gDemoRunValidation = false;
@@ -107,6 +108,7 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/BLOOD047.dem", (int32_t)0x00000B5F, 0x11F8A1D5, 0x000003BD, {(int32_t)0x00009A45, (int32_t)0x0000847F, (int32_t)0x0000BD50}},
     {"/validatedemos/BLOOD048.dem", (int32_t)0x00000AF3, 0x6E949D93, 0x00000000, {(int32_t)0xFFFF3468, (int32_t)0xFFFFD441, (int32_t)0x000061A4}},
     {"/validatedemos/BLOOD049.dem", (int32_t)0x00000C8F, 0x4E28530B, 0x00000000, {(int32_t)0xFFFFED7C, (int32_t)0x0000C8C0, (int32_t)0x000009A4}},
+    {"/validatedemos/BLOOD050.dem", (int32_t)0x0000230B, 0xEA61B563, 0x00000000, {(int32_t)0x000029C1, (int32_t)0x00002C3F, (int32_t)0x000071A4}},
 };
 
 int nBuild = 0;
@@ -384,7 +386,10 @@ bool CDemo::SetupPlayback(const char *pzFile)
     bRecording = 0;
     bPlaying = 1;
     if (gDemoRunValidation)
+    {
         timerInit(CLOCKTICKSPERSECOND*500);
+        SoundToggle = MusicToggle = 0; // mute audio while we speedrun demos
+    }
     return 1;
 }
 
