@@ -1164,9 +1164,10 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                 for (int i = connecthead; i >= 0; i = connectpoint2[i]) {
                     gPlayer[i].hasKey[pItem->type-99] = 1;
                 }
-                if (pPlayer == gMe) break; // don't display message if self collected key
-                sprintf(buffer, "%s picked up %s", gProfile[pPlayer->nPlayer].name, gItemText[pItem->type - kItemBase]);            
-                viewSetMessage(buffer, 0, MESSAGE_PRIORITY_PICKUP);
+                if (pPlayer != gMe) { // display message if network player collected key
+                    sprintf(buffer, "%s picked up %s", gProfile[pPlayer->nPlayer].name, gItemText[pItem->type - kItemBase]);            
+                    viewSetMessage(buffer, 0, MESSAGE_PRIORITY_PICKUP);
+                }
             }
             break;
         case kItemHealthMedPouch:

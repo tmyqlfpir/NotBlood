@@ -172,9 +172,9 @@ const char *zItemStrings[] =
 
 const char *zKeyStrings[] =
 {
-    "Do not keep",
-    "Keep",
-    "All collect/keep",
+    "LOST ON DEATH",
+    "KEPT ON RESPAWN",
+    "SHARED",
 };
 
 const char *zRespawnStrings[] =
@@ -413,7 +413,7 @@ CGameMenuItemZCycle itemNetStart5("MONSTERS:", 3, 66, 80, 180, 0, 0, zMonsterStr
 CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 90, 180, 0, 0, zWeaponStrings, 4, 0);
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 100, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 110, 180, true, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetStart9("KEYS ON RESPAWN:", 3, 66, 120, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
+CGameMenuItemZCycle itemNetStart9("KEYS SETTING:", 3, 66, 120, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
 CGameMenuItemChain itemNetStart10("USER MAP", 3, 66, 140, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
 CGameMenuItemChain itemNetStart11("ENHANCEMENTS", 3, 66, 150, 320, 0, &menuNetworkGameEnhancements, -1, NULL, 0);
 CGameMenuItemChain itemNetStart12("START GAME", 1, 0, 165, 320, 1, 0, -1, StartNetGame, 0);
