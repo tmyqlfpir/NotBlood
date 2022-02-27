@@ -465,7 +465,7 @@ void CONFIG_SetDefaults(void)
     gMouseAimingFlipped = 0;
     gMouseAim = 1;
     gAutoAim = 2;
-    gWeaponSwitch = 0;
+    gWeaponSwitch = 3;
     gWeaponFastSwitch = 0;
     gAutosave = 2;
     gAutosaveInCurLevel = false;
