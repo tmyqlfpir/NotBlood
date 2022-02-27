@@ -4617,7 +4617,7 @@ int MoveThing(spritetype *pSprite)
             if (pXSector->Underwater)
                 bUnderwater = 1;
         }
-        if (bUnderwater && !actSpriteOwnerIsPlayer(pSprite))
+        if (bUnderwater && !actSpriteOwnerIsPlayer(pSprite) && !actSpriteOwnerIsDude(pSprite))
             pSprite->z += zvel[nSprite]>>10;
         else
             pSprite->z += zvel[nSprite]>>8;
