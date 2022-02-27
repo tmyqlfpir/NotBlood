@@ -54,7 +54,7 @@ static bool AreSectorsNeighborsDepthCheck(int sect1, int sect2, int depth, bool 
         {
             if (!spriRangeIsFine(nSprite[i])) // invalid sprite, skip
                 continue;
-            const int nLink = sprite[nSprite[i]].owner & 0x3FFF;
+            const int nLink = sprite[nSprite[i]].owner;
             if (!spriRangeIsFine(nLink)) // invalid sprite, skip
                 continue;
             const int nextSect = sprite[nLink].sectnum;
@@ -703,7 +703,7 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
                     return 1;
                 nSprite = gLowerLink[gHitInfo.hitsect];
             }
-            int nLink = sprite[nSprite].owner & 0xfff;
+            int nLink = sprite[nSprite].owner & 0x3fff;
             gHitInfo.hitsect = -1;
             gHitInfo.hitwall = -1;
             gHitInfo.hitsprite = -1;
@@ -782,7 +782,7 @@ void GetZRange(spritetype *pSprite, int *ceilZ, int *ceilHit, int *floorZ, int *
         if (gUpperLink[nSector] >= 0)
         {
             int nSprite = gUpperLink[nSector];
-            int nLink = sprite[nSprite].owner & 0xfff;
+            int nLink = sprite[nSprite].owner & 0x3fff;
             getzrange_old(pSprite->x+sprite[nLink].x-sprite[nSprite].x, pSprite->y+sprite[nLink].y-sprite[nSprite].y,
                 pSprite->z+sprite[nLink].z-sprite[nSprite].z, sprite[nLink].sectnum, &nTemp1, &nTemp2, (int32_t*)floorZ, (int32_t*)floorHit,
                 nDist, nMask);
@@ -797,7 +797,7 @@ void GetZRange(spritetype *pSprite, int *ceilZ, int *ceilHit, int *floorZ, int *
         if (gLowerLink[nSector] >= 0)
         {
             int nSprite = gLowerLink[nSector];
-            int nLink = sprite[nSprite].owner & 0xfff;
+            int nLink = sprite[nSprite].owner & 0x3fff;
             getzrange_old(pSprite->x+sprite[nLink].x-sprite[nSprite].x, pSprite->y+sprite[nLink].y-sprite[nSprite].y,
                 pSprite->z+sprite[nLink].z-sprite[nSprite].z, sprite[nLink].sectnum, (int32_t*)ceilZ, (int32_t*)ceilHit, &nTemp1, &nTemp2,
                 nDist, nMask);
@@ -824,7 +824,7 @@ void GetZRangeAtXYZ(int x, int y, int z, int nSector, int *ceilZ, int *ceilHit, 
         if (gUpperLink[nSector] >= 0)
         {
             int nSprite = gUpperLink[nSector];
-            int nLink = sprite[nSprite].owner & 0xfff;
+            int nLink = sprite[nSprite].owner & 0x3fff;
             getzrange_old(x+sprite[nLink].x-sprite[nSprite].x, y+sprite[nLink].y-sprite[nSprite].y,
                 z+sprite[nLink].z-sprite[nSprite].z, sprite[nLink].sectnum, &nTemp1, &nTemp2, (int32_t*)floorZ, (int32_t*)floorHit,
                 nDist, nMask);
@@ -839,7 +839,7 @@ void GetZRangeAtXYZ(int x, int y, int z, int nSector, int *ceilZ, int *ceilHit, 
         if (gLowerLink[nSector] >= 0)
         {
             int nSprite = gLowerLink[nSector];
-            int nLink = sprite[nSprite].owner & 0xfff;
+            int nLink = sprite[nSprite].owner & 0x3fff;
             getzrange_old(x+sprite[nLink].x-sprite[nSprite].x, y+sprite[nLink].y-sprite[nSprite].y,
                 z+sprite[nLink].z-sprite[nSprite].z, sprite[nLink].sectnum, (int32_t*)ceilZ, (int32_t*)ceilHit, &nTemp1, &nTemp2,
                 nDist, nMask);
