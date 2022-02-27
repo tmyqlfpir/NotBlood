@@ -1395,6 +1395,8 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
     memset(xvel,0,sizeof(xvel));
     memset(yvel,0,sizeof(yvel));
     memset(zvel,0,sizeof(zvel));
+    memset(xsprite,0,sizeof(xsprite));
+    memset(sprite,0,kMaxSprites*sizeof(spritetype));
 
     #ifdef NOONE_EXTENSIONS
     gModernMap = false;
