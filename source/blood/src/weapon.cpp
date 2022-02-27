@@ -2918,8 +2918,8 @@ void teslaHit(spritetype *pMissile, int a2)
     int nOwner = actSpriteOwnerToSpriteId(pMissile);
     gAffectedSectors[0] = -1;
     gAffectedXWalls[0] = -1;
-    const bool newSectCheckMethod = WeaponsNotBlood() && !VanillaMode(); // use new sector checking logic
-    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod);
+    const bool newSectCheckMethod = gGameOptions.nExplosionBehavior && !VanillaMode(); // use new sector checking logic
+    GetClosestSpriteSectors(nSector, x, y, nDist, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod, gGameOptions.nExplosionBehavior == 2);
     char v4 = 1;
     int v24 = -1;
     actHitcodeToData(a2, &gHitInfo, &v24, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);

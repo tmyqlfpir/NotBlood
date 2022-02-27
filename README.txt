@@ -7,8 +7,8 @@ New features include:
 * Smaller hitboxes for player projectiles
 * Raymarching collision testing for player projectiles
 * Replaced sector based damage logic for player explosions
+* Vanilla mode with optional DOS mouse handling
 * Quad damage replacement for guns akimbo powerup
-* Throwable lifeleech alt fire and cheat 'big bertha'
 * Increased enemy damage for lifeleech's sentry mode
 * Randomize mode for enemies and pickups (multiplayer supported)
 * Increase drawn sprites on screen limit from 2560 to 4096
@@ -18,6 +18,7 @@ New features include:
 * Bullet projectiles for hitscan enemies
 * New enhancements menu under game options
 * New last weapon key binding (default Q)
+* Lower gravity of bullet casings and gibs underwater
 * Fixed various original glitches with burning enemies
 * Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
@@ -49,7 +50,13 @@ New features include:
 * Explosions behavior - Replace the default vanilla explosion calculation with an new improved sector scanning system (fixes cases where enemies did not take explosive damage)
 * Projectiles behavior - For player projectiles, it'll use the improved eduke32's clipmove() logic as well as raymatching per tick. This feature also adjusts certain hitboxes so it's easier to target around corners
 * Enemy behavior - Fixes bugs with the vanilla enemy behavior such as tiny Caleb using the wrong burning sprite, enemies sometimes burning indefinitely, cultists switching weapons if extinguished in water, Cerberus spinning uselessly on lava, etc
-* Weapon behavior - Adds a charge up stab for pitchfork's alt fire, makes lifeleech throwable and increass the damage in sentry mode, and adds a special alt fire missile attack for pitchfork's charge up if quad damage is active
+* Weapon behavior - Select between original weapon behavior, NBlood's V1.X behavior or NotBlood's weapon tweaks which include:
+    * Adjust pitch offset for spray/missile firing
+    * Adds a charge up stab for pitchfork's alt fire
+    * Makes lifeleech throwable and increases the damage in sentry mode
+    * Do double melee damage if attacking enemies from 45 degrees behind
+    * Allows tesla projectiles to be reflected back with reflective shots powerup
+    * Adds a special alt fire missile attack for pitchfork's charge up while quad damage is active
 * Sector behavior - Fixes room over room sector handling with hitscan calculations (this allows hitscan weapons to be fired when floating above water)
 * Hitscan projectiles - Makes enemies that would use hitscan bullets spawn physical sprite based bullets with travel time
 * Randomizer mode - Set the enemy/pickups randomizer mode
@@ -108,22 +115,22 @@ New features include:
 1. Extract NotBlood to a new directory
 2. Copy the following files from Blood 1.21 to NotBlood folder:
 
-   BLOOD.INI  
-   BLOOD.RFF  
-   BLOOD000.DEM, ..., BLOOD003.DEM (optional)  
-   CP01.MAP, ..., CP09.MAP (optional, Cryptic Passage)  
-   CPART07.AR_ (optional, Cryptic Passage)  
-   CPART15.AR_ (optional, Cryptic Passage)  
-   CPBB01.MAP, ..., CPBB04.MAP (optional, Cryptic Passage)  
-   CPSL.MAP (optional, Cryptic Passage)  
-   CRYPTIC.INI (optional, Cryptic Passage)  
-   CRYPTIC.SMK (optional, Cryptic Passage)  
-   CRYPTIC.WAV (optional, Cryptic Passage)  
-   GUI.RFF  
-   SOUNDS.RFF  
-   SURFACE.DAT  
-   TILES000.ART, ..., TILES017.ART  
-   VOXEL.DAT  
+   BLOOD.INI
+   BLOOD.RFF
+   BLOOD000.DEM, ..., BLOOD003.DEM (optional)
+   CP01.MAP, ..., CP09.MAP (optional, Cryptic Passage)
+   CPART07.AR_ (optional, Cryptic Passage)
+   CPART15.AR_ (optional, Cryptic Passage)
+   CPBB01.MAP, ..., CPBB04.MAP (optional, Cryptic Passage)
+   CPSL.MAP (optional, Cryptic Passage)
+   CRYPTIC.INI (optional, Cryptic Passage)
+   CRYPTIC.SMK (optional, Cryptic Passage)
+   CRYPTIC.WAV (optional, Cryptic Passage)
+   GUI.RFF
+   SOUNDS.RFF
+   SURFACE.DAT
+   TILES000.ART, ..., TILES017.ART
+   VOXEL.DAT
 
 3. Optionally, if you want to use CD audio tracks instead of MIDI, provide FLAC/OGG recordings in following format: bloodXX.flac/ogg, where XX is track number. Make sure to enable Redbook audio option in sound menu.
 4. Optionally, if you want cutscenes and you have the original CD, copy the `movie` folder into NotBlood's folder (the folder itself too).

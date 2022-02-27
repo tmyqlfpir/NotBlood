@@ -9,6 +9,7 @@ New features include:
 * Smaller hitboxes for player projectiles ([before](https://files.catbox.moe/3peiru.mp4)/[after](https://files.catbox.moe/zso8g4.mp4))
 * Raymarching collision testing for player projectiles ([before](https://files.catbox.moe/qxtv05.mp4)/[after](https://files.catbox.moe/vo03ck.mp4))
 * Replaced sector based damage logic for player explosions ([before](https://files.catbox.moe/h6xcrg.mp4)/[after](https://files.catbox.moe/35e08d.mp4))
+* Vanilla mode with optional DOS mouse handling
 * Quad damage replacement for guns akimbo powerup
 * Increased enemy damage for lifeleech's sentry mode
 * Randomize mode for enemies and pickups (multiplayer supported)
@@ -20,6 +21,7 @@ New features include:
 * Bullet projectiles for hitscan enemies
 * New enhancements menu under game options
 * New last weapon key binding (default Q) ([demo](https://files.catbox.moe/28cirg.mp4))
+* Lower gravity of bullet casings and gibs underwater
 * Fixed various original glitches with burning enemies
 * Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
@@ -43,23 +45,23 @@ New features include:
 2. Copy the following files from Blood 1.21 to NotBlood folder:
 
    ```
-   BLOOD.INI  
-   BLOOD.RFF  
-   BLOOD000.DEM, ..., BLOOD003.DEM (optional)  
-   CP01.MAP, ..., CP09.MAP (optional, Cryptic Passage)  
-   CPART07.AR_ (optional, Cryptic Passage)  
-   CPART15.AR_ (optional, Cryptic Passage)  
-   CPBB01.MAP, ..., CPBB04.MAP (optional, Cryptic Passage)  
-   CPSL.MAP (optional, Cryptic Passage)  
-   CRYPTIC.INI (optional, Cryptic Passage)  
-   CRYPTIC.SMK (optional, Cryptic Passage)  
-   CRYPTIC.WAV (optional, Cryptic Passage)  
-   GUI.RFF  
-   SOUNDS.RFF  
-   SURFACE.DAT  
-   TILES000.ART, ..., TILES017.ART  
-   VOXEL.DAT  
-   VOXEL.DAT 
+   BLOOD.INI
+   BLOOD.RFF
+   BLOOD000.DEM, ..., BLOOD003.DEM (optional)
+   CP01.MAP, ..., CP09.MAP (optional, Cryptic Passage)
+   CPART07.AR_ (optional, Cryptic Passage)
+   CPART15.AR_ (optional, Cryptic Passage)
+   CPBB01.MAP, ..., CPBB04.MAP (optional, Cryptic Passage)
+   CPSL.MAP (optional, Cryptic Passage)
+   CRYPTIC.INI (optional, Cryptic Passage)
+   CRYPTIC.SMK (optional, Cryptic Passage)
+   CRYPTIC.WAV (optional, Cryptic Passage)
+   GUI.RFF
+   SOUNDS.RFF
+   SURFACE.DAT
+   TILES000.ART, ..., TILES017.ART
+   VOXEL.DAT
+   VOXEL.DAT
    ```
 
 3. Optionally, if you want to use CD audio tracks instead of MIDI, provide FLAC/OGG recordings in following format: bloodXX.flac/ogg, where XX is track number. Make sure to enable Redbook audio option in sound menu.
