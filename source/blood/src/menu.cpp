@@ -1159,6 +1159,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolHitscanProjectiles, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerMode, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerSeed, false);
+    menuNetworkGameEnhancements.Add(&itemBloodQAV, false);
     itemNetEnhancementBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
     itemNetEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
     itemNetEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
@@ -1447,6 +1448,7 @@ void SetupOptionsMenu(void)
     menuOptionsGameEnhancements.Add(&itemEnhancementBoolHitscanProjectiles, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerMode, false);
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerSeed, false);
+    menuOptionsGameEnhancements.Add(&itemBloodQAV, false);
     itemOptionsChainEnhancements.bDisableForNet = 1;
     itemOptionsChainEnhancements.bEnable = !gVanilla;
     itemEnhancementMonsterSettings.tooltip_pzTextUpper = "Set the monster settings";
@@ -1489,7 +1491,6 @@ void SetupOptionsMenu(void)
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
 
     ///////
-    menuOptionsGameEnhancements.Add(&itemBloodQAV, false);
     itemEnhancementMonsterSettings.m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
     itemEnhancementBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
     itemEnhancementBoolDamageInvul.at20 = !!gDamageInvul;
