@@ -109,6 +109,7 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/BLOOD048.dem", (int32_t)0x00000AF3, 0x6E949D93, 0x00000000, {(int32_t)0xFFFF3468, (int32_t)0xFFFFD441, (int32_t)0x000061A4}},
     {"/validatedemos/BLOOD049.dem", (int32_t)0x00000C8F, 0x4E28530B, 0x00000000, {(int32_t)0xFFFFED7C, (int32_t)0x0000C8C0, (int32_t)0x000009A4}},
     {"/validatedemos/BLOOD050.dem", (int32_t)0x0000230B, 0xEA61B563, 0x00000000, {(int32_t)0x000029C1, (int32_t)0x00002C3F, (int32_t)0x000071A4}},
+    {"/validatedemos/BLOOD051.dem", (int32_t)0x00002EA8, 0x19510828, 0x00000000, {(int32_t)0x00001FE4, (int32_t)0x000031D9, (int32_t)0x00000DA4}},
 };
 
 int nBuild = 0;
@@ -535,7 +536,12 @@ _DEMOPLAYBACK:
                         Close();
                         if (gDemoRunValidation && !Bstrcasecmp(gDemoValidate[ARRAY_SSIZE(gDemoValidate)-1].zName, pCurrentDemo->zName)) // finished validation, abort
                         {
-                            ThrowError("1.21 Validation Successful!", pCurrentDemo->zName);
+                            uint32_t nTotalTicks = 0;
+                            for (int index = 0; index < ARRAY_SSIZE(gDemoValidate); index++)
+                            {
+                                nTotalTicks += (uint32_t)gDemoValidate[index].nInputTicks;
+                            }
+                            ThrowError("1.21 Validation Successful!\nTotal Demo Hours: %02d:%02d", nTotalTicks/(kTicsPerSec*60)/60, nTotalTicks/(kTicsPerSec*60)%60);
                             gQuitGame = true;
                             break;
                         }
