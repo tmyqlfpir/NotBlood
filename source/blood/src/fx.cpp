@@ -139,7 +139,7 @@ void CFX::fxFree(int nSprite)
         actPostSprite(nSprite, kStatFree);
 }
 
-spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned int duration)
+spritetype * CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned int duration)
 {
     if (nSector < 0 || nSector >= numsectors)
         return NULL;
@@ -222,7 +222,7 @@ spritetype *CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned i
         int nXSprite = dbInsertXSprite(pSprite->index);
         seqSpawn(pFX->seq, 3, nXSprite, -1);
     }
-    if (!duration) // no override duration given, load from global fx data struct
+    if (duration == 0) // no override duration set, load from global fx data struct
         duration = pFX->duration;
     if (duration)
         evPost((int)pSprite->index, 3, duration+Random2(duration>>1), kCallbackRemove);

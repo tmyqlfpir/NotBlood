@@ -242,7 +242,7 @@ void fxDynPuff(int nSprite) // 8
             int x = pSprite->x + mulscale30(nDist, Cos(pSprite->ang-512));
             int y = pSprite->y + mulscale30(nDist, Sin(pSprite->ang-512));
             int z = pSprite->z;
-            spritetype *pFX = gFX.fxSpawn(FX_7, pSprite->sectnum, x, y, z, 0);
+            spritetype *pFX = gFX.fxSpawn(FX_7, pSprite->sectnum, x, y, z);
             if (pFX)
             {
                 xvel[pFX->index] = xvel[nSprite];
