@@ -917,7 +917,7 @@ static void DoQuickLoad(void)
             QuickLoadGame();
             return;
         }
-        else if ((gAutosave == 3) && gAutosaveInCurLevel) // if quicksave slot is not set, and autosave mode set to disable manual saving, load autosave
+        else if (gLockManualSaving && gAutosaveInCurLevel) // if quicksave slot is not set, and manual saving is locked, load autosave
         {
             gQuickLoadSlot = AUTOSAVESLOT_START;
             QuickLoadGame();
@@ -931,10 +931,10 @@ static void DoQuickSave(void)
 {
     if (gGameStarted && !gGameMenuMgr.m_bActive && gPlayer[myconnectindex].pXSprite->health != 0)
     {
-        if (gAutosave == 3) // if autosave mode set to disable manual saving
+        if (gLockManualSaving) // if manual saving is locked
         {
             viewSetMessage("Quicksaving is locked!");
-            viewSetMessage("Change autosave settings to save...");
+            viewSetMessage("Change lock save settings to save...");
             return;
         }
         if (gQuickSaveSlot != -1)
@@ -1078,12 +1078,12 @@ void LocalKeys(void)
             break;
         case sc_F2:
             keyFlushScans();
-            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == 0 && gAutosave != 3)
+            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == 0 && !gLockManualSaving)
                 gGameMenuMgr.Push(&menuSaveGame,-1);
-            else if (gAutosave == 3 && gGameOptions.nGameType == 0) // if autosave mode set to disable manual saving and not currently in multiplayer
+            else if (gLockManualSaving && gGameOptions.nGameType == 0) // if manual saving is locked and not currently in multiplayer
             {
                 viewSetMessage("Saving is locked!");
-                viewSetMessage("Change autosave settings to save...");
+                viewSetMessage("Change lock save settings to save...");
             }
             break;
         case sc_F3:

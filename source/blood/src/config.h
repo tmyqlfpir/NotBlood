@@ -61,6 +61,7 @@ extern int32_t gDetail;
 extern int32_t gAutoAim;
 extern int32_t gWeaponSwitch;
 extern int32_t gWeaponFastSwitch;
+extern int32_t gLockManualSaving;
 extern int32_t gAutosave;
 extern bool gAutosaveInCurLevel;
 extern int32_t gAutoRun;
