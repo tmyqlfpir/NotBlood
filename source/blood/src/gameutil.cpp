@@ -1079,6 +1079,7 @@ int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSector
                     const double nDist4sq = 256. * nDist * nDist; // (nDist * 16)^2 - * 16 to account for build's 28.4 fixed point format
                     const double dist1 = SquareDistToWall(x, y, pWall);
                     withinRange = dist1 <= nDist4sq;
+                    setSectBit = false; // check every wall, every time
                 }
                 else // notblood - first test edges and then wall span midpoints
                 {
