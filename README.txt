@@ -48,22 +48,47 @@ New features include:
 * NO U - Activates reflect shots power-up
 
 ### Enhancements Options
-* Replace guns akimbo with quad damage - Self explanatory, replaces the guns akimbo powerup with Quake's quad damage (lasts 25 seconds)
-* Hitscan damage invulnerability - Apply a short invulnerability state for the player for bullet/spirit/tesla damage
-* Explosions behavior - Replace the default vanilla explosion calculation with an new improved sector scanning system (fixes cases where enemies did not take explosive damage)
-* Projectiles behavior - For player projectiles, it'll use the improved eduke32's clipmove() logic as well as raymatching per tick. This feature also adjusts certain hitboxes so it's easier to target around corners
-* Enemy behavior - Fixes bugs with the vanilla enemy behavior such as tiny Caleb using the wrong burning sprite, enemies sometimes burning indefinitely, cultists switching weapons if extinguished in water, Cerberus spinning uselessly on lava, etc
-* Weapon behavior - Select between original weapon behavior, NBlood's V1.X behavior or NotBlood's weapon tweaks which include:
-    * Adjust pitch offset for spray/missile firing
-    * Adds a charge up stab for pitchfork's alt fire
-    * Makes lifeleech throwable and increases the damage in sentry mode
-    * Do double melee damage if attacking enemies from 45 degrees behind
-    * Allows tesla projectiles to be reflected back with reflective shots powerup
-    * Adds a special alt fire missile attack for pitchfork's charge up while quad damage is active
-* Sector behavior - Fixes room over room sector handling with hitscan calculations (this allows hitscan weapons to be fired when floating above water)
-* Hitscan projectiles - Makes enemies that would use hitscan bullets spawn physical sprite based bullets with travel time
-* Randomizer mode - Set the enemy/pickups randomizer mode
-* Randomizer seed - Set the enemy/pickups randomizer's seed (an empty string will regenerate anew for every level start)
+* Replace guns akimbo with quad damage
+    - Replaces the guns akimbo powerup with Quake's quad damage (lasts 22 seconds)
+* Player damage invulnerability
+    - Apply a short invulnerability state for the player for bullet hitscans/spirit/tesla damage
+    - Invulnerability duration changes depending on enemy difficulty/current player health (lower health = longer invulnerability state)
+* Explosions behavior
+    - Replace the default vanilla explosion calculation with an new improved sector scanning system
+    - Fixes rare cases where enemies appear to ignore explosive damage due to sector/span order
+* Projectiles behavior
+    - For player projectiles, it'll use the improved eduke32's clipmove() logic as well as raymatching per tick
+    - This feature also adjusts certain hitboxes so it's easier to throw/target around corners
+* Enemy behavior
+    - Fixes various original 1.21 bugs with enemies such as:
+    - Tiny Caleb using the wrong burning sprite
+    - Enemies sometimes burning indefinitely
+    - Ignited cultists switching weapons when extinguished in water
+    - Cerberus spinning uselessly on lava
+    - Improved beast stomp attack sector scanning
+    - Enemies getting permastuck in corners while wandering (they'll attempt to turn around)
+* Random Cultist TNT
+    - This will make cultists use a variety of random thrown sprites such as:
+    - Napalm balls, proxy bundles, armed spray cans or pod projectiles
+* Weapon behavior
+    - Select between original weapon behavior, NBlood's V1.X behavior or NotBlood's tweaked weapon set which include:
+    - Adjust pitch offset for spray/missile firing
+    - Adds a charge up stab for pitchfork's alt fire
+    - Makes lifeleech throwable and increases the damage in sentry mode
+    - Do double melee damage if attacking enemies from 45 degrees behind
+    - Allows tesla projectiles to be reflected back with reflective shots powerup
+    - Adds a special alt fire missile attack for pitchfork's charge up while quad damage is active
+* Sector behavior
+    - Fixes room over room sector handling with hitscan calculations
+    - This lets hitscan weapons to be fired when floating above water
+* Hitscan projectiles
+    - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
+    - Projectile speed is adjusted depending on difficulty and if bullet is underwater
+* Randomizer mode
+    - Set the enemy/pickups randomizer mode
+* Randomizer seed
+    - Set the enemy/pickups randomizer's seed
+    - An empty string will regenerate anew for every level start
 
 ### New console variables for NotBlood
 * notarget
@@ -138,7 +163,7 @@ New features include:
 3. Optionally, if you want to use CD audio tracks instead of MIDI, provide FLAC/OGG recordings in following format: bloodXX.flac/ogg, where XX is track number. Make sure to enable Redbook audio option in sound menu.
 4. Optionally, if you want cutscenes and you have the original CD, copy the `movie` folder into NotBlood's folder (the folder itself too).
 If you have the GOG version of the game, do the following:
-   * make a copy of `game.ins` (or `game.inst`) named `game.cue`
-   * mount the `.cue` as a virtual CD (for example with `WinCDEmu`)
-   * copy the `movie` folder from the mounted CD into NotBlood's folder
+   - make a copy of `game.ins` (or `game.inst`) named `game.cue`
+   - mount the `.cue` as a virtual CD (for example with `WinCDEmu`)
+   - copy the `movie` folder from the mounted CD into NotBlood's folder
 5. Launch NotBlood (on Linux, to play Cryptic Passage, launch with the `-ini CRYPTIC.INI` parameter)
