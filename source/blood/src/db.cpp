@@ -718,8 +718,8 @@ void dbRandomizerModeInit(void)
         "GHSTBSTR", // no phantoms
         "SAFEWORD", // no hands
         "SAFEWATR", // no hands/gill beasts
-        "PESTCTRL", // no rats/hands/spiders
-        "IH8PETS!", // no rats/hands/spiders/bats/hell hounds
+        "PESTCTRL", // no hands/rats/spiders
+        "IH8PETS!", // no hands/rats/spiders/bats/hell hounds
     };
 
     const uint32_t defaultSeed = 0xCA1EB666;
@@ -873,11 +873,11 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 if ((pSprite->type == kDudeHand) || (pSprite->type == kDudeGillBeast))
                     erased = true;
                 break;
-            case 19: // "PESTCTRL" - no rats/hands/spiders
+            case 19: // "PESTCTRL" - no hands/rats/spiders
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed))
                     erased = true;
                 break;
-            case 20: // "IH8PETS!" - no rats/hands/spiders/bats/hell hounds
+            case 20: // "IH8PETS!" - no hands/rats/spiders/bats/hell hounds
                 if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeBat) || (pSprite->type == kDudeHellHound))
                     erased = true;
                 break;

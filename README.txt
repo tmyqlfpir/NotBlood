@@ -3,7 +3,7 @@ A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-en
 
 New features include:
 * Default midi uses a SC55 soundfont by trevor0402 (https://github.com/trevor0402/SC55Soundfont)
-* Difficulty based invulnerability timer for bullet/spirit/tesla damage
+* Difficulty based invulnerability timer for player damage
 * Smaller hitboxes for player projectiles
 * Raymarching collision testing for player projectiles
 * Replaced sector based damage logic for player explosions
@@ -14,14 +14,17 @@ New features include:
 * Increase drawn sprites on screen limit from 2560 to 4096
 * Autosaving on collecting keys and start of level
 * Reflection sphere will reflect tesla fire
+* Throwable lifeleech alt fire
 * Charge up alt fire for pitchfork
 * Bullet projectiles for hitscan enemies
+* Fixed bullet casings clipping into walls
 * New enhancements menu under game options
 * New last weapon key binding (default Q)
 * Lower gravity of bullet casings and gibs underwater
 * Fixed various original glitches with burning enemies
 * Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
+* Allow particle sprites to traverse through room over room sectors
 * Switch to last active weapon if TNT/spray can is active when entering water
 * Increased blood splatter duration and improved floor collision detection
 * Basic room over room support for positional audio
@@ -108,8 +111,8 @@ New features include:
 * GHSTBSTR - No phantoms
 * SAFEWORD - No hands
 * SAFEWATR - No hands/gill beasts
-* PESTCTRL - No rats/hands/spiders
-* IH8PETS! - No rats/hands/spiders/bats/hell hounds
+* PESTCTRL - No hands/rats/spiders
+* IH8PETS! - No hands/rats/spiders/bats/hell hounds
 
 ### Installing
 1. Extract NotBlood to a new directory

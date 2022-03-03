@@ -561,7 +561,7 @@ const char *pzAutosaveModeStrings[] = {
 };
 
 const char *pzLockSavingStrings[] = {
-    "NO",
+    "NEVER",
     "AUTOSAVES ONLY",
 };
 
@@ -610,7 +610,7 @@ CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 107, 180, 0, 
 CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 117, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
 CGameMenuItemZBool itemOptionsGameWeaponFastSwitch("FAST WEAPON SWITCH:", 3, 66, 127, 180, 0, SetWeaponFastSwitch, NULL, NULL);
 CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 137, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
-CGameMenuItemZCycle itemOptionsGameLockSaving("LOCK SAVING:", 3, 66, 147, 180, 0, SetLockSaving, pzLockSavingStrings, ARRAY_SSIZE(pzLockSavingStrings), 0);
+CGameMenuItemZCycle itemOptionsGameLockSaving("LOCK MANUAL SAVING:", 3, 66, 147, 180, 0, SetLockSaving, pzLockSavingStrings, ARRAY_SSIZE(pzLockSavingStrings), 0);
 CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 157, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
 //CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 167, 320, 1, &menuParentalLock, -1, NULL, 0);
 

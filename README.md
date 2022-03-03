@@ -19,12 +19,14 @@ New features include:
 * Throwable lifeleech alt fire
 * Charge up alt fire for pitchfork
 * Bullet projectiles for hitscan enemies
+* Fixed bullet casings clipping into walls
 * New enhancements menu under game options
 * New last weapon key binding (default Q) ([demo](https://files.catbox.moe/28cirg.mp4))
 * Lower gravity of bullet casings and gibs underwater
 * Fixed various original glitches with burning enemies
 * Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
+* Allow particle sprites to traverse through room over room sectors
 * Switch to last active weapon if TNT/spray can is active when entering water
 * Increased blood splatter duration and improved floor collision detection
 * Basic room over room support for positional audio ([before](https://files.catbox.moe/qca0k4.mp4)/[after](https://files.catbox.moe/wq1so4.mp4))
