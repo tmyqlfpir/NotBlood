@@ -2,18 +2,6 @@
 # EDuke32 Makefile for GNU Make
 #
 
-### Global Profiles
-ifeq ($(FURY),1)
-    APPBASENAME := fury
-    APPNAME := Ion Fury
-    NETCODE := 0
-    POLYMER := 0
-    RETAIL_MENU := 1
-    STANDALONE := 1
-    USE_LIBVPX := 0
-    SDL_STATIC := 1
-endif
-
 ### Platform and Toolchain Configuration
 include Common.mak
 
