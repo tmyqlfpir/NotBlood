@@ -649,7 +649,6 @@ libraries := \
     mact \
     libsmackerdec \
     hmpplay \
-    n64 \
 
 ifneq (0,$(USE_PHYSFS))
     libraries += physfs
