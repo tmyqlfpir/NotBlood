@@ -10,7 +10,9 @@
 #include "editor.h"
 #include "osd.h"
 #include "scancodes.h"
+#if USE_MIMALLOC != 0
 #include "mimalloc.h"
+#endif
 #include "atomiclist.h"
 
 #define XXH_STATIC_LINKING_ONLY
@@ -635,7 +637,9 @@ static int osdfunc_history(osdcmdptr_t UNUSED(parm))
 //
 void OSD_Cleanup(void)
 {
+#if USE_MIMALLOC != 0
     mi_register_output(NULL, NULL);
+#endif
 
     osd_clear();
     mutex_lock(&osd->log.mutex);
@@ -857,7 +861,9 @@ void OSD_SetLogFile(const char *fn)
 
     osdlogfn = fn;
 
+#if USE_MIMALLOC != 0
     mi_register_output((mi_output_fun *)(void *)&OSD_Puts, NULL);
+#endif
 }
 
 

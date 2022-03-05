@@ -2,7 +2,9 @@
 #if __SANITIZE_ADDRESS__ == 1
 
 #include "compat.h"
+#if USE_MIMALLOC != 0
 #include "mimalloc-override.h"
+#endif
 #include "smmalloc.h"
 
 #include <unordered_map>
@@ -71,7 +73,7 @@ void GuardedAllocator::Free(GuardedAllocator::TInstance instance, void* p)
     void *       block    = iter->second.headerStart;
 
     ASAN_UNPOISON_MEMORY_REGION(block, realSize);
-    mi_free(block);
+    free(block);
 
     m_allocs.erase(iter);
 }
@@ -98,7 +100,7 @@ void* GuardedAllocator::Alloc(GuardedAllocator::TInstance instance, size_t bytes
     size_t const realSize = AlignSize(paddedSize, alignment);
 
     // Poison the whole range:
-    void *block = mi_malloc(realSize);
+    void *block = malloc(realSize);
     ASAN_POISON_MEMORY_REGION(block, realSize);
 
     AllocRecord ar;

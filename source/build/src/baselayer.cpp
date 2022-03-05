@@ -4,7 +4,9 @@
 #include "build.h"
 #include "cache1d.h"
 #include "compat.h"
+#if USE_MIMALLOC != 0
 #include "mimalloc.h"
+#endif
 #include "osd.h"
 #include "polymost.h"
 #include "renderlayer.h"
@@ -142,12 +144,14 @@ static int osdfunc_bucketlist(osdcmdptr_t UNUSED(parm))
     return OSDCMD_OK;
 }
 
+#if USE_MIMALLOC != 0
 static int osdfunc_heapinfo(osdcmdptr_t UNUSED(parm))
 {
     UNREFERENCED_CONST_PARAMETER(parm);
     mi_stats_print(NULL);
     return OSDCMD_OK;
 }
+#endif
 
 void engineSetupAllocator(void)
 {
@@ -156,7 +160,9 @@ void engineSetupAllocator(void)
 #ifdef SMMALLOC_STATS_SUPPORT
     OSD_RegisterFunction("bucketlist", "bucketlist: list bucket statistics", osdfunc_bucketlist);
 #endif
+#if USE_MIMALLOC != 0
     OSD_RegisterFunction("heapinfo", "heapinfo: memory usage statistics", osdfunc_heapinfo);
+#endif
 }
 
 const char*(*gameVerbosityCallback)(loguru::Verbosity verbosity) = nullptr;

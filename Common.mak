@@ -350,6 +350,7 @@ HAVE_FLAC := 1
 HAVE_XMP := 1
 RENDERTYPE := SDL
 SDL_TARGET := 2
+USE_MIMALLOC := 1
 USE_PHYSFS := 0
 
 ifneq (0,$(USE_PHYSFS))
@@ -886,6 +887,9 @@ ifneq (0,$(HAVE_FLAC))
 endif
 ifneq (0,$(HAVE_XMP))
     COMPILERFLAGS += -DHAVE_XMP
+endif
+ifneq (1,$(USE_MIMALLOC))
+    COMPILERFLAGS += -DUSE_MIMALLOC=0
 endif
 
 ifeq ($(RENDERTYPE),SDL)
