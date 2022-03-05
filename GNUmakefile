@@ -172,39 +172,6 @@ mimalloc_obj := $(obj)/$(mimalloc)
 
 mimalloc_cflags := -D_WIN32_WINNT=0x0600 -DMI_USE_RTLGENRANDOM -DMI_SHOW_ERRORS -I$(mimalloc_inc) -fexceptions -Wno-cast-qual -Wno-class-memaccess -Wno-unknown-pragmas
 
-#### Voidwrap
-
-voidwrap := voidwrap
-
-voidwrap_objs := \
-    voidwrap_steam.cpp
-
-voidwrap_root := $(source)/$(voidwrap)
-voidwrap_src := $(voidwrap_root)/src
-voidwrap_inc := $(voidwrap_root)/include
-voidwrap_obj := $(obj)/$(voidwrap)
-
-ifeq ($(IMPLICIT_ARCH),x86_64)
-    ifeq ($(PLATFORM),WINDOWS)
-        voidwrap_lib := voidwrap_steam_x64.dll
-        steamworks_lib := win64/steam_api64.dll
-    else
-        voidwrap_lib := libvoidwrap_steam.so
-        steamworks_lib := linux64/libsteam_api.so
-    endif
-else
-    ifeq ($(PLATFORM),WINDOWS)
-        voidwrap_lib := voidwrap_steam_x86.dll
-        steamworks_lib := steam_api.dll
-    else
-        voidwrap_lib := libvoidwrap_steam.so
-        steamworks_lib := linux32/libsteam_api.so
-    endif
-endif
-
-voidwrap_cflags := -I$(voidwrap_root)/sdk/public/steam -fPIC -fvisibility=hidden -Wno-invalid-offsetof
-
-
 #### libsmackerdec
 
 libsmackerdec := libsmackerdec
@@ -277,7 +244,6 @@ engine_objs := \
     clip.cpp \
     colmatch.cpp \
     common.cpp \
-    communityapi.cpp \
     compat.cpp \
     cpuid.cpp \
     crc32.cpp \
@@ -668,7 +634,6 @@ COMPILERFLAGS += \
     -I$(mact_inc) \
     -I$(audiolib_inc) \
     -I$(glad_inc) \
-    -I$(voidwrap_inc) \
     -I$(mimalloc_inc) \
     -I$(libsmackerdec_inc) \
     -I$(hmpplay_inc) \
@@ -694,7 +659,6 @@ libraries := \
     libxmplite \
     mimalloc \
     mact \
-    voidwrap \
     libsmackerdec \
     hmpplay \
     n64 \
@@ -803,13 +767,6 @@ getdxdidf$(EXESUFFIX): $(tools_obj)/getdxdidf.$o $(foreach i,tools $(tools_deps)
 	$(RECIPE_IF) $(LINKER) -o $@ $^ $(LIBDIRS) $(LIBS) -ldinput $(RECIPE_RESULT_LINK)
 
 
-### Voidwrap
-
-$(voidwrap_lib): $(foreach i,$(voidwrap),$(call expandobjs,$i))
-	$(LINK_STATUS)
-	$(RECIPE_IF) $(LINKER) -shared -Wl,-soname,$@ -o $@ $^ $(LIBDIRS) $(voidwrap_root)/sdk/redistributable_bin/$(steamworks_lib) $(RECIPE_RESULT_LINK)
-
-
 ### Main Rules
 
 define OBJECTRULES
@@ -908,7 +865,6 @@ cleantools:
 clean: cleanblood cleantools
 	-$(call RMDIR,$(obj))
 	-$(call RM,$(ebacktrace_dll))
-	-$(call RM,$(voidwrap_lib))
 
 printtools:
 	echo "$(addsuffix $(EXESUFFIX),$(tools_targets))"

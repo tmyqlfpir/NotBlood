@@ -13,7 +13,6 @@
 #include "build.h"
 #include "cache1d.h"
 #include "colmatch.h"
-#include "communityapi.h"
 #include "compat.h"
 #include "crc32.h"
 #include "editor.h"
@@ -8872,8 +8871,6 @@ int32_t enginePostInit(void)
 //
 void engineUnInit(void)
 {
-    communityapiShutdown();
-
 #ifdef USE_OPENGL
     if (qsetmode)
     {

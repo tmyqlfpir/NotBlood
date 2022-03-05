@@ -40,7 +40,6 @@
 #endif
 
 #include "vfs.h"
-#include "communityapi.h"
 
 #define MICROPROFILE_IMPL
 #include "microprofile.h"
@@ -2689,8 +2688,6 @@ int32_t handleevents(void)
 
     inputchecked = 0;
     timerUpdateClock();
-
-    communityapiRunCallbacks();
 
 #ifdef USE_OPENGL
     if (!nogl && glinfo.reset_notification)

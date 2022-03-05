@@ -3,7 +3,6 @@
 #include "a.h"
 #include "build.h"
 #include "cache1d.h"
-#include "communityapi.h"
 #include "compat.h"
 #include "mimalloc.h"
 #include "osd.h"

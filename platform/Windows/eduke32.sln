@@ -27,8 +27,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsmackerdec", "libsmacker
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hmpplay", "hmpplay.vcxproj", "{ACB5467D-9913-4A23-88C8-56A36DFA2DB4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "voidwrap", "voidwrap.vcxproj", "{01230AD2-3746-418F-84D8-189E7CBC16C9}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mimalloc", "mimalloc.vcxproj", "{1150264B-19C6-4C32-A204-CB79E96D5492}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "notblood", "notblood.vcxproj", "{5407CB5A-4B15-41FA-B79B-8B386A14D275}"
