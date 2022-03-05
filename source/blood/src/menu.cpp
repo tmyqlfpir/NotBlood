@@ -1424,6 +1424,7 @@ void SetupOptionsMenu(void)
     menuOptionsGame.Add(&itemOptionsGameLockSaving, false);
     menuOptionsGame.Add(&itemOptionsGameBoolVanillaMode, false);
     itemOptionsGameAutosaveMode.bDisableForNet = 1;
+    itemOptionsGameLockSaving.bDisableForNet = 1;
     itemOptionsGameBoolVanillaMode.bDisableForNet = 1;
     itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
