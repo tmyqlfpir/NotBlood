@@ -70,8 +70,6 @@ int32_t scripthandle;
 int32_t setupread;
 int32_t MusicRestartsOnLoadToggle;
 int32_t configversion;
-int32_t CheckForUpdates;
-int32_t LastUpdateCheck;
 int32_t useprecache;
 char CommbatMacro[MAXRIDECULE][MAXRIDECULELENGTH];
 char szPlayerName[MAXPLAYERNAME];
@@ -351,7 +349,6 @@ void CONFIG_SetDefaults(void)
 
     //ud.config.AmbienceToggle  = 1;
     //ud.config.AutoAim         = 1;
-    CheckForUpdates = 0;
     FXVolume        = 255;
     MouseBias       = 0;
     MouseDeadZone   = 0;
@@ -860,11 +857,6 @@ int CONFIG_ReadSetup(void)
 
     //SCRIPT_GetNumber(scripthandle, "Misc", "Executions", &ud.executions);
 
-#ifdef _WIN32
-    SCRIPT_GetNumber(scripthandle, "Updates", "CheckForUpdates", &CheckForUpdates);
-    SCRIPT_GetNumber(scripthandle, "Updates", "LastUpdateCheck", &LastUpdateCheck);
-#endif
-
     setupread = 1;
     return 0;
 }
@@ -973,11 +965,6 @@ void CONFIG_WriteSetup(uint32_t flags)
     //    SCRIPT_PutNumber(scripthandle, "Screen Setup", "Out",ud.lockout,FALSE,FALSE);
     //    SCRIPT_PutString(scripthandle, "Screen Setup", "Password",ud.pwlockout);
     //}
-
-#ifdef _WIN32
-    SCRIPT_PutNumber(scripthandle, "Updates", "CheckForUpdates", CheckForUpdates, FALSE, FALSE);
-    SCRIPT_PutNumber(scripthandle, "Updates", "LastUpdateCheck", LastUpdateCheck, FALSE, FALSE);
-#endif
 
     if (gSetup.usemouse)
     {

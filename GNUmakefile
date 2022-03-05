@@ -647,7 +647,6 @@ ifeq ($(PLATFORM),DARWIN)
 endif
 
 ifeq ($(PLATFORM),WINDOWS)
-    blood_game_objs += winbits.cpp
     blood_game_rsrc_objs += gameres.rc
     ifeq ($(STARTUP_WINDOW),1)
         blood_game_objs += startwin.game.cpp

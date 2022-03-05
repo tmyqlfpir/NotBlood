@@ -50,8 +50,6 @@ extern int32_t scripthandle;
 extern int32_t setupread;
 extern int32_t MusicRestartsOnLoadToggle;
 extern int32_t configversion;
-extern int32_t CheckForUpdates;
-extern int32_t LastUpdateCheck;
 extern int32_t useprecache;
 extern char CommbatMacro[MAXRIDECULE][MAXRIDECULELENGTH];
 extern char szPlayerName[MAXPLAYERNAME];

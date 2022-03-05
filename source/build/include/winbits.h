@@ -22,7 +22,6 @@ extern int32_t win_priorityclass;
 extern char    win_silentvideomodeswitch;
 extern DWM_TIMING_INFO timingInfo;
 
-int32_t windowsCheckForUpdates(char *buffer);
 int     windowsCheckAlreadyRunning(void);
 void    windowsDwmSetupComposition(int compEnable);
 int     windowsGetCommandLine(char **argvbuf);
