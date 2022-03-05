@@ -1650,6 +1650,8 @@ void ParseOptions(void)
             break;
         case 44: // validate
             gDemoRunValidation = true;
+            bQuickStart = true;
+            bNoDemo = false;
             break;
         }
     }
