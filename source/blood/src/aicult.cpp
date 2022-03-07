@@ -83,9 +83,11 @@ AISTATE cultistSProneFire = { kAiStateChase, 8, nShotClient, 60, NULL, NULL, NUL
 AISTATE cultistTProneFire = { kAiStateChase, 8, nTommyClient, 0, NULL, aiMoveTurn, thinkChase, &cultistTProneFire };
 AISTATE cultistTsProneFire = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, NULL, &cultistTsProneFire };
 AISTATE cultistTsProneFireFixed1 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, thinkChase, &cultistChase };
-AISTATE cultistTsProneFireFixed2 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveDodge, NULL, &cultistTsProneFireFixed1 };
-AISTATE cultistTsProneFireFixed3 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveDodge, NULL, &cultistTsProneFireFixed2 };
-AISTATE cultistTsProneFireFixed4 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveDodge, NULL, &cultistTsProneFireFixed3 };
+AISTATE cultistTsProneFireFixed2 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, NULL, &cultistTsProneFireFixed1 };
+AISTATE cultistTsProneFireFixed3 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, thinkChase, &cultistTsProneFireFixed2 };
+AISTATE cultistTsProneFireFixed4 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, NULL, &cultistTsProneFireFixed3 };
+AISTATE cultistTsProneFireFixed5 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, thinkChase, &cultistTsProneFireFixed4 };
+AISTATE cultistTsProneFireFixed6 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, NULL, &cultistTsProneFireFixed5 };
 AISTATE cultistRecoil = { kAiStateRecoil, 5, -1, 0, NULL, NULL, NULL, &cultistDodge };
 AISTATE cultistProneRecoil = { kAiStateRecoil, 5, -1, 0, NULL, NULL, NULL, &cultistProneDodge };
 AISTATE cultistTeslaRecoil = { kAiStateRecoil, 4, -1, 0, NULL, NULL, NULL, &cultistDodge };
@@ -580,7 +582,7 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                     }
                     else if (nDist < 0x3200 && klabs(nDeltaAngle) < 28)
                     {
-                        AISTATE *pProneState = EnemiesNotBlood() && !VanillaMode() ? &cultistTsProneFireFixed4 : &cultistTsProneFire; // use non-glitched prone attack
+                        AISTATE *pCultistTsProneFire = EnemiesNotBlood() && !VanillaMode() ? &cultistTsProneFireFixed6 : &cultistTsProneFire; // use non-glitched prone attack
                         int hit = HitScan(pSprite, pSprite->z, dx, dy, 0, CLIPMASK1, 0);
                         switch (hit)
                         {
@@ -588,7 +590,7 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                             if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTsFire);
                             else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
-                                aiNewState(pSprite, pXSprite, pProneState);
+                                aiNewState(pSprite, pXSprite, pCultistTsProneFire);
                             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                 aiNewState(pSprite, pXSprite, &cultistTsSwimFire);
                             break;
@@ -598,7 +600,7 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                                 if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                     aiNewState(pSprite, pXSprite, &cultistTsFire);
                                 else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
-                                    aiNewState(pSprite, pXSprite, pProneState);
+                                    aiNewState(pSprite, pXSprite, pCultistTsProneFire);
                                 else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                     aiNewState(pSprite, pXSprite, &cultistTsSwimFire);
                             }
@@ -616,7 +618,7 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                             if (!dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
                                 aiNewState(pSprite, pXSprite, &cultistTsFire);
                             else if (dudeIsPlayingSeq(pSprite, 14) && pXSprite->medium == kMediumNormal)
-                                aiNewState(pSprite, pXSprite, pProneState);
+                                aiNewState(pSprite, pXSprite, pCultistTsProneFire);
                             else if (pXSprite->medium == kMediumWater || pXSprite->medium == kMediumGoo)
                                 aiNewState(pSprite, pXSprite, &cultistTsSwimFire);
                             break;
