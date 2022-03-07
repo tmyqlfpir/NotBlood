@@ -81,13 +81,8 @@ AISTATE cultistTFire = { kAiStateChase, 6, nTommyClient, 0, NULL, aiMoveTurn, th
 AISTATE cultistTsFire = { kAiStateChase, 6, nTeslaClient, 0, NULL, aiMoveTurn, thinkChase, &cultistChase };
 AISTATE cultistSProneFire = { kAiStateChase, 8, nShotClient, 60, NULL, NULL, NULL, &cultistProneChase };
 AISTATE cultistTProneFire = { kAiStateChase, 8, nTommyClient, 0, NULL, aiMoveTurn, thinkChase, &cultistTProneFire };
-AISTATE cultistTsProneFire = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, NULL, &cultistTsProneFire };
-AISTATE cultistTsProneFireFixed1 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, thinkChase, &cultistChase };
-AISTATE cultistTsProneFireFixed2 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, NULL, &cultistTsProneFireFixed1 };
-AISTATE cultistTsProneFireFixed3 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, thinkChase, &cultistTsProneFireFixed2 };
-AISTATE cultistTsProneFireFixed4 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, NULL, &cultistTsProneFireFixed3 };
-AISTATE cultistTsProneFireFixed5 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, thinkChase, &cultistTsProneFireFixed4 };
-AISTATE cultistTsProneFireFixed6 = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, NULL, &cultistTsProneFireFixed5 };
+AISTATE cultistTsProneFire = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, NULL, &cultistTsProneFire }; // vanilla, broken
+AISTATE cultistTsProneFireFixed = { kAiStateChase, 8, nTeslaClient, 0, NULL, aiMoveTurn, thinkChase, &cultistTsProneFireFixed };
 AISTATE cultistRecoil = { kAiStateRecoil, 5, -1, 0, NULL, NULL, NULL, &cultistDodge };
 AISTATE cultistProneRecoil = { kAiStateRecoil, 5, -1, 0, NULL, NULL, NULL, &cultistProneDodge };
 AISTATE cultistTeslaRecoil = { kAiStateRecoil, 4, -1, 0, NULL, NULL, NULL, &cultistDodge };
@@ -582,7 +577,7 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                     }
                     else if (nDist < 0x3200 && klabs(nDeltaAngle) < 28)
                     {
-                        AISTATE *pCultistTsProneFire = EnemiesNotBlood() && !VanillaMode() ? &cultistTsProneFireFixed6 : &cultistTsProneFire; // use non-glitched prone attack
+                        AISTATE *pCultistTsProneFire = EnemiesNotBlood() && !VanillaMode() ? &cultistTsProneFireFixed : &cultistTsProneFire; // use non-glitched prone fire state
                         int hit = HitScan(pSprite, pSprite->z, dx, dy, 0, CLIPMASK1, 0);
                         switch (hit)
                         {
