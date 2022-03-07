@@ -904,6 +904,16 @@ void aiSetTarget(XSPRITE *pXSprite, int nTarget)
     }
 }
 
+bool aiDudeIsDead(int nSprite)
+{
+    if (!spriRangeIsFine(nSprite))
+        return false;
+    spritetype *pSprite = &sprite[nSprite];
+    if ((pSprite->extra < 0) || (pSprite->extra >= kMaxXSprites))
+        return false;
+    return (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && ((xsprite[pSprite->extra].health == 0) || !IsDudeSprite(pSprite));
+}
+
 int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_TYPE nDmgType, int nDamage)
 {
     dassert(nSource < kMaxSprites);
@@ -915,10 +925,12 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
     int nSprite = pXSprite->reference;
     if (nSource >= 0) {
         spritetype *pSource = &sprite[nSource];
+        const bool bTargetIsAlive = !aiDudeIsDead(nSource);
         if (pSprite == pSource) return 0;
         else if (pXSprite->target == -1) // if no target, give the dude a target
         {
-            aiSetTarget(pXSprite, nSource);
+            if ((bTargetIsAlive && EnemiesNotBlood() && !VanillaMode()) || (!EnemiesNotBlood() || VanillaMode())) // if target is dude and dude is not dead, set target
+                aiSetTarget(pXSprite, nSource);
             aiActivateDude(pSprite, pXSprite);
         }
         else if (nSource != pXSprite->target) // if found a new target, retarget
@@ -931,7 +943,8 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
 
             if (Chance(nThresh))
             {
-                aiSetTarget(pXSprite, nSource);
+                if ((bTargetIsAlive && EnemiesNotBlood() && !VanillaMode()) || (!EnemiesNotBlood() || VanillaMode())) // if target is dude and dude is not dead, set target
+                    aiSetTarget(pXSprite, nSource);
                 aiActivateDude(pSprite, pXSprite);
             }
         }
