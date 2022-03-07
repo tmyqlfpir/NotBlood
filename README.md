@@ -24,6 +24,7 @@ New features include:
 * New last weapon key binding (default Q) ([demo](https://files.catbox.moe/28cirg.mp4))
 * Lower gravity of bullet casings and gibs underwater
 * Fixed various original glitches with burning enemies
+* Fixed tesla cultists becoming stuck when prone firing
 * Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
 * Allow particle sprites to traverse through room over room sectors

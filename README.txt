@@ -22,6 +22,7 @@ New features include:
 * New last weapon key binding (default Q)
 * Lower gravity of bullet casings and gibs underwater
 * Fixed various original glitches with burning enemies
+* Fixed tesla cultists becoming stuck when prone firing
 * Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
 * Allow particle sprites to traverse through room over room sectors
@@ -56,6 +57,7 @@ New features include:
 * Explosions behavior
     - Replace the default vanilla explosion calculation with an new improved sector scanning system
     - Fixes rare cases where enemies appear to ignore explosive damage due to sector/span order
+    - Includes two methods to choose from: NotBlood (integer based calculation) and Raze (double-precision floating-point calculation)
 * Projectiles behavior
     - For player projectiles, it'll use the improved eduke32's clipmove() logic as well as raymatching per tick
     - This feature also adjusts certain hitboxes so it's easier to throw/target around corners
@@ -66,7 +68,8 @@ New features include:
     - Ignited cultists switching weapons when extinguished in water
     - Cerberus spinning uselessly on lava
     - Improved beast stomp attack sector scanning
-    - Enemies getting permastuck in corners while wandering (they'll attempt to turn around)
+    - Check if enemy is alive before setting target for AI in-fighting
+    - Fixes tesla cultists bugged prone attack sequence
 * Random Cultist TNT
     - This will make cultists use a variety of random thrown sprites such as:
     - Napalm balls, proxy bundles, armed spray cans or pod projectiles
