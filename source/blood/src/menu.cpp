@@ -118,6 +118,7 @@ char strRestoreGameStrings[][16] =
     "<Empty>",
     "<Empty>",
     "<Empty>",
+
     "<Empty>",
     "<Empty>",
 };
@@ -134,6 +135,7 @@ char restoreGameDifficulty[] =
     2,
     2,
     2,
+
     2,
     2,
 };
@@ -1283,6 +1285,7 @@ void SetupLoadGameMenu(void)
     menuLoadGame.Add(&itemLoadGameAutosaveStart, false);
     menuLoadGame.Add(&itemLoadGameAutosaveKey, false);
     menuLoadGame.Add(&itemLoadGamePic, false);
+    itemLoadGamePic.at28 = gMenuPicnum;
     itemLoadGame1.at35 = 0;
     itemLoadGame2.at35 = 0;
     itemLoadGame3.at35 = 0;
@@ -2754,6 +2757,45 @@ void TenProcess(CGameMenuItem7EA1C *pItem)
     UNREFERENCED_PARAMETER(pItem);
 }
 
+static void UpdateSaveGameItemText(int nSlot)
+{
+    switch (nSlot) // set save slot text flag
+    {
+    case 0:
+        itemSaveGame1.at37 = 0;
+        break;
+    case 1:
+        itemSaveGame2.at37 = 0;
+        break;
+    case 2:
+        itemSaveGame3.at37 = 0;
+        break;
+    case 3:
+        itemSaveGame4.at37 = 0;
+        break;
+    case 4:
+        itemSaveGame5.at37 = 0;
+        break;
+    case 5:
+        itemSaveGame6.at37 = 0;
+        break;
+    case 6:
+        itemSaveGame7.at37 = 0;
+        break;
+    case 7:
+        itemSaveGame8.at37 = 0;
+        break;
+    case 8:
+        itemSaveGame9.at37 = 0;
+        break;
+    case 9:
+        itemSaveGame10.at37 = 0;
+        break;
+    default:
+        break;
+    }
+}
+
 void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
 {
     char strSaveGameName[BMAX_PATH];
@@ -2769,15 +2811,15 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     strcpy(gGameOptions.szUserGameName, strRestoreGameStrings[nSlot]);
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = nSlot;
-    viewLoadingScreen(2518, "Saving", "Saving Your Game", strRestoreGameStrings[nSlot]);
+    viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[nSlot]);
     videoNextPage();
     gSaveGameNum = nSlot;
     LoadSave::SaveGame(strSaveGameName);
     gGameOptions.picEntry = gSavedOffset;
     gSaveGameOptions[nSlot] = gGameOptions;
     UpdateSavedInfo(nSlot);
-    gQuickSaveSlot = nSlot;
-    gQuickLoadSlot = nSlot;
+    UpdateSaveGameItemText(nSlot);
+    gQuickSaveSlot = gQuickLoadSlot = nSlot;
     gGameMenuMgr.Deactivate();
     viewSetMessage("Game saved");
 }
@@ -2796,12 +2838,13 @@ void QuickSaveGame(void)
     strcpy(gGameOptions.szUserGameName, strRestoreGameStrings[gQuickSaveSlot]);
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = gQuickSaveSlot;
-    viewLoadingScreen(2518, "Saving", "Saving Your Game", strRestoreGameStrings[gQuickSaveSlot]);
+    viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[gQuickSaveSlot]);
     videoNextPage();
     LoadSave::SaveGame(strSaveGameName);
     gGameOptions.picEntry = gSavedOffset;
     gSaveGameOptions[gQuickSaveSlot] = gGameOptions;
     UpdateSavedInfo(gQuickSaveSlot);
+    UpdateSaveGameItemText(gQuickSaveSlot);
     gQuickLoadSlot = gQuickSaveSlot;
     gGameMenuMgr.Deactivate();
     viewSetMessage("Game saved");
@@ -2849,7 +2892,7 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
         return;
     if (SavedInCurrentSession(nSlot)) // if save slot is from a different session, set autosave state to false
         gAutosaveInCurLevel = false;
-    viewLoadingScreen(2518, "Loading", "Loading Saved Game", strRestoreGameStrings[nSlot]);
+    viewLoadingScreen(gMenuPicnum, "Loading", "Loading Saved Game", strRestoreGameStrings[nSlot]);
     videoNextPage();
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();
@@ -2869,7 +2912,7 @@ void QuickLoadGame(void)
         return;
     if (!SavedInCurrentSession(gQuickLoadSlot)) // if save slot is from a different session, set autosave state to false
         gAutosaveInCurLevel = false;
-    viewLoadingScreen(2518, "Loading", "Loading Saved Game", strRestoreGameStrings[gQuickLoadSlot]);
+    viewLoadingScreen(gMenuPicnum, "Loading", "Loading Saved Game", strRestoreGameStrings[gQuickLoadSlot]);
     videoNextPage();
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();

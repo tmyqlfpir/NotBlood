@@ -466,19 +466,19 @@ void CONFIG_SetDefaults(void)
     gWeaponSwitch = 3;
     gWeaponFastSwitch = 0;
     gLockManualSaving = 0;
-    gAutosave = 2;
+    gAutosave = 1;
     gAutosaveInCurLevel = false;
 
     gVanilla = 0;
     gMonsterSettings = 1;
     gQuadDamagePowerup = 0;
     gDamageInvul = 0;
-    gExplosionBehavior = 1;
-    gProjectileBehavior = 1;
+    gExplosionBehavior = 0;
+    gProjectileBehavior = 0;
     gEnemyBehavior = 1;
     gEnemyRandomTNT = 0;
     gWeaponsVer = 0;
-    gSectorBehavior = 1;
+    gSectorBehavior = 0;
     gHitscanProjectiles = 0;
     gRandomizerMode = 0;
     Bmemset(gzRandomizerSeed, 0, sizeof(gzRandomizerSeed));
