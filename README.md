@@ -11,21 +11,14 @@ New features include:
 * Replaced sector based damage logic for player explosions ([before](https://files.catbox.moe/h6xcrg.mp4)/[after](https://files.catbox.moe/35e08d.mp4))
 * Vanilla mode with optional DOS mouse handling
 * Quad damage replacement for guns akimbo powerup
-* Increased enemy damage for lifeleech's sentry mode
 * Randomize mode for enemies and pickups (multiplayer supported)
 * Increase drawn sprites on screen limit from 2560 to 4096
 * Autosaving on collecting keys and start of level
-* Reflection sphere will reflect tesla fire
-* Throwable lifeleech alt fire
-* Charge up alt fire for pitchfork
 * Bullet projectiles for hitscan enemies
 * Fixed bullet casings clipping into walls
 * New enhancements menu under game options
 * New last weapon key binding (default Q) ([demo](https://files.catbox.moe/28cirg.mp4))
 * Lower gravity of bullet casings and gibs underwater
-* Fixed various original glitches with burning enemies
-* Fixed tesla cultists becoming stuck when prone firing
-* Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
 * Allow particle sprites to traverse through room over room sectors
 * Switch to last active weapon if TNT/spray can is active when entering water
