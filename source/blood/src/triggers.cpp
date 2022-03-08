@@ -507,7 +507,7 @@ void OperateSprite(int nSprite, XSPRITE *pXSprite, EVENT event)
                         break;
                     }
                 }
-                gKillMgr.AddCount(1);
+                gKillMgr.AddCount(pSpawn);
                 switch (pXSprite->data1) {
                     case kDudeBurningInnocent:
                     case kDudeBurningCultist:
