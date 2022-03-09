@@ -57,62 +57,68 @@ struct DEMOVALIDATE {
 };
 
 DEMOVALIDATE gDemoValidate[] = {
-    {"/validatedemos/BLOOD000.dem", (int32_t)0x00000DB1, 0x68E811AD, 0x00000000, {(int32_t)0x00002239, (int32_t)0x00006A75, (int32_t)0x000029A4}},
-    {"/validatedemos/BLOOD001.dem", (int32_t)0x000008E3, 0x898BFCFE, 0x00000000, {(int32_t)0x00001AC0, (int32_t)0x00003F49, (int32_t)0x000025A4}},
-    {"/validatedemos/BLOOD002.dem", (int32_t)0x00000CE0, 0xCAF89634, 0x00000000, {(int32_t)0x0000C8ED, (int32_t)0x00009AF9, (int32_t)0x000159A4}},
-    {"/validatedemos/BLOOD003.dem", (int32_t)0x00000B87, 0x4488E1A6, 0x00000000, {(int32_t)0xFFFFD54C, (int32_t)0xFFFFD41F, (int32_t)0x000019A4}},
+    {"/validatedemos/BLOOD000.DEM", (int32_t)0x00000DB1, 0x68E811AD, 0x00000000, {(int32_t)0x00002239, (int32_t)0x00006A75, (int32_t)0x000029A4}},
+    {"/validatedemos/BLOOD001.DEM", (int32_t)0x000008E3, 0x898BFCFE, 0x00000000, {(int32_t)0x00001AC0, (int32_t)0x00003F49, (int32_t)0x000025A4}},
+    {"/validatedemos/BLOOD002.DEM", (int32_t)0x00000CE0, 0xCAF89634, 0x00000000, {(int32_t)0x0000C8ED, (int32_t)0x00009AF9, (int32_t)0x000159A4}},
+    {"/validatedemos/BLOOD003.DEM", (int32_t)0x00000B87, 0x4488E1A6, 0x00000000, {(int32_t)0xFFFFD54C, (int32_t)0xFFFFD41F, (int32_t)0x000019A4}},
     // custom validation demos below
-    {"/validatedemos/BLOOD004.dem", (int32_t)0x00000C14, 0x6E8F8936, 0x00000000, {(int32_t)0x00003D02, (int32_t)0x00009F6E, (int32_t)0x000069A4}},
-    {"/validatedemos/BLOOD005.dem", (int32_t)0x00001BF9, 0xE8B80FD0, 0x00000000, {(int32_t)0x00000162, (int32_t)0x00007AE0, (int32_t)0xFFFEFDA4}},
-    {"/validatedemos/BLOOD006.dem", (int32_t)0x000036C8, 0xABF22136, 0x00000000, {(int32_t)0xFFFF2181, (int32_t)0x000091B1, (int32_t)0x000083CE}},
-    {"/validatedemos/BLOOD007.dem", (int32_t)0x00004DA6, 0xB7FB11EB, 0x00000000, {(int32_t)0x0000F4DC, (int32_t)0x000053C9, (int32_t)0x000125A4}},
-    {"/validatedemos/BLOOD008.dem", (int32_t)0x0000347B, 0x02CB1319, 0x00000BED, {(int32_t)0xFFFF8138, (int32_t)0xFFFED30A, (int32_t)0xFFFF7D50}},
-    {"/validatedemos/BLOOD009.dem", (int32_t)0x000026AF, 0x4F91391D, 0x00000000, {(int32_t)0xFFFF3824, (int32_t)0xFFFF91BF, (int32_t)0x00007BA4}},
-    {"/validatedemos/BLOOD010.dem", (int32_t)0x00000E96, 0xFF23FAE8, 0x00000000, {(int32_t)0xFFFF23DD, (int32_t)0xFFFF9EE0, (int32_t)0x00006DA4}},
-    {"/validatedemos/BLOOD011.dem", (int32_t)0x00001706, 0x3A7DD0B0, 0x00000000, {(int32_t)0x0000CD98, (int32_t)0x00004C0A, (int32_t)0x00011DF5}},
-    {"/validatedemos/BLOOD012.dem", (int32_t)0x00003D72, 0xE4A69539, 0x00000000, {(int32_t)0xFFFF8745, (int32_t)0xFFFED4C6, (int32_t)0xFFFF99A4}},
-    {"/validatedemos/BLOOD013.dem", (int32_t)0x000028CE, 0x93096ADB, 0x0000046A, {(int32_t)0xFFFF826E, (int32_t)0xFFFED2C1, (int32_t)0xFFFF7D50}},
-    {"/validatedemos/BLOOD014.dem", (int32_t)0x00000F77, 0xA8160C3C, 0x00000000, {(int32_t)0xFFFFC8D7, (int32_t)0xFFFF930F, (int32_t)0xFFFFA5A4}},
-    {"/validatedemos/BLOOD015.dem", (int32_t)0x000016CB, 0xF6F9315E, 0x00000000, {(int32_t)0xFFFFF7A1, (int32_t)0x00007494, (int32_t)0xFFFE6651}},
-    {"/validatedemos/BLOOD016.dem", (int32_t)0x0000165C, 0x45F41D2E, 0x00000000, {(int32_t)0x00001A1C, (int32_t)0x00008D3F, (int32_t)0xFFFF39A4}},
-    {"/validatedemos/BLOOD017.dem", (int32_t)0x000033F7, 0x52634976, 0x00000640, {(int32_t)0x0000AC77, (int32_t)0x000012AB, (int32_t)0xFFFFFD50}},
-    {"/validatedemos/BLOOD018.dem", (int32_t)0x00002D0C, 0x60DCE40A, 0x00000000, {(int32_t)0x0000645F, (int32_t)0x0000CB1B, (int32_t)0xFFFFC9A4}},
-    {"/validatedemos/BLOOD019.dem", (int32_t)0x00000337, 0x4A0013E6, 0x00000640, {(int32_t)0xFFFF9FCC, (int32_t)0x00003E52, (int32_t)0xFFFF63D4}},
-    {"/validatedemos/BLOOD020.dem", (int32_t)0x000009DE, 0xC0725AF1, 0x00000000, {(int32_t)0xFFFFC1CF, (int32_t)0x000064AD, (int32_t)0x000061A4}},
-    {"/validatedemos/BLOOD021.dem", (int32_t)0x000019A4, 0x8BE81A09, 0x00000000, {(int32_t)0xFFFF161C, (int32_t)0x00004DB3, (int32_t)0xFFFFEEFE}},
-    {"/validatedemos/BLOOD022.dem", (int32_t)0x00000EB3, 0x37E4D6D6, 0x00000000, {(int32_t)0x00004869, (int32_t)0x0000170D, (int32_t)0x000129A4}},
-    {"/validatedemos/BLOOD023.dem", (int32_t)0x00001F68, 0x19B46535, 0x00000000, {(int32_t)0xFFFFDE10, (int32_t)0xFFFFD970, (int32_t)0xFFFFE9A4}},
-    {"/validatedemos/BLOOD024.dem", (int32_t)0x00003C97, 0x7F3AE994, 0x00000640, {(int32_t)0xFFFFD2F2, (int32_t)0xFFFF8DD4, (int32_t)0xFFFF0950}},
-    {"/validatedemos/BLOOD025.dem", (int32_t)0x0000182B, 0x330C60F2, 0x00000000, {(int32_t)0xFFFF94C1, (int32_t)0xFFFFAA81, (int32_t)0x000019A4}},
-    {"/validatedemos/BLOOD026.dem", (int32_t)0x00002364, 0x37059BD3, 0x00000000, {(int32_t)0x0000456F, (int32_t)0xFFFFF8B8, (int32_t)0x000099A4}},
-    {"/validatedemos/BLOOD027.dem", (int32_t)0x00001731, 0x250E075B, 0x00000000, {(int32_t)0x0000043F, (int32_t)0xFFFFD0C1, (int32_t)0x000119A4}},
-    {"/validatedemos/BLOOD028.dem", (int32_t)0x00002FB4, 0xDF294819, 0x00000842, {(int32_t)0x000056A8, (int32_t)0xFFFFD628, (int32_t)0xFFFFFD9F}},
-    {"/validatedemos/BLOOD029.dem", (int32_t)0x000017BB, 0xD184192B, 0x00000A1A, {(int32_t)0xFFFFAD5B, (int32_t)0xFFFF4573, (int32_t)0xFFFFE550}},
-    {"/validatedemos/BLOOD030.dem", (int32_t)0x0000396B, 0x5031BC75, 0x00000000, {(int32_t)0x0000B326, (int32_t)0x000074C4, (int32_t)0x0000D9A4}},
-    {"/validatedemos/BLOOD031.dem", (int32_t)0x000023D1, 0xC5DCAC81, 0x00000640, {(int32_t)0x00009BEE, (int32_t)0x00006CC8, (int32_t)0x00003550}},
-    {"/validatedemos/BLOOD032.dem", (int32_t)0x000013BC, 0xCA389D8F, 0x00000000, {(int32_t)0x00009B71, (int32_t)0x000092A4, (int32_t)0x000159A4}},
-    {"/validatedemos/BLOOD033.dem", (int32_t)0x00000BA4, 0xB06865D4, 0x00000000, {(int32_t)0x00009415, (int32_t)0x00007E5D, (int32_t)0x000159A4}},
-    {"/validatedemos/BLOOD034.dem", (int32_t)0x000019C7, 0x7F7D0178, 0x00000640, {(int32_t)0x00009B90, (int32_t)0x00006CF1, (int32_t)0x000035E4}},
-    {"/validatedemos/BLOOD035.dem", (int32_t)0x0000066A, 0xD7607579, 0x00000000, {(int32_t)0x0000B31C, (int32_t)0x0000B03F, (int32_t)0x000159A4}},
-    {"/validatedemos/BLOOD036.dem", (int32_t)0x000016DC, 0x79095E8C, 0x00000000, {(int32_t)0x0000C2AB, (int32_t)0x000094C1, (int32_t)0x000059A4}},
-    {"/validatedemos/BLOOD037.dem", (int32_t)0x00000B4A, 0xF9F76876, 0x00000000, {(int32_t)0x0000D00B, (int32_t)0x0000ACC8, (int32_t)0x000159A4}},
-    {"/validatedemos/BLOOD038.dem", (int32_t)0x0000384B, 0x46086DB2, 0x0000032F, {(int32_t)0x000103E8, (int32_t)0xFFFFC601, (int32_t)0x000005E4}}, // at this point msvc created binaries will desync for some weird reason
-    {"/validatedemos/BLOOD039.dem", (int32_t)0x000034D7, 0xC6E9D184, 0x00000000, {(int32_t)0x0000FA87, (int32_t)0x00006C32, (int32_t)0x000025A4}},
-    {"/validatedemos/BLOOD040.dem", (int32_t)0x0000385B, 0x246696C4, 0x00000000, {(int32_t)0x00010BC8, (int32_t)0x00005F46, (int32_t)0xFFFFC1A4}},
-    {"/validatedemos/BLOOD041.dem", (int32_t)0x00001BA1, 0x8377D75C, 0x00000000, {(int32_t)0x00006EBF, (int32_t)0x0000463F, (int32_t)0x00079DA4}},
-    {"/validatedemos/BLOOD042.dem", (int32_t)0x00000A75, 0x61288D5E, 0x00000000, {(int32_t)0x0000A14F, (int32_t)0x00005D22, (int32_t)0x000069A4}},
-    {"/validatedemos/BLOOD043.dem", (int32_t)0x000036FF, 0xD89DFDDD, 0x00000000, {(int32_t)0x00008B93, (int32_t)0x0000873F, (int32_t)0x000099A4}},
-    {"/validatedemos/BLOOD044.dem", (int32_t)0x000012BD, 0xD53A7E17, 0x00000000, {(int32_t)0x0000BF3F, (int32_t)0x000079F1, (int32_t)0xFFFFC9A4}},
-    {"/validatedemos/BLOOD045.dem", (int32_t)0x00000579, 0xDCE04A38, 0x00000000, {(int32_t)0x0000CA14, (int32_t)0x000081E9, (int32_t)0x000159A4}},
-    {"/validatedemos/BLOOD046.dem", (int32_t)0x00000106, 0x363D780D, 0x00000000, {(int32_t)0xFFFFFF64, (int32_t)0x00009418, (int32_t)0xFFFFE1A4}},
-    {"/validatedemos/BLOOD047.dem", (int32_t)0x00000B5F, 0x11F8A1D5, 0x000003BD, {(int32_t)0x00009A45, (int32_t)0x0000847F, (int32_t)0x0000BD50}},
-    {"/validatedemos/BLOOD048.dem", (int32_t)0x00000AF3, 0x6E949D93, 0x00000000, {(int32_t)0xFFFF3468, (int32_t)0xFFFFD441, (int32_t)0x000061A4}},
-    {"/validatedemos/BLOOD049.dem", (int32_t)0x00000C8F, 0x4E28530B, 0x00000000, {(int32_t)0xFFFFED7C, (int32_t)0x0000C8C0, (int32_t)0x000009A4}},
-    {"/validatedemos/BLOOD050.dem", (int32_t)0x0000230B, 0xEA61B563, 0x00000000, {(int32_t)0x000029C1, (int32_t)0x00002C3F, (int32_t)0x000071A4}},
-    {"/validatedemos/BLOOD051.dem", (int32_t)0x00002EA8, 0x19510828, 0x00000000, {(int32_t)0x00001FE4, (int32_t)0x000031D9, (int32_t)0x00000DA4}},
-    {"/validatedemos/BLOOD052.dem", (int32_t)0x00005088, 0x04A4F873, 0x00000C80, {(int32_t)0x0000C0F4, (int32_t)0x0000B5ED, (int32_t)0xFFFF9F3F}},
-    {"/validatedemos/BLOOD053.dem", (int32_t)0x000022BA, 0x93F42352, 0x00000000, {(int32_t)0x00001B69, (int32_t)0x000045D8, (int32_t)0x000011A4}},
-    {"/validatedemos/BLOOD054.dem", (int32_t)0x00002C67, 0xE914FDC5, 0x00000000, {(int32_t)0xFFFF66E4, (int32_t)0x000049FF, (int32_t)0x000012E4}},
+    {"/validatedemos/BLOOD004.DEM", (int32_t)0x00000C14, 0x6E8F8936, 0x00000000, {(int32_t)0x00003D02, (int32_t)0x00009F6E, (int32_t)0x000069A4}},
+    {"/validatedemos/BLOOD005.DEM", (int32_t)0x00001BF9, 0xE8B80FD0, 0x00000000, {(int32_t)0x00000162, (int32_t)0x00007AE0, (int32_t)0xFFFEFDA4}},
+    {"/validatedemos/BLOOD006.DEM", (int32_t)0x000036C8, 0xABF22136, 0x00000000, {(int32_t)0xFFFF2181, (int32_t)0x000091B1, (int32_t)0x000083CE}},
+    {"/validatedemos/BLOOD007.DEM", (int32_t)0x00004DA6, 0xB7FB11EB, 0x00000000, {(int32_t)0x0000F4DC, (int32_t)0x000053C9, (int32_t)0x000125A4}},
+    {"/validatedemos/BLOOD008.DEM", (int32_t)0x0000347B, 0x02CB1319, 0x00000BED, {(int32_t)0xFFFF8138, (int32_t)0xFFFED30A, (int32_t)0xFFFF7D50}},
+    {"/validatedemos/BLOOD009.DEM", (int32_t)0x000026AF, 0x4F91391D, 0x00000000, {(int32_t)0xFFFF3824, (int32_t)0xFFFF91BF, (int32_t)0x00007BA4}},
+    {"/validatedemos/BLOOD010.DEM", (int32_t)0x00000E96, 0xFF23FAE8, 0x00000000, {(int32_t)0xFFFF23DD, (int32_t)0xFFFF9EE0, (int32_t)0x00006DA4}},
+    {"/validatedemos/BLOOD011.DEM", (int32_t)0x00001706, 0x3A7DD0B0, 0x00000000, {(int32_t)0x0000CD98, (int32_t)0x00004C0A, (int32_t)0x00011DF5}},
+    {"/validatedemos/BLOOD012.DEM", (int32_t)0x00003D72, 0xE4A69539, 0x00000000, {(int32_t)0xFFFF8745, (int32_t)0xFFFED4C6, (int32_t)0xFFFF99A4}},
+    {"/validatedemos/BLOOD013.DEM", (int32_t)0x000028CE, 0x93096ADB, 0x0000046A, {(int32_t)0xFFFF826E, (int32_t)0xFFFED2C1, (int32_t)0xFFFF7D50}},
+    {"/validatedemos/BLOOD014.DEM", (int32_t)0x00000F77, 0xA8160C3C, 0x00000000, {(int32_t)0xFFFFC8D7, (int32_t)0xFFFF930F, (int32_t)0xFFFFA5A4}},
+    {"/validatedemos/BLOOD015.DEM", (int32_t)0x000016CB, 0xF6F9315E, 0x00000000, {(int32_t)0xFFFFF7A1, (int32_t)0x00007494, (int32_t)0xFFFE6651}},
+    {"/validatedemos/BLOOD016.DEM", (int32_t)0x0000165C, 0x45F41D2E, 0x00000000, {(int32_t)0x00001A1C, (int32_t)0x00008D3F, (int32_t)0xFFFF39A4}},
+    {"/validatedemos/BLOOD017.DEM", (int32_t)0x000033F7, 0x52634976, 0x00000640, {(int32_t)0x0000AC77, (int32_t)0x000012AB, (int32_t)0xFFFFFD50}},
+    {"/validatedemos/BLOOD018.DEM", (int32_t)0x00002D0C, 0x60DCE40A, 0x00000000, {(int32_t)0x0000645F, (int32_t)0x0000CB1B, (int32_t)0xFFFFC9A4}},
+    {"/validatedemos/BLOOD019.DEM", (int32_t)0x00000337, 0x4A0013E6, 0x00000640, {(int32_t)0xFFFF9FCC, (int32_t)0x00003E52, (int32_t)0xFFFF63D4}},
+    {"/validatedemos/BLOOD020.DEM", (int32_t)0x000009DE, 0xC0725AF1, 0x00000000, {(int32_t)0xFFFFC1CF, (int32_t)0x000064AD, (int32_t)0x000061A4}},
+    {"/validatedemos/BLOOD021.DEM", (int32_t)0x000019A4, 0x8BE81A09, 0x00000000, {(int32_t)0xFFFF161C, (int32_t)0x00004DB3, (int32_t)0xFFFFEEFE}},
+    {"/validatedemos/BLOOD022.DEM", (int32_t)0x00000EB3, 0x37E4D6D6, 0x00000000, {(int32_t)0x00004869, (int32_t)0x0000170D, (int32_t)0x000129A4}},
+    {"/validatedemos/BLOOD023.DEM", (int32_t)0x00001F68, 0x19B46535, 0x00000000, {(int32_t)0xFFFFDE10, (int32_t)0xFFFFD970, (int32_t)0xFFFFE9A4}},
+    {"/validatedemos/BLOOD024.DEM", (int32_t)0x00003C97, 0x7F3AE994, 0x00000640, {(int32_t)0xFFFFD2F2, (int32_t)0xFFFF8DD4, (int32_t)0xFFFF0950}},
+    {"/validatedemos/BLOOD025.DEM", (int32_t)0x0000182B, 0x330C60F2, 0x00000000, {(int32_t)0xFFFF94C1, (int32_t)0xFFFFAA81, (int32_t)0x000019A4}},
+    {"/validatedemos/BLOOD026.DEM", (int32_t)0x00002364, 0x37059BD3, 0x00000000, {(int32_t)0x0000456F, (int32_t)0xFFFFF8B8, (int32_t)0x000099A4}},
+    {"/validatedemos/BLOOD027.DEM", (int32_t)0x00001731, 0x250E075B, 0x00000000, {(int32_t)0x0000043F, (int32_t)0xFFFFD0C1, (int32_t)0x000119A4}},
+    {"/validatedemos/BLOOD028.DEM", (int32_t)0x00002FB4, 0xDF294819, 0x00000842, {(int32_t)0x000056A8, (int32_t)0xFFFFD628, (int32_t)0xFFFFFD9F}},
+    {"/validatedemos/BLOOD029.DEM", (int32_t)0x000017BB, 0xD184192B, 0x00000A1A, {(int32_t)0xFFFFAD5B, (int32_t)0xFFFF4573, (int32_t)0xFFFFE550}},
+    {"/validatedemos/BLOOD030.DEM", (int32_t)0x0000396B, 0x5031BC75, 0x00000000, {(int32_t)0x0000B326, (int32_t)0x000074C4, (int32_t)0x0000D9A4}},
+    {"/validatedemos/BLOOD031.DEM", (int32_t)0x000023D1, 0xC5DCAC81, 0x00000640, {(int32_t)0x00009BEE, (int32_t)0x00006CC8, (int32_t)0x00003550}},
+    {"/validatedemos/BLOOD032.DEM", (int32_t)0x000013BC, 0xCA389D8F, 0x00000000, {(int32_t)0x00009B71, (int32_t)0x000092A4, (int32_t)0x000159A4}},
+    {"/validatedemos/BLOOD033.DEM", (int32_t)0x00000BA4, 0xB06865D4, 0x00000000, {(int32_t)0x00009415, (int32_t)0x00007E5D, (int32_t)0x000159A4}},
+    {"/validatedemos/BLOOD034.DEM", (int32_t)0x000019C7, 0x7F7D0178, 0x00000640, {(int32_t)0x00009B90, (int32_t)0x00006CF1, (int32_t)0x000035E4}},
+    {"/validatedemos/BLOOD035.DEM", (int32_t)0x0000066A, 0xD7607579, 0x00000000, {(int32_t)0x0000B31C, (int32_t)0x0000B03F, (int32_t)0x000159A4}},
+    {"/validatedemos/BLOOD036.DEM", (int32_t)0x000016DC, 0x79095E8C, 0x00000000, {(int32_t)0x0000C2AB, (int32_t)0x000094C1, (int32_t)0x000059A4}},
+    {"/validatedemos/BLOOD037.DEM", (int32_t)0x00000B4A, 0xF9F76876, 0x00000000, {(int32_t)0x0000D00B, (int32_t)0x0000ACC8, (int32_t)0x000159A4}},
+    {"/validatedemos/BLOOD038.DEM", (int32_t)0x0000384B, 0x46086DB2, 0x0000032F, {(int32_t)0x000103E8, (int32_t)0xFFFFC601, (int32_t)0x000005E4}}, // at this point msvc created binaries will desync for some weird reason
+    {"/validatedemos/BLOOD039.DEM", (int32_t)0x000034D7, 0xC6E9D184, 0x00000000, {(int32_t)0x0000FA87, (int32_t)0x00006C32, (int32_t)0x000025A4}},
+    {"/validatedemos/BLOOD040.DEM", (int32_t)0x0000385B, 0x246696C4, 0x00000000, {(int32_t)0x00010BC8, (int32_t)0x00005F46, (int32_t)0xFFFFC1A4}},
+    {"/validatedemos/BLOOD041.DEM", (int32_t)0x00001BA1, 0x8377D75C, 0x00000000, {(int32_t)0x00006EBF, (int32_t)0x0000463F, (int32_t)0x00079DA4}},
+    {"/validatedemos/BLOOD042.DEM", (int32_t)0x00000A75, 0x61288D5E, 0x00000000, {(int32_t)0x0000A14F, (int32_t)0x00005D22, (int32_t)0x000069A4}},
+    {"/validatedemos/BLOOD043.DEM", (int32_t)0x000036FF, 0xD89DFDDD, 0x00000000, {(int32_t)0x00008B93, (int32_t)0x0000873F, (int32_t)0x000099A4}},
+    {"/validatedemos/BLOOD044.DEM", (int32_t)0x000012BD, 0xD53A7E17, 0x00000000, {(int32_t)0x0000BF3F, (int32_t)0x000079F1, (int32_t)0xFFFFC9A4}},
+    {"/validatedemos/BLOOD045.DEM", (int32_t)0x00000579, 0xDCE04A38, 0x00000000, {(int32_t)0x0000CA14, (int32_t)0x000081E9, (int32_t)0x000159A4}},
+    {"/validatedemos/BLOOD046.DEM", (int32_t)0x00000106, 0x363D780D, 0x00000000, {(int32_t)0xFFFFFF64, (int32_t)0x00009418, (int32_t)0xFFFFE1A4}},
+    {"/validatedemos/BLOOD047.DEM", (int32_t)0x00000B5F, 0x11F8A1D5, 0x000003BD, {(int32_t)0x00009A45, (int32_t)0x0000847F, (int32_t)0x0000BD50}},
+    {"/validatedemos/BLOOD048.DEM", (int32_t)0x00000AF3, 0x6E949D93, 0x00000000, {(int32_t)0xFFFF3468, (int32_t)0xFFFFD441, (int32_t)0x000061A4}},
+    {"/validatedemos/BLOOD049.DEM", (int32_t)0x00000C8F, 0x4E28530B, 0x00000000, {(int32_t)0xFFFFED7C, (int32_t)0x0000C8C0, (int32_t)0x000009A4}},
+    {"/validatedemos/BLOOD050.DEM", (int32_t)0x0000230B, 0xEA61B563, 0x00000000, {(int32_t)0x000029C1, (int32_t)0x00002C3F, (int32_t)0x000071A4}},
+    {"/validatedemos/BLOOD051.DEM", (int32_t)0x00002EA8, 0x19510828, 0x00000000, {(int32_t)0x00001FE4, (int32_t)0x000031D9, (int32_t)0x00000DA4}},
+    {"/validatedemos/BLOOD052.DEM", (int32_t)0x00005088, 0x04A4F873, 0x00000C80, {(int32_t)0x0000C0F4, (int32_t)0x0000B5ED, (int32_t)0xFFFF9F3F}},
+    {"/validatedemos/BLOOD053.DEM", (int32_t)0x000022BA, 0x93F42352, 0x00000000, {(int32_t)0x00001B69, (int32_t)0x000045D8, (int32_t)0x000011A4}},
+    {"/validatedemos/BLOOD054.DEM", (int32_t)0x00002C67, 0xE914FDC5, 0x00000000, {(int32_t)0xFFFF66E4, (int32_t)0x000049FF, (int32_t)0x000012E4}},
+    {"/validatedemos/BLOOD055.DEM", (int32_t)0x00001F8B, 0x1B5F1C0F, 0x00000000, {(int32_t)0xFFFFDD1F, (int32_t)0x00003A35, (int32_t)0x000059A4}},
+    {"/validatedemos/BLOOD056.DEM", (int32_t)0x00003EE5, 0xD02F860D, 0x00000000, {(int32_t)0xFFFF8824, (int32_t)0x0000543E, (int32_t)0x0000C1A4}},
+    {"/validatedemos/BLOOD057.DEM", (int32_t)0x00006979, 0xD9EC81A9, 0x00000000, {(int32_t)0xFFFF9197, (int32_t)0x000063D2, (int32_t)0x000061A4}},
+    {"/validatedemos/BLOOD058.DEM", (int32_t)0x00001C16, 0xD85F3129, 0x0000082F, {(int32_t)0xFFFFADAA, (int32_t)0xFFFF67D4, (int32_t)0xFFFFDD50}},
+    {"/validatedemos/BLOOD059.DEM", (int32_t)0x0000244B, 0x1E82B956, 0x00000000, {(int32_t)0x000000A4, (int32_t)0x00001F09, (int32_t)0x000219A4}},
+    {"/validatedemos/BLOOD060.DEM", (int32_t)0x000067CF, 0x086B69C7, 0x00000315, {(int32_t)0xFFFFA704, (int32_t)0x0000D1A8, (int32_t)0xFFFFFD50}},
 };
 
 int nBuild = 0;
@@ -502,12 +508,14 @@ _DEMOPLAYBACK:
                 if (v4 >= atf.nInputCount)
                 {
                     ready2send = 0;
+                    char bNewDemo = 1;
                     for (int index = 0; gDemoRunValidation && (index < ARRAY_SSIZE(gDemoValidate)); index++)
                     {
-                        if ((gDemoValidate[index].nInputTicks != nInputTicks) || !pCurrentDemo || !pCurrentDemo->zName)
+                        if ((gDemoValidate[index].nInputTicks != nInputTicks) || !pCurrentDemo || !pCurrentDemo->zName) // demo ticks not matching/demo name does not exist, skip
                             continue;
-                        if (Bstrcasecmp(gDemoValidate[index].zName, pCurrentDemo->zName)) // demo name not matching, abort
+                        if (Bstrcasecmp(gDemoValidate[index].zName, pCurrentDemo->zName)) // demo name does not match, skip
                             continue;
+                        bNewDemo = 0;
                         char bInvalid = 0;
                         if (gDemoValidate[index].wrandomseed != wrandomseed)
                         {
@@ -533,18 +541,20 @@ _DEMOPLAYBACK:
                             OSD_Printf("Demo Synced\n");
                         break;
                     }
+                    if (gDemoRunValidation && bNewDemo && pCurrentDemo && pCurrentDemo->zName) // print validation result for new demo
+                        OSD_Printf("{\"%s\", (int32_t)0x%08X, 0x%08X, 0x%08X, {(int32_t)0x%08X, (int32_t)0x%08X, (int32_t)0x%08X}},", pCurrentDemo->zName, nInputTicks, wrandomseed, (unsigned int)xsprite[gPlayer[0].pSprite->extra].health, (unsigned int)gPlayer[0].pSprite->x, (unsigned int)gPlayer[0].pSprite->y, (unsigned int)gPlayer[0].pSprite->z);
                     if (nDemosFound > 1)
                     {
                         v4 = 0;
                         Close();
-                        if (gDemoRunValidation && !Bstrcasecmp(gDemoValidate[ARRAY_SSIZE(gDemoValidate)-1].zName, pCurrentDemo->zName)) // finished validation, abort
+                        if (gDemoRunValidation && pCurrentDemo && !pCurrentDemo->pNext) // finished validation, abort
                         {
                             uint32_t nTotalTicks = 0;
                             for (int index = 0; index < ARRAY_SSIZE(gDemoValidate); index++)
                             {
                                 nTotalTicks += (uint32_t)gDemoValidate[index].nInputTicks;
                             }
-                            ThrowError("1.21 Validation Successful!\nTotal Demo Hours: %02d:%02d", nTotalTicks/(kTicsPerSec*60)/60, nTotalTicks/(kTicsPerSec*60)%60);
+                            OSD_Printf("1.21 Validation Successful!\nTotal Demo Hours: %02d:%02d", nTotalTicks/(kTicsPerSec*60)/60, nTotalTicks/(kTicsPerSec*60)%60);
                             gQuitGame = true;
                             break;
                         }
