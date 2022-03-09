@@ -6877,6 +6877,8 @@ spritetype *actSpawnDude(spritetype *pSource, short nType, int a3, int a4)
         y = pSource->y+mulscale30r(Sin(angle), a3);
     }
     pSprite2->type = nType;
+    if (EnemiesNotBlood() && !VanillaMode())
+        pSprite2->inittype = nType;
     pSprite2->ang = angle;
     vec3_t pos = { x, y, z };
     setsprite(pSprite2->index, &pos);
