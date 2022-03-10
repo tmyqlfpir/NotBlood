@@ -2147,7 +2147,7 @@ int32_t videoSetGamma(void)
     {
 #else
     i = SDL_SetGammaRamp(&gammaTable[0], &gammaTable[256], &gammaTable[512]);
-    if (i != -1)
+    if ((i != -1) && (i < 0))
     {
 #endif
 
