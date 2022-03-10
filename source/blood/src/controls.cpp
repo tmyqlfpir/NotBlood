@@ -316,7 +316,7 @@ void ctrlGetInput(void)
     if (BUTTON(gamefunc_Crouch))
     {
         gInput.buttonFlags.crouch = 1;
-        if (gCrouchToggle)
+        if (gCrouchToggle && !gMe->isUnderwater)
         {
             if (gCrouchToggleState == 0)
                 gCrouchToggleState = 1;
@@ -324,13 +324,15 @@ void ctrlGetInput(void)
                 gCrouchToggleState = 3;
         }
     }
-    else if (gCrouchToggle && (gCrouchToggleState > 0) && (gCrouchToggleState < 3))
+    else if (gCrouchToggle && (gCrouchToggleState > 0) && (gCrouchToggleState < 3) && !gMe->isUnderwater)
     {
         gInput.buttonFlags.crouch = 1;
         gCrouchToggleState = 2;
     }
     else
+    {
         gCrouchToggleState = 0;
+    }
 
     if (gCrouchToggle && gInput.buttonFlags.jump && gInput.buttonFlags.crouch) // allow player to jump while crouching (only if crouch toggle is enabled)
         gInput.buttonFlags.crouch = 0;

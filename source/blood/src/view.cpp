@@ -2652,6 +2652,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->y = pTSprite->y;
         pNSprite->z = pTSprite->z-(32<<8);
         pNSprite->z -= weaponIcon.zOffset<<8; // offset up
+        if (pPlayer->posture == 2) // if player is crouching
+            pNSprite->z += pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture].zOffset<<5;
         pNSprite->picnum = nTile;
         pNSprite->shade = pTSprite->shade;
         pNSprite->xrepeat = 32;
@@ -2693,6 +2695,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         if (pPlayer->curWeapon > 1) // if player has a weapon icon, offset icon so guns akimbo/quad damage icon hovers above weapon
             heightOffset += 12;
         pNSprite->z = pTSprite->z-(heightOffset<<8);
+        if (pPlayer->posture == 2) // if player is crouching
+            pNSprite->z += pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture].zOffset<<5;
         pNSprite->picnum = nTile;
         pNSprite->shade = pTSprite->shade;
         pNSprite->xrepeat = 32;
@@ -3116,7 +3120,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     viewAddEffect(nTSprite, kViewEffectReflectiveBall);
                 }
                 
-                if (gShowWeapon && gGameOptions.nGameType > 0 && gView) {
+                if (gShowWeapon && (gGameOptions.nGameType > 0) && gView && (!powerupCheck(pPlayer, kPwUpShadowCloak) || (pPlayer == gView))) { // don't show weapon if player is cloaked or viewing self
                     viewAddEffect(nTSprite, kViewEffectShowWeapon);
                     if (powerupCheck(pPlayer, kPwUpTwoGuns))
                         viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active and not in single-player
