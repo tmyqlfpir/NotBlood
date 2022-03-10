@@ -9,21 +9,14 @@ New features include:
 * Replaced sector based damage logic for player explosions
 * Vanilla mode with optional DOS mouse handling
 * Quad damage replacement for guns akimbo powerup
-* Increased enemy damage for lifeleech's sentry mode
 * Randomize mode for enemies and pickups (multiplayer supported)
 * Increase drawn sprites on screen limit from 2560 to 4096
 * Autosaving on collecting keys and start of level
-* Reflection sphere will reflect tesla fire
-* Throwable lifeleech alt fire
-* Charge up alt fire for pitchfork
 * Bullet projectiles for hitscan enemies
 * Fixed bullet casings clipping into walls
 * New enhancements menu under game options
 * New last weapon key binding (default Q)
 * Lower gravity of bullet casings and gibs underwater
-* Fixed various original glitches with burning enemies
-* Fixed tesla cultists becoming stuck when prone firing
-* Fixed underwater cultists changing weapons when ignited
 * Improved spawning randomization logic for bloodbath mode
 * Allow particle sprites to traverse through room over room sectors
 * Switch to last active weapon if TNT/spray can is active when entering water
@@ -68,7 +61,7 @@ New features include:
     - Ignited cultists switching weapons when extinguished in water
     - Cerberus spinning uselessly on lava
     - Improved beast stomp attack sector scanning
-    - Check if enemy is alive before setting target for AI in-fighting
+    - Check if enemy is alive before setting target for AI
     - Fixes tesla cultists bugged prone attack sequence
 * Random Cultist TNT
     - This will make cultists use a variety of random thrown sprites such as:
@@ -77,7 +70,7 @@ New features include:
     - Select between original weapon behavior, NBlood's V1.X behavior or NotBlood's tweaked weapon set which include:
     - Adjust pitch offset for spray/missile firing
     - Adds a charge up stab for pitchfork's alt fire
-    - Makes lifeleech throwable and increases the damage in sentry mode
+    - Makes lifeleech throwable and increases damage while in sentry mode
     - Do double melee damage if attacking enemies from 45 degrees behind
     - Allows tesla projectiles to be reflected back with reflective shots powerup
     - Adds a special alt fire missile attack for pitchfork's charge up while quad damage is active

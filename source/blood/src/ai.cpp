@@ -911,7 +911,9 @@ bool aiDudeIsDead(int nSprite)
     spritetype *pSprite = &sprite[nSprite];
     if ((pSprite->extra < 0) || (pSprite->extra >= kMaxXSprites))
         return false;
-    return (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && ((xsprite[pSprite->extra].health == 0) || !IsDudeSprite(pSprite));
+    if ((pSprite->inittype < kDudeBase) || (pSprite->inittype >= kDudeMax))
+        return false;
+    return (IsDudeSprite(pSprite) && (xsprite[pSprite->extra].health == 0)) || !IsDudeSprite(pSprite);
 }
 
 int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_TYPE nDmgType, int nDamage)
