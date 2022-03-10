@@ -39,6 +39,7 @@ void WeaponLower(PLAYER *pPlayer);
 char WeaponIsEquipable(PLAYER *pPlayer, int nWeapon);
 char WeaponUpgrade(PLAYER *pPlayer, char newWeapon);
 char WeaponFindNext(PLAYER *pPlayer, int *a2, char bDir);
+char WeaponFindLoaded(PLAYER *pPlayer, int *a2);
 void WeaponProcess(PLAYER *pPlayer);
 void WeaponUpdateState(PLAYER* pPlayer);
 void teslaHit(spritetype *pMissile, int a2);
