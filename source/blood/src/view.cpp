@@ -3127,12 +3127,28 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
 
                 if (pPlayer->flashEffect && (gView != pPlayer || gViewPos != VIEWPOS_0)) {
+                    const char bTwoGuns = powerupCheck(pPlayer, kPwUpTwoGuns) && !gGameOptions.bQuadDamagePowerup && !VanillaMode();
+                    const POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
                     auto pNTSprite = viewAddEffect(nTSprite, kViewEffectShoot);
                     if (pNTSprite) {
-                        POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
                         pNTSprite->x += mulscale28(pPosture->zOffset, Cos(pTSprite->ang));
                         pNTSprite->y += mulscale28(pPosture->zOffset, Sin(pTSprite->ang));
                         pNTSprite->z = pPlayer->pSprite->z-pPosture->xOffset;
+                        if (bTwoGuns) {
+                            auto pNTSpriteOtherGun = viewAddEffect(nTSprite, kViewEffectShoot);
+                            if (pNTSpriteOtherGun) {
+                                pNTSpriteOtherGun->x += mulscale28(pPosture->zOffset, Cos(pTSprite->ang));
+                                pNTSpriteOtherGun->y += mulscale28(pPosture->zOffset, Sin(pTSprite->ang));
+                                pNTSpriteOtherGun->z = pPlayer->pSprite->z-pPosture->xOffset;
+
+                                const int dx = mulscale30(Cos(pPlayer->pSprite->ang + 512), 128); // offset guns to left/right
+                                const int dy = mulscale30(Sin(pPlayer->pSprite->ang + 512), 128);
+                                pNTSprite->x += dx;
+                                pNTSprite->y += dy;
+                                pNTSpriteOtherGun->x -= dx;
+                                pNTSpriteOtherGun->y -= dy;
+                            }
+                        }
                     }
                 }
 
