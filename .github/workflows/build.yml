@@ -58,6 +58,41 @@ jobs:
         path: ./upload
         if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
 
+  build-windows-i686-winxp:
+    name: "Windows MSYS2 i686 WinXP"
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: 'windows-xp'
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW32
+        update: true
+        install: git mingw-w64-i686-wget mingw-w64-i686-toolchain make nasm sed unzip mingw-w64-i686-SDL
+    - name: build
+      run: make -j2 blood SDL_TARGET=1 USE_MIMALLOC=0 USE_LIBVPX=0 USE_OPENGL=0 NETCODE=0
+    - name: 'prepare files for upload'
+      run: |
+        mkdir -p ./upload
+        wget https://web.archive.org/web/20220310063221if_/https://a.tmp.ninja/rRpytNSd.zip -O temp.zip
+        unzip temp.zip -d ./upload
+        echo ADVAPI32.dll\0\0\0\0 with ZDVAPI32.dll\0\0\0\0
+        sed -i -b -e 's/\x41\x44\x56\x41\x50\x49\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/\x5A\x44\x56\x41\x50\x49\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/g' ./notblood.exe
+        echo KERNEL32.dll\0\0\0\0 with ZERNEL32.dll\0\0\0\0
+        sed -i -b -e 's/\x4B\x45\x52\x4E\x45\x4C\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/\x5A\x45\x52\x4E\x45\x4C\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/g' ./notblood.exe
+        echo WS2_32.dll\0\0 with ZS2_32.dll\0\0
+        sed -i -b -e 's/\x57\x53\x32\x5F\x33\x32\x2E\x64\x6C\x6C\x00\x00/\x5A\x53\x32\x5F\x33\x32\x2E\x64\x6C\x6C\x00\x00/g' ./notblood.exe
+        cp ./notblood.exe ./upload
+    - uses: actions/upload-artifact@v2
+      with:
+        name: notblood-winxp
+        path: ./upload
+        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
+
   build-linux-gcc:
     name: "Linux GCC"
     runs-on: ubuntu-latest
