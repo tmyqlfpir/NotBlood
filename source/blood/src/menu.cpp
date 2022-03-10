@@ -846,8 +846,8 @@ CGameMenuItemChain itemOptionsControlKeyboard("KEYBOARD SETUP", 1, 0, 60, 320, 1
 CGameMenuItemChain itemOptionsControlMouse("MOUSE SETUP", 1, 0, 80, 320, 1, &menuOptionsControlMouse, -1, SetupMouseMenu, 0);
 
 CGameMenuItemTitle itemOptionsControlKeyboardTitle("KEYBOARD SETUP", 1, 160, 20, 2038);
-CGameMenuItemSlider itemOptionsControlKeyboardSliderTurnSpeed("Key Turn Speed:", 1, 10, 60, 320, gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
-CGameMenuItemZBool itemOptionsControlKeyboardBoolCrouchToggle("Crouch Toggle:", 1, 10, 80, 320, gCrouchToggle, SetCrouchToggle, NULL, NULL);
+CGameMenuItemSlider itemOptionsControlKeyboardSliderTurnSpeed("Key Turn Speed:", 1, 18, 60, 280, gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
+CGameMenuItemZBool itemOptionsControlKeyboardBoolCrouchToggle("Crouch Toggle:", 1, 18, 80, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
 CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 110, 320, 1, &menuKeys, -1, NULL, 0);
 CGameMenuItemChain itemOptionsControlKeyboardReset("Reset Keys (default)...", 1, 0, 130, 320, 1, &menuKeys, -1, ResetKeys, 0);
 CGameMenuItemChain itemOptionsControlKeyboardResetClassic("Reset Keys (classic)...", 1, 0, 150, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
