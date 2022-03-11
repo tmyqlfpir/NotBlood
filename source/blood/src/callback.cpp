@@ -543,6 +543,13 @@ void sleeveStopBouncing(spritetype* pSprite) {
 
     pSprite->type = FX_51; // spent casing
     pSprite->xrepeat = pSprite->yrepeat = 10;
+    if (!VanillaMode()) // offset into ground so casings can be dragged across sectors
+    {
+        pSprite->z = 0;
+        int top, bottom;
+        GetSpriteExtents(pSprite, &top, &bottom);
+        pSprite->z = getflorzofslope(pSprite->sectnum, pSprite->x, pSprite->y) - bottom;
+    }
 }
 
 
