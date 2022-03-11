@@ -1516,13 +1516,13 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
         pPlayer->curWeapon = pPlayer->nextWeapon;
         if (WeaponIsEquipable(pPlayer, pPlayer->curWeapon))
             break;
+        pPlayer->curWeapon = (pPlayer->weaponAmmo != -1) ? pPlayer->weaponAmmo+1 : kWeaponPitchfork;
+        if (WeaponIsEquipable(pPlayer, pPlayer->curWeapon))
+            break;
         pPlayer->curWeapon = WeaponFindLoaded(pPlayer, NULL);
         if (WeaponIsEquipable(pPlayer, pPlayer->curWeapon))
             break;
-        pPlayer->curWeapon = pPlayer->weaponAmmo;
-        if (WeaponIsEquipable(pPlayer, pPlayer->curWeapon))
-            break;
-        pPlayer->curWeapon = kWeaponPitchfork;
+        pPlayer->curWeapon = kWeaponNone;
         break;
     }
     const char weaponPrev = ClipRange(WeaponFindNext(pPlayer, NULL, 0), 1, 12);
