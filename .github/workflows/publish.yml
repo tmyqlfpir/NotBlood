@@ -17,7 +17,7 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood.pk3 ./upload
-        cp -a ./package/. ./upload/
+        cp -a ./package/common/. ./upload/
     - uses: dawidd6/action-download-artifact@v2
       with:
         workflow: build.yml
