@@ -541,7 +541,7 @@ void sleeveStopBouncing(spritetype* pSprite) {
         break;
     }
 
-    pSprite->type = kFXSpentCasing;
+    pSprite->type = FX_51; // spent casing
     pSprite->xrepeat = pSprite->yrepeat = 10;
     if (!VanillaMode()) // offset into ground so casings can be dragged across sectors
     {
