@@ -117,7 +117,7 @@ struct EPISODEINFO
     char cutsceneBWavPath[BMAX_PATH];
 };
 
-extern EPISODEINFO gEpisodeInfo[kMaxEpisodes+1];
+extern EPISODEINFO gEpisodeInfo[];
 extern GAMEOPTIONS gSingleGameOptions;
 extern GAMEOPTIONS gGameOptions;
 extern int gSkill;
