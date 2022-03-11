@@ -1054,7 +1054,8 @@ void SetupEpisodeMenu(void)
         EPISODEINFO *pEpisode = &gEpisodeInfo[i];
         if (!pEpisode->bloodbath || gGameOptions.nGameType != 0)
         {
-            dassert(j < ARRAY_SSIZE(itemEpisodes));
+            if (j >= ARRAY_SSIZE(itemEpisodes))
+                ThrowError("Too many ini episodes to display on menu (max %d).\n", ARRAY_SSIZE(itemEpisodes));
             CGameMenuItemChain7F2F0 *pEpisodeItem = &itemEpisodes[j];
             pEpisodeItem->m_nFont = 1;
             pEpisodeItem->m_nX = 0;
