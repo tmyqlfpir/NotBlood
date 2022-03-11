@@ -3135,10 +3135,13 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     viewAddEffect(nTSprite, kViewEffectReflectiveBall);
                 }
                 
-                if (gShowWeapon && (gGameOptions.nGameType > 0) && gView && (!powerupCheck(pPlayer, kPwUpShadowCloak) || (pPlayer == gView))) { // don't show weapon if player is cloaked or viewing self
-                    viewAddEffect(nTSprite, kViewEffectShowWeapon);
-                    if (powerupCheck(pPlayer, kPwUpTwoGuns))
-                        viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active and not in single-player
+                if (gShowWeapon && (gGameOptions.nGameType > 0) && gView) {
+                    const char bDrawDudeWeap = (pPlayer == gView) || !powerupCheck(pPlayer, kPwUpShadowCloak) || IsTargetTeammate(gView, pPlayer->pSprite); // don't draw enemy weapon if they are cloaked
+                    if (bDrawDudeWeap || VanillaMode()) {
+                        viewAddEffect(nTSprite, kViewEffectShowWeapon);
+                        if (powerupCheck(pPlayer, kPwUpTwoGuns) && !VanillaMode())
+                            viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active and not in single-player
+                    }
                 }
 
                 if (pPlayer->flashEffect && (gView != pPlayer || gViewPos != VIEWPOS_0)) {
