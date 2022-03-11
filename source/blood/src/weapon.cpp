@@ -1872,7 +1872,7 @@ void FireBeast(int nTrigger, PLAYER * pPlayer)
 
 char WeaponIsEquipable(PLAYER *pPlayer, int nWeapon, char checkUnderwater = true)
 {
-    if ((nWeapon < 1) || (nWeapon > 12)) // invalid weapon
+    if ((nWeapon < kWeaponPitchfork) || (nWeapon > kWeaponRemoteTNT)) // invalid weapon
         return 0;
     if (checkUnderwater && pPlayer->isUnderwater && BannedUnderwater(nWeapon))
         return 0;
