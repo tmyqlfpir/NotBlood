@@ -17,12 +17,7 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood.pk3 ./upload
-        cp ./notblood.sf2 ./upload
-        cp ./TILES099.ART ./upload
-        cp ./README.txt ./upload
-        cp ./addons.txt ./upload
-        cp ./source/build/buildlic.txt ./upload
-        cp ./source/blood/gpl-2.0.txt ./upload
+        cp -a ./package/. ./upload/
     - uses: dawidd6/action-download-artifact@v2
       with:
         workflow: build.yml
