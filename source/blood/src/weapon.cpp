@@ -1870,11 +1870,11 @@ void FireBeast(int nTrigger, PLAYER * pPlayer)
     actFireVector(pPlayer->pSprite, 0, pPlayer->zWeapon-pPlayer->pSprite->z, pPlayer->aim.dx+r1, pPlayer->aim.dy+r2, pPlayer->aim.dz+r3, kVectorBeastSlash);
 }
 
-char WeaponIsEquipable(PLAYER *pPlayer, int nWeapon)
+char WeaponIsEquipable(PLAYER *pPlayer, int nWeapon, char checkUnderwater = true)
 {
     if ((nWeapon < 1) || (nWeapon > 12)) // invalid weapon
         return 0;
-    if (pPlayer->isUnderwater && BannedUnderwater(nWeapon))
+    if (checkUnderwater && pPlayer->isUnderwater && BannedUnderwater(nWeapon))
         return 0;
     if (pPlayer->hasWeapon[nWeapon])
     {
