@@ -541,8 +541,15 @@ void sleeveStopBouncing(spritetype* pSprite) {
         break;
     }
 
-    pSprite->type = 51;
+    pSprite->type = kItemSpentCasing;
     pSprite->xrepeat = pSprite->yrepeat = 10;
+    if (!VanillaMode()) // offset into ground so casings can be dragged across sectors
+    {
+        pSprite->z = 0;
+        int top, bottom;
+        GetSpriteExtents(pSprite, &top, &bottom);
+        pSprite->z = getflorzofslope(pSprite->sectnum, pSprite->x, pSprite->y) - bottom;
+    }
 }
 
 

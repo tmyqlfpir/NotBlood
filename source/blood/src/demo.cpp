@@ -583,9 +583,10 @@ _DEMOPLAYBACK:
                 KB_KeyDown[sc_Escape] = 1;
                 quitevent = 0;
             }
-            MUSIC_Update();
+            if (!gDemoRunValidation)
+                MUSIC_Update();
             viewDrawScreen();
-            if (gInputMode == INPUT_MODE_1 && CGameMenuMgr::m_bActive)
+            if ((gInputMode == INPUT_MODE_1) && CGameMenuMgr::m_bActive && !gDemoRunValidation)
                 gGameMenuMgr.Draw();
             videoNextPage();
         }
