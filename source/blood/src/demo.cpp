@@ -588,6 +588,8 @@ _DEMOPLAYBACK:
             viewDrawScreen();
             if ((gInputMode == INPUT_MODE_1) && CGameMenuMgr::m_bActive && !gDemoRunValidation)
                 gGameMenuMgr.Draw();
+            else if (gDemoRunValidation) // keep game locked
+                gInputMode = INPUT_MODE_1;
             videoNextPage();
         }
         if (TestBitString(gotpic, 2342))
