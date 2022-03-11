@@ -220,6 +220,8 @@ enum {
     kItemWeaponLifeLeech = 50,
     kItemWeaponMax = 51,
 
+    kFXSpentCasing = 51,
+
     // items (ammos)
     kItemAmmoBase = 60,
     kItemAmmoSprayCan = kItemAmmoBase,
