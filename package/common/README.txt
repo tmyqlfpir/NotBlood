@@ -16,8 +16,10 @@ New features include:
 * Fixed bullet casings clipping into walls
 * New enhancements menu under game options
 * New last weapon key binding (default Q)
+* Fix bullet casings not being dragged with sectors
 * Lower gravity of bullet casings and gibs underwater
 * Improved spawning randomization logic for bloodbath mode
+* Cloak powerup hides player weapon icon for bloodbath mode
 * Allow particle sprites to traverse through room over room sectors
 * Switch to last active weapon if TNT/spray can is active when entering water
 * Increased blood splatter duration and improved floor collision detection
