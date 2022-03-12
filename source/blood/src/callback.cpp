@@ -465,7 +465,16 @@ void fxBloodBits(int nSprite) // 14
     {
         spritetype *pFX = gFX.fxSpawn(FX_36, nSector, x, y, floorZ-64);
         if (pFX)
+        {
             pFX->ang = nAngle;
+            if (gGameOptions.bSectorBehavior && !VanillaMode() && (sector[pFX->sectnum].floorstat&2) && (sector[pFX->sectnum].floorheinum != 0)) // align sprite to slope
+            {
+                walltype *pWall1 = &wall[sector[pFX->sectnum].wallptr];
+                walltype *pWall2 = &wall[pWall1->point2];
+                spriteSetSlope(pFX->index, sector[pFX->sectnum].floorheinum);
+                pFX->ang = getangle(pWall2->x-pWall1->x, pWall2->y-pWall1->y)+kAng270;
+            }
+        }
     }
     gFX.fxFree(nSprite);
 }
