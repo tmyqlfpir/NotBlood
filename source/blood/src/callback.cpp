@@ -211,16 +211,16 @@ void fxDynPuff(int nSprite) // 8
     spritetype *pSprite = &sprite[nSprite];
     if (zvel[nSprite])
     {
-        const bool SmokeTrail3D = gSmokeTrail3D && !VanillaMode() && actSpriteOwnerIsDude(pSprite) && ((pSprite->type == kThingArmedTNTStick) || (pSprite->type == kThingArmedTNTBundle) || (pSprite->type == kThingArmedSpray));
-        if (SmokeTrail3D && (gGameOptions.nGameType == 0)) // feature is single-player only (causes desync)
+        const bool bSmokeTrail3D = gSmokeTrail3D && !VanillaMode() && actSpriteOwnerIsDude(pSprite) && ((pSprite->type == kThingArmedTNTStick) || (pSprite->type == kThingArmedTNTBundle) || (pSprite->type == kThingArmedSpray));
+        if (bSmokeTrail3D && (gGameOptions.nGameType == 0)) // feature is single-player only (causes desync)
         {
-            const bool playerOwned = actSpriteOwnerIsPlayer(pSprite);
+            const bool bPlayerOwned = actSpriteOwnerIsPlayer(pSprite);
             const int nTile = 3436;
             const int frames = picanm[nTile].num;
             const int frameoffset = qanimateoffs(nTile, 32768+nSprite);
             const int angleOffset = frameoffset * (2047 / (frames+1));
             int angle = (pSprite->ang+((-angleOffset)-512))&2047;
-            if (!playerOwned) // chances are if an enemy is throwing tnt at the player, the angle will be inverted - so rotate by 180 degrees
+            if (!bPlayerOwned) // chances are if an enemy is throwing tnt at the player, the angle will be inverted - so rotate by 180 degrees
                 angle = (angle+1024)&2047;
             int nDist = (pSprite->xrepeat*(tilesiz[pSprite->picnum+frameoffset].x/2))>>3;
             nDist += nDist>>2;
@@ -440,7 +440,7 @@ void fxBloodBits(int nSprite) // 14
     int x = pSprite->x+mulscale28(nDist, Cos(nAngle));
     int y = pSprite->y+mulscale28(nDist, Sin(nAngle));
     int nSector = pSprite->sectnum;
-    if (!VanillaMode()) // check sector when creating splatter in random directions
+    if (gGameOptions.bSectorBehavior && !VanillaMode()) // check sector when creating splatter in random directions
     {
         if (!FindSector(x, y, pSprite->z, &nSector)) // could not find valid sector, delete fx
         {
@@ -541,9 +541,9 @@ void sleeveStopBouncing(spritetype* pSprite) {
         break;
     }
 
-    pSprite->type = FX_51; // spent casing
+    pSprite->type = FX_51; // static spent casing
     pSprite->xrepeat = pSprite->yrepeat = 10;
-    if (!VanillaMode()) // offset into ground so casings can be dragged across sectors
+    if (gGameOptions.bSectorBehavior && !VanillaMode()) // offset into ground so casings can be dragged across sectors
     {
         pSprite->z = 0;
         int top, bottom;

@@ -16,8 +16,8 @@ New features include:
 * Fixed bullet casings clipping into walls
 * New enhancements menu under game options
 * New last weapon key binding (default Q)
-* Fix bullet casings not being dragged with sectors
 * Lower gravity of bullet casings and gibs underwater
+* Fix blood/bullet casings not being dragged with sectors
 * Improved spawning randomization logic for bloodbath mode
 * Cloak powerup hides player weapon icon for bloodbath mode
 * Allow particle sprites to traverse through room over room sectors
@@ -78,7 +78,15 @@ New features include:
     - Adds a special alt fire missile attack for pitchfork's charge up while quad damage is active
 * Sector behavior
     - Fixes room over room sector handling with hitscan calculations
-    - This lets hitscan weapons to be fired when floating above water
+    - Allow hitscan weapons to be fired when floating above water
+    - Prevent missiles from colliding with water surface sectors
+    - Fixes blood splatter not using closest sector
+    - Improves FX sprite handling regarding room over room transitioning
+    - Check wall collision for spent bullet casings movement
+    - Allow spent bullet casings to use water sector links
+    - Support spent bullet casings and blood splatter for moving sectors
+    - Lower gravity of bullet casings and gibs underwater
+    - Add player's velocity to spawned bullet casings
 * Hitscan projectiles
     - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
     - Projectile speed is adjusted depending on difficulty and if bullet is underwater
