@@ -4611,13 +4611,9 @@ int MoveThing(spritetype *pSprite)
     if (zvel[nSprite])
     {
         char bUnderwater = 0;
-        if ((sector[nSector].extra > 0) && EnemiesNotBlood() && !VanillaMode()) // lower gravity for underwater bodies/things
-        {
-            XSECTOR *pXSector = &xsector[sector[nSector].extra];
-            if (pXSector->Underwater)
-                bUnderwater = 1;
-        }
-        if (bUnderwater && !actSpriteOwnerIsPlayer(pSprite) && !actSpriteOwnerIsDude(pSprite))
+        if (IsUnderwaterSector(nSector) && gGameOptions.bSectorBehavior && !VanillaMode()) // lower gravity for underwater bodies/things
+            bUnderwater = !actSpriteOwnerIsPlayer(pSprite) && !actSpriteOwnerIsDude(pSprite); // check if sprite is not owned by dude/player
+        if (bUnderwater)
             pSprite->z += zvel[nSprite]>>10;
         else
             pSprite->z += zvel[nSprite]>>8;
@@ -5539,7 +5535,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
         int nSprite = gHitInfo.hitsprite;
         dassert(nSprite >= 0 && nSprite < kMaxSprites);
         spritetype *pSprite = &sprite[nSprite];
-        if (pShooter && !gGameOptions.bFriendlyFire && IsTargetTeammate(pShooter, pSprite)) return true;
+        if (!gGameOptions.bFriendlyFire && IsTargetTeammate(pShooter, pSprite)) return true;
         if (IsPlayerSprite(pSprite)) {
             PLAYER *pPlayer = &gPlayer[pSprite->type-kDudePlayer1];
             if (powerupCheck(pPlayer, kPwUpReflectShots))
@@ -5552,12 +5548,12 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             }
         }
     }
-    int x = gHitInfo.hitx-mulscale(a4, 16, 14);
-    int y = gHitInfo.hity-mulscale(a5, 16, 14);
-    int z = gHitInfo.hitz-mulscale(a6, 256, 14);
+    int x = gHitInfo.hitx-mulscale14(a4, 16);
+    int y = gHitInfo.hity-mulscale14(a5, 16);
+    int z = gHitInfo.hitz-mulscale14(a6, 256);
     short nSector = gHitInfo.hitsect;
     char nSurf = kSurfNone;
-    if (approxDist(gHitInfo.hitx-sourcePos.x, gHitInfo.hity-sourcePos.y) < nRange)
+    if (nRange == 0 || approxDist(gHitInfo.hitx-sourcePos.x, gHitInfo.hity-sourcePos.y) < nRange)
     {
         switch (hit)
         {
@@ -5589,9 +5585,9 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             nSurf = surfType[wall[nWall].picnum];
             if (actCanSplatWall(nWall))
             {
-                int x = gHitInfo.hitx-mulscale(a4, 16, 14);
-                int y = gHitInfo.hity-mulscale(a5, 16, 14);
-                int z = gHitInfo.hitz-mulscale(a6, 256, 14);
+                int x = gHitInfo.hitx-mulscale14(a4, 16);
+                int y = gHitInfo.hity-mulscale14(a5, 16);
+                int z = gHitInfo.hitz-mulscale14(a6, 256);
                 int nSurf = surfType[wall[nWall].picnum];
                 dassert(nSurf < kSurfMax);
                 if (pVectorData->surfHit[nSurf].fx1 >= 0)
@@ -5628,9 +5624,9 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             nSurf = surfType[sprite[nSprite].picnum];
             dassert(nSprite >= 0 && nSprite < kMaxSprites);
             spritetype *pSprite = &sprite[nSprite];
-            x -= mulscale(a4, 112, 14);
-            y -= mulscale(a5, 112, 14);
-            z -= mulscale(a6, 112<<4, 14);
+            x -= mulscale14(a4, 112);
+            y -= mulscale14(a5, 112);
+            z -= mulscale14(a6, 112<<4);
             int shift = 4;
             int boost = 1;
             int boostz = 1;
@@ -5666,20 +5662,27 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             }
             if (pSprite->statnum == kStatThing)
             {
-                int t = thingInfo[pSprite->type-kThingBase].mass;
-                if (t > 0 && pVectorData->impulse)
+                // NoOne:
+                // shoting in TNT makes it explode, so type changes to range of 0-8
+                // however statnum changes to 2 (explosion) later in actPostSprite()...
+                // this is why this type range check is required here
+                if (VanillaMode() || (pSprite->type >= kThingBase && pSprite->type < kThingMax))
                 {
-                    int t2 = divscale(pVectorData->impulse, t, 8);
-                    xvel[nSprite] += mulscale16(a4, t2) * boost;
-                    yvel[nSprite] += mulscale16(a5, t2) * boost;
-                    zvel[nSprite] += mulscale16(a6, t2) * boostz;
-                }
-                if (pVectorData->burnTime)
-                {
-                    XSPRITE *pXSprite = &xsprite[nXSprite];
-                    if (!pXSprite->burnTime)
-                        evPost(nSprite, 3, 0, kCallbackFXFlameLick);
-                    actBurnSprite(actSpriteIdToOwnerId(nShooter), pXSprite, pVectorData->burnTime);
+                    int t = thingInfo[pSprite->type - kThingBase].mass;
+                    if (t > 0 && pVectorData->impulse)
+                    {
+                        int t2 = divscale8(pVectorData->impulse, t);
+                        xvel[nSprite] += mulscale16(a4, t2) * boost;
+                        yvel[nSprite] += mulscale16(a5, t2) * boost;
+                        zvel[nSprite] += mulscale16(a6, t2) * boostz;
+                    }
+                    if (pVectorData->burnTime)
+                    {
+                        XSPRITE* pXSprite = &xsprite[nXSprite];
+                        if (!pXSprite->burnTime)
+                            evPost(nSprite, 3, 0, kCallbackFXFlameLick);
+                        actBurnSprite(actSpriteIdToOwnerId(nShooter), pXSprite, pVectorData->burnTime);
+                    }
                 }
             }
             if (pSprite->statnum == kStatDude)
@@ -5699,7 +5702,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
 
                 if (t > 0 && pVectorData->impulse)
                 {
-                    int t2 = divscale(pVectorData->impulse, t, 8);
+                    int t2 = divscale8(pVectorData->impulse, t);
                     xvel[nSprite] += mulscale16(a4, t2) * boost;
                     yvel[nSprite] += mulscale16(a5, t2) * boost;
                     zvel[nSprite] += mulscale16(a6, t2) * boostz;
@@ -5725,9 +5728,9 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
                             int nSector = gHitInfo.hitsect;
                             if (actCanSplatWall(nWall))
                             {
-                                int x = gHitInfo.hitx - mulscale(a4, 16, 14);
-                                int y = gHitInfo.hity - mulscale(a5, 16, 14);
-                                int z = gHitInfo.hitz - mulscale(a6, 16<<4, 14);
+                                int x = gHitInfo.hitx - mulscale14(a4, 16);
+                                int y = gHitInfo.hity - mulscale14(a5, 16);
+                                int z = gHitInfo.hitz - mulscale14(a6, 16<<4);
                                 int nSurf = surfType[wall[nWall].picnum];
                                 VECTORDATA *pVectorData = &gVectorData[19];
                                 FX_ID t2 = pVectorData->surfHit[nSurf].fx2;
@@ -5760,7 +5763,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
                     XSPRITE* pXSprite = &xsprite[pSprite->extra];
                     if (pXSprite->physAttr & kPhysDebrisVector) {
                         
-                    int impulse = divscale(pVectorData->impulse, ClipLow(gSpriteMass[pSprite->extra].mass, 10), 6);
+                    int impulse = divscale6(pVectorData->impulse, ClipLow(gSpriteMass[pSprite->extra].mass, 10));
                     xvel[nSprite] += mulscale16(a4, impulse) * boost;
                     yvel[nSprite] += mulscale16(a5, impulse) * boost;
                     zvel[nSprite] += mulscale16(a6, impulse) * boostz;
@@ -6885,7 +6888,8 @@ spritetype *actSpawnDude(spritetype *pSource, short nType, int a3, int a4)
     pSprite2->cstat |= 0x1101;
     pSprite2->clipdist = getDudeInfo(nDude+kDudeBase)->clipdist;
     pXSprite2->health = getDudeInfo(nDude+kDudeBase)->startHealth<<4;
-    pXSprite2->respawn = 1;
+    if (!VanillaMode()) // don't allow newly spawned enemies to respawn
+        pXSprite2->respawn = 1;
     if (gSysRes.Lookup(getDudeInfo(nDude+kDudeBase)->seqStartID, "SEQ"))
         seqSpawn(getDudeInfo(nDude+kDudeBase)->seqStartID, 3, pSprite2->extra, -1);
     
