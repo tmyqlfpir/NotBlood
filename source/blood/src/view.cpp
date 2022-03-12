@@ -3140,7 +3140,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     if (bDrawDudeWeap || VanillaMode()) {
                         viewAddEffect(nTSprite, kViewEffectShowWeapon);
                         if (powerupCheck(pPlayer, kPwUpTwoGuns) && !VanillaMode())
-                            viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active and not in single-player
+                            viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active
                     }
                 }
 
@@ -3170,11 +3170,10 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     }
                 }
 
-                if (pPlayer->hasFlag > 0 && gGameOptions.nGameType == 3) { // if teams mode and has flag
+                if ((pPlayer->hasFlag > 0) && (gGameOptions.nGameType == 3)) { // if teams mode and has flag
                     if (pPlayer->hasFlag&1)  {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
-                        if (pNTSprite)
-                        {
+                        if (pNTSprite) {
                             pNTSprite->pal = 10;
                             pNTSprite->cstat |= 4;
                             if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
@@ -3183,8 +3182,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     }
                     if (pPlayer->hasFlag&2) {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
-                        if (pNTSprite)
-                        {
+                        if (pNTSprite) {
                             pNTSprite->pal = 7;
                             pNTSprite->cstat |= 4;
                             if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
@@ -3195,8 +3193,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             }
             
             if (pTSprite->owner != gView->pSprite->index || gViewPos != VIEWPOS_0) {
-                if (getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) >= cZ)
-                {
+                if (getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) >= cZ) {
                     viewAddEffect(nTSprite, kViewEffectShadow);
                 }
             }
