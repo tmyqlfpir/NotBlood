@@ -4611,13 +4611,9 @@ int MoveThing(spritetype *pSprite)
     if (zvel[nSprite])
     {
         char bUnderwater = 0;
-        if ((sector[nSector].extra > 0) && EnemiesNotBlood() && !VanillaMode()) // lower gravity for underwater bodies/things
-        {
-            XSECTOR *pXSector = &xsector[sector[nSector].extra];
-            if (pXSector->Underwater)
-                bUnderwater = 1;
-        }
-        if (bUnderwater && !actSpriteOwnerIsPlayer(pSprite) && !actSpriteOwnerIsDude(pSprite))
+        if (IsUnderwaterSector(nSector) && gGameOptions.bSectorBehavior && !VanillaMode()) // lower gravity for underwater bodies/things
+            bUnderwater = !actSpriteOwnerIsPlayer(pSprite) && !actSpriteOwnerIsDude(pSprite); // check if sprite is not owned by dude/player
+        if (bUnderwater)
             pSprite->z += zvel[nSprite]>>10;
         else
             pSprite->z += zvel[nSprite]>>8;

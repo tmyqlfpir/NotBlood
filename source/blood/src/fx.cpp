@@ -229,6 +229,19 @@ spritetype * CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned 
     return pSprite;
 }
 
+inline void fxCallback(int nSprite, FXDATA *pFXData)
+{
+    if (!pFXData)
+        return;
+    if (pFXData->funcID < 0 || pFXData->funcID >= kCallbackMax)
+    {
+        gFX.fxFree(nSprite);
+        return;
+    }
+    dassert(gCallback[pFXData->funcID] != NULL);
+    gCallback[pFXData->funcID](nSprite);
+}
+
 void CFX::fxProcess(void)
 {
     for (int nSprite = headspritestat[kStatFX]; nSprite >= 0; nSprite = nextspritestat[nSprite])
@@ -249,8 +262,8 @@ void CFX::fxProcess(void)
             pSprite->y += yvel[nSprite]>>12;
         if (zvel[nSprite])
             pSprite->z += zvel[nSprite]>>8;
-        const bool casingType = (pSprite->type >= 37) && (pSprite->type <= 42);
-        if (casingType && !VanillaMode()) // check if new xy position is within a wall
+        const bool bCasingType = (pSprite->type >= FX_37) && (pSprite->type <= FX_42);
+        if (bCasingType && gGameOptions.bSectorBehavior && !VanillaMode()) // check if new xy position is within a wall
         {
             if (!cansee(oldPos.x, oldPos.y, oldPos.z, pSprite->sectnum, pSprite->x, pSprite->y, oldPos.z, pSprite->sectnum)) // if new position has clipped into wall, invert velocity and continue
             {
@@ -271,12 +284,12 @@ void CFX::fxProcess(void)
             }
             if (getflorzofslope(pSprite->sectnum, pSprite->x, pSprite->y) <= pSprite->z)
             {
-                if (!VanillaMode())
+                if (gGameOptions.bSectorBehavior && !VanillaMode())
                 {
                     int nSectnum = nSector;
                     oldPos = pSprite->xyz;
-                    const bool openAirROR = (sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095);
-                    if (casingType || openAirROR) // if casing type/current sector is open air, find next floor
+                    const bool bOpenAirROR = (sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095);
+                    if (bCasingType || bOpenAirROR) // if casing type/current sector is open air, find next floor
                     {
                         if (CheckLink(&pSprite->x, &pSprite->y, &pSprite->z, &nSectnum)) // if found ror floor underneath
                         {
@@ -288,20 +301,14 @@ void CFX::fxProcess(void)
                             sfxUpdateSpritePos(pSprite, &oldPos); // update any assigned sfx to new sprite position
                             continue;
                         }
-                        else if (openAirROR) // something went terribly wrong, free sprite
+                        else if (bOpenAirROR) // something went terribly wrong, free sprite
                         {
                             fxFree(nSprite);
                             continue;
                         }
                     }
                 }
-                if (pFXData->funcID < 0 || pFXData->funcID >= kCallbackMax)
-                {
-                    fxFree(nSprite);
-                    continue;
-                }
-                dassert(gCallback[pFXData->funcID] != NULL);
-                gCallback[pFXData->funcID](nSprite);
+                fxCallback(nSprite, pFXData);
                 continue;
             }
             if (nSector != pSprite->sectnum)
@@ -321,17 +328,11 @@ void CFX::fxProcess(void)
             }
             if (floorZ < pSprite->z)
             {
-                if (pFXData->funcID < 0 || pFXData->funcID >= kCallbackMax)
-                {
-                    fxFree(nSprite);
-                    continue;
-                }
-                dassert(gCallback[pFXData->funcID] != NULL);
-                gCallback[pFXData->funcID](nSprite);
+                fxCallback(nSprite, pFXData);
                 continue;
             }
         }
-        if (!VanillaMode() && casingType && IsUnderwaterSector(pSprite->sectnum)) // lower gravity by 75% underwater (only for bullet casings)
+        if (bCasingType && IsUnderwaterSector(pSprite->sectnum) && gGameOptions.bSectorBehavior && !VanillaMode()) // lower gravity by 75% underwater (only for bullet casings)
         {
             zvel[nSprite] += pFXData->gravity>>2;
             continue;
@@ -409,7 +410,7 @@ void fxSpawnEjectingBrass(spritetype *pSprite, int z, int a3, int a4)
         xvel[pBrass->index] = mulscale30(nDist, Cos(nAngle));
         yvel[pBrass->index] = mulscale30(nDist, Sin(nAngle));
         zvel[pBrass->index] = zvel[pSprite->index]-(0x20000+(Random2(40)<<18)/120);
-        if (!VanillaMode()) // make casing inherit spawner's velocity
+        if (gGameOptions.bSectorBehavior && !VanillaMode()) // set casing velocity to inherit spawner's velocity
         {
             xvel[pBrass->index] += xvel[pSprite->index]>>1;
             yvel[pBrass->index] += yvel[pSprite->index]>>1;
@@ -440,7 +441,7 @@ void fxSpawnEjectingShell(spritetype *pSprite, int z, int a3, int a4)
         xvel[pShell->index] = mulscale30(nDist, Cos(nAngle));
         yvel[pShell->index] = mulscale30(nDist, Sin(nAngle));
         zvel[pShell->index] = zvel[pSprite->index]-(0x20000+(Random2(20)<<18)/120);
-        if (!VanillaMode()) // make casing inherit spawner's velocity
+        if (gGameOptions.bSectorBehavior && !VanillaMode()) // set casing velocity to inherit spawner's velocity
         {
             xvel[pShell->index] += xvel[pSprite->index]>>1;
             yvel[pShell->index] += yvel[pSprite->index]>>1;
