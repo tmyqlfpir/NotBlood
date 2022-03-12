@@ -960,7 +960,10 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
             int top, bottom;
             GetSpriteExtents(pSprite, &top, &bottom);
             int floorZ = getflorzofslope(nSector, pSprite->x, pSprite->y);
-            if (!(pSprite->cstat&48) && floorZ <= bottom)
+            char bDraggable = ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == 0) && (floorZ <= bottom);
+            if (!bDraggable && gGameOptions.bSectorBehavior && !VanillaMode()) // if floor aligned sprite, drag element
+                bDraggable = (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_FLOOR;
+            if (bDraggable)
             {
                 if (!VanillaMode()) viewBackupSpriteLoc(nSprite, pSprite);
                 if (v14)
