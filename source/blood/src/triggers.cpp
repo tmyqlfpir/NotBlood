@@ -1007,6 +1007,9 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
                 continue;
             int top, bottom;
             GetSpriteExtents(pSprite, &top, &bottom);
+            char bDraggable = !(pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) && (oldZ <= bottom);
+            if (!bDraggable && gGameOptions.bSectorBehavior && !VanillaMode()) // if floor aligned sprite, drag element
+                bDraggable = (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_FLOOR;
             if (pSprite->cstat&8192)
             {
                 viewBackupSpriteLoc(nSprite, pSprite);
@@ -1014,7 +1017,7 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
             }
             else if (pSprite->flags&2)
                 pSprite->flags |= 4;
-            else if (oldZ <= bottom && !(pSprite->cstat&48))
+            else if (bDraggable)
             {
                 viewBackupSpriteLoc(nSprite, pSprite);
                 pSprite->z += pSector->floorz-oldZ;
