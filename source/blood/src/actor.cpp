@@ -5535,7 +5535,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
         int nSprite = gHitInfo.hitsprite;
         dassert(nSprite >= 0 && nSprite < kMaxSprites);
         spritetype *pSprite = &sprite[nSprite];
-        if (!gGameOptions.bFriendlyFire && IsTargetTeammate(pShooter, pSprite)) return true;
+        if (pShooter && !gGameOptions.bFriendlyFire && IsTargetTeammate(pShooter, pSprite)) return true;
         if (IsPlayerSprite(pSprite)) {
             PLAYER *pPlayer = &gPlayer[pSprite->type-kDudePlayer1];
             if (powerupCheck(pPlayer, kPwUpReflectShots))
