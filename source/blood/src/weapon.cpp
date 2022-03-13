@@ -133,7 +133,7 @@ void QAV::PlaySound3D(spritetype *pSprite, int nSound, int a3, int a4)
     sfxPlay3DSound(pSprite, nSound, a3, a4);
 }
 
-char checkFired6or7(PLAYER *pPlayer)
+char checkLitSprayOrTNT(PLAYER *pPlayer)
 {
     switch (pPlayer->curWeapon)
     {
@@ -666,7 +666,7 @@ void WeaponRaise(PLAYER *pPlayer)
 void WeaponLower(PLAYER *pPlayer)
 {
     dassert(pPlayer != NULL);
-    if (checkFired6or7(pPlayer))
+    if (checkLitSprayOrTNT(pPlayer))
         return;
     pPlayer->throwPower = 0;
     const int prevWeapon = pPlayer->curWeapon;
@@ -1906,7 +1906,7 @@ char gWeaponUpgrade[][13] = {
 char WeaponUpgrade(PLAYER *pPlayer, char newWeapon)
 {
     char weapon = pPlayer->curWeapon;
-    if (!checkFired6or7(pPlayer) && (gProfile[pPlayer->nPlayer].nWeaponSwitch&1) && (gWeaponUpgrade[pPlayer->curWeapon][newWeapon] || (gProfile[pPlayer->nPlayer].nWeaponSwitch&2)))
+    if (!checkLitSprayOrTNT(pPlayer) && (gProfile[pPlayer->nPlayer].nWeaponSwitch&1) && (gWeaponUpgrade[pPlayer->curWeapon][newWeapon] || (gProfile[pPlayer->nPlayer].nWeaponSwitch&2)))
         weapon = newWeapon;
     return weapon;
 }
@@ -2221,7 +2221,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->curWeapon))
     {
         const int prevWeapon = pPlayer->curWeapon;
-        if (checkFired6or7(pPlayer))
+        if (checkLitSprayOrTNT(pPlayer))
         {
             if (pPlayer->curWeapon == kWeaponSprayCan)
             {
@@ -2438,7 +2438,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (pPlayer->input.newWeapon)
     {
-        if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkFired6or7(pPlayer) && !VanillaMode()) // skip banned weapons when underwater and using next/prev weapon key inputs
+        if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkLitSprayOrTNT(pPlayer) && !VanillaMode()) // skip banned weapons when underwater and using next/prev weapon key inputs
         {
             if (oldKeyFlags.nextWeapon || oldKeyFlags.prevWeapon) // if player switched weapons
             {
@@ -2512,7 +2512,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             pPlayer->input.newWeapon = kWeaponNone;
             return;
         }
-        if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkFired6or7(pPlayer))
+        if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkLitSprayOrTNT(pPlayer))
         {
             pPlayer->input.newWeapon = kWeaponNone;
             return;
