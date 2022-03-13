@@ -2600,16 +2600,27 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
+        char bCalcSlope = gGameOptions.bSectorBehavior && !VanillaMode();
+        int zDiff = bCalcSlope ? getceilzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) : pSector->ceilingz;
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
-        pNSprite->z = VanillaMode() ? pSector->ceilingz : getceilzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
+        pNSprite->z = zDiff;
         pNSprite->picnum = 624;
-        pNSprite->shade = ((pTSprite->z-pSector->ceilingz)>>8)-64;
+        pNSprite->shade = ((pTSprite->z-zDiff)>>8)-64;
         pNSprite->pal = 2;
         pNSprite->xrepeat = pNSprite->yrepeat = 64;
         pNSprite->cstat |= 106;
         pNSprite->ang = pTSprite->ang;
         pNSprite->owner = pTSprite->owner;
+        if (bCalcSlope && (sector[pNSprite->sectnum].ceilingstat&2) && (sector[pNSprite->sectnum].ceilingheinum != 0)) // align sprite to slope
+        {
+            walltype *pWall1 = &wall[sector[pNSprite->sectnum].wallptr];
+            walltype *pWall2 = &wall[pWall1->point2];
+            pNSprite->xoffset = sector[pNSprite->sectnum].ceilingheinum & 255;
+            pNSprite->yoffset = (sector[pNSprite->sectnum].ceilingheinum >> 8) & 255;
+            pNSprite->clipdist |= TSPR_FLAGS_SLOPE_SPRITE;
+            pNSprite->ang = getangle(pWall2->x-pWall1->x, pWall2->y-pWall1->y)+kAng270;
+        }
         return pNSprite;
     }
     case kViewEffectFloorGlow:
@@ -2623,17 +2634,28 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
+        char bCalcSlope = gGameOptions.bSectorBehavior && !VanillaMode();
+        int zDiff = bCalcSlope ? getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) : pSector->floorz;
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
-        pNSprite->z = VanillaMode() ? pSector->floorz : getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
+        pNSprite->z = zDiff;
         pNSprite->picnum = 624;
-        char nShade = (pSector->floorz-pTSprite->z)>>8; 
+        char nShade = (zDiff-pTSprite->z)>>8; 
         pNSprite->shade = nShade-32;
         pNSprite->pal = 2;
         pNSprite->xrepeat = pNSprite->yrepeat = nShade;
         pNSprite->cstat |= 98;
         pNSprite->ang = pTSprite->ang;
         pNSprite->owner = pTSprite->owner;
+        if (bCalcSlope && (sector[pNSprite->sectnum].floorstat&2) && (sector[pNSprite->sectnum].floorheinum != 0)) // align sprite to slope
+        {
+            walltype *pWall1 = &wall[sector[pNSprite->sectnum].wallptr];
+            walltype *pWall2 = &wall[pWall1->point2];
+            pNSprite->xoffset = sector[pNSprite->sectnum].floorheinum & 255;
+            pNSprite->yoffset = (sector[pNSprite->sectnum].floorheinum >> 8) & 255;
+            pNSprite->clipdist |= TSPR_FLAGS_SLOPE_SPRITE;
+            pNSprite->ang = getangle(pWall2->x-pWall1->x, pWall2->y-pWall1->y)+kAng270;
+        }
         return pNSprite;
     }
     case kViewEffectSpear:
@@ -2676,9 +2698,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
         const int nVoxel = voxelIndex[nTile];
         if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
-        {
             pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
-        }
         else if (gShowWeapon == 2 && usevoxels && gDetail >= 4 && videoGetRenderMode() != REND_POLYMER && nVoxel != -1)
         {
             pNSprite->cstat |= 48;
@@ -2718,9 +2738,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->yrepeat = 32;
         pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
         if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite/voxel to transparent
-        {
             pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
-        }
         break;
     }
     }
@@ -3080,13 +3098,14 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     if (pTSprite->type != kMissileFlareRegular) break;
                     sectortype *pSector = &sector[pTSprite->sectnum];
                     
-                    int zDiff = VanillaMode() ? pSector->ceilingz : getceilzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
+                    const char bCalcSlope = gGameOptions.bSectorBehavior && !VanillaMode();
+                    int zDiff = bCalcSlope ? getceilzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) : pSector->ceilingz;
                     zDiff = (pTSprite->z - zDiff) >> 8;
                     if ((pSector->ceilingstat&1) == 0 && zDiff < 64) {
                         viewAddEffect(nTSprite, kViewEffectCeilGlow);
                     }
                     
-                    zDiff = VanillaMode() ? pSector->floorz : getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y);
+                    zDiff = bCalcSlope ? getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) : pSector->floorz;
                     zDiff = (zDiff - pTSprite->z) >> 8;
                     if ((pSector->floorstat&1) == 0 && zDiff < 64) {
                         viewAddEffect(nTSprite, kViewEffectFloorGlow);
