@@ -24,7 +24,8 @@ New features include:
 * Cloak powerup hides player weapon icon for bloodbath mode
 * Allow particle sprites to traverse through room over room sectors
 * Switch to last active weapon if TNT/spray can is active when entering water
-* Increased blood splatter duration and improved floor collision detection
+* Increased blood splatter duration and improved floor collision accuracy
+* Make blood splatter/flare gun glow effect slope on sloped surfaces
 * Basic room over room support for positional audio ([before](https://files.catbox.moe/qca0k4.mp4)/[after](https://files.catbox.moe/wq1so4.mp4))
 * Fixed missiles colliding with water sector edges ([before](https://files.catbox.moe/38t9t8.mp4)/[after](https://files.catbox.moe/smvi92.mp4))
 * Fixed underwater issue with hitscan weapons ([before](https://files.catbox.moe/k9dxjj.mp4)/[after](https://files.catbox.moe/gfahdq.mp4))
