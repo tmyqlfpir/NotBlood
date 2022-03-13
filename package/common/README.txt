@@ -89,6 +89,8 @@ New features include:
     - Lower gravity of bullet casings and gibs underwater
     - Add player's velocity to spawned bullet casings
     - Make blood splatter/flare gun glow effect slope on sloped surfaces
+    - Prevent shadows/glow effects from rendering over room over room surfaces
+    - Add room over room sector transversal for shadow rendering
 * Hitscan projectiles
     - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
     - Projectile speed is adjusted depending on difficulty and if bullet is underwater

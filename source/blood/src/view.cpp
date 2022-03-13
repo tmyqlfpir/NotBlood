@@ -2534,7 +2534,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         if (!pNSprite)
             break;
         pNSprite->z = getflorzofslope(pTSprite->sectnum, pNSprite->x, pNSprite->y);
-        if ((sector[pNSprite->sectnum].floorpicnum >= 4080) && (sector[pNSprite->sectnum].floorpicnum <= 4095) && !VanillaMode()) // if floor has ror, find actual floor
+        if ((sector[pNSprite->sectnum].floorpicnum >= 4080) && (sector[pNSprite->sectnum].floorpicnum <= 4095) && gGameOptions.bSectorBehavior && !VanillaMode()) // if floor has ror, find actual floor
         {
             int cX = pNSprite->x, cY = pNSprite->y, cZ = pNSprite->z, cZrel = pNSprite->z, nSectnum = pNSprite->sectnum;
             for (int i = 0; i < 16; i++) // scan through max stacked sectors
@@ -2592,7 +2592,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     case kViewEffectCeilGlow:
     {
         sectortype *pSector = &sector[pTSprite->sectnum];
-        if (!VanillaMode()) // if ceiling has ror, don't render effect
+        if (gGameOptions.bSectorBehavior && !VanillaMode()) // if ceiling has ror, don't render effect
         {
             if ((pSector->ceilingpicnum >= 4080) && (pSector->ceilingpicnum <= 4095))
                 break;
@@ -2612,7 +2612,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->cstat |= 106;
         pNSprite->ang = pTSprite->ang;
         pNSprite->owner = pTSprite->owner;
-        if (bCalcSlope && (sector[pNSprite->sectnum].ceilingstat&2) && (sector[pNSprite->sectnum].ceilingheinum != 0)) { // align sprite to slope
+        if (bCalcSlope && (sector[pNSprite->sectnum].ceilingstat&2) && (sector[pNSprite->sectnum].ceilingheinum != 0)) // align sprite to slope
+        {
             walltype *pWall1 = &wall[sector[pNSprite->sectnum].wallptr];
             walltype *pWall2 = &wall[pWall1->point2];
             pNSprite->xoffset = sector[pNSprite->sectnum].ceilingheinum & 255;
@@ -2625,7 +2626,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     case kViewEffectFloorGlow:
     {
         sectortype *pSector = &sector[pTSprite->sectnum];
-        if (!VanillaMode()) // if floor has ror, don't render effect
+        if (gGameOptions.bSectorBehavior && !VanillaMode()) // if floor has ror, don't render effect
         {
             if ((pSector->floorpicnum >= 4080) && (pSector->floorpicnum <= 4095))
                 break;
@@ -2646,7 +2647,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->cstat |= 98;
         pNSprite->ang = pTSprite->ang;
         pNSprite->owner = pTSprite->owner;
-        if (bCalcSlope && (sector[pNSprite->sectnum].floorstat&2) && (sector[pNSprite->sectnum].floorheinum != 0)) { // align sprite to slope
+        if (bCalcSlope && (sector[pNSprite->sectnum].floorstat&2) && (sector[pNSprite->sectnum].floorheinum != 0)) // align sprite to slope
+        {
             walltype *pWall1 = &wall[sector[pNSprite->sectnum].wallptr];
             walltype *pWall2 = &wall[pWall1->point2];
             pNSprite->xoffset = sector[pNSprite->sectnum].floorheinum & 255;
@@ -2696,9 +2698,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
         const int nVoxel = voxelIndex[nTile];
         if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
-        {
             pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
-        }
         else if (gShowWeapon == 2 && usevoxels && gDetail >= 4 && videoGetRenderMode() != REND_POLYMER && nVoxel != -1)
         {
             pNSprite->cstat |= 48;
@@ -2738,9 +2738,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->yrepeat = 32;
         pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
         if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite/voxel to transparent
-        {
             pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
-        }
         break;
     }
     }
