@@ -66,7 +66,7 @@ New features include:
     - Improved beast stomp attack sector scanning
     - Check if enemy is alive before setting target for AI
     - Fixes tesla cultists bugged prone attack sequence
-* Random Cultist TNT
+* Random cultist TNT
     - This will make cultists use a variety of random thrown sprites such as:
     - Napalm balls, proxy bundles, armed spray cans or pod projectiles
 * Weapon behavior

@@ -974,6 +974,19 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
                 pSprite->y += v2c;
             }
         }
+        else if (gGameOptions.bSectorBehavior && !VanillaMode()) // always drag blood splatter/bullet casing (e.g.: E3M5 fire armor platform)
+        {
+            const char bDraggable = (pSprite->type == FX_36) && (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) || (pSprite->type == FX_51); // if blood splatter/spent static bullet casing
+            if (bDraggable && a12) // if walls moved
+            {
+                viewBackupSpriteLoc(nSprite, pSprite);
+                if (v14)
+                    RotatePoint((int*)&pSprite->x, (int*)&pSprite->y, v14, v20, v24);
+                pSprite->ang = (pSprite->ang+v14)&2047;
+                pSprite->x += v28;
+                pSprite->y += v2c;
+            }
+        }
     }
 }
 
