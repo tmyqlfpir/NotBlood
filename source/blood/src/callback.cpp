@@ -467,12 +467,16 @@ void fxBloodBits(int nSprite) // 14
         if (pFX)
         {
             pFX->ang = nAngle;
-            if (gGameOptions.bSectorBehavior && !VanillaMode() && (sector[pFX->sectnum].floorstat&2) && (sector[pFX->sectnum].floorheinum != 0)) // align sprite to slope
+            if (gGameOptions.bSectorBehavior && !VanillaMode())
             {
-                walltype *pWall1 = &wall[sector[pFX->sectnum].wallptr];
-                walltype *pWall2 = &wall[pWall1->point2];
-                spriteSetSlope(pFX->index, sector[pFX->sectnum].floorheinum);
-                pFX->ang = getangle(pWall2->x-pWall1->x, pWall2->y-pWall1->y)+kAng270;
+                pFX->z = getflorzofslope(pFX->sectnum, pFX->x, pFX->y); // get more accurate z position of sector
+                if ((sector[pFX->sectnum].floorstat&2) && (sector[pFX->sectnum].floorheinum != 0)) // align sprite to slope
+                {
+                    walltype *pWall1 = &wall[sector[pFX->sectnum].wallptr];
+                    walltype *pWall2 = &wall[pWall1->point2];
+                    spriteSetSlope(pFX->index, sector[pFX->sectnum].floorheinum);
+                    pFX->ang = getangle(pWall2->x-pWall1->x, pWall2->y-pWall1->y)+kAng270;
+                }
             }
         }
     }
