@@ -5836,7 +5836,12 @@ void MoveMissileBullet(spritetype *pSprite)
     {
         int nOwner = actSpriteOwnerToSpriteId(pSprite);
         pOwner = &sprite[nOwner];
-        if (IsDudeSprite(pOwner))
+        if (sprite[nOwner].type != sprite[nOwner].inittype)
+            sprite[nOwner].type = sprite[nOwner].type;
+        bool bDudeSprite = IsDudeSprite(pOwner);
+        if (!bDudeSprite) // if false, check inittype range (dudes can die before projectiles have hit their target - which mean their type may be set to gibs instead)
+            bDudeSprite = (pOwner->inittype >= kDudeBase) && (pOwner->inittype < kDudeMax);
+        if (bDudeSprite)
         {
             bakCstat = pOwner->cstat;
             pOwner->cstat &= ~257;
