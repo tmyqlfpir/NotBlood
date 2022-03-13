@@ -1019,12 +1019,12 @@ inline double SquareDist(double lx1, double ly1, double lx2, double ly2)
     return dx * dx + dy * dy;
 }
 
-inline double SquareDistToWall(double px, double py, const walltype* wal) 
+double SquareDistToWall(double px, double py, const walltype* pWall)
 {
-    double lx1 = wal->x;
-    double ly1 = wal->y;
-    double lx2 = wall[wal->point2].x;
-    double ly2 = wall[wal->point2].y;
+    double lx1 = pWall->x;
+    double ly1 = pWall->y;
+    double lx2 = wall[pWall->point2].x;
+    double ly2 = wall[pWall->point2].y;
 
     double wall_length = SquareDist(lx1, ly1, lx2, ly2);
 
