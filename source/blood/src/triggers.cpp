@@ -960,10 +960,7 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
             int top, bottom;
             GetSpriteExtents(pSprite, &top, &bottom);
             int floorZ = getflorzofslope(nSector, pSprite->x, pSprite->y);
-            char bDraggable = !(pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) && (floorZ <= bottom);
-            if (!bDraggable && gGameOptions.bSectorBehavior && !VanillaMode()) // if floor aligned sprite, drag element
-                bDraggable = (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_FLOOR;
-            if (bDraggable)
+            if (!(pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) && floorZ <= bottom)
             {
                 if (!VanillaMode()) viewBackupSpriteLoc(nSprite, pSprite);
                 if (v14)
@@ -973,11 +970,20 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
                 pSprite->x += v28;
                 pSprite->y += v2c;
             }
+            else if (gGameOptions.bSectorBehavior && !VanillaMode() && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_FLOOR)) // if floor aligned sprite
+            {
+                viewBackupSpriteLoc(nSprite, pSprite);
+                if (v14)
+                    RotatePoint((int*)&pSprite->x, (int*)&pSprite->y, v14, v20, v24);
+                pSprite->ang = (pSprite->ang+v14)&2047;
+                pSprite->x += v28;
+                pSprite->y += v2c;
+            }
         }
-        else if (gGameOptions.bSectorBehavior && !VanillaMode()) // always drag blood splatter/bullet casing (e.g.: E3M5 fire armor platform)
+        else if (gGameOptions.bSectorBehavior && !VanillaMode()) // always drag blood splatter/bullet casing (e.g.: E3M5's fire armor platform)
         {
-            const char bDraggable = (pSprite->type == FX_36) && (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) || (pSprite->type == FX_51); // if blood splatter/spent static bullet casing
-            if (bDraggable && a12) // if walls moved
+            const char bDraggableType = (pSprite->type == FX_36) && (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) || (pSprite->type == FX_51); // if blood splatter/spent static bullet casing
+            if (bDraggableType && a12) // if walls moved
             {
                 viewBackupSpriteLoc(nSprite, pSprite);
                 if (v14)
@@ -1007,9 +1013,6 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
                 continue;
             int top, bottom;
             GetSpriteExtents(pSprite, &top, &bottom);
-            char bDraggable = !(pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) && (oldZ <= bottom);
-            if (!bDraggable && gGameOptions.bSectorBehavior && !VanillaMode()) // if floor aligned sprite, drag element
-                bDraggable = (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_FLOOR;
             if (pSprite->cstat&8192)
             {
                 viewBackupSpriteLoc(nSprite, pSprite);
@@ -1017,7 +1020,12 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
             }
             else if (pSprite->flags&2)
                 pSprite->flags |= 4;
-            else if (bDraggable)
+            else if (oldZ <= bottom && !(pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK))
+            {
+                viewBackupSpriteLoc(nSprite, pSprite);
+                pSprite->z += pSector->floorz-oldZ;
+            }
+            else if (gGameOptions.bSectorBehavior && !VanillaMode() && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_FLOOR)) // if floor aligned sprite
             {
                 viewBackupSpriteLoc(nSprite, pSprite);
                 pSprite->z += pSector->floorz-oldZ;
