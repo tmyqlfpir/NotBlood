@@ -91,6 +91,7 @@ New features include:
     - Make blood splatter/flare gun glow effect slope on sloped surfaces
     - Prevent glow effects from rendering over room over room surfaces
     - Add room over room sector transversal for shadow rendering
+    - Support wall sprites moving along with elevators
 * Hitscan projectiles
     - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
     - Projectile speed is adjusted depending on difficulty and if bullet is underwater
