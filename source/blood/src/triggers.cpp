@@ -976,7 +976,8 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
         }
         else if (gGameOptions.bSectorBehavior && !VanillaMode()) // always drag blood splatter/bullet casing (e.g.: E3M5 fire armor platform)
         {
-            if (((pSprite->type == FX_36) && (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_FLOOR) || (pSprite->type == FX_51)) // if blood splatter/spent static bullet casing
+            const char bDraggable = (pSprite->type == FX_36) && (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) || (pSprite->type == FX_51); // if blood splatter/spent static bullet casing
+            if (bDraggable && a12) // if walls moved
             {
                 viewBackupSpriteLoc(nSprite, pSprite);
                 if (v14)
