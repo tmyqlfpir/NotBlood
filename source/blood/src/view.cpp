@@ -2592,7 +2592,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     case kViewEffectCeilGlow:
     {
         sectortype *pSector = &sector[pTSprite->sectnum];
-        if (!VanillaMode()) // if ceiling has ror, don't render effect
+        if (gGameOptions.bSectorBehavior && !VanillaMode()) // if ceiling has ror, don't render effect
         {
             if ((pSector->ceilingpicnum >= 4080) && (pSector->ceilingpicnum <= 4095))
                 break;
@@ -2626,7 +2626,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     case kViewEffectFloorGlow:
     {
         sectortype *pSector = &sector[pTSprite->sectnum];
-        if (!VanillaMode()) // if floor has ror, don't render effect
+        if (gGameOptions.bSectorBehavior && !VanillaMode()) // if floor has ror, don't render effect
         {
             if ((pSector->floorpicnum >= 4080) && (pSector->floorpicnum <= 4095))
                 break;
