@@ -1044,7 +1044,7 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
                     double nDist = DBL_MAX;
                     const int nStartWall = sector[nSector].wallptr;
                     const int nEndWall = nStartWall + sector[nSector].wallnum;
-                    int nFoundWall = 0;
+                    int nFoundWall = nStartWall;
                     for (int nWall = nStartWall; nWall < nEndWall; nWall++) // because elevators have an entrance, we need to only move sprites aligned to the elevator interior walls
                     {
                         const double nDistCurWall = SquareDistToWall(pSprite->x, pSprite->y, &wall[nWall]); // find closest wall to sprite

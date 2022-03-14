@@ -19,7 +19,7 @@ New features include:
 * New enhancements menu under game options
 * New last weapon key binding (default Q) ([demo](https://files.catbox.moe/28cirg.mp4))
 * Lower gravity of bullet casings and gibs underwater
-* Fix blood/bullet casings not being dragged with sectors
+* Fix blood/bullet casings not being dragged with sectors ([before](https://files.catbox.moe/4q9rc3.mp4)/[after](https://files.catbox.moe/7n76gv.mp4))
 * Improved spawning randomization logic for bloodbath mode
 * Cloak powerup hides player weapon icon for bloodbath mode
 * Allow particle sprites to traverse through room over room sectors
