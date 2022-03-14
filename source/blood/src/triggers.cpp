@@ -985,15 +985,14 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
                 }
             }
         }
-        else if (bAllWalls && gGameOptions.bSectorBehavior && !VanillaMode()) // always drag blood splatter/bullet casing (e.g.: E3M5's fire armor platform)
+        else if (bAllWalls && (sector[nSector].type == kSectorSlide) && gGameOptions.bSectorBehavior && !VanillaMode()) // always drag blood splatter/bullet casing (e.g.: E3M5's fire armor platform)
         {
             int top, bottom;
             GetSpriteExtents(pSprite, &top, &bottom);
             const int floorZ = getflorzofslope(nSector, pSprite->x, pSprite->y);
             const char bDraggable = ((pSprite->type == FX_36) && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_FLOOR)) || (pSprite->type == FX_51); // if blood splatter/spent static bullet casing
             const char bOnFloor = (bottom == floorZ) || (pSprite->z == floorZ); // if sprite is sitting on sector
-            const char bSectorMove = (sector[nSector].type != kSectorRotate) && (sector[nSector].type != kSectorRotateMarked); // ignore rotate type
-            if (bDraggable && bOnFloor && bSectorMove)
+            if (bDraggable && bOnFloor)
             {
                 viewBackupSpriteLoc(nSprite, pSprite);
                 if (v14)
@@ -1039,7 +1038,9 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
             {
                 char bDraggable = 0;
                 if ((oldZ <= bottom) && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) != CSTAT_SPRITE_ALIGNMENT_WALL)) // if sprite is sitting on the floor (and not wall aligned)
+                {
                     bDraggable = 1;
+                }
                 else if ((pXSector->onCeilZ != pXSector->offCeilZ) && (sector[nSector].wallnum > 0) && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_WALL)) // if ceiling is also moving (e.g: elevator), adjust wall aligned sprites
                 {
                     const int nStartWall = sector[nSector].wallptr;
