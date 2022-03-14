@@ -1042,13 +1042,13 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
                     bDraggable = 1;
                 else if ((pXSector->onCeilZ != pXSector->offCeilZ) && (sector[nSector].wallnum > 0) && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_WALL)) // if ceiling is also moving (e.g: elevator), adjust wall aligned sprites
                 {
-                    double nDist = DBL_MAX;
                     const int nStartWall = sector[nSector].wallptr;
                     const int nEndWall = nStartWall + sector[nSector].wallnum;
                     int nFoundWall = nStartWall;
+                    int nDist = INT_MAX;
                     for (int nWall = nStartWall; nWall < nEndWall; nWall++) // because elevators have an entrance, we need to only move sprites aligned to the elevator interior walls
                     {
-                        const double nDistCurWall = SquareDistToWall(pSprite->x, pSprite->y, &wall[nWall]); // find closest wall to sprite
+                        const int nDistCurWall = GetDistToWall(pSprite->x, pSprite->y, &wall[nWall]); // find closest wall to sprite
                         if (nDistCurWall < nDist)
                         {
                             nDist = nDistCurWall;

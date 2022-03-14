@@ -82,8 +82,8 @@ int GetDistToLine(int x1, int y1, int x2, int y2, int x3, int y3);
 unsigned int ClipMove(int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask);
 unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask);
 int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit);
-double SquareDistToWall(double px, double py, const walltype* pWall);
-int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *pWalls = NULL, bool newSectCheckMethod = false, bool newSectCheckMethodRaze = false);
+int GetDistToWall(int x, int y, const walltype* pWall);
+int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *pWalls = NULL, bool newSectCheckMethod = false, bool sectCheckNotBlood = false);
 int picWidth(short nPic, short repeat);
 int picHeight(short nPic, short repeat);
 
