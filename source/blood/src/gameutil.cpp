@@ -1019,12 +1019,12 @@ int GetDistToWall(int x, int y, const walltype* pWall)
     const int ly1 = pWall->y;
     const int lx2 = wall[pWall->point2].x;
     const int ly2 = wall[pWall->point2].y;
-    const double A = x - lx1, B = y - ly1;
-    const double C = lx2 - lx1, D = ly2 - ly1;
+    const float A = x - lx1, B = y - ly1;
+    const float C = lx2 - lx1, D = ly2 - ly1;
 
-    const double nDot = A*C+B*D;
-    const double nLength = C*C+D*D;
-    double param = -1;
+    const float nDot = A*C+B*D;
+    const float nLength = C*C+D*D;
+    float param = -1;
     if (nLength != 0) // in case of 0 length line
       param = nDot / nLength;
 
