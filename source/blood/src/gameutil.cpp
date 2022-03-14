@@ -1012,30 +1012,45 @@ int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, cha
     return n;
 }
 
-inline double SquareDist(double lx1, double ly1, double lx2, double ly2)
+int GetDistToWall(int x, int y, const walltype* pWall)
 {
-    double dx = lx2 - lx1;
-    double dy = ly2 - ly1;
-    return dx * dx + dy * dy;
+    dassert(pWall != NULL);
+    const int lx1 = pWall->x;
+    const int ly1 = pWall->y;
+    const int lx2 = wall[pWall->point2].x;
+    const int ly2 = wall[pWall->point2].y;
+    const double A = x - lx1, B = y - ly1;
+    const double C = lx2 - lx1, D = ly2 - ly1;
+
+    const double nDot = A*C+B*D;
+    const double nLength = C*C+D*D;
+    double param = -1;
+    if (nLength != 0) // in case of 0 length line
+      param = nDot / nLength;
+
+    int xx, yy;
+    if (param < 0)
+    {
+        xx = lx1;
+        yy = ly1;
+    }
+    else if (param > 1)
+    {
+        xx = lx2;
+        yy = ly2;
+    }
+    else
+    {
+        xx = lx1 + (int)(param * C);
+        yy = ly1 + (int)(param * D);
+    }
+
+    const int dx = x - xx;
+    const int dy = y - yy;
+    return ksqrt(dx*dx+dy*dy);
 }
 
-double SquareDistToWall(double px, double py, const walltype* pWall)
-{
-    double lx1 = pWall->x;
-    double ly1 = pWall->y;
-    double lx2 = wall[pWall->point2].x;
-    double ly2 = wall[pWall->point2].y;
-
-    double wall_length = SquareDist(lx1, ly1, lx2, ly2);
-
-    if (wall_length == 0) return SquareDist(px, py, lx1, ly1);
-
-    double t = ((px - lx1) * (lx2 - lx1) + (py - ly1) * (ly2 - ly1)) / wall_length;
-    t = clamp(t, 0., 1.);
-    return SquareDist(px, py, lx1 + t * (lx2 - lx1), ly1 + t * (ly2 - ly1));
-}
-
-int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *pWalls, bool newSectCheckMethod, bool newSectCheckMethodRaze)
+int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *pWalls, bool newSectCheckMethod, bool sectCheckNotBlood)
 {
     // by default this function fails with sectors that linked with wide spans, or there was more than one link to the same sector. for example...
     // E6M1: throwing TNT on the stone footpath while standing on the brown road will fail due to the start/end points of the span being too far away. it'll only do damage at one end of the road
@@ -1048,6 +1063,7 @@ int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSector
     SetBitString(sectbits, nSector);
     int n = 1, m = 0;
     int i = 0;
+    const int nDist4 = nDist<<4;
     if (pSectBit)
     {
         memset(pSectBit, 0, (kMaxSectors+7)>>3);
@@ -1072,16 +1088,11 @@ int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSector
             {
                 withinRange = CheckProximityWall(pWall->point2, x, y, nDist);
             }
-            else // new method
+            else // new method - calculate dot to line distance
             {
-                if (newSectCheckMethodRaze) // raze - just straight up calculate the distance
-                {
-                    const double nDist4sq = 256. * nDist * nDist; // (nDist * 16)^2 - * 16 to account for build's 28.4 fixed point format
-                    const double dist1 = SquareDistToWall(x, y, pWall);
-                    withinRange = dist1 <= nDist4sq;
-                    setSectBit = false; // check every wall, every time
-                }
-                else // notblood - first test edges and then wall span midpoints
+                // notblood sector mode flags a sector as checked once all walls referencing that sector have been checked
+                // raze does not to this - instead raze only sets the next sector as checked if within range
+                if (sectCheckNotBlood)
                 {
                     for (int k = (j+1); k < nEndWall; k++) // scan through the rest of the sector's walls
                     {
@@ -1091,35 +1102,12 @@ int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSector
                             break;
                         }
                     }
-                    const int nWallA = j;
-                    const int nWallB = wall[nWallA].point2;
-                    int x1 = wall[nWallA].x, y1 = wall[nWallA].y;
-                    int x2 = wall[nWallB].x, y2 = wall[nWallB].y;
-                    int point1Dist = approxDist(x-x1, y-y1); // setup edge distance needed for below loop (determines which point to shift closer to center)
-                    int point2Dist = approxDist(x-x2, y-y2);
-                    int nLength = approxDist(x1-x2, y1-y2);
-                    const int nDist4 = nDist<<4;
-                    nLength = ClipRange(nLength / (nDist4+(nDist4>>1)), 1, 4); // always test midpoint at least once, and never split more than 4 times
-                    for (int k = 0; true; k++) // check both points of wall and subdivide span into smaller chunks towards target
-                    {
-                        withinRange = (point1Dist < nDist4) || (point2Dist < nDist4); // check if both points of span is within radius
-                        if (withinRange)
-                            break;
-                        if (k == nLength) // reached end
-                            break;
-                        const int xcenter = (x1+x2)>>1, ycenter = (y1+y2)>>1;
-                        if (point1Dist < point2Dist) // shift closest side of wall towards target point, and refresh point distance values
-                        {
-                            x2 = xcenter, y2 = ycenter;
-                            point2Dist = approxDist(x-x2, y-y2);
-                        }
-                        else
-                        {
-                            x1 = xcenter, y1 = ycenter;
-                            point1Dist = approxDist(x-x1, y-y1);
-                        }
-                    }
                 }
+                else
+                {
+                    setSectBit = false; // always check every sector link
+                }
+                withinRange = GetDistToWall(x, y, pWall) <= nDist4;
             }
             if (withinRange) // if new sector is within range, set to current sector and test walls
             {

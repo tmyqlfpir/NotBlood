@@ -53,7 +53,7 @@ New features include:
 * Explosions behavior
     - Replace the default vanilla explosion calculation with an new improved sector scanning system
     - Fixes rare cases where enemies appear to ignore explosive damage due to sector/span order
-    - Includes two methods to choose from: NotBlood (integer based calculation) and Raze (double-precision floating-point calculation)
+    - Includes two methods to choose from: NotBlood (check linked sectors once) and Raze (always check linked sectors)
 * Projectiles behavior
     - For player projectiles, it'll use the improved eduke32's clipmove() logic as well as raymatching per tick
     - This feature also adjusts certain hitboxes so it's easier to throw/target around corners
