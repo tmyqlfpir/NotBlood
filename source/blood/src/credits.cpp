@@ -101,8 +101,10 @@ void credLogosDos(void)
             if (videoGetRenderMode() == REND_CLASSIC)
                 DoFade(0, 0, 0, 60);
         }
-        credReset();
     }
+
+    if (videoGetRenderMode() == REND_CLASSIC)
+        credReset();
 
     if (!credPlaySmk("GTI.SMK", "gti.wav", 301) && !credPlaySmk("movie/GTI.SMK", "movie/gti.wav", 301))
     {
