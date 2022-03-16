@@ -2806,7 +2806,7 @@ void useTeleportTarget(XSPRITE* pXSource, spritetype* pSprite) {
 
     if (pXSource->data2 == 1) {
         
-        if (pPlayer) pPlayer->q16ang = fix16_from_int(pSource->ang);
+        if (pPlayer) pPlayer->q16ang = fix16_from_int(pSource->ang), pPlayer->angold = pSource->ang;
         else if (isDude) xsprite[pSprite->extra].goalAng = pSprite->ang = pSource->ang;
         else pSprite->ang = pSource->ang;
     }
@@ -2815,6 +2815,7 @@ void useTeleportTarget(XSPRITE* pXSource, spritetype* pSprite) {
         xvel[pSprite->index] = yvel[pSprite->index] = zvel[pSprite->index] = 0;
 
     viewBackupSpriteLoc(pSprite->index, pSprite);
+    sfxUpdateSpritePos(pSprite); // update any assigned sfx to new position
 
     if (pXSource->data4 > 0)
         sfxPlay3DSound(pSource, pXSource->data4, -1, 0);
@@ -2823,6 +2824,10 @@ void useTeleportTarget(XSPRITE* pXSource, spritetype* pSprite) {
         playerResetInertia(pPlayer);
         if (pXSource->data2 == 1)
             pPlayer->zViewVel = pPlayer->zWeaponVel = 0;
+        if (pPlayer == gMe) { // if player is listener, update ear position/reset ear velocity so audio pitch of surrounding sfx does not freak out when teleporting player
+            sfxUpdateListenerPos();
+            sfxUpdateListenerVel(true);
+        }
     }
 
 }
