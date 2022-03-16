@@ -2823,6 +2823,10 @@ void useTeleportTarget(XSPRITE* pXSource, spritetype* pSprite) {
         playerResetInertia(pPlayer);
         if (pXSource->data2 == 1)
             pPlayer->zViewVel = pPlayer->zWeaponVel = 0;
+        if (pPlayer == gMe) { // if player is listener, update ear position/reset ear velocity so audio pitch of surrounding sfx does not freak out when teleporting player
+            sfxUpdateListenerPos();
+            sfxUpdateListenerVel(true);
+        }
     }
 
 }
