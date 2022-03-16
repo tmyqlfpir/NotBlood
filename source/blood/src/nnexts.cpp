@@ -2815,6 +2815,7 @@ void useTeleportTarget(XSPRITE* pXSource, spritetype* pSprite) {
         xvel[pSprite->index] = yvel[pSprite->index] = zvel[pSprite->index] = 0;
 
     viewBackupSpriteLoc(pSprite->index, pSprite);
+    sfxUpdateSpritePos(pSprite); // update any assigned sfx to new position
 
     if (pXSource->data4 > 0)
         sfxPlay3DSound(pSource, pXSource->data4, -1, 0);
