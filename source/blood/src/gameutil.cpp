@@ -533,12 +533,12 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
         if (adjustedRORPos) // check using ror sector position offset instead of absolute sprite location
         {
             if (nRange && approxDist(gHitInfo.hitx - adjustedRORPos->x, gHitInfo.hity - adjustedRORPos->y) > nRange)
-                return -1;      
+                return -1;
         }
         else // original method - use sprite location (doesn't take into account ror sector position offset)
         {
             if (nRange && approxDist(gHitInfo.hitx - pSprite->x, gHitInfo.hity - pSprite->y) > nRange)
-                return -1;            
+                return -1;
         }
         if (gHitInfo.hitsprite >= 0)
         {
@@ -875,6 +875,46 @@ int GetDistToLine(int x1, int y1, int x2, int y2, int x3, int y3)
     return approxDist(t1-x1, t2-y1);
 }
 
+int GetDistToWall(int x, int y, const walltype* pWall)
+{
+    // this is a modern style calculation that uses floating point
+    // for an authentic DOS-style integer calculation consider using getwalldist()
+    dassert(pWall != NULL);
+    const int lx1 = pWall->x;
+    const int ly1 = pWall->y;
+    const int lx2 = wall[pWall->point2].x;
+    const int ly2 = wall[pWall->point2].y;
+    const float A = x - lx1, B = y - ly1;
+    const float C = lx2 - lx1, D = ly2 - ly1;
+
+    const float nDot = A*C+B*D;
+    const float nLength = C*C+D*D;
+    float param = -1;
+    if (nLength != 0) // in case of 0 length line
+      param = nDot / nLength;
+
+    int xx, yy;
+    if (param < 0)
+    {
+        xx = lx1;
+        yy = ly1;
+    }
+    else if (param > 1)
+    {
+        xx = lx2;
+        yy = ly2;
+    }
+    else
+    {
+        xx = lx1 + (int)(param * C);
+        yy = ly1 + (int)(param * D);
+    }
+
+    const int dx = x - xx;
+    const int dy = y - yy;
+    return ksqrt(dx*dx+dy*dy);
+}
+
 unsigned int ClipMove(int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask)
 {
     int bakX = *x;
@@ -1010,44 +1050,6 @@ int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, cha
     }
     pSectors[n] = -1;
     return n;
-}
-
-int GetDistToWall(int x, int y, const walltype* pWall)
-{
-    dassert(pWall != NULL);
-    const int lx1 = pWall->x;
-    const int ly1 = pWall->y;
-    const int lx2 = wall[pWall->point2].x;
-    const int ly2 = wall[pWall->point2].y;
-    const float A = x - lx1, B = y - ly1;
-    const float C = lx2 - lx1, D = ly2 - ly1;
-
-    const float nDot = A*C+B*D;
-    const float nLength = C*C+D*D;
-    float param = -1;
-    if (nLength != 0) // in case of 0 length line
-      param = nDot / nLength;
-
-    int xx, yy;
-    if (param < 0)
-    {
-        xx = lx1;
-        yy = ly1;
-    }
-    else if (param > 1)
-    {
-        xx = lx2;
-        yy = ly2;
-    }
-    else
-    {
-        xx = lx1 + (int)(param * C);
-        yy = ly1 + (int)(param * D);
-    }
-
-    const int dx = x - xx;
-    const int dy = y - yy;
-    return ksqrt(dx*dx+dy*dy);
 }
 
 int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *pWalls, bool newSectCheckMethod, bool sectCheckNotBlood)
