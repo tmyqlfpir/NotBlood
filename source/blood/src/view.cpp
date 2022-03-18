@@ -3823,7 +3823,8 @@ void viewDrawScreen(void)
         {
             CalcPosition(gView->pSprite, (int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum, fix16_to_int(cA), q16horiz);
         }
-        CheckLink((int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum);
+        if (!CheckLink((int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum) && gViewInterpolate && !VanillaMode()) // double check current sector for interpolated movement (fixes ROR glitch)
+            FindSector(cX, cY, cZ, &nSectnum);
         int v78 = gViewInterpolate ? interpolateang(gScreenTiltO, gScreenTilt, gInterpolate) : gScreenTilt;
         char v14 = 0;
         char v10 = 0;
