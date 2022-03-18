@@ -1508,7 +1508,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     }
 
     const int bakCurWeapon = pPlayer->curWeapon;
-    while (pPlayer->curWeapon == kWeaponNone) // if we're switching between weapons, use the next weapon value or find a valid weapon
+    while ((pPlayer->curWeapon == kWeaponNone) || WeaponIsEquipable(pPlayer, pPlayer->input.newWeapon)) // if we're switching between weapons, use the next weapon value or find a valid weapon
     {
         pPlayer->curWeapon = pPlayer->input.newWeapon;
         if (WeaponIsEquipable(pPlayer, pPlayer->curWeapon, false))
