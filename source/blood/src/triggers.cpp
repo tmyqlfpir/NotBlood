@@ -1041,22 +1041,27 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
                 {
                     bDraggable = 1;
                 }
-                else if ((pXSector->onCeilZ != pXSector->offCeilZ) && (sector[nSector].wallnum > 0) && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_WALL)) // if ceiling is also moving (e.g: elevator), adjust wall aligned sprites
+                else if ((pSprite->extra == -1) && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_WALL)) // if sprite is wall aligned (and not a switch)
                 {
-                    const int nStartWall = sector[nSector].wallptr;
-                    const int nEndWall = nStartWall + sector[nSector].wallnum;
-                    int nFoundWall = nStartWall;
-                    int nDist = INT_MAX;
-                    for (int nWall = nStartWall; nWall < nEndWall; nWall++) // because elevators have an entrance, we need to only move sprites aligned to the elevator interior walls
+                    const int nDiff = klabs((pXSector->onFloorZ-pXSector->offFloorZ)-(pXSector->onCeilZ-pXSector->offCeilZ))>>12;
+                    const char bElevator = (sector[nSector].wallnum > 0) && (pXSector->onCeilZ != pXSector->offCeilZ) && !nDiff;
+                    if (bElevator && !(sector[nSector].ceilingstat&kSecCParallax)) // if ceiling (not sky) is also moving (e.g: elevator), adjust wall aligned sprites
                     {
-                        const int nDistCurWall = GetDistToWall(pSprite->x, pSprite->y, &wall[nWall]); // find closest wall to sprite
-                        if (nDistCurWall < nDist)
+                        const int nStartWall = sector[nSector].wallptr;
+                        const int nEndWall = nStartWall + sector[nSector].wallnum;
+                        int nFoundWall = nStartWall;
+                        int nDist = INT_MAX;
+                        for (int nWall = nStartWall; nWall < nEndWall; nWall++) // because elevators have an entrance, we need to only move sprites aligned to the elevator interior walls
                         {
-                            nDist = nDistCurWall;
-                            nFoundWall = nWall;
+                            const int nDistCurWall = GetDistToWall(pSprite->x, pSprite->y, &wall[nWall]); // find closest wall to sprite
+                            if (nDistCurWall < nDist)
+                            {
+                                nDist = nDistCurWall;
+                                nFoundWall = nWall;
+                            }
                         }
+                        bDraggable = wall[nFoundWall].nextsector < 0; // if nearest wall is linked to a sector, do not drag (outside of elevator)
                     }
-                    bDraggable = wall[nFoundWall].nextsector < 0; // if nearest wall is linked to a sector, do not drag (outside of elevator)
                 }
                 if (bDraggable)
                 {
