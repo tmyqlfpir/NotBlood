@@ -963,6 +963,7 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
     }
 
     // we didn't hit shit, let's raycast and try again
+REPEAT_HITSCAN:
     bool seekSector = false;
     vec3_t pos = {origX, origY, origZ};
     hitdata_t hitData;
@@ -971,9 +972,17 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
     hitscangoal.y = *y;
     hitscan(&pos, origSect, Cos(raySprite->ang)>>16, Sin(raySprite->ang)>>16, 0, &hitData, nMask);
     if (hitData.sprite >= kMaxSprites || hitData.wall >= kMaxWalls || hitData.sect >= kMaxSectors) // we didn't hit shit, get current sector and return
+    {
         seekSector = true;
+    }
     else if (hitData.sprite >= 0 || hitData.wall >= 0) // did we hit something, and was it a sprite/wall
     {
+        const char bHitSprite = hitData.sprite >= 0;
+        if ((nMask != CLIPMASK1) && bHitSprite && spriRangeIsFine(hitData.sprite) && !IsDudeSprite(&sprite[hitData.sprite])) // if hit a non-dude sprite, double check with CLIPMASK1 mask
+        {
+            nMask = CLIPMASK1; // resolve some weird edge cases where the initial hitscan conflicts with big sprites (e.g.: tree sprites in CPSL)
+            goto REPEAT_HITSCAN;
+        }
         const int distRay = approxDist(origX-hitData.xyz.x, origY-hitData.xyz.y);
         *x = hitData.xyz.x; // set to raycast position
         *y = hitData.xyz.y;
@@ -986,7 +995,7 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
             *y -= mulscale30(wd+8, Sin(raySprite->ang));
             seekSector = true; // we've moved the sprite, there might be a very small possibility that the sector is misaligned so check this
         }
-        if (hitData.sprite >= 0)
+        if (bHitSprite)
             nRes = (hitData.sprite & 0x3FFF) | 0x8000;
         else
             nRes = (hitData.wall & 0x3FFF) | 0xC000;
