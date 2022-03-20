@@ -7101,6 +7101,46 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
         pSprite->sectnum = nSector;
     }
     int hit = HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, CLIPMASK0, clipdist);
+    while (ProjectilesNotBlood() && IsPlayerSprite(pSprite) && !VanillaMode() && (hit == 3) && spriRangeIsFine(gHitInfo.hitsprite) && !IsDudeSprite(&sprite[gHitInfo.hitsprite])) // if hit a non-dude sprite, check that the pixel hit is not transparent (e.g.: tree sprites in CPSL)
+    {
+        const int dx = x-pSprite->x, dy = y-pSprite->y, dz = z-pSprite->z;
+        spritetype *pOther = &sprite[gHitInfo.hitsprite];
+        if ((pOther->cstat & 0x30) != 0)
+            break;
+        int nPicnum = pOther->picnum;
+        if (tilesiz[nPicnum].x == 0 || tilesiz[nPicnum].y == 0)
+            break;
+        int height = (tilesiz[nPicnum].y*pOther->yrepeat)<<2;
+        if (!height)
+            break;
+        int otherZ = pOther->z;
+        if (pOther->cstat & 0x80)
+            otherZ += height / 2;
+        int nOffset = picanm[nPicnum].yofs;
+        if (nOffset)
+            otherZ -= (nOffset*pOther->yrepeat)<<2;
+        int height2 = scale(otherZ-gHitInfo.hitz, tilesiz[nPicnum].y, height);
+        if (!(pOther->cstat & 8))
+            height2 = tilesiz[nPicnum].y-height2;
+        if (height2 >= 0 && height2 < tilesiz[nPicnum].y)
+        {
+            int width = (tilesiz[nPicnum].x*pOther->xrepeat)>>2;
+            if (!width)
+                break;
+            width = (width*3)/4;
+            int check1 = ((pSprite->y - pOther->y)*dx - (pSprite->x - pOther->x)*dy) / ksqrt(dx*dx+dy*dy);
+            int width2 = scale(check1, tilesiz[nPicnum].x, width);
+            int nOffset = picanm[nPicnum].xofs;
+            width2 += nOffset + tilesiz[nPicnum].x / 2;
+            if (width2 >= 0 && width2 < tilesiz[nPicnum].x)
+            {
+                char *pData = tileLoadTile(nPicnum);
+                if (pData[width2*tilesiz[nPicnum].y+height2] == (char)255)
+                    hit = -1; // we hit a transparent pixel, set as hit nothing
+            }
+        }
+        break;
+    }
     if (hit != -1)
     {
         if (hit == 3 || hit == 0)
