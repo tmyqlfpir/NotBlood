@@ -1594,7 +1594,7 @@ void viewDrawMapTitle(void)
 
 void viewDrawAimedPlayerName(void)
 {
-    if (!gShowPlayerNames || (gView->aim.dx == 0 && gView->aim.dy == 0))
+    if (!gShowPlayerNames || (gView->aim.dx == 0 && gView->aim.dy == 0) || (gGameOptions.nGameType == 0))
         return;
 
     int hit = HitScan(gView->pSprite, gView->zView, gView->aim.dx, gView->aim.dy, gView->aim.dz, CLIPMASK0, 512);
