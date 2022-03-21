@@ -915,6 +915,49 @@ int GetDistToWall(int x, int y, const walltype* pWall)
     return ksqrt(dx*dx+dy*dy);
 }
 
+int CheckHitSpriteAlpha(int x, int y, int dx, int dy, int dz, HITINFO *pHitInfo)
+{
+    const int nSprite = pHitInfo->hitsprite & 0x3FFF;
+    if (!spriRangeIsFine(nSprite))
+        return 0;
+    spritetype *pTarget = &sprite[pHitInfo->hitsprite];
+    if ((pTarget->cstat & 0x30) != 0)
+        return 0;
+    int nPicnum = pTarget->picnum;
+    if (tilesiz[nPicnum].x == 0 || tilesiz[nPicnum].y == 0)
+        return 0;
+    int height = (tilesiz[nPicnum].y*pTarget->yrepeat)<<2;
+    if (height == 0)
+        return 1; // we hit an impossibly small sprite, set as hit nothing
+    int otherZ = pTarget->z;
+    if (pTarget->cstat & 0x80)
+        otherZ += height / 2;
+    int nOffset = picanm[nPicnum].yofs;
+    if (nOffset)
+        otherZ -= (nOffset*pTarget->yrepeat)<<2;
+    int height2 = scale(otherZ-pHitInfo->hitz, tilesiz[nPicnum].y, height);
+    if (!(pTarget->cstat & 8))
+        height2 = tilesiz[nPicnum].y-height2;
+    if (height2 >= 0 && height2 < tilesiz[nPicnum].y)
+    {
+        int width = (tilesiz[nPicnum].x*pTarget->xrepeat)>>2;
+        if (width == 0)
+            return 1; // we hit an impossibly small sprite, set as hit nothing
+        width = (width*3)/4;
+        int check1 = ((y - pTarget->y)*dx - (x - pTarget->x)*dy) / ksqrt(dx*dx+dy*dy);
+        int width2 = scale(check1, tilesiz[nPicnum].x, width);
+        int nOffset = picanm[nPicnum].xofs;
+        width2 += nOffset + tilesiz[nPicnum].x / 2;
+        if (width2 >= 0 && width2 < tilesiz[nPicnum].x)
+        {
+            char *pData = tileLoadTile(nPicnum);
+            if (pData[width2*tilesiz[nPicnum].y+height2] != (char)255)
+                return 0; // we hit a non-transparent pixel
+        }
+    }
+    return 1; // if we reached here, then the pixel we hit is transparent
+}
+
 unsigned int ClipMove(int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask)
 {
     int bakX = *x;
@@ -963,7 +1006,6 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
     }
 
     // we didn't hit shit, let's raycast and try again
-REPEAT_HITSCAN:
     bool seekSector = false;
     vec3_t pos = {origX, origY, origZ};
     hitdata_t hitData;
@@ -978,10 +1020,13 @@ REPEAT_HITSCAN:
     else if (hitData.sprite >= 0 || hitData.wall >= 0) // did we hit something, and was it a sprite/wall
     {
         const char bHitSprite = hitData.sprite >= 0;
-        if ((nMask != CLIPMASK1) && bHitSprite && spriRangeIsFine(hitData.sprite) && !IsDudeSprite(&sprite[hitData.sprite])) // if hit a non-dude sprite, double check with CLIPMASK1 mask
+        const int nSprite = hitData.sprite & 0x3FFF;
+        if (bHitSprite && spriRangeIsFine(nSprite) && !IsDudeSprite(&sprite[nSprite])) // if hit a non-dude sprite, check if pixel is alpha or not
         {
-            nMask = CLIPMASK1; // resolve some weird edge cases where the initial hitscan conflicts with big sprites (e.g.: tree sprites in CPSL)
-            goto REPEAT_HITSCAN;
+            gHitInfo.hitsprite = hitData.sprite;
+            gHitInfo.hitz = hitData.xyz.z;
+            if (CheckHitSpriteAlpha(origX, origY, Cos(raySprite->ang)>>16, Sin(raySprite->ang)>>16, 0, &gHitInfo))
+                return 0; // resolve some weird edge cases where the initial hitscan conflicts with big sprites (e.g.: tree sprites in CPSL)
         }
         const int distRay = approxDist(origX-hitData.xyz.x, origY-hitData.xyz.y);
         *x = hitData.xyz.x; // set to raycast position
@@ -996,7 +1041,7 @@ REPEAT_HITSCAN:
             seekSector = true; // we've moved the sprite, there might be a very small possibility that the sector is misaligned so check this
         }
         if (bHitSprite)
-            nRes = (hitData.sprite & 0x3FFF) | 0x8000;
+            nRes = nSprite | 0x8000;
         else
             nRes = (hitData.wall & 0x3FFF) | 0xC000;
     }

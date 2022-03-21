@@ -1028,23 +1028,25 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
                 pSprite->z += pSector->floorz-oldZ;
             }
             else if (pSprite->flags&2)
+            {
                 pSprite->flags |= 4;
+            }
             else if (oldZ <= bottom && !(pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK))
             {
                 viewBackupSpriteLoc(nSprite, pSprite);
                 pSprite->z += pSector->floorz-oldZ;
             }
-            else if (gGameOptions.bSectorBehavior && !VanillaMode()) // move floor/wall aligned sprites along sector
+            else if (!((pSprite->type >= kMarkerSPStart) && (pSprite->type < kSwitchMax)) && gGameOptions.bSectorBehavior && !VanillaMode()) // move floor/wall aligned sprites along sector
             {
                 char bDraggable = 0;
                 if ((oldZ <= bottom) && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) != CSTAT_SPRITE_ALIGNMENT_WALL)) // if sprite is sitting on the floor (and not wall aligned)
                 {
                     bDraggable = 1;
                 }
-                else if ((pSprite->extra == -1) && ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_WALL)) // if sprite is wall aligned (and not a switch)
+                else if ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_WALL) // if sprite is wall aligned (and not a switch)
                 {
-                    const int nDiff = klabs((pXSector->onFloorZ-pXSector->offFloorZ)-(pXSector->onCeilZ-pXSector->offCeilZ))>>12;
-                    const char bElevator = (sector[nSector].wallnum > 0) && (pXSector->onCeilZ != pXSector->offCeilZ) && !nDiff;
+                    const int nDelta = klabs((pXSector->onFloorZ-pXSector->offFloorZ)-(pXSector->onCeilZ-pXSector->offCeilZ))>>12;
+                    const char bElevator = (sector[nSector].wallnum > 0) && (pXSector->onCeilZ != pXSector->offCeilZ) && (nDelta == 0);
                     if (bElevator && !(sector[nSector].ceilingstat&kSecCParallax)) // if ceiling (not sky) is also moving (e.g: elevator), adjust wall aligned sprites
                     {
                         const int nStartWall = sector[nSector].wallptr;
