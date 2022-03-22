@@ -7051,7 +7051,13 @@ spritetype * actFireThing(spritetype *pSprite, int a2, int a3, int a4, int thing
     int z = pSprite->z+a3;
     x += mulscale28(pSprite->clipdist, Cos(pSprite->ang));
     y += mulscale28(pSprite->clipdist, Sin(pSprite->ang));
-    if (HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, CLIPMASK0, pSprite->clipdist) != -1)
+    int hit = HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, CLIPMASK0, pSprite->clipdist);
+    if (ProjectilesNotBlood() && IsPlayerSprite(pSprite) && !VanillaMode() && (hit == 3) && spriRangeIsFine(gHitInfo.hitsprite) && !IsDudeSprite(&sprite[gHitInfo.hitsprite])) // if hit a non-dude sprite, check that the pixel hit is not transparent (e.g.: tree sprites in CPSL)
+    {
+        if (CheckHitSpriteAlpha(pSprite->x, pSprite->y, x-pSprite->x, y-pSprite->y, z-pSprite->z, &gHitInfo))
+            hit = -1;
+    }
+    if (hit != -1)
     {
         x = gHitInfo.hitx-mulscale28(pSprite->clipdist<<1, Cos(pSprite->ang));
         y = gHitInfo.hity-mulscale28(pSprite->clipdist<<1, Sin(pSprite->ang));
