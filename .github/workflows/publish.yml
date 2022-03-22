@@ -2,8 +2,9 @@ name: Publish
 
 # Only trigger, when the build workflow succeeded
 on:
+  workflow_dispatch:
   workflow_run:
-    workflows: ["Build"]
+    workflows: [Build]
     types:
       - completed
 
