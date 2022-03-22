@@ -540,7 +540,7 @@ void LoadAutosavedInfo(void)
         }
         if ((uint32_t)kread(hFile, &gSaveGameOptions[AUTOSAVESLOT_START+nCount], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
             ThrowError("Error reading save file.");
-        UpdateSavedInfo(nCount);
+        UpdateSavedInfo(AUTOSAVESLOT_START+nCount);
         kclose(hFile);
     }
     klistfree(pList);
