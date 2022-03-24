@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //-------------------------------------------------------------------------
 #pragma once
 
-#define CUSTOMPALETTESMAX 24
+#define CUSTOMPALETTESMAX 25
 
 struct LOADITEM {
     int id;
