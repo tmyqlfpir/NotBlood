@@ -1,3 +1,26 @@
+//-------------------------------------------------------------------------
+/*
+Copyright (C) 2010-2019 EDuke32 developers and contributors
+Copyright (C) 2019 Nuke.YKT
+
+This file is part of NBlood.
+
+NBlood is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 2
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+//-------------------------------------------------------------------------
+
 // SLSO8 (8 colors)
 // Created by Luis Miguel Maldonado
 // https://lospec.com/palette-list/slso8
@@ -764,6 +787,45 @@ const uint8_t palette_endesga32[][3] =
     {0xF6, 0x75, 0x7A},
     {0xE8, 0xB7, 0x96},
     {0xC2, 0x85, 0x69}
+};
+
+// HEPT32 (32 colors)
+// Created by ENDESGA
+// https://lospec.com/palette-list/hept32
+const uint8_t palette_hept32[][3] =
+{
+    {0x00, 0x00, 0x00},
+    {0x18, 0x0D, 0x2F},
+    {0x35, 0x36, 0x58},
+    {0x68, 0x6B, 0x72},
+    {0x8B, 0x97, 0xB6},
+    {0xC5, 0xCD, 0xDB},
+    {0xFF, 0xFF, 0xFF},
+    {0x5E, 0xE9, 0xE9},
+    {0x28, 0x90, 0xDC},
+    {0x18, 0x31, 0xA7},
+    {0x05, 0x32, 0x39},
+    {0x00, 0x5F, 0x41},
+    {0x08, 0xB2, 0x3B},
+    {0x47, 0xF6, 0x41},
+    {0xE8, 0xFF, 0x75},
+    {0xFB, 0xBE, 0x82},
+    {0xDE, 0x97, 0x51},
+    {0xB6, 0x68, 0x31},
+    {0x8A, 0x49, 0x26},
+    {0x46, 0x1C, 0x14},
+    {0x1E, 0x09, 0x0D},
+    {0x72, 0x0D, 0x0D},
+    {0x81, 0x37, 0x04},
+    {0xDA, 0x24, 0x24},
+    {0xEF, 0x6E, 0x10},
+    {0xEC, 0xAB, 0x11},
+    {0xEC, 0xE9, 0x10},
+    {0xF7, 0x8D, 0x8D},
+    {0xF9, 0x4E, 0x6D},
+    {0xC1, 0x24, 0x58},
+    {0x84, 0x12, 0x52},
+    {0x3D, 0x08, 0x3B}
 };
 
 // Resurrect 64 (64 colors)
@@ -2332,6 +2394,7 @@ static const uint8_t *srcCustomPaletteList[CUSTOMPALETTESMAX] =
     *palette_win95,
     *palette_c64,
     *palette_endesga32,
+    *palette_hept32,
     *palette_resurrect64,
     *palette_vinik24,
     *palette_apollo,
@@ -2360,6 +2423,7 @@ static const int srcCustomPaletteColors[CUSTOMPALETTESMAX] =
     ARRAY_SSIZE(palette_win95),
     ARRAY_SSIZE(palette_c64),
     ARRAY_SSIZE(palette_endesga32),
+    ARRAY_SSIZE(palette_hept32),
     ARRAY_SSIZE(palette_resurrect64),
     ARRAY_SSIZE(palette_vinik24),
     ARRAY_SSIZE(palette_apollo),
@@ -2388,6 +2452,7 @@ const char *srcCustomPaletteStr[CUSTOMPALETTESMAX] =
     "Windows 95 (256 colors)",
     "Commodore 64 (16 colors)",
     "Endesga 32 (32 colors)",
+    "HEPT32 (32 colors)",
     "Resurrect 64 (64 colors)",
     "Vinik24 (24 colors)",
     "Apollo (46 colors)",
