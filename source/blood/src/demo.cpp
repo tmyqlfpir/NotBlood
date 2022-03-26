@@ -121,6 +121,7 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/BLOOD060.DEM", (int32_t)0x000067CF, 0x086B69C7, 0x00000315, {(int32_t)0xFFFFA704, (int32_t)0x0000D1A8, (int32_t)0xFFFFFD50}},
     {"/validatedemos/BLOOD061.DEM", (int32_t)0x000014BB, 0x89393200, 0x00000000, {(int32_t)0xFFFFC242, (int32_t)0xFFFF7FAD, (int32_t)0xFFFFCDA4}},
     {"/validatedemos/BLOOD062.DEM", (int32_t)0x00002180, 0xB2F4CC77, 0x00000000, {(int32_t)0xFFFFB4AD, (int32_t)0x0000137E, (int32_t)0x000061A4}},
+    {"/validatedemos/BLOOD063.DEM", (int32_t)0x00000736, 0xB077ACC3, 0x00000000, {(int32_t)0xFFFF61FF, (int32_t)0xFFFFE7BA, (int32_t)0x000119A4}},
 };
 
 int nBuild = 0;
