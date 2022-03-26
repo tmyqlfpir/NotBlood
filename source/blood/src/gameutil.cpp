@@ -917,6 +917,8 @@ int GetDistToWall(int x, int y, const walltype* pWall)
 
 int CheckHitSpriteAlpha(int x, int y, int dx, int dy, int dz, HITINFO *pHitInfo)
 {
+    if (pHitInfo->hitsprite >= kMaxSprites)
+        return 0;
     const int nSprite = pHitInfo->hitsprite & 0x3FFF;
     if (!spriRangeIsFine(nSprite))
         return 0;
