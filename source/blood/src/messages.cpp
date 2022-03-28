@@ -340,6 +340,7 @@ CGameMessageMgr::CGameMessageMgr()
     messageFlags = 15;
     numberOfDisplayedMessages = 0;
     nextMessagesIndex = messagesIndex = 0;
+    xoffset = 0;
 }
 
 void CGameMessageMgr::SetState(char state)
@@ -388,7 +389,7 @@ void CGameMessageMgr::Display(void)
             int initialNrOfDisplayedMsgs = numberOfDisplayedMessages;
             int initialMessagesIndex = messagesIndex;
             int shade = ClipHigh(initialNrOfDisplayedMsgs*8, 48);
-            int x = gViewMode == 3 ? gViewX0S : 0;
+            int x = gViewMode == 3 ? gViewX0S-xoffset : 0;
             int y = (gViewMode == 3 ? this->y : 0) + (int)at9;
             for (int i = 0; i < initialNrOfDisplayedMsgs; i++)
             {
@@ -439,7 +440,7 @@ void CGameMessageMgr::Display(void)
             SortMessagesByTime(messagesToDisplay, messagesToDisplayCount);
 
             int shade = ClipHigh(messagesToDisplayCount*8, 48);
-            int x = gViewMode == 3 ? gViewX0S : 0;
+            int x = gViewMode == 3 ? gViewX0S-xoffset : 0;
             int y = (gViewMode == 3 ? this->y : 0) + (int)at9;
             for (int i = 0; i < messagesToDisplayCount; i++)
             {
@@ -541,6 +542,7 @@ void CPlayerMsg::Clear(void)
 {
     text[0] = 0;
     at0 = 0;
+    xoffset = 0;
 }
 
 void CPlayerMsg::Term(void)
@@ -555,7 +557,7 @@ void CPlayerMsg::Draw(void)
     strcpy(buffer, text);
     if ((int)totalclock & 16)
         strcat(buffer, "_");
-    int x = gViewMode == 3 ? gViewX0S : 0;
+    int x = gViewMode == 3 ? gViewX0S-xoffset : 0;
     int y = gViewMode == 3 ? gViewY0S : 0;
     if (gViewSize >= 1)
         y += tilesiz[2229].y*((gNetPlayers+3)/4);

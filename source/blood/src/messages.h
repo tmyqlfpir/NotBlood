@@ -61,6 +61,7 @@ public:
     int numberOfDisplayedMessages;
     int messagesIndex;
     int nextMessagesIndex;
+    int xoffset;
     messageStruct messages[kMessageLogSize];
     CGameMessageMgr();
     void SetState(char state);
@@ -83,6 +84,7 @@ class CPlayerMsg
 public:
     int at0;
     char text[41];
+    int xoffset;
     CPlayerMsg() { at0 = 0; text[0] = 0; }
     void Clear(void);
     void Term(void);
