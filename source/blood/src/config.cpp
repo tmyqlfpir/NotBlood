@@ -120,7 +120,7 @@ bool gSonicMode;
 bool gFullMap;
 int32_t gUpscaleFactor;
 int32_t gLevelStats;
-int32_t gViewSize2OrigRatio;
+int32_t gHudOrigRatio;
 int32_t gPowerupDuration;
 int32_t gPowerupTicks;
 int32_t gShowMapTitle;
@@ -385,7 +385,7 @@ void CONFIG_SetDefaults(void)
     //ud.hudontop               = 0;
     //ud.idplayers              = 1;
     gLevelStats = 0;
-    gViewSize2OrigRatio = 0;
+    gHudOrigRatio = 0;
     gPowerupDuration = 1;
     gPowerupTicks = 100;
     gShowMapTitle = 1;
