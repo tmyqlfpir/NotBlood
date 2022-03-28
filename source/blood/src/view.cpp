@@ -1754,7 +1754,7 @@ void viewDrawCtfHudVanilla(ClockTicks arg)
     }
 }
 
-void flashTeamScore(ClockTicks arg, int team, bool show)
+void flashTeamScore(ClockTicks arg, int team, bool show, int xoffset)
 {
     dassert(0 == team || 1 == team); // 0: blue, 1: red
 
@@ -1765,7 +1765,7 @@ void flashTeamScore(ClockTicks arg, int team, bool show)
             gPlayerScoreTicks[team] = 0;
 
         if (show)
-            DrawStatNumber("%d", gPlayerScores[team], kSBarNumberInv, 290, team ? 125 : 90, 0, team ? 2 : 10, 512, 65536 * 0.75);
+            DrawStatNumber("%d", gPlayerScores[team], kSBarNumberInv, 290+xoffset, team ? 125 : 90, 0, team ? 2 : 10, 512, 65536 * 0.75);
     }
 }
 
@@ -1773,8 +1773,8 @@ void viewDrawCtfHud(ClockTicks arg, int xoffset)
 {
     if (0 == gViewSize)
     {
-        flashTeamScore(arg, 0, false);
-        flashTeamScore(arg, 1, false);
+        flashTeamScore(arg, 0, false, xoffset);
+        flashTeamScore(arg, 1, false, xoffset);
         return;
     }
 
@@ -1802,7 +1802,7 @@ void viewDrawCtfHud(ClockTicks arg, int xoffset)
         DrawStatMaskedSprite(2332, 305+xoffset, 83, 0, 10, 512, 65536);
     else if (blueFlagTaken)
         DrawStatMaskedSprite(4097, 307+xoffset, 77, 0, blueFlagCarrierColor ? 2 : 10, 512, 65536);
-    flashTeamScore(arg, 0, true);
+    flashTeamScore(arg, 0, true, xoffset);
 
     bool meHaveRedFlag = gMe->hasFlag & 2;
     DrawStatMaskedSprite(meHaveRedFlag ? 3558 : 3559, 320+xoffset, 110, 0, 2, 512, 65536 * 0.35);
@@ -1810,7 +1810,7 @@ void viewDrawCtfHud(ClockTicks arg, int xoffset)
         DrawStatMaskedSprite(2332, 305+xoffset, 117, 0, 2, 512, 65536);
     else if (redFlagTaken)
         DrawStatMaskedSprite(4097, 307+xoffset, 111, 0, redFlagCarrierColor ? 2 : 10, 512, 65536);
-    flashTeamScore(arg, 1, true);
+    flashTeamScore(arg, 1, true, xoffset);
 }
 
 void UpdateStatusBar(ClockTicks arg, int xoffset)
