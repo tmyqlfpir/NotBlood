@@ -1048,6 +1048,7 @@ int32_t registerosdcommands(void)
 //        { "hud_scale","changes the hud scale", (void *)&ud.statusbarscale, CVAR_INT|CVAR_FUNCPTR, 36, 100 },
 //        { "hud_showmapname", "enable/disable map name display on load", (void *)&hud_showmapname, CVAR_BOOL, 0, 1 },
         { "hud_stats", "enable/disable level statistics display", (void *)&gLevelStats, CVAR_BOOL, 0, 1 },
+        { "hud_ratio", "set aspect ratio screen position for hud (0: native, 1: 4:3, 2: 16:10, 3: 16:9, 3: 21:9)", (void*)&gHudRatio, CVAR_INT, 0, 4 },
         { "hud_powerupduration", "enable/disable displaying the remaining time for power-ups", (void *)&gPowerupDuration, CVAR_BOOL, 0, 1 },
         { "hud_powerupdurationticks", "set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)", (void *)&gPowerupTicks, CVAR_INT, 20, 240 },
         { "hud_showmaptitle", "enable/disable displaying the map title at the beginning of the maps", (void*)& gShowMapTitle, CVAR_BOOL, 0, 1 },
