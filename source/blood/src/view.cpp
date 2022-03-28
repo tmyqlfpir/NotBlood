@@ -1153,11 +1153,11 @@ void DrawStatSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned 
 }
 void DrawStatMaskedSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned int nStat, int nScale, bool mirror)
 {
-    short int ang = 0;
+    int16_t ang = 0;
     if (mirror)
     {
         nStat |= RS_YFLIP;
-        ang = 1024;
+        ang = kAng180;
     }
     rotatesprite(x<<16, y<<16, nScale, ang, nTile, nShade, nPalette, nStat | 10, 0, 0, xdim-1, ydim-1);
 }
@@ -1891,35 +1891,42 @@ void UpdateStatusBar(ClockTicks arg)
     }
     if (gViewSize == 2)
     {
-        DrawStatSprite(2201, 34, 187, 16, nPalette, 256);
+        int xoffset = 0;
+        if (gViewSize2OrigRatio)
+        {
+            xoffset = scale(xoffset-(320>>1), 320>>1, 266>>1); // scale position
+            xoffset = scale(xoffset, xscale, yscale); // multiply by window ratio
+            xoffset += 320>>1; // offset to center
+        }
+        DrawStatSprite(2201, 34-xoffset, 187, 16, nPalette, 256);
         if (pXSprite->health >= 16 || ((int)totalclock&16) || pXSprite->health == 0)
         {
-            DrawStatNumber("%3d", pXSprite->health>>4, 2190, 8, 183, 0, 0, 256);
+            DrawStatNumber("%3d", pXSprite->health>>4, 2190, 8-xoffset, 183, 0, 0, 256);
         }
         if (pPlayer->curWeapon && pPlayer->weaponAmmo != -1)
         {
             int num = pPlayer->ammoCount[pPlayer->weaponAmmo];
             if (pPlayer->weaponAmmo == 6)
                 num /= 10;
-            DrawStatNumber("%3d", num, 2240, 42, 183, 0, 0, 256);
+            DrawStatNumber("%3d", num, 2240, 42-xoffset, 183, 0, 0, 256);
         }
-        DrawStatSprite(2173, 284, 187, 16, nPalette, 512);
+        DrawStatSprite(2173, 284+xoffset, 187, 16, nPalette, 512);
         if (pPlayer->armor[1])
         {
-            TileHGauge(2207, 250, 175, pPlayer->armor[1], 3200, 512);
-            DrawStatNumber("%3d", pPlayer->armor[1]>>4, 2230, 255, 178, 0, 0, 512);
+            TileHGauge(2207, 250+xoffset, 175, pPlayer->armor[1], 3200, 512);
+            DrawStatNumber("%3d", pPlayer->armor[1]>>4, 2230, 255+xoffset, 178, 0, 0, 512);
         }
         if (pPlayer->armor[0])
         {
-            TileHGauge(2209, 250, 183, pPlayer->armor[0], 3200, 512);
-            DrawStatNumber("%3d", pPlayer->armor[0]>>4, 2230, 255, 186, 0, 0, 512);
+            TileHGauge(2209, 250+xoffset, 183, pPlayer->armor[0], 3200, 512);
+            DrawStatNumber("%3d", pPlayer->armor[0]>>4, 2230, 255+xoffset, 186, 0, 0, 512);
         }
         if (pPlayer->armor[2])
         {
-            TileHGauge(2208, 250, 191, pPlayer->armor[2], 3200, 512);
-            DrawStatNumber("%3d", pPlayer->armor[2]>>4, 2230, 255, 194, 0, 0, 512);
+            TileHGauge(2208, 250+xoffset, 191, pPlayer->armor[2], 3200, 512);
+            DrawStatNumber("%3d", pPlayer->armor[2]>>4, 2230, 255+xoffset, 194, 0, 0, 512);
         }
-        DrawPackItemInStatusBar(pPlayer, 286, 186, 302, 183, 512);
+        DrawPackItemInStatusBar(pPlayer, 286+xoffset, 186, 302+xoffset, 183, 512);
 
         if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
         {
@@ -1931,11 +1938,13 @@ void UpdateStatusBar(ClockTicks arg)
                 if (i&1)
                 {
                     x = 320-(78+(i>>1)*10);
+                    x += xoffset;
                     nStat |= 512;
                 }
                 else
                 {
                     x = 73+(i>>1)*10;
+                    x -= xoffset;
                     nStat |= 256;
                 }
 
