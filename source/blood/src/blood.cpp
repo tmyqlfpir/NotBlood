@@ -2946,7 +2946,7 @@ bool VanillaMode(const bool demoState) {
         return (gGameOptions.nGameType == 0) && (numplayers == 1);
     if (demoState) // only check if demo recording/playing is active
         return gDemo.bPlaying || gDemo.bRecording;
-    return (gDemo.bPlaying || gDemo.bRecording) || (gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1)); // fallback on singleplayer global vanilla mode settings
+    return (gDemo.bPlaying || gDemo.bRecording) || (gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1)); // fallback on single-player global vanilla mode settings
 }
 
 bool WeaponsNotBlood(void) {
