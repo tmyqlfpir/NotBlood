@@ -7054,7 +7054,7 @@ spritetype * actFireThing(spritetype *pSprite, int a2, int a3, int a4, int thing
     int hit = HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, CLIPMASK0, pSprite->clipdist);
     if (ProjectilesNotBlood() && IsPlayerSprite(pSprite) && !VanillaMode() && (hit == 3) && spriRangeIsFine(gHitInfo.hitsprite) && !IsDudeSprite(&sprite[gHitInfo.hitsprite])) // if hit a non-dude sprite, check that the pixel hit is not transparent (e.g.: tree sprites in CPSL)
     {
-        if (CheckHitSpriteAlpha(pSprite->x, pSprite->y, x-pSprite->x, y-pSprite->y, z-pSprite->z, &gHitInfo))
+        if (CheckHitSpriteAlpha(pSprite->x, pSprite->y, x-pSprite->x, y-pSprite->y, &gHitInfo))
             hit = -1;
     }
     if (hit != -1)
@@ -7109,7 +7109,7 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     int hit = HitScan(pSprite, z, x-pSprite->x, y-pSprite->y, 0, CLIPMASK0, clipdist);
     if (ProjectilesNotBlood() && IsPlayerSprite(pSprite) && !VanillaMode() && (hit == 3) && spriRangeIsFine(gHitInfo.hitsprite) && !IsDudeSprite(&sprite[gHitInfo.hitsprite])) // if hit a non-dude sprite, check that the pixel hit is not transparent (e.g.: tree sprites in CPSL)
     {
-        if (CheckHitSpriteAlpha(pSprite->x, pSprite->y, x-pSprite->x, y-pSprite->y, z-pSprite->z, &gHitInfo))
+        if (CheckHitSpriteAlpha(pSprite->x, pSprite->y, x-pSprite->x, y-pSprite->y, &gHitInfo))
             hit = -1;
     }
     if (hit != -1)
