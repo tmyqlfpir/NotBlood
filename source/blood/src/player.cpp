@@ -1199,7 +1199,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             if (!packAddItem(pPlayer, gItemData[nType].packSlot)) return 0;
             break;
         default:
-            if (pPlayer->pwUpTime[nType] && (gGameOptions.nGameType == 0) && !VanillaMode()) // if powerup is already active, reset time (only for single-player - Mario star logic)
+            if (pPlayer->pwUpTime[nType] && (gGameOptions.nGameType <= 1) && !VanillaMode()) // if powerup is already active, reset time (only for co-op/single-player - Mario star logic)
                 pPlayer->pwUpTime[nType] = 0;
             if (!powerupActivate(pPlayer, nType)) return 0;
             return 1;
