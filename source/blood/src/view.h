@@ -150,6 +150,7 @@ void viewDrawPack(PLAYER *pPlayer, int x, int y);
 void DrawPackItemInStatusBar(PLAYER *pPlayer, int x, int y, int x2, int y2, int nStat = 0);
 void UpdateStatusBar(ClockTicks arg);
 void viewInit(void);
+void viewUpdateHudRatio(void);
 void viewResizeView(int size);
 void UpdateFrame(void);
 void viewDrawInterface(ClockTicks arg);

@@ -92,6 +92,7 @@ void SetupLevelMenuItem(int);
 void SetupVideoModeMenu(CGameMenuItemChain *);
 void SetVideoMode(CGameMenuItemChain *);
 void SetWidescreen(CGameMenuItemZBool *);
+void SetHudRatio(CGameMenuItemZCycle *);
 void SetMirrorMode(CGameMenuItemZCycle *);
 void SetWeaponSelectMode(CGameMenuItemZCycle *);
 void SetSlowRoomFlicker(CGameMenuItemZBool *);
@@ -537,6 +538,14 @@ const char *pzWeaponInterpolateStrings[] = {
     "ALL ANIMATION"
 };
 
+const char *pzHudRatioStrings[] = {
+    "DEFAULT",
+    "4:3",
+    "16:10",
+    "16:9",
+    "21:9",
+};
+
 const char *pzMirrorModeStrings[] = {
     "OFF",
     "HORIZONTAL",
@@ -626,12 +635,13 @@ CGameMenuItemZBool itemOptionsDisplayBoolPowerupDuration("POWERUP DURATION:", 3,
 CGameMenuItemZBool itemOptionsDisplayBoolShowMapTitle("MAP TITLE:", 3, 66, 100, 180, gShowMapTitle, SetShowMapTitle, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 110, 180, gMessageState, SetMessages, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 120, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayMirrorMode("MIRROR MODE:", 3, 66, 130, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 140, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
-CGameMenuItemZBool itemOptionsDisplayBoolSlowRoomFlicker("SLOW DOWN FLICKERING LIGHTS:", 3, 66, 150, 180, gSlowRoomFlicker, SetSlowRoomFlicker, NULL, NULL);
-CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 160, 180, &gFov, 75, 140, 1, SetFOV, -1, -1, kMenuSliderValue);
+CGameMenuItemZCycle itemOptionsDisplayHudRatio("HUD POSITION:", 3, 66, 130, 180, 0, SetHudRatio, pzHudRatioStrings, ARRAY_SSIZE(pzHudRatioStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayMirrorMode("MIRROR MODE:", 3, 66, 140, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 150, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
+CGameMenuItemZBool itemOptionsDisplayBoolSlowRoomFlicker("SLOW DOWN FLICKERING LIGHTS:", 3, 66, 160, 180, gSlowRoomFlicker, SetSlowRoomFlicker, NULL, NULL);
+CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 170, 180, &gFov, 75, 140, 1, SetFOV, -1, -1, kMenuSliderValue);
 #ifdef USE_OPENGL
-CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 170, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
+CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 180, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
 #endif
 
 const char *pzRendererStrings[] = {
@@ -1541,6 +1551,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolShowMapTitle, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolMessages, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolWidescreen, false);
+    menuOptionsDisplay.Add(&itemOptionsDisplayHudRatio, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayMirrorMode, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayWeaponSelect, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolSlowRoomFlicker, false);
@@ -1556,6 +1567,7 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayBoolShowMapTitle.at20 = gShowMapTitle;
     itemOptionsDisplayBoolMessages.at20 = gMessageState;
     itemOptionsDisplayBoolWidescreen.at20 = r_usenewaspect;
+    itemOptionsDisplayHudRatio.m_nFocus = gHudRatio % ARRAY_SSIZE(pzHudRatioStrings);
     itemOptionsDisplayMirrorMode.m_nFocus = r_mirrormode % ARRAY_SSIZE(pzMirrorModeStrings);
     itemOptionsDisplayWeaponSelect.m_nFocus = gShowWeaponSelect % ARRAY_SSIZE(pzWeaponSelectStrings);
     itemOptionsDisplayBoolSlowRoomFlicker.at20 = gSlowRoomFlicker;
@@ -2229,6 +2241,12 @@ void SetVideoMode(CGameMenuItemChain *pItem)
 void SetWidescreen(CGameMenuItemZBool *pItem)
 {
     r_usenewaspect = pItem->at20;
+}
+
+void SetHudRatio(CGameMenuItemZCycle *pItem)
+{
+    gHudRatio = pItem->m_nFocus % ARRAY_SSIZE(pzHudRatioStrings);
+    viewResizeView(gViewSize);
 }
 
 void SetMirrorMode(CGameMenuItemZCycle *pItem)
