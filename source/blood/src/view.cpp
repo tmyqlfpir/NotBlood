@@ -2710,7 +2710,9 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
                 pNSprite->y += mulscale30(128, Sin(gCameraAng));
             }
             if ((pPlayer->curWeapon == kWeaponLifeLeech) || (pPlayer->curWeapon == kWeaponVoodoo)) // make lifeleech/voodoo doll always face viewer like sprite
-                pNSprite->ang = (gCameraAng + 1024) & 2047;
+                pNSprite->ang = (gCameraAng + kAng180) & kAngMask;
+            else if ((pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT)) // make proxy/remote tnt always face viewers like sprite
+                pNSprite->ang = (gCameraAng + kAng180 + kAng45) & kAngMask;
         }
         break;
     }
