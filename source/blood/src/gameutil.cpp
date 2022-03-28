@@ -915,7 +915,7 @@ int GetDistToWall(int x, int y, const walltype* pWall)
     return ksqrt(dx*dx+dy*dy);
 }
 
-int CheckHitSpriteAlpha(int x, int y, int dx, int dy, int dz, HITINFO *pHitInfo)
+int CheckHitSpriteAlpha(int x, int y, int dx, int dy, HITINFO *pHitInfo)
 {
     if (pHitInfo->hitsprite >= kMaxSprites)
         return 0;
@@ -1027,7 +1027,7 @@ unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *n
         {
             gHitInfo.hitsprite = hitData.sprite;
             gHitInfo.hitz = hitData.xyz.z;
-            if (CheckHitSpriteAlpha(origX, origY, Cos(raySprite->ang)>>16, Sin(raySprite->ang)>>16, 0, &gHitInfo))
+            if (CheckHitSpriteAlpha(origX, origY, Cos(raySprite->ang)>>16, Sin(raySprite->ang)>>16, &gHitInfo))
                 return 0; // resolve some weird edge cases where the initial hitscan conflicts with big sprites (e.g.: tree sprites in CPSL)
         }
         const int distRay = approxDist(origX-hitData.xyz.x, origY-hitData.xyz.y);
