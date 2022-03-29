@@ -139,6 +139,7 @@ int gViewXCenter, gViewYCenter;
 int gViewX0, gViewY0, gViewX1, gViewY1;
 int gViewX0S, gViewY0S, gViewX1S, gViewY1S;
 int xscale, xscalecorrect, yscale, xstep, ystep;
+int xscalehud = 0;
 
 int gScreenTilt;
 
@@ -1349,7 +1350,7 @@ void sortPowerUps(POWERUPDISPLAY* powerups) {
     }
 }
 
-void viewDrawPowerUps(PLAYER* pPlayer, int xoffset)
+void viewDrawPowerUps(PLAYER* pPlayer)
 {
     if (!gPowerupDuration)
         return;
@@ -1374,7 +1375,7 @@ void viewDrawPowerUps(PLAYER* pPlayer, int xoffset)
     sortPowerUps(powerups);
 
     const int warningTime = 5;
-    const int x = 15 - xoffset;
+    const int x = 15 - xscalehud;
     int y = 50;
     for (int i = 0; i < nPowerUps; i++)
     {
@@ -1754,7 +1755,7 @@ void viewDrawCtfHudVanilla(ClockTicks arg)
     }
 }
 
-void flashTeamScore(ClockTicks arg, int team, bool show, int xoffset)
+void flashTeamScore(ClockTicks arg, int team, bool show)
 {
     dassert(0 == team || 1 == team); // 0: blue, 1: red
 
@@ -1765,16 +1766,16 @@ void flashTeamScore(ClockTicks arg, int team, bool show, int xoffset)
             gPlayerScoreTicks[team] = 0;
 
         if (show)
-            DrawStatNumber("%d", gPlayerScores[team], kSBarNumberInv, 290+xoffset, team ? 125 : 90, 0, team ? 2 : 10, 512, 65536 * 0.75);
+            DrawStatNumber("%d", gPlayerScores[team], kSBarNumberInv, 290+xscalehud, team ? 125 : 90, 0, team ? 2 : 10, 512, 65536 * 0.75);
     }
 }
 
-void viewDrawCtfHud(ClockTicks arg, int xoffset)
+void viewDrawCtfHud(ClockTicks arg)
 {
     if (0 == gViewSize)
     {
-        flashTeamScore(arg, 0, false, xoffset);
-        flashTeamScore(arg, 1, false, xoffset);
+        flashTeamScore(arg, 0, false);
+        flashTeamScore(arg, 1, false);
         return;
     }
 
@@ -1797,23 +1798,23 @@ void viewDrawCtfHud(ClockTicks arg, int xoffset)
     }
 
     bool meHaveBlueFlag = gMe->hasFlag & 1;
-    DrawStatMaskedSprite(meHaveBlueFlag ? 3558 : 3559, 320+xoffset, 75, 0, 10, 512, 65536 * 0.35);
+    DrawStatMaskedSprite(meHaveBlueFlag ? 3558 : 3559, 320+xscalehud, 75, 0, 10, 512, 65536 * 0.35);
     if (gBlueFlagDropped)
-        DrawStatMaskedSprite(2332, 305+xoffset, 83, 0, 10, 512, 65536);
+        DrawStatMaskedSprite(2332, 305+xscalehud, 83, 0, 10, 512, 65536);
     else if (blueFlagTaken)
-        DrawStatMaskedSprite(4097, 307+xoffset, 77, 0, blueFlagCarrierColor ? 2 : 10, 512, 65536);
-    flashTeamScore(arg, 0, true, xoffset);
+        DrawStatMaskedSprite(4097, 307+xscalehud, 77, 0, blueFlagCarrierColor ? 2 : 10, 512, 65536);
+    flashTeamScore(arg, 0, true);
 
     bool meHaveRedFlag = gMe->hasFlag & 2;
-    DrawStatMaskedSprite(meHaveRedFlag ? 3558 : 3559, 320+xoffset, 110, 0, 2, 512, 65536 * 0.35);
+    DrawStatMaskedSprite(meHaveRedFlag ? 3558 : 3559, 320+xscalehud, 110, 0, 2, 512, 65536 * 0.35);
     if (gRedFlagDropped)
-        DrawStatMaskedSprite(2332, 305+xoffset, 117, 0, 2, 512, 65536);
+        DrawStatMaskedSprite(2332, 305+xscalehud, 117, 0, 2, 512, 65536);
     else if (redFlagTaken)
-        DrawStatMaskedSprite(4097, 307+xoffset, 111, 0, redFlagCarrierColor ? 2 : 10, 512, 65536);
-    flashTeamScore(arg, 1, true, xoffset);
+        DrawStatMaskedSprite(4097, 307+xscalehud, 111, 0, redFlagCarrierColor ? 2 : 10, 512, 65536);
+    flashTeamScore(arg, 1, true);
 }
 
-void UpdateStatusBar(ClockTicks arg, int xoffset)
+void UpdateStatusBar(ClockTicks arg)
 {
     PLAYER *pPlayer = gView;
     XSPRITE *pXSprite = pPlayer->pXSprite;
@@ -1835,25 +1836,25 @@ void UpdateStatusBar(ClockTicks arg, int xoffset)
 
     if (gViewSize == 1)
     {
-        DrawStatMaskedSprite(2169, 12-xoffset, 195, 0, 0, 256, (int)(65536*0.56));
-        DrawStatNumber("%d", pXSprite->health>>4, kSBarNumberHealth, 28-xoffset, 187, 0, 0, 256);
+        DrawStatMaskedSprite(2169, 12-xscalehud, 195, 0, 0, 256, (int)(65536*0.56));
+        DrawStatNumber("%d", pXSprite->health>>4, kSBarNumberHealth, 28-xscalehud, 187, 0, 0, 256);
         if (pPlayer->armor[1])
         {
-            DrawStatMaskedSprite(2578, 70-xoffset, 186, 0, 0, 256, (int)(65536*0.5));
-            DrawStatNumber("%3d", pPlayer->armor[1]>>4, kSBarNumberArmor2, 83-xoffset, 187, 0, 0, 256, (int)(65536*0.65));
+            DrawStatMaskedSprite(2578, 70-xscalehud, 186, 0, 0, 256, (int)(65536*0.5));
+            DrawStatNumber("%3d", pPlayer->armor[1]>>4, kSBarNumberArmor2, 83-xscalehud, 187, 0, 0, 256, (int)(65536*0.65));
         }
         if (pPlayer->armor[0])
         {
-            DrawStatMaskedSprite(2586, 112-xoffset, 195, 0, 0, 256, (int)(65536*0.5));
-            DrawStatNumber("%3d", pPlayer->armor[0]>>4, kSBarNumberArmor1, 125-xoffset, 187, 0, 0, 256, (int)(65536*0.65));
+            DrawStatMaskedSprite(2586, 112-xscalehud, 195, 0, 0, 256, (int)(65536*0.5));
+            DrawStatNumber("%3d", pPlayer->armor[0]>>4, kSBarNumberArmor1, 125-xscalehud, 187, 0, 0, 256, (int)(65536*0.65));
         }
         if (pPlayer->armor[2])
         {
-            DrawStatMaskedSprite(2602, 155-xoffset, 196, 0, 0, 256, (int)(65536*0.5));
-            DrawStatNumber("%3d", pPlayer->armor[2]>>4, kSBarNumberArmor3, 170-xoffset, 187, 0, 0, 256, (int)(65536*0.65));
+            DrawStatMaskedSprite(2602, 155-xscalehud, 196, 0, 0, 256, (int)(65536*0.5));
+            DrawStatNumber("%3d", pPlayer->armor[2]>>4, kSBarNumberArmor3, 170-xscalehud, 187, 0, 0, 256, (int)(65536*0.65));
         }
 
-        DrawPackItemInStatusBar2(pPlayer, 225+xoffset, 194, 240+xoffset, 187, 512, (int)(65536*0.7));
+        DrawPackItemInStatusBar2(pPlayer, 225+xscalehud, 194, 240+xscalehud, 187, 512, (int)(65536*0.7));
 
         if (pPlayer->curWeapon && pPlayer->weaponAmmo != -1)
         {
@@ -1861,9 +1862,9 @@ void UpdateStatusBar(ClockTicks arg, int xoffset)
             if (pPlayer->weaponAmmo == 6)
                 num /= 10;
             if ((unsigned int)gAmmoIcons[pPlayer->weaponAmmo].nTile < kMaxTiles)
-                DrawStatMaskedSprite(gAmmoIcons[pPlayer->weaponAmmo].nTile, 304+xoffset, 192+gAmmoIcons[pPlayer->weaponAmmo].nYOffs,
+                DrawStatMaskedSprite(gAmmoIcons[pPlayer->weaponAmmo].nTile, 304+xscalehud, 192+gAmmoIcons[pPlayer->weaponAmmo].nYOffs,
                     0, 0, 512, gAmmoIcons[pPlayer->weaponAmmo].nScale);
-            DrawStatNumber("%3d", num, kSBarNumberAmmo, 267+xoffset, 187, 0, 0, 512);
+            DrawStatNumber("%3d", num, kSBarNumberAmmo, 267+xscalehud, 187, 0, 0, 512);
         }
 
         if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
@@ -1871,7 +1872,7 @@ void UpdateStatusBar(ClockTicks arg, int xoffset)
             for (int i = 0; i < 6; i++)
             {
                 if (pPlayer->hasKey[i+1])
-                    DrawStatMaskedSprite(2552+i, (260+10*i)+xoffset, 170, 0, 0, 512, (int)(65536*0.25));
+                    DrawStatMaskedSprite(2552+i, (260+10*i)+xscalehud, 170, 0, 0, 512, (int)(65536*0.25));
             }
         }
 
@@ -1879,8 +1880,8 @@ void UpdateStatusBar(ClockTicks arg, int xoffset)
             TileHGauge(2260, 124, 175-10, pPlayer->throwPower, 65536);
         else
             viewDrawPack(pPlayer, 166, 200-tilesiz[2201].y/2-30);
-        viewDrawStats(pPlayer, 2-xoffset, 140);
-        viewDrawPowerUps(pPlayer, xoffset);
+        viewDrawStats(pPlayer, 2-xscalehud, 140);
+        viewDrawPowerUps(pPlayer);
     }
     else if (gViewSize <= 2)
     {
@@ -1891,35 +1892,35 @@ void UpdateStatusBar(ClockTicks arg, int xoffset)
     }
     if (gViewSize == 2)
     {
-        DrawStatSprite(2201, 34-xoffset, 187, 16, nPalette, 256);
+        DrawStatSprite(2201, 34-xscalehud, 187, 16, nPalette, 256);
         if (pXSprite->health >= 16 || ((int)totalclock&16) || pXSprite->health == 0)
         {
-            DrawStatNumber("%3d", pXSprite->health>>4, 2190, 8-xoffset, 183, 0, 0, 256);
+            DrawStatNumber("%3d", pXSprite->health>>4, 2190, 8-xscalehud, 183, 0, 0, 256);
         }
         if (pPlayer->curWeapon && pPlayer->weaponAmmo != -1)
         {
             int num = pPlayer->ammoCount[pPlayer->weaponAmmo];
             if (pPlayer->weaponAmmo == 6)
                 num /= 10;
-            DrawStatNumber("%3d", num, 2240, 42-xoffset, 183, 0, 0, 256);
+            DrawStatNumber("%3d", num, 2240, 42-xscalehud, 183, 0, 0, 256);
         }
-        DrawStatSprite(2173, 284+xoffset, 187, 16, nPalette, 512);
+        DrawStatSprite(2173, 284+xscalehud, 187, 16, nPalette, 512);
         if (pPlayer->armor[1])
         {
-            TileHGauge(2207, 250+xoffset, 175, pPlayer->armor[1], 3200, 512);
-            DrawStatNumber("%3d", pPlayer->armor[1]>>4, 2230, 255+xoffset, 178, 0, 0, 512);
+            TileHGauge(2207, 250+xscalehud, 175, pPlayer->armor[1], 3200, 512);
+            DrawStatNumber("%3d", pPlayer->armor[1]>>4, 2230, 255+xscalehud, 178, 0, 0, 512);
         }
         if (pPlayer->armor[0])
         {
-            TileHGauge(2209, 250+xoffset, 183, pPlayer->armor[0], 3200, 512);
-            DrawStatNumber("%3d", pPlayer->armor[0]>>4, 2230, 255+xoffset, 186, 0, 0, 512);
+            TileHGauge(2209, 250+xscalehud, 183, pPlayer->armor[0], 3200, 512);
+            DrawStatNumber("%3d", pPlayer->armor[0]>>4, 2230, 255+xscalehud, 186, 0, 0, 512);
         }
         if (pPlayer->armor[2])
         {
-            TileHGauge(2208, 250+xoffset, 191, pPlayer->armor[2], 3200, 512);
-            DrawStatNumber("%3d", pPlayer->armor[2]>>4, 2230, 255+xoffset, 194, 0, 0, 512);
+            TileHGauge(2208, 250+xscalehud, 191, pPlayer->armor[2], 3200, 512);
+            DrawStatNumber("%3d", pPlayer->armor[2]>>4, 2230, 255+xscalehud, 194, 0, 0, 512);
         }
-        DrawPackItemInStatusBar(pPlayer, 286+xoffset, 186, 302+xoffset, 183, 512);
+        DrawPackItemInStatusBar(pPlayer, 286+xscalehud, 186, 302+xscalehud, 183, 512);
 
         if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
         {
@@ -1931,13 +1932,13 @@ void UpdateStatusBar(ClockTicks arg, int xoffset)
                 if (i&1)
                 {
                     x = 320-(78+(i>>1)*10);
-                    x += xoffset;
+                    x += xscalehud;
                     nStat |= 512;
                 }
                 else
                 {
                     x = 73+(i>>1)*10;
-                    x -= xoffset;
+                    x -= xscalehud;
                     nStat |= 256;
                 }
 
@@ -1949,8 +1950,8 @@ void UpdateStatusBar(ClockTicks arg, int xoffset)
 #endif
             }
         }
-        viewDrawStats(pPlayer, 2-xoffset, 140);
-        viewDrawPowerUps(pPlayer, xoffset);
+        viewDrawStats(pPlayer, 2-xscalehud, 140);
+        viewDrawPowerUps(pPlayer);
     }
     else if (gViewSize > 2)
     {
@@ -2040,8 +2041,8 @@ void UpdateStatusBar(ClockTicks arg, int xoffset)
         {
             TileHGauge(2260, 124, 175, pPlayer->throwPower, 65536);
         }
-        viewDrawStats(pPlayer, 2, 140);
-        viewDrawPowerUps(pPlayer, 0);
+        viewDrawStats(pPlayer, 2-xscalehud, 140);
+        viewDrawPowerUps(pPlayer);
     }
 
     if (gGameOptions.nGameType < 1) return;
@@ -2054,7 +2055,7 @@ void UpdateStatusBar(ClockTicks arg, int xoffset)
         }
         else
         {
-            viewDrawCtfHud(arg, xoffset);
+            viewDrawCtfHud(arg);
             viewDrawPlayerFlags();
         }
     }
@@ -2163,6 +2164,21 @@ void viewInit(void)
     bLoadScreenCrcMatch = tileGetCRC32(kLoadScreen) == kLoadScreenCRC;
 }
 
+void viewUpdateHudRatio(void)
+{
+    xscalehud = 0;
+    if (gHudRatio > 0)
+    {
+        const int ratios[] = {320, (int)((4. / 3.) / (16. / 10.) * 320.), (int)((4. / 3.) / (16. / 9.) * 320.), (int)((4. / 3.) / (21. / 9.) * 320.)}; // 4:3, 16:10, 16:9, 21:9
+        xscalehud = scale(xscalehud-(ratios[gHudRatio-1]>>1), ratios[gHudRatio-1]>>1, 266>>1); // scale position
+        xscalehud = scale(xscalehud, xscale, yscale); // multiply by window ratio
+        xscalehud += ratios[gHudRatio-1]>>1; // offset to center
+        if (xscalehud > 0) // clamp hud ratio to offset within screen width
+            xscalehud = 0;
+    }
+    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = xscalehud;
+}
+
 void viewResizeView(int size)
 {
     int xdimcorrect = ClipHigh(scale(ydim, 4, 3), xdim);
@@ -2213,6 +2229,7 @@ void viewResizeView(int size)
     videoSetViewableArea(gViewX0, gViewY0, gViewX1, gViewY1);
     gGameMessageMgr.SetCoordinates(gViewX0S + 1, gViewY0S + 1);
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
+    viewUpdateHudRatio();
     viewUpdatePages();
 }
 
@@ -2231,14 +2248,14 @@ void UpdateFrame(void)
     viewTileSprite(kBackTile, 10, 1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4);
 }
 
-void viewDrawInterface(ClockTicks arg, int xoffset)
+void viewDrawInterface(ClockTicks arg)
 {
     if (gViewMode == 3 && ((gViewSize >= 3) || (gViewSize <= 2 && gGameOptions.nGameType > 0)))
     {
         UpdateFrame();
         pcBackground--;
     }
-    UpdateStatusBar(arg, xoffset);
+    UpdateStatusBar(arg);
 }
 
 static fix16_t gCameraAng;
@@ -3454,9 +3471,8 @@ void viewSetMessage(const char *pMessage, const int pal, const MESSAGE_PRIORITY 
     gGameMessageMgr.Add(pMessage, 15, pal, priority);
 }
 
-void viewDisplayMessage(int xoffset)
+void viewDisplayMessage(void)
 {
-    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = xoffset;
     gGameMessageMgr.Display();
 }
 
@@ -4234,14 +4250,7 @@ RORHACK:
     {
         gViewMap.sub_25DB0(gView->pSprite);
     }
-    int hudxoffset = 0;
-    if (gHudOrigRatio && (gViewSize <= 2))
-    {
-        hudxoffset = scale(hudxoffset-(320>>1), 320>>1, 266>>1); // scale position
-        hudxoffset = scale(hudxoffset, xscale, yscale); // multiply by window ratio
-        hudxoffset += 320>>1; // offset to center
-    }
-    viewDrawInterface(delta, hudxoffset);
+    viewDrawInterface(delta);
     int zn = ((gView->zWeapon-gView->zView-(12<<8))>>7)+220;
     PLAYER *pPSprite = &gPlayer[gMe->pSprite->type-kDudePlayer1];
     if (IsPlayerSprite(gMe->pSprite) && pPSprite->hand == 1)
@@ -4258,7 +4267,7 @@ RORHACK:
     {
         DrawStatSprite(2048, xdim-15, 20);
     }
-    viewDisplayMessage(hudxoffset);
+    viewDisplayMessage();
     CalcFrameRate();
 #if 0
     if (gShowFrameRate)
