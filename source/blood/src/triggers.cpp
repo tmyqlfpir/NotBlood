@@ -989,11 +989,11 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
             else if (nType == FX_36) // floor blood splat
             {
                 floorZ = getflorzofslope(nSector, pSprite->x, pSprite->y);
-                bSpriteMoved = ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_FLOOR) && (pSprite->z == floorZ);
+                bSpriteMoved = ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_FLOOR) != 0) && (pSprite->z == floorZ);
             }
             else if ((nType == FX_34) || (nType == FX_35) || (nType == FX_43)) // wall blood splat/bullet hole
             {
-                bSpriteMoved = (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) == CSTAT_SPRITE_ALIGNMENT_WALL;
+                bSpriteMoved = (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_WALL) != 0;
             }
             if (bSpriteMoved)
             {
@@ -1015,13 +1015,13 @@ inline bool isBloodOrBullethole(spritetype *pSprite)
     const int16_t nType = pSprite->type;
     const uint16_t nAlignMask = pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK;
     if (nType == FX_34) // wall blood splat (large)
-        return nAlignMask == CSTAT_SPRITE_ALIGNMENT_WALL;
+        return (nAlignMask&CSTAT_SPRITE_ALIGNMENT_WALL) != 0;
     else if (nType == FX_35) // wall blood splat (small)
-        return nAlignMask == CSTAT_SPRITE_ALIGNMENT_WALL;
+        return (nAlignMask&CSTAT_SPRITE_ALIGNMENT_WALL) != 0;
     else if (nType == FX_36) // floor blood splat
-        return nAlignMask == CSTAT_SPRITE_ALIGNMENT_FLOOR;
+        return (nAlignMask&CSTAT_SPRITE_ALIGNMENT_FLOOR) != 0;
     else if (nType == FX_43) // wall bullet hole
-        return nAlignMask == CSTAT_SPRITE_ALIGNMENT_WALL;
+        return (nAlignMask&CSTAT_SPRITE_ALIGNMENT_WALL) != 0;
     return false;
 }
 

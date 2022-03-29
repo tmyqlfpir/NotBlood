@@ -626,22 +626,22 @@ CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 157, 
 //CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 167, 320, 1, &menuParentalLock, -1, NULL, 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
-CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 35, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
-CGameMenuItemChain itemOptionsDisplayMode("VIDEO MODE", 3, 66, 45, 180, 0, &menuOptionsDisplayMode, -1, SetupVideoModeMenu, 0);
-CGameMenuItemZBool itemOptionsDisplayBoolCrosshair("CROSSHAIR:", 3, 66, 55, 180, gAimReticle, SetCrosshair, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolCenterHoriz("CENTER HORIZON LINE:", 3, 66, 65, 180, gCenterHoriz, SetCenterHoriz, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolLevelStats("LEVEL STATS:", 3, 66, 75, 180, gLevelStats, SetLevelStats, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolPowerupDuration("POWERUP DURATION:", 3, 66, 85, 180, gPowerupDuration, SetPowerupDuration, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolShowMapTitle("MAP TITLE:", 3, 66, 95, 180, gShowMapTitle, SetShowMapTitle, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 105, 180, gMessageState, SetMessages, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 115, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayHudRatio("HUD POSITION:", 3, 66, 125, 180, 0, SetHudRatio, pzHudRatioStrings, ARRAY_SSIZE(pzHudRatioStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayMirrorMode("MIRROR MODE:", 3, 66, 135, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 145, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
-CGameMenuItemZBool itemOptionsDisplayBoolSlowRoomFlicker("SLOW DOWN FLICKERING LIGHTS:", 3, 66, 155, 180, gSlowRoomFlicker, SetSlowRoomFlicker, NULL, NULL);
-CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 165, 180, &gFov, 75, 140, 1, SetFOV, -1, -1, kMenuSliderValue);
+CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
+CGameMenuItemChain itemOptionsDisplayMode("VIDEO MODE", 3, 66, 50, 180, 0, &menuOptionsDisplayMode, -1, SetupVideoModeMenu, 0);
+CGameMenuItemZBool itemOptionsDisplayBoolCrosshair("CROSSHAIR:", 3, 66, 60, 180, gAimReticle, SetCrosshair, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayBoolCenterHoriz("CENTER HORIZON LINE:", 3, 66, 70, 180, gCenterHoriz, SetCenterHoriz, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayBoolLevelStats("LEVEL STATS:", 3, 66, 80, 180, gLevelStats, SetLevelStats, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayBoolPowerupDuration("POWERUP DURATION:", 3, 66, 90, 180, gPowerupDuration, SetPowerupDuration, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayBoolShowMapTitle("MAP TITLE:", 3, 66, 100, 180, gShowMapTitle, SetShowMapTitle, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 110, 180, gMessageState, SetMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 120, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayHudRatio("HUD POSITION:", 3, 66, 130, 180, 0, SetHudRatio, pzHudRatioStrings, ARRAY_SSIZE(pzHudRatioStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayMirrorMode("MIRROR MODE:", 3, 66, 140, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 150, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
+CGameMenuItemZBool itemOptionsDisplayBoolSlowRoomFlicker("SLOW DOWN FLICKERING LIGHTS:", 3, 66, 160, 180, gSlowRoomFlicker, SetSlowRoomFlicker, NULL, NULL);
+CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 170, 180, &gFov, 75, 140, 1, SetFOV, -1, -1, kMenuSliderValue);
 #ifdef USE_OPENGL
-CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 175, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
+CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 180, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
 #endif
 
 const char *pzRendererStrings[] = {
