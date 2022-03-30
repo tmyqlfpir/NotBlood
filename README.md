@@ -1,4 +1,4 @@
-[![Build](https://github.com/tmyqlfpir/NBlood/actions/workflows/build.yml/badge.svg)](https://github.com/tmyqlfpir/NBlood/actions/workflows/build.yml) [![Build](https://raw.githubusercontent.com/tmyqlfpir/NBlood/master/.github/workflows/download.svg)](https://github.com/tmyqlfpir/NBlood/releases)
+[![Build](https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml/badge.svg)](https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml) [![Build](https://raw.githubusercontent.com/tmyqlfpir/NotBlood/master/.github/workflows/download.svg)](https://github.com/tmyqlfpir/NotBlood/releases)
 
 # NotBlood
 A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-engineer port NBlood
