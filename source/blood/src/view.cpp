@@ -3158,10 +3158,11 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 viewApplyDefaultPal(pTSprite, pSector);
 
                 PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
+                const char bIsTeammate = IsTargetTeammate(gView, pPlayer->pSprite);
                 if (powerupCheck(pPlayer, kPwUpShadowCloak) && !powerupCheck(gView, kPwUpBeastVision)) {
                     pTSprite->cstat |= 2;
                     pTSprite->pal = 5;
-                }  else if (powerupCheck(pPlayer, kPwUpDeathMask)) {
+                }  else if (powerupCheck(pPlayer, kPwUpDeathMask) && (VanillaMode() || !bIsTeammate || (bIsTeammate && ((int)totalclock & 32)))) { // mute color if player has deathmask powerup (but don't do this if teammate)
                     pTSprite->shade = -128;
                     pTSprite->pal = 5;
                 } else if (powerupCheck(pPlayer, kPwUpDoppleganger)) {
@@ -3176,7 +3177,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
                 
                 if (gShowWeapon && (gGameOptions.nGameType > 0) && gView) {
-                    const char bDrawDudeWeap = (pPlayer == gView) || !powerupCheck(pPlayer, kPwUpShadowCloak) || IsTargetTeammate(gView, pPlayer->pSprite); // don't draw enemy weapon if they are cloaked
+                    const char bDrawDudeWeap = (pPlayer == gView) || !powerupCheck(pPlayer, kPwUpShadowCloak) || bIsTeammate; // don't draw enemy weapon if they are cloaked
                     if (bDrawDudeWeap || VanillaMode()) {
                         viewAddEffect(nTSprite, kViewEffectShowWeapon);
                         if (powerupCheck(pPlayer, kPwUpTwoGuns) && !VanillaMode())
