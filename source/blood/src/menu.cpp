@@ -850,9 +850,11 @@ CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 160, 180
 
 
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
+void UpdateChatMessageSound(CGameMenuItemZBool *pItem);
 
 CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
 CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 60, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
+CGameMenuItemZBool itemOptionsChatSound("CHAT BEEP:", 3, 66, 70, 180, true, UpdateChatMessageSound, NULL, NULL);
 
 CGameMenu menuOptionsControlKeyboard;
 CGameMenu menuOptionsControlMouse;
@@ -1693,7 +1695,10 @@ void SetupOptionsMenu(void)
 
     menuOptionsPlayer.Add(&itemOptionsPlayerTitle, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
+    menuOptionsPlayer.Add(&itemOptionsChatSound, true);
     menuOptionsPlayer.Add(&itemBloodQAV, false);
+
+    itemOptionsChatSound.at20 = gChatSnd;
 
     menuOptionsControl.Add(&itemOptionsControlTitle, false);
     menuOptionsControl.Add(&itemOptionsControlKeyboard, true);
@@ -2658,6 +2663,11 @@ void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
     UNREFERENCED_PARAMETER(pItem);
     if (pEvent->at0 == kMenuEventEnter)
         netBroadcastPlayerInfo(myconnectindex);
+}
+
+void UpdateChatMessageSound(CGameMenuItemZBool *pItem)
+{
+    gChatSnd = pItem->at20;
 }
 
 void SetMouseAimMode(CGameMenuItemZBool *pItem)
