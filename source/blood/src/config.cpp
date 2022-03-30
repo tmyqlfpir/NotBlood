@@ -84,7 +84,7 @@ int32_t gLockManualSaving;
 int32_t gAutosave;
 bool gAutosaveInCurLevel;
 int32_t gAutoRun;
-int32_t gIdleTalk;
+int32_t gCalebTalk;
 int32_t gChatSnd;
 int32_t gViewInterpolate;
 int32_t gPanningInterpolate;
@@ -439,8 +439,8 @@ void CONFIG_SetDefaults(void)
     gCrouchToggle = 0;
     gDetail = 4;
     gAutoRun = 1;
+    gCalebTalk = 0;
     gChatSnd = 1;
-    gIdleTalk = 1;
     gViewInterpolate = 1;
     gPanningInterpolate = 1;
     gWeaponInterpolate = 0;
