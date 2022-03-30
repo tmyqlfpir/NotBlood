@@ -108,8 +108,8 @@ New features include:
 * r_rotatespriteinterp
 * r_rotatespriteinterpquantize
 * r_shadowvoxels
+* cl_calebtalk
 * cl_chatsnd
-* cl_idletalk
 * cl_interpolatepanning
 * cl_interpolateweapon
 * cl_weaponhbob
