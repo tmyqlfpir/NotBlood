@@ -417,9 +417,10 @@ CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 90, 180, 0, 0, zWeaponStrin
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 100, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 110, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetStart9("KEYS SETTING:", 3, 66, 120, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemChain itemNetStart10("USER MAP", 3, 66, 140, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
-CGameMenuItemChain itemNetStart11("ENHANCEMENTS", 3, 66, 150, 320, 0, &menuNetworkGameEnhancements, -1, NULL, 0);
-CGameMenuItemChain itemNetStart12("START GAME", 1, 0, 165, 320, 1, 0, -1, StartNetGame, 0);
+CGameMenuItemZBool itemNetStart10("SPAWN PROTECTION:", 3, 66, 130, 180, true, 0, NULL, NULL);
+CGameMenuItemChain itemNetStart11("USER MAP", 3, 66, 150, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
+CGameMenuItemChain itemNetStart12("ENHANCEMENTS", 3, 66, 160, 320, 0, &menuNetworkGameEnhancements, -1, NULL, 0);
+CGameMenuItemChain itemNetStart13("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
 
 ///////////////
 CGameMenuItemZBool itemNetEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, 0, NULL, NULL, NULL);
@@ -1185,6 +1186,7 @@ void SetupNetStartMenu(void)
     menuNetStart.Add(&itemNetStart10, false);
     menuNetStart.Add(&itemNetStart11, false);
     menuNetStart.Add(&itemNetStart12, false);
+    menuNetStart.Add(&itemNetStart13, false);
     menuMultiUserMaps.Add(&itemNetStartUserMapTitle, true);
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
 
@@ -3008,6 +3010,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.respawnSettings = 0;
     gPacketStartGame.bFriendlyFire = itemNetStart8.at20;
     gPacketStartGame.keySettings = itemNetStart9.m_nFocus;
+    gPacketStartGame.bSpawnProtection = itemNetStart10.at20;
     ////
     gVanilla = false; // turn off vanilla mode for multiplayer so menus don't get bugged
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);

@@ -85,6 +85,7 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bPitchforkOnly;
     0,     // bool bFriendlyFire;
     1,     // char nKeySettings;
+    0,     // bool bSpawnProtection;
     "",    // char szUserMap[BMAX_PATH];
 };
 
