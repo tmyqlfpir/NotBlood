@@ -3674,7 +3674,9 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
                 case kThingBloodChunks:
                 case kThingZombieHead:
                     if (damageType == 3 && pSourcePlayer && gFrameClock > pSourcePlayer->laughCount && Chance(0x4000)) {
-                        sfxPlay3DSound(pSourcePlayer->pSprite, gPlayerGibThingComments[Random(10)], 0, 2);
+                        int nSound = gPlayerGibThingComments[Random(10)];
+                        if (gCalebTalk <= 1)
+                            sfxPlay3DSound(pSourcePlayer->pSprite, nSound, 0, 2);
                         pSourcePlayer->laughCount = (int)gFrameClock+3600;
                     }
                     break;
@@ -6737,7 +6739,7 @@ void actProcessSprites(void)
                     {
                         const int nSound = 3100+Random(11);
                         pPlayer->restTime = -1;
-                        if (gIdleTalk)
+                        if ((gCalebTalk == 0) || (gCalebTalk == 2))
                             sfxPlay3DSound(pSprite, nSound, 0, 2);
                     }
                 }

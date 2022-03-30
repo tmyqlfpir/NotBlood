@@ -789,6 +789,7 @@ void UpdateSoundVolume(CGameMenuItemSlider *pItem);
 void UpdateMusicVolume(CGameMenuItemSlider *pItem);
 void UpdateSoundRate(CGameMenuItemZCycle *pItem);
 void UpdateNumVoices(CGameMenuItemSlider *pItem);
+void UpdateCalebTalk(CGameMenuItemZCycle *pItem);
 void UpdateMusicDevice(CGameMenuItemZCycle *pItem);
 void SetSound(CGameMenuItemChain *pItem);
 void PreDrawSound(CGameMenuItem *pItem);
@@ -802,6 +803,13 @@ int nSoundRateValues[] = {
     22050,
     44100,
     48000
+};
+
+const char *pzCalebTalkStrings[] = {
+    "ON",
+    "NO IDLE TALK",
+    "NO GIB TALK",
+    "OFF",
 };
 
 int nMusicDeviceValues[] = {
@@ -827,13 +835,14 @@ CGameMenuItemTitle itemOptionsSoundSF2Title("SELECT SF2 BANK", 1, 160, 20, 2038)
 CGameMenuFileSelect itemOptionsSoundSF2FS("", 3, 0, 0, 0, "./", "*.sf2", sf2bankfile);
 
 CGameMenuItemTitle itemOptionsSoundTitle("SOUND SETUP", 1, 160, 20, 2038);
-CGameMenuItemZBool itemOptionsSoundSoundToggle("SOUND:", 3, 66, 60, 180, false, UpdateSoundToggle, NULL, NULL);
-CGameMenuItemZBool itemOptionsSoundMusicToggle("MUSIC:", 3, 66, 70, 180, false, UpdateMusicToggle, NULL, NULL);
-CGameMenuItemZBool itemOptionsSoundMonoStereo("3D AUDIO:", 3, 66, 80, 180, false, SetMonoStereo, NULL, NULL);
-CGameMenuItemSlider itemOptionsSoundSoundVolume("SOUND VOLUME:", 3, 66, 90, 180, &FXVolume, 0, 255, 17, UpdateSoundVolume, -1, -1, kMenuSliderPercent);
-CGameMenuItemSlider itemOptionsSoundMusicVolume("MUSIC VOLUME:", 3, 66, 100, 180, &MusicVolume, 0, 255, 17, UpdateMusicVolume, -1, -1, kMenuSliderPercent);
-CGameMenuItemZCycle itemOptionsSoundSampleRate("SAMPLE RATE:", 3, 66, 110, 180, 0, UpdateSoundRate, pzSoundRateStrings, 3, 0);
-CGameMenuItemSlider itemOptionsSoundNumVoices("VOICES:", 3, 66, 120, 180, NumVoices, 16, 255, 16, UpdateNumVoices, -1, -1, kMenuSliderValue);
+CGameMenuItemZBool itemOptionsSoundSoundToggle("SOUND:", 3, 66, 50, 180, false, UpdateSoundToggle, NULL, NULL);
+CGameMenuItemZBool itemOptionsSoundMusicToggle("MUSIC:", 3, 66, 60, 180, false, UpdateMusicToggle, NULL, NULL);
+CGameMenuItemZBool itemOptionsSoundMonoStereo("3D AUDIO:", 3, 66, 70, 180, false, SetMonoStereo, NULL, NULL);
+CGameMenuItemSlider itemOptionsSoundSoundVolume("SOUND VOLUME:", 3, 66, 80, 180, &FXVolume, 0, 255, 17, UpdateSoundVolume, -1, -1, kMenuSliderPercent);
+CGameMenuItemSlider itemOptionsSoundMusicVolume("MUSIC VOLUME:", 3, 66, 90, 180, &MusicVolume, 0, 255, 17, UpdateMusicVolume, -1, -1, kMenuSliderPercent);
+CGameMenuItemZCycle itemOptionsSoundSampleRate("SAMPLE RATE:", 3, 66, 100, 180, 0, UpdateSoundRate, pzSoundRateStrings, 3, 0);
+CGameMenuItemSlider itemOptionsSoundNumVoices("VOICES:", 3, 66, 110, 180, NumVoices, 16, 255, 16, UpdateNumVoices, -1, -1, kMenuSliderValue);
+CGameMenuItemZCycle itemOptionsSoundCalebTalk("CALEB TALK:", 3, 66, 120, 180, 0, UpdateCalebTalk, pzCalebTalkStrings, ARRAY_SIZE(pzCalebTalkStrings), 0);
 CGameMenuItemZBool itemOptionsSoundCDToggle("REDBOOK AUDIO:", 3, 66, 130, 180, false, UpdateCDToggle, NULL, NULL);
 CGameMenuItemZCycle itemOptionsSoundMusicDevice("MIDI DRIVER:", 3, 66, 140, 180, 0, UpdateMusicDevice, pzMusicDeviceStrings, ARRAY_SIZE(pzMusicDeviceStrings), 0);
 CGameMenuItemChain itemOptionsSoundSF2Bank("SF2 BANK", 3, 66, 150, 180, 0, &menuOptionsSoundSF2, 0, NULL, 0);
@@ -1671,6 +1680,7 @@ void SetupOptionsMenu(void)
     menuOptionsSound.Add(&itemOptionsSoundMusicVolume, false);
     menuOptionsSound.Add(&itemOptionsSoundSampleRate, false);
     menuOptionsSound.Add(&itemOptionsSoundNumVoices, false);
+    menuOptionsSound.Add(&itemOptionsSoundCalebTalk, false);
     menuOptionsSound.Add(&itemOptionsSoundCDToggle, false);
     menuOptionsSound.Add(&itemOptionsSoundMusicDevice, false);
     menuOptionsSound.Add(&itemOptionsSoundSF2Bank, false);
@@ -2571,6 +2581,11 @@ void UpdateNumVoices(CGameMenuItemSlider *pItem)
     UNREFERENCED_PARAMETER(pItem);
 }
 
+void UpdateCalebTalk(CGameMenuItemZCycle *pItem)
+{
+    gCalebTalk = pItem->m_nFocus % ARRAY_SIZE(pzCalebTalkStrings);
+}
+
 void UpdateMusicDevice(CGameMenuItemZCycle *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
@@ -2624,6 +2639,7 @@ void SetupOptionsSound(CGameMenuItemChain *pItem)
         }
     }
     itemOptionsSoundNumVoices.nValue = NumVoices;
+    itemOptionsSoundCalebTalk.m_nFocus = gCalebTalk % ARRAY_SIZE(pzCalebTalkStrings);
     itemOptionsSoundMusicDevice.m_nFocus = 0;
     for (int i = 0; i < (int)ARRAY_SIZE(nMusicDeviceValues); i++)
     {
