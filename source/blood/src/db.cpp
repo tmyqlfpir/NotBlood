@@ -729,7 +729,7 @@ void dbRandomizerModeInit(void)
         if (gGameOptions.nGameType > 0) // if in multiplayer, use a failsafe seed
             curRandomizerSeed = defaultSeed;
         else // in single-player
-            curRandomizerSeed = qrand();
+            curRandomizerSeed = QRandom2(defaultSeed);
         curRandomizerSeedThings = curRandomizerSeedDudes = curRandomizerSeed;
         return;
     }
