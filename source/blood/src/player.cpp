@@ -861,6 +861,12 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->hand = 0;
     pPlayer->nWaterPal = 0;
     playerResetPowerUps(pPlayer);
+    if ((gGameOptions.nGameType > 0) && gGameOptions.bSpawnProtection) // set spawn protection for 2 seconds
+    {
+        for (int i = 0; i < 7; i++) // set invul state to damage types
+            pPlayer->damageControl[i]++;
+        pPlayer->pwUpTime[kPwUpDeathMask] = kTicRate*2;
+    }
 
     if (pPlayer == gMe)
     {

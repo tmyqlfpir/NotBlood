@@ -71,6 +71,7 @@ struct GAMEOPTIONS {
     bool bPitchforkOnly;
     bool bFriendlyFire;
     char nKeySettings;
+    bool bSpawnProtection;
     char szUserMap[BMAX_PATH];
 };
 

@@ -417,9 +417,10 @@ CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 90, 180, 0, 0, zWeaponStrin
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 100, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 110, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetStart9("KEYS SETTING:", 3, 66, 120, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemChain itemNetStart10("USER MAP", 3, 66, 140, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
-CGameMenuItemChain itemNetStart11("ENHANCEMENTS", 3, 66, 150, 320, 0, &menuNetworkGameEnhancements, -1, NULL, 0);
-CGameMenuItemChain itemNetStart12("START GAME", 1, 0, 165, 320, 1, 0, -1, StartNetGame, 0);
+CGameMenuItemZBool itemNetStart10("SPAWN PROTECTION:", 3, 66, 130, 180, true, 0, NULL, NULL);
+CGameMenuItemChain itemNetStart11("USER MAP", 3, 66, 150, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
+CGameMenuItemChain itemNetStart12("ENHANCEMENTS", 3, 66, 160, 320, 0, &menuNetworkGameEnhancements, -1, NULL, 0);
+CGameMenuItemChain itemNetStart13("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
 
 ///////////////
 CGameMenuItemZBool itemNetEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, 0, NULL, NULL, NULL);
@@ -850,9 +851,11 @@ CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 160, 180
 
 
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
+void UpdateChatMessageSound(CGameMenuItemZBool *pItem);
 
 CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
 CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 60, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
+CGameMenuItemZBool itemOptionsChatSound("CHAT BEEP:", 3, 66, 70, 180, true, UpdateChatMessageSound, NULL, NULL);
 
 CGameMenu menuOptionsControlKeyboard;
 CGameMenu menuOptionsControlMouse;
@@ -1183,6 +1186,7 @@ void SetupNetStartMenu(void)
     menuNetStart.Add(&itemNetStart10, false);
     menuNetStart.Add(&itemNetStart11, false);
     menuNetStart.Add(&itemNetStart12, false);
+    menuNetStart.Add(&itemNetStart13, false);
     menuMultiUserMaps.Add(&itemNetStartUserMapTitle, true);
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
 
@@ -1693,7 +1697,10 @@ void SetupOptionsMenu(void)
 
     menuOptionsPlayer.Add(&itemOptionsPlayerTitle, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
+    menuOptionsPlayer.Add(&itemOptionsChatSound, true);
     menuOptionsPlayer.Add(&itemBloodQAV, false);
+
+    itemOptionsChatSound.at20 = gChatSnd;
 
     menuOptionsControl.Add(&itemOptionsControlTitle, false);
     menuOptionsControl.Add(&itemOptionsControlKeyboard, true);
@@ -2660,6 +2667,11 @@ void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
         netBroadcastPlayerInfo(myconnectindex);
 }
 
+void UpdateChatMessageSound(CGameMenuItemZBool *pItem)
+{
+    gChatSnd = pItem->at20;
+}
+
 void SetMouseAimMode(CGameMenuItemZBool *pItem)
 {
     gMouseAiming = pItem->at20;
@@ -2998,6 +3010,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.respawnSettings = 0;
     gPacketStartGame.bFriendlyFire = itemNetStart8.at20;
     gPacketStartGame.keySettings = itemNetStart9.m_nFocus;
+    gPacketStartGame.bSpawnProtection = itemNetStart10.at20;
     ////
     gVanilla = false; // turn off vanilla mode for multiplayer so menus don't get bugged
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
@@ -3016,7 +3029,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.randomizerMode = itemNetEnhancementRandomizerMode.m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bstrncpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
     if (gPacketStartGame.szRandomizerSeed[0] == '\0') // if no seed entered, generate new one before sending packet
-        sprintf(gPacketStartGame.szRandomizerSeed, "%08X", qrand());
+        sprintf(gPacketStartGame.szRandomizerSeed, "%08X", QRandom2(gGameMenuMgr.m_mousepos.x*gGameMenuMgr.m_mousepos.y));
     ////
     gPacketStartGame.unk = 0;
     Bstrncpy(gPacketStartGame.userMapName, zUserMapName, sizeof(zUserMapName));
