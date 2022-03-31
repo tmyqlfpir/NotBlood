@@ -727,8 +727,8 @@ void playerStart(int nPlayer, int bNewLevel)
                         continue;
                     if (gPlayer[i].pSprite->sectnum < 0 || gPlayer[i].pSprite->sectnum >= numsectors) // invalid sector, skip
                         continue;
-                    const bool activePlayer = (i == nPlayer) || (gPlayer[i].pXSprite->health > 0);
-                    if (!activePlayer) // only check our current location or that of an alive player, otherwise skip
+                    const bool activeEnemy = (gPlayer[i].pXSprite->health > 0) && !IsTargetTeammate(&gPlayer[nPlayer], gPlayer[i].pSprite);
+                    if ((i == nPlayer) || !activeEnemy) // only check our current location or that of an alive/enemy player, otherwise skip
                         continue;
                     const int sectorScanDepth = (i == nPlayer) ? 0 : 3; // use a smaller scanning depth if we're checking near self
                     if (AreSectorsNeighbors(gPlayer[i].pSprite->sectnum, gStartZone[zoneId].sectnum, sectorScanDepth, true, true)) // this spawn is too close to another player/self, stop checking rest of players
