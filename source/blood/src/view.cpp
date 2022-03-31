@@ -1610,7 +1610,7 @@ void viewDrawAimedPlayerName(void)
             char* szName = gProfile[nPlayer].name;
             int nPalette = (gPlayer[nPlayer].teamId&3)+11;
             if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
-                nPalette = (gPlayer[nPlayer].teamId&1) ? 11 : 10;
+                nPalette = (gPlayer[nPlayer].teamId&1) ? 12 : 10;
             viewDrawText(4, szName, 160, 125, -128, nPalette, 1, 1);
         }
     }
