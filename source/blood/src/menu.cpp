@@ -539,6 +539,15 @@ const char *pzWeaponInterpolateStrings[] = {
     "ALL ANIMATION"
 };
 
+const char *pzStatsPowerupRatioStrings[] = {
+    "OFF",
+    "ON",
+    "ON (4:3)",
+    "ON (16:10)",
+    "ON (16:9)",
+    "ON (21:9)",
+};
+
 const char *pzHudRatioStrings[] = {
     "DEFAULT",
     "4:3",
@@ -584,8 +593,8 @@ const char *pzVanillaModeStrings[] = {
 };
 
 void SetAutoAim(CGameMenuItemZCycle *pItem);
-void SetLevelStats(CGameMenuItemZBool *pItem);
-void SetPowerupDuration(CGameMenuItemZBool *pItem);
+void SetLevelStats(CGameMenuItemZCycle *pItem);
+void SetPowerupDuration(CGameMenuItemZCycle *pItem);
 void SetShowMapTitle(CGameMenuItemZBool *pItem);
 void SetWeaponSwitch(CGameMenuItemZCycle *pItem);
 void SetWeaponFastSwitch(CGameMenuItemZBool *pItem);
@@ -631,8 +640,8 @@ CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0
 CGameMenuItemChain itemOptionsDisplayMode("VIDEO MODE", 3, 66, 50, 180, 0, &menuOptionsDisplayMode, -1, SetupVideoModeMenu, 0);
 CGameMenuItemZBool itemOptionsDisplayBoolCrosshair("CROSSHAIR:", 3, 66, 60, 180, gAimReticle, SetCrosshair, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayBoolCenterHoriz("CENTER HORIZON LINE:", 3, 66, 70, 180, gCenterHoriz, SetCenterHoriz, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolLevelStats("LEVEL STATS:", 3, 66, 80, 180, gLevelStats, SetLevelStats, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolPowerupDuration("POWERUP DURATION:", 3, 66, 90, 180, gPowerupDuration, SetPowerupDuration, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayLevelStats("LEVEL STATS:", 3, 66, 80, 180, 0, SetLevelStats, pzStatsPowerupRatioStrings, ARRAY_SSIZE(pzStatsPowerupRatioStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayPowerupDuration("POWERUP DURATION:", 3, 66, 90, 180, 0, SetPowerupDuration, pzStatsPowerupRatioStrings, ARRAY_SSIZE(pzStatsPowerupRatioStrings), 0);
 CGameMenuItemZBool itemOptionsDisplayBoolShowMapTitle("MAP TITLE:", 3, 66, 100, 180, gShowMapTitle, SetShowMapTitle, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 110, 180, gMessageState, SetMessages, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 120, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
@@ -1559,8 +1568,8 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayMode, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolCrosshair, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolCenterHoriz, false);
-    menuOptionsDisplay.Add(&itemOptionsDisplayBoolLevelStats, false);
-    menuOptionsDisplay.Add(&itemOptionsDisplayBoolPowerupDuration, false);
+    menuOptionsDisplay.Add(&itemOptionsDisplayLevelStats, false);
+    menuOptionsDisplay.Add(&itemOptionsDisplayPowerupDuration, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolShowMapTitle, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolMessages, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolWidescreen, false);
@@ -1575,8 +1584,8 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemBloodQAV, false);
     itemOptionsDisplayBoolCrosshair.at20 = gAimReticle;
     itemOptionsDisplayBoolCenterHoriz.at20 = gCenterHoriz;
-    itemOptionsDisplayBoolLevelStats.at20 = gLevelStats;
-    itemOptionsDisplayBoolPowerupDuration.at20 = gPowerupDuration;
+    itemOptionsDisplayLevelStats.m_nFocus = gLevelStats % ARRAY_SSIZE(pzStatsPowerupRatioStrings);
+    itemOptionsDisplayPowerupDuration.m_nFocus = gPowerupDuration % ARRAY_SSIZE(pzStatsPowerupRatioStrings);
     itemOptionsDisplayBoolShowMapTitle.at20 = gShowMapTitle;
     itemOptionsDisplayBoolMessages.at20 = gMessageState;
     itemOptionsDisplayBoolWidescreen.at20 = r_usenewaspect;
@@ -2065,14 +2074,16 @@ void SetAutoAim(CGameMenuItemZCycle *pItem)
     }
 }
 
-void SetLevelStats(CGameMenuItemZBool *pItem)
+void SetLevelStats(CGameMenuItemZCycle *pItem)
 {
-    gLevelStats = pItem->at20;
+    gLevelStats = pItem->m_nFocus % ARRAY_SSIZE(pzStatsPowerupRatioStrings);
+    viewResizeView(gViewSize);
 }
 
-void SetPowerupDuration(CGameMenuItemZBool* pItem)
+void SetPowerupDuration(CGameMenuItemZCycle* pItem)
 {
-    gPowerupDuration = pItem->at20;
+    gPowerupDuration = pItem->m_nFocus % ARRAY_SSIZE(pzStatsPowerupRatioStrings);
+    viewResizeView(gViewSize);
 }
 
 void SetShowMapTitle(CGameMenuItemZBool* pItem)
