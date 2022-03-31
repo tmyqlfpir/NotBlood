@@ -1605,8 +1605,12 @@ void viewDrawAimedPlayerName(void)
         if (IsPlayerSprite(pSprite))
         {
             char nPlayer = pSprite->type-kDudePlayer1;
+            if (powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && ((gGameOptions.nGameType != 3) || !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite))) // if doppleganger powerup is active, set player id as viewer
+                nPlayer = gView->pSprite->type-kDudePlayer1;
             char* szName = gProfile[nPlayer].name;
             int nPalette = (gPlayer[nPlayer].teamId&3)+11;
+            if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+                nPalette = (gPlayer[nPlayer].teamId&1) ? kMediumGoo : 10;
             viewDrawText(4, szName, 160, 125, -128, nPalette, 1, 1);
         }
     }
