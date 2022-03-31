@@ -139,7 +139,7 @@ int gViewXCenter, gViewYCenter;
 int gViewX0, gViewY0, gViewX1, gViewY1;
 int gViewX0S, gViewY0S, gViewX1S, gViewY1S;
 int xscale, xscalecorrect, yscale, xstep, ystep;
-int xscalehud = 0;
+int xscalehud = 0, xscalestats = 0, xscalepowerups = 0, xscalectfhud = 0;
 
 int gScreenTilt;
 
@@ -1375,7 +1375,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
     sortPowerUps(powerups);
 
     const int warningTime = 5;
-    const int x = 15 - xscalehud;
+    const int x = 15 - xscalepowerups;
     int y = 50;
     for (int i = 0; i < nPowerUps; i++)
     {
@@ -1605,8 +1605,12 @@ void viewDrawAimedPlayerName(void)
         if (IsPlayerSprite(pSprite))
         {
             char nPlayer = pSprite->type-kDudePlayer1;
+            if (powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && ((gGameOptions.nGameType != 3) || !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite))) // if doppleganger powerup is active, set player id as viewer
+                nPlayer = gView->pSprite->type-kDudePlayer1;
             char* szName = gProfile[nPlayer].name;
             int nPalette = (gPlayer[nPlayer].teamId&3)+11;
+            if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+                nPalette = (gPlayer[nPlayer].teamId&1) ? kMediumGoo : 10;
             viewDrawText(4, szName, 160, 125, -128, nPalette, 1, 1);
         }
     }
@@ -1766,7 +1770,7 @@ void flashTeamScore(ClockTicks arg, int team, bool show)
             gPlayerScoreTicks[team] = 0;
 
         if (show)
-            DrawStatNumber("%d", gPlayerScores[team], kSBarNumberInv, 290+xscalehud, team ? 125 : 90, 0, team ? 2 : 10, 512, 65536 * 0.75);
+            DrawStatNumber("%d", gPlayerScores[team], kSBarNumberInv, 290+xscalectfhud, team ? 125 : 90, 0, team ? 2 : 10, 512, 65536 * 0.75);
     }
 }
 
@@ -1798,19 +1802,19 @@ void viewDrawCtfHud(ClockTicks arg)
     }
 
     bool meHaveBlueFlag = gMe->hasFlag & 1;
-    DrawStatMaskedSprite(meHaveBlueFlag ? 3558 : 3559, 320+xscalehud, 75, 0, 10, 512, 65536 * 0.35);
+    DrawStatMaskedSprite(meHaveBlueFlag ? 3558 : 3559, 320+xscalectfhud, 75, 0, 10, 512, 65536 * 0.35);
     if (gBlueFlagDropped)
-        DrawStatMaskedSprite(2332, 305+xscalehud, 83, 0, 10, 512, 65536);
+        DrawStatMaskedSprite(2332, 305+xscalectfhud, 83, 0, 10, 512, 65536);
     else if (blueFlagTaken)
-        DrawStatMaskedSprite(4097, 307+xscalehud, 77, 0, blueFlagCarrierColor ? 2 : 10, 512, 65536);
+        DrawStatMaskedSprite(4097, 307+xscalectfhud, 77, 0, blueFlagCarrierColor ? 2 : 10, 512, 65536);
     flashTeamScore(arg, 0, true);
 
     bool meHaveRedFlag = gMe->hasFlag & 2;
-    DrawStatMaskedSprite(meHaveRedFlag ? 3558 : 3559, 320+xscalehud, 110, 0, 2, 512, 65536 * 0.35);
+    DrawStatMaskedSprite(meHaveRedFlag ? 3558 : 3559, 320+xscalectfhud, 110, 0, 2, 512, 65536 * 0.35);
     if (gRedFlagDropped)
-        DrawStatMaskedSprite(2332, 305+xscalehud, 117, 0, 2, 512, 65536);
+        DrawStatMaskedSprite(2332, 305+xscalectfhud, 117, 0, 2, 512, 65536);
     else if (redFlagTaken)
-        DrawStatMaskedSprite(4097, 307+xscalehud, 111, 0, redFlagCarrierColor ? 2 : 10, 512, 65536);
+        DrawStatMaskedSprite(4097, 307+xscalectfhud, 111, 0, redFlagCarrierColor ? 2 : 10, 512, 65536);
     flashTeamScore(arg, 1, true);
 }
 
@@ -1880,7 +1884,7 @@ void UpdateStatusBar(ClockTicks arg)
             TileHGauge(2260, 124, 175-10, pPlayer->throwPower, 65536);
         else
             viewDrawPack(pPlayer, 166, 200-tilesiz[2201].y/2-30);
-        viewDrawStats(pPlayer, 2-xscalehud, 140);
+        viewDrawStats(pPlayer, 2-xscalestats, 140);
         viewDrawPowerUps(pPlayer);
     }
     else if (gViewSize <= 2)
@@ -1950,7 +1954,7 @@ void UpdateStatusBar(ClockTicks arg)
 #endif
             }
         }
-        viewDrawStats(pPlayer, 2-xscalehud, 140);
+        viewDrawStats(pPlayer, 2-xscalestats, 140);
         viewDrawPowerUps(pPlayer);
     }
     else if (gViewSize > 2)
@@ -2041,7 +2045,7 @@ void UpdateStatusBar(ClockTicks arg)
         {
             TileHGauge(2260, 124, 175, pPlayer->throwPower, 65536);
         }
-        viewDrawStats(pPlayer, 2-xscalehud, 140);
+        viewDrawStats(pPlayer, 2-xscalestats, 140);
         viewDrawPowerUps(pPlayer);
     }
 
@@ -2164,19 +2168,36 @@ void viewInit(void)
     bLoadScreenCrcMatch = tileGetCRC32(kLoadScreen) == kLoadScreenCRC;
 }
 
+inline int viewCalculateOffetRatio(int nRatio)
+{
+    const int ratios[] = {320, (int)((4. / 3.) / (16. / 10.) * 320.), (int)((4. / 3.) / (16. / 9.) * 320.), (int)((4. / 3.) / (21. / 9.) * 320.)}; // 4:3, 16:10, 16:9, 21:9
+    if (nRatio >= ARRAY_SIZE(ratios)) // if ratio selection is outside of array
+        return 0;
+    int nOffset = scale(0-(ratios[nRatio]>>1), ratios[nRatio]>>1, 266>>1); // scale position
+    nOffset = scale(nOffset, xscale, yscale); // multiply by window ratio
+    nOffset += ratios[nRatio]>>1; // offset to center
+    if (nOffset > 0) // if ratio is beyond screen width
+        return 0;
+    return nOffset;
+}
+
 void viewUpdateHudRatio(void)
 {
-    xscalehud = 0;
+    xscalehud = xscalestats = xscalepowerups = 0;
     if (gHudRatio > 0)
-    {
-        const int ratios[] = {320, (int)((4. / 3.) / (16. / 10.) * 320.), (int)((4. / 3.) / (16. / 9.) * 320.), (int)((4. / 3.) / (21. / 9.) * 320.)}; // 4:3, 16:10, 16:9, 21:9
-        xscalehud = scale(xscalehud-(ratios[gHudRatio-1]>>1), ratios[gHudRatio-1]>>1, 266>>1); // scale position
-        xscalehud = scale(xscalehud, xscale, yscale); // multiply by window ratio
-        xscalehud += ratios[gHudRatio-1]>>1; // offset to center
-        if (xscalehud > 0) // clamp hud ratio to offset within screen width
-            xscalehud = 0;
-    }
+       xscalehud = viewCalculateOffetRatio(gHudRatio-1);
+    if (gLevelStats > 1)
+       xscalestats = viewCalculateOffetRatio(gLevelStats-2);
+    if (gPowerupDuration > 1)
+       xscalepowerups = viewCalculateOffetRatio(gPowerupDuration-2);
     gPlayerMsg.xoffset = gGameMessageMgr.xoffset = xscalehud;
+
+    if (gPowerupDuration)
+        xscalectfhud = xscalepowerups;
+    else if (gLevelStats)
+        xscalectfhud = xscalestats;
+    else
+        xscalectfhud = xscalehud;
 }
 
 void viewResizeView(int size)
@@ -2234,18 +2255,28 @@ void viewResizeView(int size)
 }
 
 #define kBackTile 253
+//#define kBackTileVanilla 230
 
 void UpdateFrame(void)
 {
-    viewTileSprite(kBackTile, 0, 0, 0, 0, xdim, gViewY0-3);
-    viewTileSprite(kBackTile, 0, 0, 0, gViewY1+4, xdim, ydim);
-    viewTileSprite(kBackTile, 0, 0, 0, gViewY0-3, gViewX0-3, gViewY1+4);
-    viewTileSprite(kBackTile, 0, 0, gViewX1+4, gViewY0-3, xdim, gViewY1+4);
+    int nPalette = 0;
+    if (gGameOptions.nGameType == 3)
+    {
+        if (gView->teamId & 1)
+            nPalette = 7;
+        else
+            nPalette = 10;
+    }
 
-    viewTileSprite(kBackTile, 20, 0, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1);
-    viewTileSprite(kBackTile, 20, 0, gViewX0, gViewY0-3, gViewX1+4, gViewY0);
-    viewTileSprite(kBackTile, 10, 1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4);
-    viewTileSprite(kBackTile, 10, 1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4);
+    viewTileSprite(kBackTile, 0, nPalette, 0, 0, xdim, gViewY0-3);
+    viewTileSprite(kBackTile, 0, nPalette, 0, gViewY1+4, xdim, ydim);
+    viewTileSprite(kBackTile, 0, nPalette, 0, gViewY0-3, gViewX0-3, gViewY1+4);
+    viewTileSprite(kBackTile, 0, nPalette, gViewX1+4, gViewY0-3, xdim, gViewY1+4);
+
+    viewTileSprite(kBackTile, 20, nPalette, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1);
+    viewTileSprite(kBackTile, 20, nPalette, gViewX0, gViewY0-3, gViewX1+4, gViewY0);
+    viewTileSprite(kBackTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4);
+    viewTileSprite(kBackTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4);
 }
 
 void viewDrawInterface(ClockTicks arg)
@@ -3159,15 +3190,17 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
 
                 PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
                 const char bIsTeammate = IsTargetTeammate(gView, pPlayer->pSprite);
+                const char bIsDoppleganger = (gGameOptions.nGameType == 3) && powerupCheck(pPlayer, kPwUpDoppleganger);
+                const char bIsTeammateOrDoppleganger = bIsTeammate || bIsDoppleganger;
                 if (powerupCheck(pPlayer, kPwUpShadowCloak) && !powerupCheck(gView, kPwUpBeastVision)) {
                     pTSprite->cstat |= 2;
                     pTSprite->pal = 5;
-                }  else if (powerupCheck(pPlayer, kPwUpDeathMask) && (VanillaMode() || !bIsTeammate || (bIsTeammate && ((int)totalclock & 32)))) { // mute color if player has deathmask powerup (but don't do this if teammate)
+                }  else if (powerupCheck(pPlayer, kPwUpDeathMask) && (VanillaMode() || !bIsTeammateOrDoppleganger || (bIsTeammateOrDoppleganger && ((int)totalclock & 32)))) { // mute color if player has deathmask powerup (but don't do this if teammate)
                     pTSprite->shade = -128;
                     pTSprite->pal = 5;
-                } else if (powerupCheck(pPlayer, kPwUpDoppleganger)) {
+                } else if (powerupCheck(pPlayer, kPwUpDoppleganger) && !bIsTeammate) {
                     if (gGameOptions.nGameType == 3)
-                        pTSprite->pal = (gView->teamId & 1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
+                        pTSprite->pal = (gView->teamId&1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
                     else
                         pTSprite->pal = 11+(gView->teamId&3);
                 }
@@ -3177,7 +3210,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
                 
                 if (gShowWeapon && (gGameOptions.nGameType > 0) && gView) {
-                    const char bDrawDudeWeap = (pPlayer == gView) || !powerupCheck(pPlayer, kPwUpShadowCloak) || bIsTeammate; // don't draw enemy weapon if they are cloaked
+                    const char bDrawDudeWeap = (pPlayer == gView) || !powerupCheck(pPlayer, kPwUpShadowCloak) || bIsTeammateOrDoppleganger; // don't draw enemy weapon if they are cloaked
                     if (bDrawDudeWeap || VanillaMode()) {
                         viewAddEffect(nTSprite, kViewEffectShowWeapon);
                         if (powerupCheck(pPlayer, kPwUpTwoGuns) && !VanillaMode())
@@ -4231,8 +4264,8 @@ RORHACK:
             viewingRange = viewingrange;
             yxAspect = yxaspect;
             renderSetAspect(65536, 54613);
-            rotatesprite(280<<16, 35<<16, 53248, 512, 4077, v10, v14, 512+6, gViewX0, gViewY0, gViewX1, gViewY1);
-            rotatesprite(280<<16, 35<<16, 53248, 0, 1683, v10, 0, 512+35, gViewX0, gViewY0, gViewX1, gViewY1);
+            rotatesprite((280+xscalehud)<<16, 35<<16, 53248, 512, 4077, v10, v14, 512+6, gViewX0, gViewY0, gViewX1, gViewY1);
+            rotatesprite((280+xscalehud)<<16, 35<<16, 53248, 0, 1683, v10, 0, 512+35, gViewX0, gViewY0, gViewX1, gViewY1);
             renderSetAspect(viewingRange, yxAspect);
         }
         

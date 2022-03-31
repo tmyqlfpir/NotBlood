@@ -542,7 +542,6 @@ void CPlayerMsg::Clear(void)
 {
     text[0] = 0;
     at0 = 0;
-    xoffset = 0;
 }
 
 void CPlayerMsg::Term(void)

@@ -385,8 +385,8 @@ void CONFIG_SetDefaults(void)
     //ud.hudontop               = 0;
     //ud.idplayers              = 1;
     gLevelStats = 0;
-    gHudRatio = 0;
-    gPowerupDuration = 1;
+    gHudRatio = 1;
+    gPowerupDuration = 4;
     gPowerupTicks = 100;
     gShowMapTitle = 1;
     gShowWeaponSelect = 0;
