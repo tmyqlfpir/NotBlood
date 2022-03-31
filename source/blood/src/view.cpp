@@ -3190,15 +3190,17 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
 
                 PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
                 const char bIsTeammate = IsTargetTeammate(gView, pPlayer->pSprite);
+                const char bIsDoppleganger = (gGameOptions.nGameType == 3) && powerupCheck(pPlayer, kPwUpDoppleganger);
+                const char bIsTeammateOrDoppleganger = bIsTeammate || bIsDoppleganger;
                 if (powerupCheck(pPlayer, kPwUpShadowCloak) && !powerupCheck(gView, kPwUpBeastVision)) {
                     pTSprite->cstat |= 2;
                     pTSprite->pal = 5;
-                }  else if (powerupCheck(pPlayer, kPwUpDeathMask) && (VanillaMode() || !bIsTeammate || (bIsTeammate && ((int)totalclock & 32)))) { // mute color if player has deathmask powerup (but don't do this if teammate)
+                }  else if (powerupCheck(pPlayer, kPwUpDeathMask) && (VanillaMode() || !bIsTeammateOrDoppleganger || (bIsTeammateOrDoppleganger && ((int)totalclock & 32)))) { // mute color if player has deathmask powerup (but don't do this if teammate)
                     pTSprite->shade = -128;
                     pTSprite->pal = 5;
-                } else if (powerupCheck(pPlayer, kPwUpDoppleganger)) {
+                } else if (powerupCheck(pPlayer, kPwUpDoppleganger) && !bIsTeammate) {
                     if (gGameOptions.nGameType == 3)
-                        pTSprite->pal = (gView->teamId & 1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
+                        pTSprite->pal = (gView->teamId&1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
                     else
                         pTSprite->pal = 11+(gView->teamId&3);
                 }
@@ -3208,7 +3210,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
                 
                 if (gShowWeapon && (gGameOptions.nGameType > 0) && gView) {
-                    const char bDrawDudeWeap = (pPlayer == gView) || !powerupCheck(pPlayer, kPwUpShadowCloak) || bIsTeammate; // don't draw enemy weapon if they are cloaked
+                    const char bDrawDudeWeap = (pPlayer == gView) || !powerupCheck(pPlayer, kPwUpShadowCloak) || bIsTeammateOrDoppleganger; // don't draw enemy weapon if they are cloaked
                     if (bDrawDudeWeap || VanillaMode()) {
                         viewAddEffect(nTSprite, kViewEffectShowWeapon);
                         if (powerupCheck(pPlayer, kPwUpTwoGuns) && !VanillaMode())
