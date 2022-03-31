@@ -713,7 +713,7 @@ void playerStart(int nPlayer, int bNewLevel)
     #endif
     else {
         int zoneId = Random(kMaxPlayers);
-        if ((gGameOptions.nGameType == 2) && !VanillaMode()) { // search for a safe random spawn for bloodbath mode
+        if ((gGameOptions.nGameType >= 2) && !VanillaMode()) { // search for a safe random spawn for bloodbath/teams mode
             bool checkZone[kMaxPlayers] = {false, false, false, false, false, false, false, false};
             int maxRetries = 12;
             while (maxRetries-- > 0) {
