@@ -4082,13 +4082,13 @@ RORHACK:
         fix16_t deliriumPitchI = gViewInterpolate ? interpolate(fix16_from_int(deliriumPitchO), fix16_from_int(deliriumPitch), gInterpolate) : fix16_from_int(deliriumPitch);
         DrawMirrors(cX, cY, cZ, cA, q16horiz + fix16_from_int(defaultHoriz) + deliriumPitchI, gInterpolate, gViewIndex);
         int bakCstat = gView->pSprite->cstat;
-        if (gViewPos == 0)
+        if (gViewPos == 0) // don't render self while in first person view
         {
-            gView->pSprite->cstat |= 32768;
+            gView->pSprite->cstat |= CSTAT_SPRITE_INVISIBLE;
         }
-        else
+        else // chase camera - render as transparent
         {
-            gView->pSprite->cstat |= 514;
+            gView->pSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT_INVERT | CSTAT_SPRITE_TRANSLUCENT;
         }
 #ifdef POLYMER
         if (videoGetRenderMode() == REND_POLYMER)
