@@ -3217,9 +3217,9 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
 
                 if (pPlayer->flashEffect && (gView != pPlayer || gViewPos != VIEWPOS_0)) {
                     const char bTwoGuns = powerupCheck(pPlayer, kPwUpTwoGuns) && !gGameOptions.bQuadDamagePowerup && !VanillaMode();
-                    const POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
                     auto pNTSprite = viewAddEffect(nTSprite, kViewEffectShoot);
                     if (pNTSprite) {
+                        POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
                         pNTSprite->x += mulscale28(pPosture->zOffset, Cos(pTSprite->ang));
                         pNTSprite->y += mulscale28(pPosture->zOffset, Sin(pTSprite->ang));
                         pNTSprite->z = pPlayer->pSprite->z-pPosture->xOffset;
@@ -4079,8 +4079,8 @@ RORHACK:
         for (int i = 0; i < 16; i++)
             ror_status[i] = TestBitString(gotpic, 4080+i);
         fix16_t deliriumPitchI = gViewInterpolate ? interpolate(fix16_from_int(deliriumPitchO), fix16_from_int(deliriumPitch), gInterpolate) : fix16_from_int(deliriumPitch);
-        int bakCstat = gView->pSprite->cstat;
         DrawMirrors(cX, cY, cZ, cA, q16horiz + fix16_from_int(defaultHoriz) + deliriumPitchI, gInterpolate, bLink && !VanillaMode() ? gViewIndex : -1); // only hide self sprite while traversing between sector
+        int bakCstat = gView->pSprite->cstat;
         if (gViewPos == 0) // don't render self while in first person view
         {
             gView->pSprite->cstat |= CSTAT_SPRITE_INVISIBLE;
