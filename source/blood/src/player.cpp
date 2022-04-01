@@ -764,7 +764,7 @@ void playerStart(int nPlayer, int bNewLevel)
     GetSpriteExtents(pSprite, &top, &bottom);
     pSprite->z -= bottom - pSprite->z;
     pSprite->pal = 11+(pPlayer->teamId&3);
-    if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+    if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint characters depending on their team (red/blue)
         pSprite->pal = (pPlayer->teamId&1) ? kMediumGoo : 10;
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
