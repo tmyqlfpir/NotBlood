@@ -2171,7 +2171,7 @@ void viewInit(void)
 inline int viewCalculateOffetRatio(int nRatio)
 {
     const int ratios[] = {320, (int)((4. / 3.) / (16. / 10.) * 320.), (int)((4. / 3.) / (16. / 9.) * 320.), (int)((4. / 3.) / (21. / 9.) * 320.)}; // 4:3, 16:10, 16:9, 21:9
-    if (nRatio >= ARRAY_SIZE(ratios)) // if ratio selection is outside of array
+    if (nRatio >= (int)ARRAY_SIZE(ratios)) // if ratio selection is outside of array
         return 0;
     int nOffset = scale(0-(ratios[nRatio]>>1), ratios[nRatio]>>1, 266>>1); // scale position
     nOffset = scale(nOffset, xscale, yscale); // multiply by window ratio
