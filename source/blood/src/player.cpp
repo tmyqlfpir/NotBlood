@@ -764,7 +764,7 @@ void playerStart(int nPlayer, int bNewLevel)
     GetSpriteExtents(pSprite, &top, &bottom);
     pSprite->z -= bottom - pSprite->z;
     pSprite->pal = 11+(pPlayer->teamId&3);
-    if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+    if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint characters depending on their team (red/blue)
         pSprite->pal = (pPlayer->teamId&1) ? kMediumGoo : 10;
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
@@ -949,16 +949,14 @@ void playerResetScores(int nPlayer)
     pPlayer->fragCount = 0;
     memset(pPlayer->fragInfo, 0, sizeof(pPlayer->fragInfo));
     memset(gPlayerScores, 0, sizeof(gPlayerScores));
-    for (int i = 0; i < kMaxPlayers; i++) {
-        gPlayerScoreTicks[i] = 0;
-    }
+    memset((void *)gPlayerScoreTicks, 0, sizeof(gPlayerScoreTicks));
 }
 
 void playerInit(int nPlayer, unsigned int a2)
 {
     PLAYER *pPlayer = &gPlayer[nPlayer];
     if (!(a2&1))
-        memset(pPlayer, 0, sizeof(PLAYER));
+        memset((void *)pPlayer, 0, sizeof(PLAYER));
     pPlayer->nPlayer = nPlayer;
     pPlayer->teamId = nPlayer;
     if (gGameOptions.nGameType == 3)

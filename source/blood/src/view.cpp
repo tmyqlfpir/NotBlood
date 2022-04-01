@@ -1605,11 +1605,11 @@ void viewDrawAimedPlayerName(void)
         if (IsPlayerSprite(pSprite))
         {
             char nPlayer = pSprite->type-kDudePlayer1;
-            if (powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && ((gGameOptions.nGameType != 3) || !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite))) // if doppleganger powerup is active, set player id as viewer
+            if (!VanillaMode() && powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && ((gGameOptions.nGameType != 3) || !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite))) // if doppleganger powerup is active, set player id as viewer
                 nPlayer = gView->pSprite->type-kDudePlayer1;
             char* szName = gProfile[nPlayer].name;
             int nPalette = (gPlayer[nPlayer].teamId&3)+11;
-            if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+            if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint characters depending on their team (red/blue)
                 nPalette = (gPlayer[nPlayer].teamId&1) ? 12 : 10;
             viewDrawText(4, szName, 160, 125, -128, nPalette, 1, 1);
         }
@@ -2023,10 +2023,7 @@ void UpdateStatusBar(ClockTicks arg)
             TileHGauge(2208, 44, 190, pPlayer->armor[2], 3200);
             DrawStatNumber("%3d", pPlayer->armor[2]>>4, 2230, 50, 193, 0, 0);
         }
-        if (VanillaMode())
-            sprintf(gTempStr, "v1.21");
-        else
-            sprintf(gTempStr, "v%s", GetVersionString());
+        sprintf(gTempStr, "v%s", VanillaMode() ? "1.21" : GetVersionString());
         viewDrawText(3, gTempStr, 20, 191, 32, 0, 1, 0);
 
         for (int i = 0; i < 6; i++)
@@ -2171,7 +2168,7 @@ void viewInit(void)
 inline int viewCalculateOffetRatio(int nRatio)
 {
     const int ratios[] = {320, (int)((4. / 3.) / (16. / 10.) * 320.), (int)((4. / 3.) / (16. / 9.) * 320.), (int)((4. / 3.) / (21. / 9.) * 320.)}; // 4:3, 16:10, 16:9, 21:9
-    if (nRatio >= ARRAY_SIZE(ratios)) // if ratio selection is outside of array
+    if (nRatio >= (int)ARRAY_SIZE(ratios)) // if ratio selection is outside of array
         return 0;
     int nOffset = scale(0-(ratios[nRatio]>>1), ratios[nRatio]>>1, 266>>1); // scale position
     nOffset = scale(nOffset, xscale, yscale); // multiply by window ratio
@@ -3198,8 +3195,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }  else if (powerupCheck(pPlayer, kPwUpDeathMask) && (VanillaMode() || !bIsTeammateOrDoppleganger || (bIsTeammateOrDoppleganger && ((int)totalclock & 32)))) { // mute color if player has deathmask powerup (but don't do this if teammate)
                     pTSprite->shade = -128;
                     pTSprite->pal = 5;
-                } else if (powerupCheck(pPlayer, kPwUpDoppleganger) && !bIsTeammate) {
-                    if (gGameOptions.nGameType == 3)
+                } else if (powerupCheck(pPlayer, kPwUpDoppleganger) && (VanillaMode() || !bIsTeammate)) {
+                    if ((gGameOptions.nGameType == 3) && !VanillaMode())
                         pTSprite->pal = (gView->teamId&1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
                     else
                         pTSprite->pal = 11+(gView->teamId&3);
@@ -3245,12 +3242,13 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
 
                 if ((pPlayer->hasFlag > 0) && (gGameOptions.nGameType == 3)) { // if teams mode and has flag
+                    const char bThirdPerson = (pPlayer == gView) && (gViewPos != VIEWPOS_0) && !VanillaMode();
                     if (pPlayer->hasFlag&1)  {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
                         if (pNTSprite) {
                             pNTSprite->pal = 10;
-                            pNTSprite->cstat |= 4;
-                            if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
+                            pNTSprite->cstat |= CSTAT_SPRITE_XFLIP;
+                            if (bThirdPerson) // if viewing current player in third person, set flag to transparent
                                 pNTSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
                         }
                     }
@@ -3258,8 +3256,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
                         if (pNTSprite) {
                             pNTSprite->pal = 7;
-                            pNTSprite->cstat |= 4;
-                            if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
+                            pNTSprite->cstat |= CSTAT_SPRITE_XFLIP;
+                            if (bThirdPerson) // if viewing current player in third person, set flag to transparent
                                 pNTSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
                         }
                     }
@@ -3878,7 +3876,8 @@ void viewDrawScreen(void)
         {
             CalcPosition(gView->pSprite, (int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum, fix16_to_int(cA), q16horiz);
         }
-        if (!CheckLink((int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum) && gViewInterpolate && !VanillaMode()) // double check current sector for interpolated movement (fixes ROR glitch)
+        bool bLink = CheckLink((int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum);
+        if (!bLink && gViewInterpolate && !VanillaMode()) // double check current sector for interpolated movement (fixes ROR glitch such as E3M5's scanning room doorway)
         {
             int nFoundSect = nSectnum;
             if (FindSector(cX, cY, cZ, &nFoundSect) && (nFoundSect != nSectnum) && AreSectorsNeighbors(nSectnum, nFoundSect, 2)) // if newly found sector is connected to current sector, set as view sector
@@ -4080,8 +4079,8 @@ RORHACK:
         for (int i = 0; i < 16; i++)
             ror_status[i] = TestBitString(gotpic, 4080+i);
         fix16_t deliriumPitchI = gViewInterpolate ? interpolate(fix16_from_int(deliriumPitchO), fix16_from_int(deliriumPitch), gInterpolate) : fix16_from_int(deliriumPitch);
-        DrawMirrors(cX, cY, cZ, cA, q16horiz + fix16_from_int(defaultHoriz) + deliriumPitchI, gInterpolate, gViewIndex);
         int bakCstat = gView->pSprite->cstat;
+        DrawMirrors(cX, cY, cZ, cA, q16horiz + fix16_from_int(defaultHoriz) + deliriumPitchI, gInterpolate, bLink && !VanillaMode() ? gViewIndex : -1); // only hide self sprite while traversing between sector
         if (gViewPos == 0) // don't render self while in first person view
         {
             gView->pSprite->cstat |= CSTAT_SPRITE_INVISIBLE;

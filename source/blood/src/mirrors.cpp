@@ -414,6 +414,19 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                 r_rorphase = 1;
 #endif
                 int nSector = mirror[i].at4;
+                int bakCstat;
+                if (viewPlayer >= 0)
+                {
+                    bakCstat = gPlayer[viewPlayer].pSprite->cstat;
+                    if (gViewPos == 0)
+                    {
+                        gPlayer[viewPlayer].pSprite->cstat |= CSTAT_SPRITE_INVISIBLE;
+                    }
+                    else
+                    {
+                        gPlayer[viewPlayer].pSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT_INVERT | CSTAT_SPRITE_TRANSLUCENT;
+                    }
+                }
 #ifdef POLYMER
                 if (videoGetRenderMode() == REND_POLYMER)
                     polymer_setanimatesprites(viewProcessSprites, x+mirror[i].at8, y+mirror[i].atc, z+mirror[i].at10, fix16_to_int(a), smooth);
@@ -439,6 +452,19 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                 r_rorphase = 1;
 #endif
                 int nSector = mirror[i].at4;
+                int bakCstat;
+                if (viewPlayer >= 0)
+                {
+                    bakCstat = gPlayer[viewPlayer].pSprite->cstat;
+                    if (gViewPos == 0)
+                    {
+                        gPlayer[viewPlayer].pSprite->cstat |= CSTAT_SPRITE_INVISIBLE;
+                    }
+                    else
+                    {
+                        gPlayer[viewPlayer].pSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT_INVERT | CSTAT_SPRITE_TRANSLUCENT;
+                    }
+                }
 #ifdef POLYMER
                 if (videoGetRenderMode() == REND_POLYMER)
                     polymer_setanimatesprites(viewProcessSprites, x+mirror[i].at8, y+mirror[i].atc, z+mirror[i].at10, fix16_to_int(a), smooth);
