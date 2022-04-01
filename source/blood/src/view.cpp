@@ -3220,9 +3220,9 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
 
                 if (pPlayer->flashEffect && (gView != pPlayer || gViewPos != VIEWPOS_0)) {
                     const char bTwoGuns = powerupCheck(pPlayer, kPwUpTwoGuns) && !gGameOptions.bQuadDamagePowerup && !VanillaMode();
-                    const POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
                     auto pNTSprite = viewAddEffect(nTSprite, kViewEffectShoot);
                     if (pNTSprite) {
+                        POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
                         pNTSprite->x += mulscale28(pPosture->zOffset, Cos(pTSprite->ang));
                         pNTSprite->y += mulscale28(pPosture->zOffset, Sin(pTSprite->ang));
                         pNTSprite->z = pPlayer->pSprite->z-pPosture->xOffset;
@@ -3878,7 +3878,8 @@ void viewDrawScreen(void)
         {
             CalcPosition(gView->pSprite, (int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum, fix16_to_int(cA), q16horiz);
         }
-        if (!CheckLink((int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum) && gViewInterpolate && !VanillaMode()) // double check current sector for interpolated movement (fixes ROR glitch)
+        bool bLink = CheckLink((int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum);
+        if (!bLink && gViewInterpolate && !VanillaMode()) // double check current sector for interpolated movement (fixes ROR glitch such as E3M5's scanning room doorway)
         {
             int nFoundSect = nSectnum;
             if (FindSector(cX, cY, cZ, &nFoundSect) && (nFoundSect != nSectnum) && AreSectorsNeighbors(nSectnum, nFoundSect, 2)) // if newly found sector is connected to current sector, set as view sector
@@ -4080,15 +4081,15 @@ RORHACK:
         for (int i = 0; i < 16; i++)
             ror_status[i] = TestBitString(gotpic, 4080+i);
         fix16_t deliriumPitchI = gViewInterpolate ? interpolate(fix16_from_int(deliriumPitchO), fix16_from_int(deliriumPitch), gInterpolate) : fix16_from_int(deliriumPitch);
-        DrawMirrors(cX, cY, cZ, cA, q16horiz + fix16_from_int(defaultHoriz) + deliriumPitchI, gInterpolate, gViewIndex);
+        DrawMirrors(cX, cY, cZ, cA, q16horiz + fix16_from_int(defaultHoriz) + deliriumPitchI, gInterpolate, bLink && !VanillaMode() ? gViewIndex : -1); // only hide self sprite while traversing between sector
         int bakCstat = gView->pSprite->cstat;
-        if (gViewPos == 0)
+        if (gViewPos == 0) // don't render self while in first person view
         {
-            gView->pSprite->cstat |= 32768;
+            gView->pSprite->cstat |= CSTAT_SPRITE_INVISIBLE;
         }
-        else
+        else // chase camera - render as transparent
         {
-            gView->pSprite->cstat |= 514;
+            gView->pSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT_INVERT | CSTAT_SPRITE_TRANSLUCENT;
         }
 #ifdef POLYMER
         if (videoGetRenderMode() == REND_POLYMER)
