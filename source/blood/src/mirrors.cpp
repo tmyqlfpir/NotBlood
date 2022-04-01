@@ -414,19 +414,6 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                 r_rorphase = 1;
 #endif
                 int nSector = mirror[i].at4;
-                int bakCstat;
-                if (viewPlayer >= 0)
-                {
-                    bakCstat = gPlayer[viewPlayer].pSprite->cstat;
-                    if (gViewPos == 0)
-                    {
-                        gPlayer[viewPlayer].pSprite->cstat |= 32768;
-                    }
-                    else
-                    {
-                        gPlayer[viewPlayer].pSprite->cstat |= 514;
-                    }
-                }
 #ifdef POLYMER
                 if (videoGetRenderMode() == REND_POLYMER)
                     polymer_setanimatesprites(viewProcessSprites, x+mirror[i].at8, y+mirror[i].atc, z+mirror[i].at10, fix16_to_int(a), smooth);
@@ -441,10 +428,6 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                 sector[nSector].floorstat = fstat;
                 for (int i = 0; i < 16; i++)
                     ClearBitString(gotpic, 4080+i);
-                if (viewPlayer >= 0)
-                {
-                    gPlayer[viewPlayer].pSprite->cstat = bakCstat;
-                }
 #ifdef USE_OPENGL
                 r_rorphase = 0;
 #endif
@@ -456,19 +439,6 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                 r_rorphase = 1;
 #endif
                 int nSector = mirror[i].at4;
-                int bakCstat;
-                if (viewPlayer >= 0)
-                {
-                    bakCstat = gPlayer[viewPlayer].pSprite->cstat;
-                    if (gViewPos == 0)
-                    {
-                        gPlayer[viewPlayer].pSprite->cstat |= 32768;
-                    }
-                    else
-                    {
-                        gPlayer[viewPlayer].pSprite->cstat |= 514;
-                    }
-                }
 #ifdef POLYMER
                 if (videoGetRenderMode() == REND_POLYMER)
                     polymer_setanimatesprites(viewProcessSprites, x+mirror[i].at8, y+mirror[i].atc, z+mirror[i].at10, fix16_to_int(a), smooth);
@@ -483,10 +453,6 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                 sector[nSector].ceilingstat = cstat;
                 for (int i = 0; i < 16; i++)
                     ClearBitString(gotpic, 4080+i);
-                if (viewPlayer >= 0)
-                {
-                    gPlayer[viewPlayer].pSprite->cstat = bakCstat;
-                }
 #ifdef USE_OPENGL
                 r_rorphase = 0;
 #endif
