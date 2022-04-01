@@ -485,7 +485,7 @@ void CONFIG_SetDefaults(void)
     gRandomizerMode = 0;
     Bmemset(gzRandomizerSeed, 0, sizeof(gzRandomizerSeed));
 
-    Bstrcpy(szPlayerName, "Player");
+    Bsprintf(szPlayerName, "Player%02d", QRandom(100));
 
     Bstrcpy(CommbatMacro[0], "I love the smell of napalm...");
     Bstrcpy(CommbatMacro[1], "Is that gasoline I smell?");
