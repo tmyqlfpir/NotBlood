@@ -823,7 +823,7 @@ inline int approxDist(int dx, int dy)
     return dx+dy;
 }
 
-inline int approxDist(int dx, int dy, int dz)
+inline int approxDist3D(int dx, int dy, int dz)
 {
     dx = klabs(dx)>>4;
     dy = klabs(dy)>>4;
