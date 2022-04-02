@@ -65,15 +65,12 @@ static bool Calc3DSectOffset(spritetype *pLink, int *srcx, int *srcy, int *srcz,
     if (!spriRangeIsFine(nLink)) // if invalid link
         return false;
     const spritetype *pOtherLink = &sprite[nLink];
-    if (!spriRangeIsFine(pOtherLink->index)) // if invalid sprite
-        return false;
-    const int linksect = pLink->sectnum;
-    if (!sectRangeIsFine(linksect)) // if invalid sector
-        return false;
-    const int nXSector = sector[linksect].extra;
-    if ((nXSector > 0) && xsector[nXSector].Underwater) // if other link is underwater
-        return false;
 
+    const int linksect = pLink->sectnum;
+    if (!sectRangeIsFine(linksect) || !sectRangeIsFine(pOtherLink->sectnum)) // if invalid sector
+        return false;
+    if (IsUnderwaterSector(linksect)) // if other link is underwater
+        return false;
     if (!AreSectorsNeighbors(pOtherLink->sectnum, dstsect, 4, true)) // if linked sector is not parallel to destination sector, abort
         return false;
 
@@ -89,8 +86,7 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
         return;
     if (!sectRangeIsFine(srcsect) || !sectRangeIsFine(dstsect))
         return;
-    const int srcxsect = sector[srcsect].extra, dstxsect = sector[dstsect].extra;
-    if (((srcxsect > 0) && xsector[srcxsect].Underwater) || ((dstxsect > 0) && xsector[dstxsect].Underwater)) // if either sectors are underwater
+    if (IsUnderwaterSector(srcsect) || IsUnderwaterSector(dstsect)) // if either sectors are underwater, don't calculate ror offset
         return;
 
     const int nUpper = gUpperLink[srcsect], nLower = gLowerLink[srcsect];
@@ -126,20 +122,19 @@ void Calc3DValues(BONKLE *pBonkle)
     int sinVal = Sin(angle);
     int cosVal = Cos(angle);
     int v8 = dmulscale30r(cosVal, pBonkle->curPos.x - pBonkle->oldPos.x, sinVal, pBonkle->curPos.y - pBonkle->oldPos.y);
+    const int halfPitch = pBonkle->pitch >> 1;
 
     int distanceL = approxDist(pBonkle->curPos.x - earL.x, pBonkle->curPos.y - earL.y);
     lVol = Vol3d(angle - (gMe->pSprite->ang - 85), v18);
     int phaseLeft = mulscale16r(distanceL, pBonkle->format == 1 ? 4114 : 8228);
     lPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVL.dx, sinVal, earVL.dy) + 5853, v8 + 5853);
-    if (lPitch < 0 || lPitch > pBonkle->pitch * 4)
-        lPitch = pBonkle->pitch;
+    lPitch = clamp(lPitch, pBonkle->pitch - halfPitch, pBonkle->pitch + halfPitch);
 
     int distanceR = approxDist(pBonkle->curPos.x - earR.x, pBonkle->curPos.y - earR.y);
     rVol = Vol3d(angle - (gMe->pSprite->ang + 85), v14);
     int phaseRight = mulscale16r(distanceR, pBonkle->format == 1 ? 4114 : 8228);
     rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + 5853, v8 + 5853);
-    if (rPitch < 0 || rPitch > pBonkle->pitch * 4)
-        rPitch = pBonkle->pitch;
+    rPitch = clamp(rPitch, pBonkle->pitch - halfPitch, pBonkle->pitch + halfPitch);
 
     int phaseMin = ClipHigh(phaseLeft, phaseRight);
     lPhase = phaseRight - phaseMin;
