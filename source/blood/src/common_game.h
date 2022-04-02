@@ -825,9 +825,9 @@ inline int approxDist(int dx, int dy)
 
 inline int approxDist3D(int dx, int dy, int dz)
 {
-    dx = klabs(dx)>>4;
-    dy = klabs(dy)>>4;
-    dz = klabs(dz)>>8;
+    dx >>= 4;
+    dy >>= 4;
+    dz >>= 8;
     return ksqrt(dx*dx+dy*dy+dz*dz);
 }
 
