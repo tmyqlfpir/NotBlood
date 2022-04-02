@@ -369,6 +369,7 @@ void CONFIG_SetDefaults(void)
     //ud.config.ShowWeapons     = 0;
     SoundToggle     = 1;
     CDAudioToggle = 0;
+    DopplerToggle = 1;
     MusicDevice = ASS_SF2;
     Bstrcpy(SF2_BankFile, "notblood.sf2");
     gFMPianoFix = 1;

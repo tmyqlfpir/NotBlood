@@ -795,6 +795,7 @@ CGameMenuItemZBool itemOptionsDisplayPolymostUseColorIndexedTex("RENDER WITH COL
 void UpdateSoundToggle(CGameMenuItemZBool *pItem);
 void UpdateMusicToggle(CGameMenuItemZBool *pItem);
 void UpdateCDToggle(CGameMenuItemZBool *pItem);
+void SetDoppler(CGameMenuItemZBool *pItem);
 void UpdateSoundVolume(CGameMenuItemSlider *pItem);
 void UpdateMusicVolume(CGameMenuItemSlider *pItem);
 void UpdateSoundRate(CGameMenuItemZCycle *pItem);
@@ -845,9 +846,10 @@ CGameMenuItemTitle itemOptionsSoundSF2Title("SELECT SF2 BANK", 1, 160, 20, 2038)
 CGameMenuFileSelect itemOptionsSoundSF2FS("", 3, 0, 0, 0, "./", "*.sf2", sf2bankfile);
 
 CGameMenuItemTitle itemOptionsSoundTitle("SOUND SETUP", 1, 160, 20, 2038);
-CGameMenuItemZBool itemOptionsSoundSoundToggle("SOUND:", 3, 66, 50, 180, false, UpdateSoundToggle, NULL, NULL);
-CGameMenuItemZBool itemOptionsSoundMusicToggle("MUSIC:", 3, 66, 60, 180, false, UpdateMusicToggle, NULL, NULL);
-CGameMenuItemZBool itemOptionsSoundMonoStereo("3D AUDIO:", 3, 66, 70, 180, false, SetMonoStereo, NULL, NULL);
+CGameMenuItemZBool itemOptionsSoundSoundToggle("SOUND:", 3, 66, 40, 180, false, UpdateSoundToggle, NULL, NULL);
+CGameMenuItemZBool itemOptionsSoundMusicToggle("MUSIC:", 3, 66, 50, 180, false, UpdateMusicToggle, NULL, NULL);
+CGameMenuItemZBool itemOptionsSoundMonoStereo("STEREO AUDIO:", 3, 66, 60, 180, false, SetMonoStereo, NULL, NULL);
+CGameMenuItemZBool itemOptionsSoundDoppler("DOPPLER EFFECT:", 3, 66, 70, 180, false, SetDoppler, NULL, NULL);
 CGameMenuItemSlider itemOptionsSoundSoundVolume("SOUND VOLUME:", 3, 66, 80, 180, &FXVolume, 0, 255, 17, UpdateSoundVolume, -1, -1, kMenuSliderPercent);
 CGameMenuItemSlider itemOptionsSoundMusicVolume("MUSIC VOLUME:", 3, 66, 90, 180, &MusicVolume, 0, 255, 17, UpdateMusicVolume, -1, -1, kMenuSliderPercent);
 CGameMenuItemZCycle itemOptionsSoundSampleRate("SAMPLE RATE:", 3, 66, 100, 180, 0, UpdateSoundRate, pzSoundRateStrings, 3, 0);
@@ -1689,6 +1691,7 @@ void SetupOptionsMenu(void)
     menuOptionsSound.Add(&itemOptionsSoundSoundToggle, true);
     menuOptionsSound.Add(&itemOptionsSoundMusicToggle, false);
     menuOptionsSound.Add(&itemOptionsSoundMonoStereo, false);
+    menuOptionsSound.Add(&itemOptionsSoundDoppler, false);
     menuOptionsSound.Add(&itemOptionsSoundSoundVolume, false);
     menuOptionsSound.Add(&itemOptionsSoundMusicVolume, false);
     menuOptionsSound.Add(&itemOptionsSoundSampleRate, false);
@@ -2579,6 +2582,11 @@ void UpdateCDToggle(CGameMenuItemZBool *pItem)
         levelTryPlayMusicOrNothing(gGameOptions.nEpisode, gGameOptions.nLevel);
 }
 
+void SetDoppler(CGameMenuItemZBool *pItem)
+{
+    DopplerToggle = pItem->at20;
+}
+
 void UpdateSoundVolume(CGameMenuItemSlider *pItem)
 {
     sndSetFXVolume(pItem->nValue);
@@ -2647,6 +2655,7 @@ void SetupOptionsSound(CGameMenuItemChain *pItem)
     itemOptionsSoundMusicToggle.at20 = MusicToggle;
     itemOptionsSoundMonoStereo.at20 = gStereo;
     itemOptionsSoundCDToggle.at20 = CDAudioToggle;
+    itemOptionsSoundDoppler.at20 = DopplerToggle;
     itemOptionsSoundSampleRate.m_nFocus = 0;
     for (int i = 0; i < 3; i++)
     {

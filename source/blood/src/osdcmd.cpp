@@ -1110,6 +1110,7 @@ int32_t registerosdcommands(void)
 //        { "skill","changes the game skill setting", (void *)&ud.m_player_skill, CVAR_INT|CVAR_FUNCPTR|CVAR_NOSAVE/*|CVAR_NOMULTI*/, 0, 5 },
 //
 //        { "snd_ambience", "enables/disables ambient sounds", (void *)&ud.config.AmbienceToggle, CVAR_BOOL, 0, 1 },
+        { "snd_doppler", "enables/disables audio doppler effect (stereo only)", (void *)&DopplerToggle, CVAR_BOOL, 0, 1 },
         { "snd_enabled", "enables/disables sound effects", (void *)&SoundToggle, CVAR_BOOL, 0, 1 },
         { "snd_fxvolume", "controls volume for sound effects", (void *)&FXVolume, CVAR_INT, 0, 255 },
         { "snd_mixrate", "sound mixing rate", (void *)&MixRate, CVAR_INT, 0, 48000 },
