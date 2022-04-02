@@ -115,30 +115,36 @@ void Calc3DValues(BONKLE *pBonkle)
     dx >>= 4;
     dy >>= 4;
     dz >>= 8;
-    int distance = ksqrt(dx*dx + dy * dy + dz * dz);
+    int distance = ksqrt(dx*dx + dy*dy + dz*dz);
     distance = ClipLow((distance >> 2) + (distance >> 3), 64);
     int v14, v18;
     v14 = v18 = scale(pBonkle->vol, 80, distance);
-    int sinVal = Sin(angle);
-    int cosVal = Cos(angle);
-    int v8 = dmulscale30r(cosVal, pBonkle->curPos.x - pBonkle->oldPos.x, sinVal, pBonkle->curPos.y - pBonkle->oldPos.y);
-    const int halfPitch = pBonkle->pitch >> 1;
 
-    int distanceL = approxDist(pBonkle->curPos.x - earL.x, pBonkle->curPos.y - earL.y);
-    lVol = Vol3d(angle - (gMe->pSprite->ang - 85), v18);
-    int phaseLeft = mulscale16r(distanceL, pBonkle->format == 1 ? 4114 : 8228);
-    lPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVL.dx, sinVal, earVL.dy) + 5853, v8 + 5853);
-    lPitch = clamp(lPitch, pBonkle->pitch - halfPitch, pBonkle->pitch + halfPitch);
-
-    int distanceR = approxDist(pBonkle->curPos.x - earR.x, pBonkle->curPos.y - earR.y);
-    rVol = Vol3d(angle - (gMe->pSprite->ang + 85), v14);
-    int phaseRight = mulscale16r(distanceR, pBonkle->format == 1 ? 4114 : 8228);
-    rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + 5853, v8 + 5853);
-    rPitch = clamp(rPitch, pBonkle->pitch - halfPitch, pBonkle->pitch + halfPitch);
-
-    int phaseMin = ClipHigh(phaseLeft, phaseRight);
+    const int distanceL = approxDist(pBonkle->curPos.x - earL.x, pBonkle->curPos.y - earL.y);
+    const int distanceR = approxDist(pBonkle->curPos.x - earR.x, pBonkle->curPos.y - earR.y);
+    const int phaseLeft = mulscale16r(distanceL, pBonkle->format == 1 ? 4114 : 8228);
+    const int phaseRight = mulscale16r(distanceR, pBonkle->format == 1 ? 4114 : 8228);
+    const int phaseMin = ClipHigh(phaseLeft, phaseRight);
     lPhase = phaseRight - phaseMin;
     rPhase = phaseLeft - phaseMin;
+    lVol = Vol3d(angle - (gMe->pSprite->ang - 85), v18);
+    rVol = Vol3d(angle - (gMe->pSprite->ang + 85), v14);
+
+    if (DopplerToggle)
+    {
+        const int sinVal = Sin(angle);
+        const int cosVal = Cos(angle);
+        const int v8 = dmulscale30r(cosVal, pBonkle->curPos.x - pBonkle->oldPos.x, sinVal, pBonkle->curPos.y - pBonkle->oldPos.y);
+        const int halfPitch = pBonkle->pitch >> 1;
+        lPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVL.dx, sinVal, earVL.dy) + 5853, v8 + 5853);
+        rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + 5853, v8 + 5853);
+        lPitch = clamp(lPitch, pBonkle->pitch - halfPitch, pBonkle->pitch + halfPitch);
+        rPitch = clamp(rPitch, pBonkle->pitch - halfPitch, pBonkle->pitch + halfPitch);
+    }
+    else
+    {
+        lPitch = rPitch = pBonkle->pitch;
+    }
 }
 
 void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
