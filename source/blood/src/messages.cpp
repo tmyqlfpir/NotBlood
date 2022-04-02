@@ -593,7 +593,7 @@ void CPlayerMsg::Send(void)
     if (VanillaMode() || !IsWhitespaceOnly(text))
     {
         netBroadcastMessage(myconnectindex, text);
-        if (!VanillaMode())
+        if (!VanillaMode() && (gGameOptions.nGameType > 0))
         {
             char *myName = gProfile[myconnectindex].name;
             char szTemp[128];
