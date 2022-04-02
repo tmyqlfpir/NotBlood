@@ -645,7 +645,7 @@ void CPlayerMsg::ProcessKeys(void)
             break;
         case sc_Enter:
         case sc_kpad_Enter:
-            if (gCheatMgr.Check(text))
+            if ((gGameOptions.nGameType == 0) && gCheatMgr.Check(text))
                 Term();
             else
                 Send();
