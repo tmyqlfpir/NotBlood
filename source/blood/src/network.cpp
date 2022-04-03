@@ -476,7 +476,10 @@ void netGetPackets(void)
             if (*pPacket != '/' || (*pPacket == 0 && *(pPacket+1) == 0) || (*(pPacket+1) >= '1' && *(pPacket+1) <= '8' && *(pPacket+1)-'1' == myconnectindex))
             {
                 sprintf(buffer, VanillaMode() ? "%s : %s" : "%s: %s", gProfile[nPlayer].name, pPacket);
-                viewSetMessage(buffer, VanillaMode() ? 0 : 10); // 10: dark blue
+                int nPalette = VanillaMode() ? 0 : 10; // 10: dark blue
+                if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint message depending on team (red/blue)
+                    nPalette = (gPlayer[nPlayer].teamId&1) ? 7 : 10;
+                viewSetMessage(buffer, nPalette);
                 if (gChatSnd) // trigger message beep
                     sndStartSample("DMRADIO", 128, -1);
             }
