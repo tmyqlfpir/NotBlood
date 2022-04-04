@@ -1440,7 +1440,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     {
         for (int nRows = (gNetPlayers - 1) / 4; nRows >= 0; nRows--)
         {
-            statsOffset += (4 + nRows * 9) * 2;
+            statsOffset += 9;
         }
     }
 
@@ -3945,7 +3945,7 @@ void viewDrawScreen(void)
                     if (gViewIndex == j) // skip self
                         continue;
                     spritetype *pSprite = gPlayer[j].pSprite;
-                    if (pSprite && !IsTargetTeammate(gView, pSprite)) // skip teammates
+                    if (pSprite && (IsTargetTeammate(gView, pSprite) || !sectRangeIsFine(pSprite->sectnum))) // skip teammates/player at invalid sector
                         continue;
                     const int nDistEnemy = approxDist(gView->pSprite->x-pSprite->x, gView->pSprite->y-pSprite->y);
                     if (nDist > nDistEnemy) // enemy is closer than last compared enemy, set to found player
@@ -3969,6 +3969,8 @@ void viewDrawScreen(void)
                 i = connectpoint2[i];
                 tmp--;
             }
+            if (!sectRangeIsFine(pOther->pSprite->sectnum)) // sector is invalid, use self for crystal ball target
+                pOther = &gPlayer[gViewIndex];
             //othercameraclock = gGameClock;
             if (!waloff[4079])
             {
