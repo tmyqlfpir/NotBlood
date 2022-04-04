@@ -622,18 +622,14 @@ void fakePlayerProcess(PLAYER *pPlayer, GINPUT *pInput)
     {
         if (pXSprite->height < 256)
         {
-            predict.at4 = (predict.at4+(pPosture->pace[predict.at70]*4))&2047;
-            predict.at14 = (predict.at14+(pPosture->pace[predict.at70]*4)/2)&2047;
-            if (predict.at70)
-            {
-                if (predict.at0 < 60)
-                    predict.at0 = ClipHigh(predict.at0 + nSpeed, 60);
-            }
-            else
-            {
-                if (predict.at0 < 30)
-                    predict.at0 = ClipHigh(predict.at0 + nSpeed, 30);
-            }
+            int isRunning = predict.at70;
+            if ((gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || (VanillaMode() && gGameOptions.nGameType > 0)) // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
+                isRunning = 1; // always running
+            predict.at4 = (predict.at4+(pPosture->pace[isRunning]*4))&2047;
+            predict.at14 = (predict.at14+(pPosture->pace[isRunning]*4)/2)&2047;
+            const int clampPhase = isRunning ? 60 : 30;
+            if (predict.at0 < clampPhase)
+                predict.at0 = ClipHigh(predict.at0 + nSpeed, clampPhase);
         }
         predict.at8 = mulscale30(predict.at0*pPosture->bobV,Sin(predict.at4*2));
         predict.atc = mulscale30(predict.at0*pPosture->bobH,Sin(predict.at4-256));
