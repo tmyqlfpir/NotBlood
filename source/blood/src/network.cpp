@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "menu.h"
 #include "player.h"
 #include "seq.h"
+#include "sfx.h"
 #include "sound.h"
 #include "view.h"
 
@@ -485,7 +486,13 @@ void netGetPackets(void)
             }
             break;
         case 4:
-            sndStartSample(4400+GetPacketByte(pPacket), 128, 1, 0);
+            {
+                const int nTaunt = 4400+GetPacketByte(pPacket);
+                if (gPlayer[nPlayer].pSprite && !VanillaMode())
+                    sfxPlay3DSound(gPlayer[nPlayer].pSprite, nTaunt, 1, 0);
+                else
+                    sndStartSample(nTaunt, 128, 1, 0);
+            }
             break;
         case 7:
             nPlayer = GetPacketDWord(pPacket);
