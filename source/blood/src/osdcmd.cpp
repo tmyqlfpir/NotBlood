@@ -992,7 +992,7 @@ int32_t registerosdcommands(void)
         { "cl_interpolateweapon", "enable/disable view interpolation for drawn weapon (0: disable, 1: position, 2: position/qav animation)", (void *)&gWeaponInterpolate, CVAR_INT, 0, 2 },
         { "cl_viewhbob", "enable/disable view horizontal bobbing", (void *)&gViewHBobbing, CVAR_BOOL, 0, 1 },
         { "cl_viewvbob", "enable/disable view vertical bobbing", (void *)&gViewVBobbing, CVAR_BOOL, 0, 1 },
-        { "cl_weaponhbob", "enable/disable weapon horizontal bobbing (0: off, 1: original, 2: V1.0x [single-player only])", (void *)&gWeaponHBobbing, CVAR_INT, 0, 2 },
+        { "cl_weaponhbob", "enable/disable weapon horizontal bobbing (0: off, 1: original, 2: V1.0x)", (void *)&gWeaponHBobbing, CVAR_INT|CVAR_MULTI, 0, 2 },
         { "cl_slopetilting", "enable/disable slope tilting", (void *)&gSlopeTilting, CVAR_BOOL, 0, 1 },
         { "cl_showplayernames", "enable/disable showing player names in multiplayer when looking at other players", (void *)&gShowPlayerNames, CVAR_BOOL, 0, 1 },
         { "cl_showweapon", "enable/disable show weapons (0: disable, 1: sprite, 2: voxel)", (void *)&gShowWeapon, CVAR_INT, 0, 2 },

@@ -222,6 +222,7 @@ struct PROFILE
     char nWeaponSwitch;
     char bWeaponFastSwitch;
     char skill;
+    char nWeaponHBobbing;
     char name[MAXPLAYERNAME];
 };
 
@@ -248,6 +249,7 @@ extern bool gBlueFlagDropped;
 extern bool gRedFlagDropped;
 
 extern PROFILE gProfile[kMaxPlayers];
+extern PROFILE gProfileNet[kMaxPlayers];
 
 extern int         gPlayerScores[kMaxPlayers];
 extern ClockTicks  gPlayerScoreTicks[kMaxPlayers];

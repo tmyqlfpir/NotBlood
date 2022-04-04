@@ -788,11 +788,13 @@ void StartLevel(GAMEOPTIONS *gameOptions)
                 gProfile[i].nAutoAim = gAutoAim;
                 gProfile[i].nWeaponSwitch = gWeaponSwitch;
                 gProfile[i].bWeaponFastSwitch = gWeaponFastSwitch;
+                gProfile[i].nWeaponHBobbing = gWeaponHBobbing;
             }
             playerInit(i,0);
         }
         else if ((gGameOptions.nGameType == 3) && !VanillaMode()) // if ctf mode and went to next level, reset scores
             playerResetScores(i);
+        gProfileNet[i] = gProfile[i];
         playerStart(i, 1);
     }
     if (gameOptions->uGameFlags&1)
@@ -1047,6 +1049,13 @@ void LocalKeys(void)
             keyFlushScans();
             keystatus[key] = 0;
             CONTROL_ClearButton(gamefunc_See_Chase_View);
+            return;
+        }
+        else if (alt && (gGameOptions.nGameType > 0) && (key == sc_F11) && !VanillaMode()) // secret fart hotkey
+        {
+            netBroadcastFart(myconnectindex);
+            keyFlushScans();
+            keystatus[key] = 0;
             return;
         }
         switch (key)
@@ -2114,6 +2123,11 @@ RESTART:
             }
             if (gQuitGame)
                 continue;
+            if ((gInputMode == INPUT_MODE_0) && gNetNotifyProfileUpdate)
+            {
+                viewSetMessage("Settings will update on next spawn.", 8, MESSAGE_PRIORITY_INI); // 8: gold
+                gNetNotifyProfileUpdate = false;
+            }
 
             OSD_DispatchQueued();
 

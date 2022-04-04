@@ -2007,6 +2007,16 @@ void SetViewSwaying(CGameMenuItemZBool *pItem)
 void SetWeaponSwaying(CGameMenuItemZCycle *pItem)
 {
     gWeaponHBobbing = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponHBobbingStrings);
+    if (!gDemo.bRecording && !gDemo.bPlaying)
+    {
+        if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        {
+            netBroadcastPlayerInfoUpdate(myconnectindex);
+            return;
+        }
+        gProfile[myconnectindex].nWeaponHBobbing = gWeaponHBobbing;
+        netBroadcastPlayerInfo(myconnectindex);
+    }
 }
 
 void SetWeaponInterpolate(CGameMenuItemZCycle *pItem)
@@ -2072,6 +2082,11 @@ void SetAutoAim(CGameMenuItemZCycle *pItem)
     gAutoAim = pItem->m_nFocus;
     if (!gDemo.bRecording && !gDemo.bPlaying)
     {
+        if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        {
+            netBroadcastPlayerInfoUpdate(myconnectindex);
+            return;
+        }
         gProfile[myconnectindex].nAutoAim = gAutoAim;
         netBroadcastPlayerInfo(myconnectindex);
     }
@@ -2111,6 +2126,11 @@ void SetWeaponSwitch(CGameMenuItemZCycle *pItem)
     }
     if (!gDemo.bRecording && !gDemo.bPlaying)
     {
+        if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        {
+            netBroadcastPlayerInfoUpdate(myconnectindex);
+            return;
+        }
         gProfile[myconnectindex].nWeaponSwitch = gWeaponSwitch;
         netBroadcastPlayerInfo(myconnectindex);
     }
@@ -2121,6 +2141,11 @@ void SetWeaponFastSwitch(CGameMenuItemZBool *pItem)
     gWeaponFastSwitch = pItem->at20;
     if (!gDemo.bRecording && !gDemo.bPlaying)
     {
+        if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        {
+            netBroadcastPlayerInfoUpdate(myconnectindex);
+            return;
+        }
         gProfile[myconnectindex].bWeaponFastSwitch = gWeaponFastSwitch;
         netBroadcastPlayerInfo(myconnectindex);
     }

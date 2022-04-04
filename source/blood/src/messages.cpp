@@ -321,6 +321,8 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
         gProfile[i].nAutoAim = 1;
         gProfile[i].nWeaponSwitch = 1;
         gProfile[i].bWeaponFastSwitch = 0;
+        gProfile[i].nWeaponHBobbing = 1;
+        gProfileNet[i] = gProfile[i];
     }
     viewResizeView(gViewSize);
 }
@@ -598,8 +600,8 @@ void CPlayerMsg::Send(void)
             char *myName = gProfile[myconnectindex].name;
             char szTemp[128];
             sprintf(szTemp, "%s: %s", myName, text);
-            int nPalette = VanillaMode() ? 0 : 10; // 10: dark blue
-            if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint message depending on team (red/blue)
+            int nPalette = 10; // 10: dark blue
+            if (gGameOptions.nGameType == 3) // tint message depending on team (red/blue)
                 nPalette = (gPlayer[myconnectindex].teamId&1) ? 7 : 10;
             viewSetMessage(szTemp, nPalette);
         }

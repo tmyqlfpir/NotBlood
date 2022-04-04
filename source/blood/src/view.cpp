@@ -622,18 +622,14 @@ void fakePlayerProcess(PLAYER *pPlayer, GINPUT *pInput)
     {
         if (pXSprite->height < 256)
         {
-            predict.at4 = (predict.at4+(pPosture->pace[predict.at70]*4))&2047;
-            predict.at14 = (predict.at14+(pPosture->pace[predict.at70]*4)/2)&2047;
-            if (predict.at70)
-            {
-                if (predict.at0 < 60)
-                    predict.at0 = ClipHigh(predict.at0 + nSpeed, 60);
-            }
-            else
-            {
-                if (predict.at0 < 30)
-                    predict.at0 = ClipHigh(predict.at0 + nSpeed, 30);
-            }
+            int isRunning = predict.at70;
+            if ((gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || (VanillaMode() && gGameOptions.nGameType > 0)) // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
+                isRunning = 1; // always running
+            predict.at4 = (predict.at4+(pPosture->pace[isRunning]*4))&2047;
+            predict.at14 = (predict.at14+(pPosture->pace[isRunning]*4)/2)&2047;
+            const int clampPhase = isRunning ? 60 : 30;
+            if (predict.at0 < clampPhase)
+                predict.at0 = ClipHigh(predict.at0 + nSpeed, clampPhase);
         }
         predict.at8 = mulscale30(predict.at0*pPosture->bobV,Sin(predict.at4*2));
         predict.atc = mulscale30(predict.at0*pPosture->bobH,Sin(predict.at4-256));
@@ -3939,16 +3935,40 @@ void viewDrawScreen(void)
         {
             int tmp = ((int)totalclock/240)%(gNetPlayers-1);
             int i = connecthead;
-            while (1)
+            PLAYER *pOther = NULL;
+            if (!VanillaMode()) // find nearest enemy (dead or alive)
+            {
+                int nOther = -1;
+                int nDist = INT_MAX;
+                for (int j = 0, p = connecthead; p >= 0; j++, p = connectpoint2[p])
+                {
+                    if (gViewIndex == j) // skip self
+                        continue;
+                    spritetype *pSprite = gPlayer[j].pSprite;
+                    if (pSprite && !IsTargetTeammate(gView, pSprite)) // skip teammates
+                        continue;
+                    const int nDistEnemy = approxDist(gView->pSprite->x-pSprite->x, gView->pSprite->y-pSprite->y);
+                    if (nDist > nDistEnemy) // enemy is closer than last compared enemy, set to found player
+                    {
+                        nDist = nDistEnemy;
+                        nOther = gPlayer[j].nPlayer;
+                    }
+                }
+                if (nOther != -1) // if found a valid player
+                    pOther = &gPlayer[nOther];
+            }
+            while (!pOther)
             {
                 if (i == gViewIndex)
                     i = connectpoint2[i];
                 if (tmp == 0)
+                {
+                    pOther = &gPlayer[i];
                     break;
+                }
                 i = connectpoint2[i];
                 tmp--;
             }
-            PLAYER *pOther = &gPlayer[i];
             //othercameraclock = gGameClock;
             if (!waloff[4079])
             {
@@ -4208,7 +4228,7 @@ RORHACK:
                     defaultHoriz += 19;
                 rotatesprite(160<<16, defaultHoriz<<16, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
             }
-            if (!gWeaponHBobbing) // disable weapon sway
+            if (gProfile[gView->nPlayer].nWeaponHBobbing == 0) // disable weapon sway
                 v4c = 0;
             if (!gWeaponInterpolate) // if position interpolate weapon is off, quantize the weapon positions
             {

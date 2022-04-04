@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "menu.h"
 #include "player.h"
 #include "seq.h"
+#include "sfx.h"
 #include "sound.h"
 #include "view.h"
 
@@ -61,13 +62,14 @@ bool bNoResend = true;
 bool gRobust = false;
 bool bOutOfSync = false;
 bool ready2send = false;
+bool gNetNotifyProfileUpdate = false; // inform the user that their gProfile settings will update upon next respawn (needed to keep game in sync)
 
 NETWORKMODE gNetMode = NETWORK_NONE;
 char gNetAddress[32];
 // PORT-TODO: Use different port?
 int gNetPort = kNetDefaultPort;
 
-const short word_1328AC = 0x215;
+const short word_1328AC = 0x216;
 
 PKT_STARTGAME gPacketStartGame;
 
@@ -164,6 +166,7 @@ void netResetToSinglePlayer(void)
     gNetMode = NETWORK_NONE;
     UpdateNetworkMenus();
     gGameMenuMgr.Deactivate();
+    gNetNotifyProfileUpdate = 0;
 }
 
 void netSendPacket(int nDest, char *pBuffer, int nSize)
@@ -485,7 +488,20 @@ void netGetPackets(void)
             }
             break;
         case 4:
-            sndStartSample(4400+GetPacketByte(pPacket), 128, 1, 0);
+            {
+                int nTaunt = GetPacketByte(pPacket);
+                if (gPlayer[nPlayer].pSprite && (nTaunt >= 10) && !VanillaMode()) // fart
+                {
+                    nTaunt = ClipRange(nTaunt-10, 0, 2);
+                    sfxPlay3DSound(gPlayer[nPlayer].pSprite, 172+nTaunt, 1, 0);
+                    break;
+                }
+                nTaunt = ClipRange(nTaunt, 0, 9);
+                if (gPlayer[nPlayer].pSprite && !VanillaMode())
+                    sfxPlay3DSound(gPlayer[nPlayer].pSprite, 4400+nTaunt, 1, 0);
+                else
+                    sndStartSample(4400+nTaunt, 128, 1, 0);
+            }
             break;
         case 7:
             nPlayer = GetPacketDWord(pPacket);
@@ -505,6 +521,10 @@ void netGetPackets(void)
             break;
         case 251:
             memcpy(&gProfile[nPlayer], pPacket, sizeof(PROFILE));
+            gProfileNet[nPlayer] = gProfile[nPlayer];
+            break;
+        case 253:
+            memcpy(&gProfileNet[nPlayer], pPacket, sizeof(PROFILE));
             break;
         case 252:
             pPacket += 4;
@@ -555,12 +575,30 @@ void netBroadcastPlayerInfo(int nPlayer)
     pProfile->nAutoAim = gAutoAim;
     pProfile->nWeaponSwitch = gWeaponSwitch;
     pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
+    pProfile->nWeaponHBobbing = gWeaponHBobbing;
+    gProfileNet[nPlayer] = gProfile[nPlayer];
     if (numplayers < 2)
         return;
     char *pPacket = packet;
     PutPacketByte(pPacket, 251);
     PutPacketBuffer(pPacket, pProfile, sizeof(PROFILE));
     netSendPacketAll(packet, pPacket-packet);
+}
+
+void netBroadcastPlayerInfoUpdate(int nPlayer)
+{
+    PROFILE *pProfile = &gProfileNet[nPlayer];
+    strcpy(pProfile->name, szPlayerName);
+    pProfile->skill = gSkill;
+    pProfile->nAutoAim = gAutoAim;
+    pProfile->nWeaponSwitch = gWeaponSwitch;
+    pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
+    pProfile->nWeaponHBobbing = gWeaponHBobbing;
+    char *pPacket = packet;
+    PutPacketByte(pPacket, 253);
+    PutPacketBuffer(pPacket, pProfile, sizeof(PROFILE));
+    netSendPacketAll(packet, pPacket-packet);
+    gNetNotifyProfileUpdate = true;
 }
 
 void netBroadcastNewGame(void)
@@ -586,6 +624,20 @@ void netBroadcastTaunt(int nPlayer, int nTaunt)
         netSendPacketAll(packet, pPacket-packet);
     }
     sndStartSample(4400+nTaunt, 128, 1, 0);
+}
+
+void netBroadcastFart(int nPlayer)
+{
+    UNREFERENCED_PARAMETER(nPlayer);
+    const int nFart = QRandom(2);
+    if (numplayers > 1)
+    {
+        char *pPacket = packet;
+        PutPacketByte(pPacket, 4);
+        PutPacketByte(pPacket, 10+nFart);
+        netSendPacketAll(packet, pPacket-packet);
+    }
+    sndStartSample(172+nFart, 128, 1, 0);
 }
 
 void netBroadcastMessage(int nPlayer, const char *pzMessage)
@@ -624,7 +676,7 @@ void netWaitForEveryone(char a1)
     } while (p >= 0);
 }
 
-void sub_7AC28(const char *pzString)
+void netBroadcastFrag(const char *pzString)
 {
     if (numplayers < 2)
         return;

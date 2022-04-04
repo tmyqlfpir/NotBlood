@@ -56,6 +56,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #endif
 
 PROFILE gProfile[kMaxPlayers];
+PROFILE gProfileNet[kMaxPlayers];
 
 PLAYER gPlayer[kMaxPlayers];
 PLAYER *gMe, *gView;
@@ -681,6 +682,12 @@ void playerStart(int nPlayer, int bNewLevel)
     GINPUT* pInput = &pPlayer->input;
     ZONE* pStartZone = NULL;
 
+    // this is used to safely update profiles while in a network multiplayer session, for example...
+    // if a player updated their autoaim settings while facing an enemy, it would cause a game desync thanks to the autoaim target changing for local player before the gProfile update packet has been sent to the other clients
+    // by tunneling all mid-session gProfile updates to gProfileNet it'll allow all clients to update the current player's settings at the same tick, which is on spawn (this ensures everybody stays synced)
+    if ((numplayers > 1) && (gGameOptions.nGameType > 0))
+        gProfile[nPlayer] = gProfileNet[nPlayer];
+
     // normal start position
     if (gGameOptions.nGameType <= 1)
         pStartZone = &gStartZone[nPlayer];
@@ -1052,7 +1059,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
                             sprintf(buffer, "frag A killed B\n");
-                            sub_7AC28(buffer);
+                            netBroadcastFrag(buffer);
                         }
 #endif
                     }
@@ -1096,7 +1103,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
                             sprintf(buffer, "frag B killed A\n");
-                            sub_7AC28(buffer);
+                            netBroadcastFrag(buffer);
                         }
 #endif
                     }
@@ -1888,8 +1895,8 @@ void playerProcess(PLAYER *pPlayer)
     {
         if (pXSprite->height < 256)
         {
-            int isRunning = pPlayer->isRunning == true;
-            if ((gWeaponHBobbing == 2) && (gGameOptions.nGameType == 0) && (numplayers == 1) && !VanillaMode()) // v1.0x weapon swaying (disable for multiplayer/demo playback - causes desync)
+            int isRunning = pPlayer->isRunning;
+            if ((gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || (VanillaMode() && gGameOptions.nGameType > 0)) // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
                 isRunning = 1; // always running
             pPlayer->bobAmp = (pPlayer->bobAmp+pPosture->pace[isRunning]*4) & 2047;
             pPlayer->swayAmp = (pPlayer->swayAmp+(pPosture->pace[isRunning]*4)/2) & 2047;
@@ -1981,7 +1988,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     if (myconnectindex == connecthead)
     {
         sprintf(buffer, "frag %d killed %d\n", pKiller->nPlayer+1, pVictim->nPlayer+1);
-        sub_7AC28(buffer);
+        netBroadcastFrag(buffer);
         buffer[0] = 0;
     }
     if (nKiller == nVictim)
