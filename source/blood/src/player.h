@@ -222,6 +222,7 @@ struct PROFILE
     char nWeaponSwitch;
     char bWeaponFastSwitch;
     char skill;
+    char nWeaponHBobbing;
     char name[MAXPLAYERNAME];
 };
 

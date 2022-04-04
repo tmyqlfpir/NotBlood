@@ -788,6 +788,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
                 gProfile[i].nAutoAim = gAutoAim;
                 gProfile[i].nWeaponSwitch = gWeaponSwitch;
                 gProfile[i].bWeaponFastSwitch = gWeaponFastSwitch;
+                gProfile[i].nWeaponHBobbing = gWeaponHBobbing;
             }
             playerInit(i,0);
         }

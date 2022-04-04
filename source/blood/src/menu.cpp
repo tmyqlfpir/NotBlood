@@ -2007,6 +2007,11 @@ void SetViewSwaying(CGameMenuItemZBool *pItem)
 void SetWeaponSwaying(CGameMenuItemZCycle *pItem)
 {
     gWeaponHBobbing = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponHBobbingStrings);
+    if (!gDemo.bRecording && !gDemo.bPlaying)
+    {
+        gProfile[myconnectindex].nWeaponHBobbing = gWeaponHBobbing;
+        netBroadcastPlayerInfo(myconnectindex);
+    }
 }
 
 void SetWeaponInterpolate(CGameMenuItemZCycle *pItem)

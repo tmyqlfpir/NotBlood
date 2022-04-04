@@ -4208,7 +4208,7 @@ RORHACK:
                     defaultHoriz += 19;
                 rotatesprite(160<<16, defaultHoriz<<16, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
             }
-            if (!gWeaponHBobbing) // disable weapon sway
+            if (gProfile[gView->nPlayer].nWeaponHBobbing == 0) // disable weapon sway
                 v4c = 0;
             if (!gWeaponInterpolate) // if position interpolate weapon is off, quantize the weapon positions
             {
