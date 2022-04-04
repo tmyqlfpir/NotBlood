@@ -3973,6 +3973,8 @@ void viewDrawScreen(void)
                 i = connectpoint2[i];
                 tmp--;
             }
+            if (!sectRangeIsFine(pOther->pSprite->sectnum)) // sector is invalid, use self for crystal ball target
+                pOther = &gPlayer[gViewIndex];
             //othercameraclock = gGameClock;
             if (!waloff[4079])
             {
