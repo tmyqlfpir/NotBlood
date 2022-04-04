@@ -989,24 +989,22 @@ void LocalKeys(void)
     if (BUTTON(gamefunc_See_Coop_View))
     {
         CONTROL_ClearButton(gamefunc_See_Coop_View);
-        if (gGameOptions.nGameType == 1)
+        if ((gGameOptions.nGameType == 1) || (gGameOptions.nGameType == 3)) // if co-op/teams gamemode
         {
-            gViewIndex = connectpoint2[gViewIndex];
-            if (gViewIndex == -1)
-                gViewIndex = connecthead;
-            gView = &gPlayer[gViewIndex];
-        }
-        else if (gGameOptions.nGameType == 3)
-        {
-            int oldViewIndex = gViewIndex;
-            do
+            while (gGameOptions.nGameType == 3) // teams
             {
                 gViewIndex = connectpoint2[gViewIndex];
                 if (gViewIndex == -1)
                     gViewIndex = connecthead;
-                if (oldViewIndex == gViewIndex || gMe->teamId == gPlayer[gViewIndex].teamId)
+                if ((gViewIndex == myconnectindex) || IsTargetTeammate(gMe, gPlayer[gViewIndex].pSprite))
                     break;
-            } while (oldViewIndex != gViewIndex);
+            }
+            if (gGameOptions.nGameType == 1) // co-op
+            {
+                gViewIndex = connectpoint2[gViewIndex];
+                if (gViewIndex == -1)
+                    gViewIndex = connecthead;
+            }
             gView = &gPlayer[gViewIndex];
         }
     }
