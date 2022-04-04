@@ -238,10 +238,10 @@ void CSecretMgr::Found(int nType)
     if (gGameOptions.nGameType == 0) {
         switch (Random(2)) {
             case 0:
-                viewSetMessage("A secret is revealed.", 0, MESSAGE_PRIORITY_SECRET);
+                viewSetMessage("A secret is revealed.", VanillaMode() ? 0 : 8, MESSAGE_PRIORITY_SECRET); // 8: gold
                 break;
             case 1:
-                viewSetMessage("You found a secret.", 0, MESSAGE_PRIORITY_SECRET);
+                viewSetMessage("You found a secret.", VanillaMode() ? 0 : 8, MESSAGE_PRIORITY_SECRET); // 8: gold
                 break;
         }
     }
