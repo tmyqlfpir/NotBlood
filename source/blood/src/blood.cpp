@@ -1049,6 +1049,13 @@ void LocalKeys(void)
             CONTROL_ClearButton(gamefunc_See_Chase_View);
             return;
         }
+        else if (alt && (gGameOptions.nGameType > 0) && (key == sc_F11) && !VanillaMode()) // secret fart hotkey
+        {
+            netBroadcastFart(myconnectindex);
+            keyFlushScans();
+            keystatus[key] = 0;
+            return;
+        }
         switch (key)
         {
         case sc_kpad_Period:
