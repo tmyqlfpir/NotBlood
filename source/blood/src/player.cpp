@@ -56,6 +56,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #endif
 
 PROFILE gProfile[kMaxPlayers];
+PROFILE gProfileNet[kMaxPlayers];
 
 PLAYER gPlayer[kMaxPlayers];
 PLAYER *gMe, *gView;
@@ -680,6 +681,12 @@ void playerStart(int nPlayer, int bNewLevel)
     PLAYER* pPlayer = &gPlayer[nPlayer];
     GINPUT* pInput = &pPlayer->input;
     ZONE* pStartZone = NULL;
+
+    // this is used to safely update profiles while in a network multiplayer session, for example...
+    // if a player updated their autoaim settings while facing an enemy, it would cause a game desync thanks to the autoaim target changing for local player before the gProfile update packet has been sent to the other clients
+    // by tunneling all mid-session gProfile updates to gProfileNet it'll allow all clients to update the current player's settings at the same tick, which is on spawn (this ensures everybody stays synced)
+    if ((numplayers > 1) && (gGameOptions.nGameType > 0))
+        gProfile[nPlayer] = gProfileNet[nPlayer];
 
     // normal start position
     if (gGameOptions.nGameType <= 1)
