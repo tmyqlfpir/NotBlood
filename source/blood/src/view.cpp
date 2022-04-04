@@ -1440,7 +1440,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     {
         for (int nRows = (gNetPlayers - 1) / 4; nRows >= 0; nRows--)
         {
-            statsOffset += (4 + nRows * 9) * 2;
+            statsOffset += 9;
         }
     }
 
