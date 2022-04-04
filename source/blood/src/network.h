@@ -152,6 +152,7 @@ void netWaitForEveryone(char a1);
 void sub_7AC28(const char *pzString);
 void netGetPackets(void);
 void netBroadcastTaunt(int nPlayer, int nTaunt);
+void netBroadcastFart(int nPlayer);
 void CalcGameChecksum(void);
 void netBroadcastPlayerLogoff(int nPlayer);
 void netBroadcastMyLogoff(bool bRestart);

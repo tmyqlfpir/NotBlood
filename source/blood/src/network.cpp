@@ -487,11 +487,18 @@ void netGetPackets(void)
             break;
         case 4:
             {
-                const int nTaunt = 4400+GetPacketByte(pPacket);
+                int nTaunt = GetPacketByte(pPacket);
+                if (gPlayer[nPlayer].pSprite && (nTaunt >= 10) && !VanillaMode()) // fart
+                {
+                    nTaunt = ClipRange(nTaunt-10, 0, 2);
+                    sfxPlay3DSound(gPlayer[nPlayer].pSprite, 172+nTaunt, 1, 0);
+                    break;
+                }
+                nTaunt = ClipRange(nTaunt, 0, 9);
                 if (gPlayer[nPlayer].pSprite && !VanillaMode())
-                    sfxPlay3DSound(gPlayer[nPlayer].pSprite, nTaunt, 1, 0);
+                    sfxPlay3DSound(gPlayer[nPlayer].pSprite, 4400+nTaunt, 1, 0);
                 else
-                    sndStartSample(nTaunt, 128, 1, 0);
+                    sndStartSample(4400+nTaunt, 128, 1, 0);
             }
             break;
         case 7:
@@ -593,6 +600,20 @@ void netBroadcastTaunt(int nPlayer, int nTaunt)
         netSendPacketAll(packet, pPacket-packet);
     }
     sndStartSample(4400+nTaunt, 128, 1, 0);
+}
+
+void netBroadcastFart(int nPlayer)
+{
+    UNREFERENCED_PARAMETER(nPlayer);
+    const int nFart = QRandom(2);
+    if (numplayers > 1)
+    {
+        char *pPacket = packet;
+        PutPacketByte(pPacket, 4);
+        PutPacketByte(pPacket, 10+nFart);
+        netSendPacketAll(packet, pPacket-packet);
+    }
+    sndStartSample(172+nFart, 128, 1, 0);
 }
 
 void netBroadcastMessage(int nPlayer, const char *pzMessage)
