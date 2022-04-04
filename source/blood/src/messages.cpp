@@ -321,6 +321,7 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
         gProfile[i].nAutoAim = 1;
         gProfile[i].nWeaponSwitch = 1;
         gProfile[i].bWeaponFastSwitch = 0;
+        gProfile[i].nWeaponHBobbing = 1;
     }
     viewResizeView(gViewSize);
 }
