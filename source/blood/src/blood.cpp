@@ -794,6 +794,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         }
         else if ((gGameOptions.nGameType == 3) && !VanillaMode()) // if ctf mode and went to next level, reset scores
             playerResetScores(i);
+        gProfileNet[i] = gProfile[i];
         playerStart(i, 1);
     }
     if (gameOptions->uGameFlags&1)
@@ -2122,6 +2123,11 @@ RESTART:
             }
             if (gQuitGame)
                 continue;
+            if ((gInputMode == INPUT_MODE_0) && gNetNotifyProfileUpdate)
+            {
+                viewSetMessage("Settings will update on next spawn.", 8, MESSAGE_PRIORITY_INI); // 8: gold
+                gNetNotifyProfileUpdate = false;
+            }
 
             OSD_DispatchQueued();
 

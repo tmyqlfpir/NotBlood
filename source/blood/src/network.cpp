@@ -62,13 +62,14 @@ bool bNoResend = true;
 bool gRobust = false;
 bool bOutOfSync = false;
 bool ready2send = false;
+bool gNetNotifyProfileUpdate = false; // inform the user that their gProfile settings will update upon next respawn (needed to keep game in sync)
 
 NETWORKMODE gNetMode = NETWORK_NONE;
 char gNetAddress[32];
 // PORT-TODO: Use different port?
 int gNetPort = kNetDefaultPort;
 
-const short word_1328AC = 0x215;
+const short word_1328AC = 0x216;
 
 PKT_STARTGAME gPacketStartGame;
 
@@ -165,6 +166,7 @@ void netResetToSinglePlayer(void)
     gNetMode = NETWORK_NONE;
     UpdateNetworkMenus();
     gGameMenuMgr.Deactivate();
+    gNetNotifyProfileUpdate = 0;
 }
 
 void netSendPacket(int nDest, char *pBuffer, int nSize)
@@ -519,6 +521,10 @@ void netGetPackets(void)
             break;
         case 251:
             memcpy(&gProfile[nPlayer], pPacket, sizeof(PROFILE));
+            gProfileNet[nPlayer] = gProfile[nPlayer];
+            break;
+        case 253:
+            memcpy(&gProfileNet[nPlayer], pPacket, sizeof(PROFILE));
             break;
         case 252:
             pPacket += 4;
@@ -570,12 +576,29 @@ void netBroadcastPlayerInfo(int nPlayer)
     pProfile->nWeaponSwitch = gWeaponSwitch;
     pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
     pProfile->nWeaponHBobbing = gWeaponHBobbing;
+    gProfileNet[nPlayer] = gProfile[nPlayer];
     if (numplayers < 2)
         return;
     char *pPacket = packet;
     PutPacketByte(pPacket, 251);
     PutPacketBuffer(pPacket, pProfile, sizeof(PROFILE));
     netSendPacketAll(packet, pPacket-packet);
+}
+
+void netBroadcastPlayerInfoUpdate(int nPlayer)
+{
+    PROFILE *pProfile = &gProfileNet[nPlayer];
+    strcpy(pProfile->name, szPlayerName);
+    pProfile->skill = gSkill;
+    pProfile->nAutoAim = gAutoAim;
+    pProfile->nWeaponSwitch = gWeaponSwitch;
+    pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
+    pProfile->nWeaponHBobbing = gWeaponHBobbing;
+    char *pPacket = packet;
+    PutPacketByte(pPacket, 253);
+    PutPacketBuffer(pPacket, pProfile, sizeof(PROFILE));
+    netSendPacketAll(packet, pPacket-packet);
+    gNetNotifyProfileUpdate = true;
 }
 
 void netBroadcastNewGame(void)
