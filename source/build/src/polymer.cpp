@@ -3947,7 +3947,7 @@ static inline void  polymer_scansprites(int16_t sectnum, tspriteptr_t localtspri
     for (int i = headspritesect[sectnum];i >=0;i = nextspritesect[i])
     {
         auto spr = (uspriteptr_t)&sprite[i];
-        if ((((spr->cstat&0x8000) == 0) || (showinvisibility)) &&
+        if ((((spr->cstat&0x8000) == 0) || (SHOWINVISIBILITY)) &&
                 (spr->xrepeat > 0) && (spr->yrepeat > 0) &&
                 (*localspritesortcnt < maxspritesonscreen))
         {

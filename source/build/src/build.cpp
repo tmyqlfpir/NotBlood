@@ -466,7 +466,7 @@ void M32_ResetFakeRORTiles(void)
 #ifdef POLYMER
 # ifdef YAX_ENABLE
         // END_TWEAK ceiling/floor fake 'TROR' pics, see BEGIN_TWEAK in engine.c
-        if (videoGetRenderMode() == REND_POLYMER && showinvisibility)
+        if (videoGetRenderMode() == REND_POLYMER && SHOWINVISIBILITY)
         {
             int32_t i;
 

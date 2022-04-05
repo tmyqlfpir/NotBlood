@@ -5384,7 +5384,7 @@ static void polymost_drawalls(int32_t const bunch)
 
         if (searchit == 2
 #ifdef YAX_ENABLE
-            && (yax_getbunch(sectnum, YAX_FLOOR) < 0 || showinvisibility || (sec->floorstat&(256+128)) || klabs(yax_globallev-YAX_MAXDRAWS)==YAX_MAXDRAWS)
+            && (yax_getbunch(sectnum, YAX_FLOOR) < 0 || SHOWINVISIBILITY || (sec->floorstat&(256+128)) || klabs(yax_globallev-YAX_MAXDRAWS)==YAX_MAXDRAWS)
 #endif
             )
         {
@@ -5826,7 +5826,7 @@ static void polymost_drawalls(int32_t const bunch)
  
         if (searchit == 2      
 #ifdef YAX_ENABLE
-            && (yax_getbunch(sectnum, YAX_CEILING) < 0 || showinvisibility || (sec->floorstat&(256+128)) || klabs(yax_globallev-YAX_MAXDRAWS)==YAX_MAXDRAWS)
+            && (yax_getbunch(sectnum, YAX_CEILING) < 0 || SHOWINVISIBILITY || (sec->floorstat&(256+128)) || klabs(yax_globallev-YAX_MAXDRAWS)==YAX_MAXDRAWS)
 #endif
             )
         {
@@ -6545,7 +6545,7 @@ void polymost_scansector(int32_t sectnum)
         {
             auto const spr = (uspriteptr_t)&sprite[z];
 
-            if ((spr->cstat & 0x8000 && !showinvisibility) || spr->xrepeat == 0 || spr->yrepeat == 0)
+            if ((spr->cstat & 0x8000 && !SHOWINVISIBILITY) || spr->xrepeat == 0 || spr->yrepeat == 0)
                 continue;
 
             vec2_t const s = { spr->x-globalposx, spr->y-globalposy };
