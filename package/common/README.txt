@@ -104,6 +104,7 @@ New features include:
 
 ### New console variables for NotBlood
 * notarget
+* r_drawinvisiblesprites
 * r_mirrormode
 * r_rotatespriteinterp
 * r_rotatespriteinterpquantize
