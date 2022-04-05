@@ -493,12 +493,12 @@ void netGetPackets(void)
                 if (gPlayer[nPlayer].pSprite && (nTaunt >= 10) && !VanillaMode()) // fart
                 {
                     nTaunt = ClipRange(nTaunt-10, 0, 1);
-                    sfxPlay3DSound(gPlayer[nPlayer].pSprite, 172+nTaunt, 1, 0);
+                    sfxPlay3DSoundCP(gPlayer[nPlayer].pSprite, 172+nTaunt, 1, 0, 0, 128);
                     break;
                 }
                 nTaunt = ClipRange(nTaunt, 0, 9);
                 if (gPlayer[nPlayer].pSprite && !VanillaMode())
-                    sfxPlay3DSound(gPlayer[nPlayer].pSprite, 4400+nTaunt, 1, 0);
+                    sfxPlay3DSoundCP(gPlayer[nPlayer].pSprite, 4400+nTaunt, 1, 0, 0, 128);
                 else
                     sndStartSample(4400+nTaunt, 128, 1, 0);
             }
