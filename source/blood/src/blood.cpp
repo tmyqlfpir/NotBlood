@@ -840,8 +840,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     if (!gDemo.bPlaying)
         gGameMenuMgr.Deactivate();
     levelTryPlayMusicOrNothing(gGameOptions.nEpisode, gGameOptions.nLevel);
-    if (VanillaMode())
-        viewSetMessage("");
+    viewSetMessage("");
     viewSetErrorMessage("");
     viewResizeView(gViewSize);
     if ((gGameOptions.nGameType == 3) && VanillaMode())

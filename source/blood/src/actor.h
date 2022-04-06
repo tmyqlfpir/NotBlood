@@ -267,7 +267,7 @@ spritetype * actFireThing(spritetype *pSprite, int a2, int a3, int a4, int thing
 spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, int a6, int nType);
 int actGetRespawnTime(spritetype *pSprite);
 bool actCheckRespawn(spritetype *pSprite);
-bool actCanSplatWall(int nWall);
+bool actCanSplatWall(int nWall, int nSector = -1, int x = 0, int y = 0, int z = 0, char *nSurf = NULL);
 void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6, VECTOR_TYPE vectorType);
 void actPostSprite(int nSprite, int nStatus);
 void actPostProcess(void);
