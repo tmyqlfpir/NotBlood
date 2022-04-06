@@ -5585,7 +5585,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             int nWall = gHitInfo.hitwall;
             dassert(nWall >= 0 && nWall < kMaxWalls);
             nSurf = surfType[wall[nWall].picnum];
-            if (actCanSplatWall(nWall))
+            if (actCanSplatWall(nWall, nSector, gHitInfo.hitx, gHitInfo.hity, gHitInfo.hitz, &nSurf))
             {
                 int x = gHitInfo.hitx-mulscale14(a4, 16);
                 int y = gHitInfo.hity-mulscale14(a5, 16);
@@ -5728,7 +5728,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
                         {
                             int nWall = gHitInfo.hitwall;
                             int nSector = gHitInfo.hitsect;
-                            if (actCanSplatWall(nWall))
+                            if (actCanSplatWall(nWall, nSector, gHitInfo.hitx, gHitInfo.hity, gHitInfo.hitz, &nSurf))
                             {
                                 int x = gHitInfo.hitx - mulscale14(a4, 16);
                                 int y = gHitInfo.hity - mulscale14(a5, 16);
@@ -7327,7 +7327,7 @@ bool actCheckRespawn(spritetype *pSprite)
     return  0;
 }
 
-bool actCanSplatWall(int nWall)
+bool actCanSplatWall(int nWall, int nSector, int x, int y, int z, char *nSurf)
 {
     dassert(nWall >= 0 && nWall < kMaxWalls);
     walltype *pWall = &wall[nWall];
@@ -7341,6 +7341,25 @@ bool actCanSplatWall(int nWall)
     if (pWall->nextsector != -1)
     {
         sectortype *pSector = &sector[pWall->nextsector];
+        if (sectRangeIsFine(nSector) && gGameOptions.bSectorBehavior && !VanillaMode()) // check if wall is parallax type
+        {
+            char bHitSkybox = 0;
+            if ((pSector->ceilingstat&kSecCParallax) && (sector[nSector].ceilingstat&kSecCParallax)) // if ceilings for both sectors are parallax type
+            {
+                const int ceilingZ = getceilzofslope(pWall->nextsector, x, y);
+                bHitSkybox = ceilingZ >= z; // if hit was above connected sector's ceiling, set as hit sky tile
+            }
+            else if ((pSector->floorstat&kSecCParallax) && (sector[nSector].floorstat&kSecCParallax)) // if floor for both sectors are parallax type
+            {
+                const int floorZ = getflorzofslope(pWall->nextsector, x, y);
+                bHitSkybox = floorZ <= z; // if hit was below connected sector's floor, set as hit sky tile
+            }
+            if (bHitSkybox)
+            {
+                *nSurf = kSurfNone;
+                return 0;
+            }
+        }
         if (pSector->type >= kSectorBase && pSector->type < kSectorMax)
             return 0;
     }
@@ -7414,7 +7433,7 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
             int nWall = gHitInfo.hitwall;
             dassert(nWall >= 0 && nWall < kMaxWalls);
             nSurf = surfType[wall[nWall].picnum];
-            if (actCanSplatWall(nWall))
+            if (actCanSplatWall(nWall, nSector, gHitInfo.hitx, gHitInfo.hity, gHitInfo.hitz, &nSurf))
             {
                 int x = gHitInfo.hitx-mulscale14(a4, 16);
                 int y = gHitInfo.hity-mulscale14(a5, 16);
@@ -7562,7 +7581,7 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                         {
                             int nWall = gHitInfo.hitwall;
                             int nSector = gHitInfo.hitsect;
-                            if (actCanSplatWall(nWall))
+                            if (actCanSplatWall(nWall, nSector, gHitInfo.hitx, gHitInfo.hity, gHitInfo.hitz, &nSurf))
                             {
                                 int x = gHitInfo.hitx - mulscale14(a4, 16);
                                 int y = gHitInfo.hity - mulscale14(a5, 16);

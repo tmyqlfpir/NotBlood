@@ -93,6 +93,7 @@ New features include:
     - Prevent glow effects from rendering over room over room surfaces
     - Add room over room sector transversal for shadow rendering
     - Support wall sprites moving along with elevators
+    - Fix bullet hole being placed across sky tile walls
 * Hitscan projectiles
     - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
     - Projectile speed is adjusted depending on difficulty and if bullet is underwater
