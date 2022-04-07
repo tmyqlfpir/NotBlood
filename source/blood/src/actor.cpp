@@ -4475,8 +4475,8 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
 {
     if (pSprite == NULL)
         return 0;
-    int nSprite = pSprite->index;
-    if (nSprite < 0 || nSprite >= kMaxSprites) // invalid sprite, don't bother processing
+    const int nSprite = pSprite->index;
+    if (!spriRangeIsFine(nSprite)) // invalid sprite, don't bother processing
         return 0;
     if (!actSpriteOwnerIsPlayer(pSprite)) // if sprite is not player owned/spawned
         return 0;
