@@ -7349,7 +7349,7 @@ bool actCanSplatWall(int nWall, int nSector, int x, int y, int z, char *nSurf)
                 const int ceilingZ = getceilzofslope(pWall->nextsector, x, y);
                 bHitSkybox = ceilingZ >= z; // if hit was above connected sector's ceiling, set as hit sky tile
             }
-            else if ((pSector->floorstat&kSecCParallax) && (sector[nSector].floorstat&kSecCParallax)) // if floor for both sectors are parallax type
+            if (!bHitSkybox && (pSector->floorstat&kSecCParallax) && (sector[nSector].floorstat&kSecCParallax)) // if floor for both sectors are parallax type
             {
                 const int floorZ = getflorzofslope(pWall->nextsector, x, y);
                 bHitSkybox = floorZ <= z; // if hit was below connected sector's floor, set as hit sky tile
