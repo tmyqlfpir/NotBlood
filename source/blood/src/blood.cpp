@@ -2847,7 +2847,7 @@ const char *pzCrypticArts[] = {
 
 INIDESCRIPTION gINIDescription[] = {
     { "BLOOD: One Unit Whole Blood", "BLOOD.INI", NULL, 0 },
-    { "Cryptic passage", "CRYPTIC.INI", pzCrypticArts, ARRAY_SSIZE(pzCrypticArts) },
+    { "Cryptic Passage", "CRYPTIC.INI", pzCrypticArts, ARRAY_SSIZE(pzCrypticArts) },
     { "Death Wish", "DW.INI", NULL, 0 },
 };
 
