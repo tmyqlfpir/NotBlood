@@ -1660,6 +1660,10 @@ void ParseOptions(void)
             gDemoRunValidation = true;
             bQuickStart = true;
             bNoDemo = false;
+            gNoSetup = true;
+            gCommandSetup = false;
+            levelOverrideINI("TEST.INI");
+            strcpy(g_modDir, "/validatedemos");
             break;
         }
     }
