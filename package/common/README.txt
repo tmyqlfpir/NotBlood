@@ -104,12 +104,6 @@ New features include:
     - An empty string will regenerate anew for every level start
 
 ### New console variables for NotBlood
-* notarget
-* r_drawinvisiblesprites
-* r_mirrormode
-* r_rotatespriteinterp
-* r_rotatespriteinterpquantize
-* r_shadowvoxels
 * cl_calebtalk
 * cl_chatsnd
 * cl_interpolatepanning
@@ -128,6 +122,13 @@ New features include:
 * hud_showweaponselecttimeend
 * hud_showweaponselectposition
 * hud_showweaponselectscale
+* notarget
+* r_drawinvisiblesprites
+* r_mirrormode
+* r_rotatespriteinterp
+* r_rotatespriteinterpquantize
+* r_shadowvoxels
+* snd_earangle
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only

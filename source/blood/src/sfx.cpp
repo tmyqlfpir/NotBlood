@@ -36,7 +36,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #define kSoundSpeed (int)(((32<<4) * 343) / kTicsPerSec) // speed of sound is 343m/s
 #define kEarDist (int)((32<<4) * 0.17) // distance between ears (17cm)
-#define kEarAng kAng15 // angle for ear focus
+
+int gSoundEarAng = 15; // angle for ear focus
 
 static POINT2D earL, earR, earL0, earR0; // Ear position
 static VECTOR2D earVL, earVR; // Ear velocity
@@ -45,7 +46,7 @@ static int lPhase, rPhase, lVol, rVol, lPitch, rPitch;
 BONKLE Bonkle[256];
 BONKLE *BonkleCache[256];
 
-int nBonkles;
+static int nBonkles;
 
 void sfxInit(void)
 {
@@ -128,8 +129,9 @@ void Calc3DValues(BONKLE *pBonkle)
     int distance3D = approxDist3D(dx, dy, dz);
     distance3D = ClipLow((distance3D >> 2) + (distance3D >> 3), 64);
     const int nVol = scale(pBonkle->vol, 80, distance3D);
-    lVol = Vol3d(angle - (gMe->pSprite->ang - kEarAng), nVol);
-    rVol = Vol3d(angle - (gMe->pSprite->ang + kEarAng), nVol);
+    const int nEarAng = (int)(gSoundEarAng * (kAng360 / 360.f));
+    lVol = Vol3d(angle - (gMe->pSprite->ang - nEarAng), nVol);
+    rVol = Vol3d(angle - (gMe->pSprite->ang + nEarAng), nVol);
 
     if (!DopplerToggle)
     {

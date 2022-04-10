@@ -39,6 +39,8 @@ struct BONKLE
     int format;
 };
 
+extern int gSoundEarAng;
+
 extern BONKLE Bonkle[256];
 extern BONKLE* BonkleCache[256];
 
