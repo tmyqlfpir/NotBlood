@@ -34,6 +34,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "sound.h"
 #include "trig.h"
 
+#define kSoundSpeed (int)(((32<<4) * 343) / kTicsPerSec) // speed of sound is 343m/s
+#define kEarDist (int)((32<<4) * 0.17) // distance between ears (17cm)
+#define kEarAng kAng15 // angle for ear focus
+
 static POINT2D earL, earR, earL0, earR0; // Ear position
 static VECTOR2D earVL, earVR; // Ear velocity
 static int lPhase, rPhase, lVol, rVol, lPitch, rPitch;
@@ -124,8 +128,8 @@ void Calc3DValues(BONKLE *pBonkle)
     int distance3D = approxDist3D(dx, dy, dz);
     distance3D = ClipLow((distance3D >> 2) + (distance3D >> 3), 64);
     const int nVol = scale(pBonkle->vol, 80, distance3D);
-    lVol = Vol3d(angle - (gMe->pSprite->ang - 85), nVol);
-    rVol = Vol3d(angle - (gMe->pSprite->ang + 85), nVol);
+    lVol = Vol3d(angle - (gMe->pSprite->ang - kEarAng), nVol);
+    rVol = Vol3d(angle - (gMe->pSprite->ang + kEarAng), nVol);
 
     if (!DopplerToggle)
     {
@@ -135,8 +139,8 @@ void Calc3DValues(BONKLE *pBonkle)
     const int sinVal = Sin(angle);
     const int cosVal = Cos(angle);
     const int nPitch = dmulscale30r(cosVal, pBonkle->curPos.x - pBonkle->oldPos.x, sinVal, pBonkle->curPos.y - pBonkle->oldPos.y);
-    lPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVL.dx, sinVal, earVL.dy) + 5853, nPitch + 5853);
-    rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + 5853, nPitch + 5853);
+    lPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVL.dx, sinVal, earVL.dy) + kSoundSpeed, nPitch + kSoundSpeed);
+    rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + kSoundSpeed, nPitch + kSoundSpeed);
     lPitch = ClipRange(lPitch, 5000, 50000);
     rPitch = ClipRange(rPitch, 5000, 50000);
 }
@@ -522,33 +526,29 @@ void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *offsetPos)
 
 void sfxUpdateListenerPos(void)
 {
+    int dx = mulscale30(Cos(gMe->pSprite->ang + kAng90), kEarDist>>1);
+    int dy = mulscale30(Sin(gMe->pSprite->ang + kAng90), kEarDist>>1);
     earL0 = earL;
     earR0 = earR;
-    int dx = mulscale30(Cos(gMe->pSprite->ang + 512), 43);
-    int dy = mulscale30(Sin(gMe->pSprite->ang + 512), 43);
-    earL.x = gMe->pSprite->x - dx;
-    earL.y = gMe->pSprite->y - dy;
-    earR.x = gMe->pSprite->x + dx;
-    earR.y = gMe->pSprite->y + dy;
+    earL = {gMe->pSprite->x - dx, gMe->pSprite->y - dy};
+    earR = {gMe->pSprite->x + dx, gMe->pSprite->y + dy};
 }
 
-void sfxUpdateListenerVel(bool resetVel)
+void sfxUpdateListenerVel(void)
 {
-    if (resetVel)
-    {
-        earVL.dx = earVL.dy = earVR.dx = earVR.dy = 0;
-        return;
-    }
-    earVL.dx = earL.x - earL0.x;
-    earVL.dy = earL.y - earL0.y;
-    earVR.dx = earR.x - earR0.x;
-    earVR.dy = earR.y - earR0.y;
+    earVL = {earL.x - earL0.x, earL.y - earL0.y};
+    earVR = {earR.x - earR0.x, earR.y - earR0.y};
+}
+
+void sfxResetListenerVel(void)
+{
+    earVL = earVR = {0, 0};
 }
 
 void sfxUpdate3DSounds(void)
 {
     sfxUpdateListenerPos();
-    sfxUpdateListenerVel(false);
+    sfxUpdateListenerVel();
     for (int i = nBonkles - 1; i >= 0; i--)
     {
         BONKLE *pBonkle = BonkleCache[i];
@@ -559,9 +559,7 @@ void sfxUpdate3DSounds(void)
             if (pBonkle->pSndSpr)
             {
                 pBonkle->oldPos = pBonkle->curPos;
-                pBonkle->curPos.x = pBonkle->pSndSpr->x;
-                pBonkle->curPos.y = pBonkle->pSndSpr->y;
-                pBonkle->curPos.z = pBonkle->pSndSpr->z;
+                pBonkle->curPos = {pBonkle->pSndSpr->x, pBonkle->pSndSpr->y, pBonkle->pSndSpr->z};
                 pBonkle->sectnum = pBonkle->pSndSpr->sectnum;
             }
             Calc3DValues(pBonkle);
