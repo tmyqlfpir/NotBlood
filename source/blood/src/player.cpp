@@ -886,7 +886,7 @@ void playerStart(int nPlayer, int bNewLevel)
         if (!VanillaMode())
         {
             sfxUpdateListenerPos(); // player is listener, so update ear position/reset ear velocity
-            sfxUpdateListenerVel(true);
+            sfxResetListenerVel();
             sfxUpdateSpritePos(pPlayer->pSprite); // update any assigned sfx to new player position
         }
     }
