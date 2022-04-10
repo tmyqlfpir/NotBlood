@@ -1112,6 +1112,7 @@ int32_t registerosdcommands(void)
 //        { "snd_ambience", "enables/disables ambient sounds", (void *)&ud.config.AmbienceToggle, CVAR_BOOL, 0, 1 },
         { "snd_doppler", "enables/disables audio doppler effect (stereo only)", (void *)&DopplerToggle, CVAR_BOOL, 0, 1 },
         { "snd_enabled", "enables/disables sound effects", (void *)&SoundToggle, CVAR_BOOL, 0, 1 },
+        { "snd_earangle", "set the listening ear offset (15-90 degrees)", (void *)&gSoundEarAng, CVAR_INT, 15, 90 },
         { "snd_fxvolume", "controls volume for sound effects", (void *)&FXVolume, CVAR_INT, 0, 255 },
         { "snd_mixrate", "sound mixing rate", (void *)&MixRate, CVAR_INT, 0, 48000 },
         { "snd_numchannels", "the number of sound channels (1: mono, 2: stereo)", (void *)&NumChannels, CVAR_INT, 1, 2 },
