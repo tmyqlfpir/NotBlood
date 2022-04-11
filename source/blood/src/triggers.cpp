@@ -1092,7 +1092,7 @@ void ZTranslateSector(int nSector, XSECTOR *pXSector, int a3, int a4)
     {
         int oldZ = pSector->ceilingz;
         baseCeil[nSector] = pSector->ceilingz = pXSector->offCeilZ + mulscale16(dz, GetWaveValue(a3, a4));
-        velCeil[nSector] += (pSector->ceilingz-oldZ)<<8;
+        velCeil[nSector] += pSector->ceilingz-oldZ;
         for (int nSprite = headspritesect[nSector]; nSprite >= 0; nSprite = nextspritesect[nSprite])
         {
             spritetype *pSprite = &sprite[nSprite];
@@ -1118,9 +1118,9 @@ int GetHighestSprite(int nSector, int nStatus, int *a3)
             spritetype *pSprite = &sprite[nSprite];
             int top, bottom;
             GetSpriteExtents(pSprite, &top, &bottom);
-            if (top-pSprite->z > *a3)
+            if (pSprite->z-top < *a3)
             {
-                *a3 = top-pSprite->z;
+                *a3 = pSprite->z-top;
                 v8 = nSprite;
             }
         }
@@ -1931,23 +1931,25 @@ void trMessageWall(unsigned int nWall, EVENT event) {
 }
 
 void trMessageSprite(unsigned int nSprite, EVENT event) {
-    if (sprite[nSprite].statnum != kStatFree) {
-
-        XSPRITE* pXSprite = &xsprite[sprite[nSprite].extra];
-        if (!pXSprite->locked || event.cmd == kCmdUnlock || event.cmd == kCmdToggleLock) {
-            switch (event.cmd) {
-                case kCmdLink:
-                    LinkSprite(nSprite, pXSprite, event);
-                    break;
-                #ifdef NOONE_EXTENSIONS
-                case kCmdModernUse:
-                    modernTypeTrigger(3, nSprite, event);
-                    break;
-                #endif
-                default:
-                    OperateSprite(nSprite, pXSprite, event);
-                    break;
-            }
+    if (sprite[nSprite].statnum == kStatFree)
+        return;
+    spritetype *pSprite = &sprite[nSprite];
+    if (pSprite->extra < 0 || pSprite->extra >= kMaxXSprites)
+        return;
+    XSPRITE* pXSprite = &xsprite[sprite[nSprite].extra];
+    if (!pXSprite->locked || event.cmd == kCmdUnlock || event.cmd == kCmdToggleLock) {
+        switch (event.cmd) {
+            case kCmdLink:
+                LinkSprite(nSprite, pXSprite, event);
+                break;
+            #ifdef NOONE_EXTENSIONS
+            case kCmdModernUse:
+                modernTypeTrigger(3, nSprite, event);
+                break;
+            #endif
+            default:
+                OperateSprite(nSprite, pXSprite, event);
+                break;
         }
     }
 }
