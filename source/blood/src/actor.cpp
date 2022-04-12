@@ -3674,8 +3674,9 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
                 case kThingBloodChunks:
                 case kThingZombieHead:
                     if (damageType == 3 && pSourcePlayer && gFrameClock > pSourcePlayer->laughCount && Chance(0x4000)) {
-                        int nSound = gPlayerGibThingComments[Random(10)];
-                        if (gCalebTalk <= 1)
+                        const int nSound = gPlayerGibThingComments[Random(10)];
+                        const bool playerAlive = VanillaMode() || pSourcePlayer->pSprite && pSourcePlayer->pXSprite && (pSourcePlayer->pXSprite->health > 0); // only trigger falling scream if player is alive
+                        if (playerAlive && (gCalebTalk <= 1))
                             sfxPlay3DSound(pSourcePlayer->pSprite, nSound, 0, 2);
                         pSourcePlayer->laughCount = (int)gFrameClock+3600;
                     }
@@ -6735,7 +6736,7 @@ void actProcessSprites(void)
                 }
                 else if (gGameOptions.nGameType == 0)
                 {
-                    if (pPlayer->pXSprite->health > 0 && pPlayer->restTime >= 1200 && Chance(0x200))
+                    if (pPlayer->pXSprite && (pPlayer->pXSprite->health > 0) && (pPlayer->restTime >= 1200) && Chance(0x200))
                     {
                         const int nSound = 3100+Random(11);
                         pPlayer->restTime = -1;
