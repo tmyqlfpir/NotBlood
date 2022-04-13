@@ -1993,25 +1993,24 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     }
     if (nKiller == nVictim)
     {
-        pVictim->fraggerId = -1;
+        pKiller->fraggerId = -1;
         if (VanillaMode() || gGameOptions.nGameType != 1)
         {
-            pVictim->fragCount--;
-            pVictim->fragInfo[nVictim]--;
+            pKiller->fragCount--;
+            pKiller->fragInfo[nKiller]--;
         }
         if (gGameOptions.nGameType == 3)
-            gPlayerScores[pVictim->teamId]--;
+            gPlayerScores[pKiller->teamId]--;
         int nMessage = Random(5);
         int nSound = gSuicide[nMessage].at4;
-        if (pVictim == gMe && gMe->handTime <= 0)
+        if (gMe->handTime <= 0)
         {
-            sprintf(buffer, "You killed yourself!");
-            if (gGameOptions.nGameType > 0 && nSound >= 0)
+            if (!VanillaMode() && (gGameOptions.nGameType > 0)) // use unused suicide messages for multiplayer
+                sprintf(buffer, gSuicide[nMessage].at0, gProfile[nKiller].name);
+            else if (pKiller == gMe)
+                sprintf(buffer, "You killed yourself!");
+            if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
                 sndStartSample(nSound, 255, 2, 0);
-        }
-        else
-        {
-            sprintf(buffer, gSuicide[nMessage].at0, gProfile[nVictim].name);
         }
     }
     else
