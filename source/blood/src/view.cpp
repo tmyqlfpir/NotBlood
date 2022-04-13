@@ -1119,7 +1119,7 @@ void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int 
     }
 }
 
-void viewTileSprite(int nTile, int nShade, int nPalette, int x1, int y1, int x2, int y2, bool bScaled)
+void viewTileSprite(int nTile, int nShade, int nPalette, int x1, int y1, int x2, int y2, int nWidth, int nHeight, int nScale)
 {
     Rect rect1 = Rect(x1, y1, x2, y2);
     Rect rect2 = Rect(0, 0, xdim, ydim);
@@ -1129,14 +1129,8 @@ void viewTileSprite(int nTile, int nShade, int nPalette, int x1, int y1, int x2,
         return;
 
     dassert(nTile >= 0 && nTile < kMaxTiles);
-    int width = tilesiz[nTile].x;
-    int height = tilesiz[nTile].y;
-    int nScale = 65536;
-    if (bScaled && (height == width))
-    {
-        height = width = mulscale16(width<<16, xscalecorrect)>>16;
-        nScale = mulscale16(nScale, xscalecorrect);
-    }
+    int width = !nWidth ? tilesiz[nTile].x : nWidth;
+    int height = !nHeight ? tilesiz[nTile].y : nHeight;
     int bx1 = DecBy(rect1.x0+1, width);
     int by1 = DecBy(rect1.y0+1, height);
     int bx2 = IncBy(rect1.x1-1, width);
@@ -2278,15 +2272,33 @@ void UpdateFrame(void)
             nPalette = 10;
     }
 
-    viewTileSprite(nTile, 0, nPalette, 0, 0, xdim, gViewY0-3, bScaled);
-    viewTileSprite(nTile, 0, nPalette, 0, gViewY1+4, xdim, ydim, bScaled);
-    viewTileSprite(nTile, 0, nPalette, 0, gViewY0-3, gViewX0-3, gViewY1+4, bScaled);
-    viewTileSprite(nTile, 0, nPalette, gViewX1+4, gViewY0-3, xdim, gViewY1+4, bScaled);
+    const int nTile = !VanillaMode() ? kBackTile : kBackTileVanilla;
+    int nScale = 65536;
+    int nWidth = 0, nHeight = 0;
+    if (!VanillaMode()) // scale background tiles to match hud pixel density scale
+    {
+        nWidth = tilesiz[nTile].x;
+        nHeight = tilesiz[nTile].y;
+        if (nWidth == nHeight) // if tile is perfectly square
+        {
+            nWidth = nHeight = mulscale16(nWidth<<16, xscalecorrect)>>16;
+            nScale = mulscale16(nScale, xscalecorrect);
+        }
+        else // unexpected non-square tile, don't scale
+        {
+            nWidth = nHeight = 0;
+        }
+    }
 
-    viewTileSprite(nTile, 20, nPalette, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1, bScaled);
-    viewTileSprite(nTile, 20, nPalette, gViewX0, gViewY0-3, gViewX1+4, gViewY0, bScaled);
-    viewTileSprite(nTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4, bScaled);
-    viewTileSprite(nTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4, bScaled);
+    viewTileSprite(nTile, 0, nPalette, 0, 0, xdim, gViewY0-3, nWidth, nHeight, nScale);
+    viewTileSprite(nTile, 0, nPalette, 0, gViewY1+4, xdim, ydim, nWidth, nHeight, nScale);
+    viewTileSprite(nTile, 0, nPalette, 0, gViewY0-3, gViewX0-3, gViewY1+4, nWidth, nHeight, nScale);
+    viewTileSprite(nTile, 0, nPalette, gViewX1+4, gViewY0-3, xdim, gViewY1+4, nWidth, nHeight, nScale);
+
+    viewTileSprite(nTile, 20, nPalette, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1, nWidth, nHeight, nScale);
+    viewTileSprite(nTile, 20, nPalette, gViewX0, gViewY0-3, gViewX1+4, gViewY0, nWidth, nHeight, nScale);
+    viewTileSprite(nTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4, nWidth, nHeight, nScale);
+    viewTileSprite(nTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4, nWidth, nHeight, nScale);
 }
 
 void viewDrawInterface(ClockTicks arg)
