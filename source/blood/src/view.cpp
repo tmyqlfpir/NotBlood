@@ -623,7 +623,7 @@ void fakePlayerProcess(PLAYER *pPlayer, GINPUT *pInput)
         if (pXSprite->height < 256)
         {
             int isRunning = predict.at70;
-            if ((gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || (VanillaMode() && gGameOptions.nGameType > 0)) // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
+            if ((gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || (VanillaMode() && numplayers > 1)) // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
                 isRunning = 1; // always running
             predict.at4 = (predict.at4+(pPosture->pace[isRunning]*4))&2047;
             predict.at14 = (predict.at14+(pPosture->pace[isRunning]*4)/2)&2047;

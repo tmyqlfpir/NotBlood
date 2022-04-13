@@ -1896,7 +1896,7 @@ void playerProcess(PLAYER *pPlayer)
         if (pXSprite->height < 256)
         {
             int isRunning = pPlayer->isRunning;
-            if ((gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || (VanillaMode() && gGameOptions.nGameType > 0)) // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
+            if ((gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || (VanillaMode() && numplayers > 1)) // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
                 isRunning = 1; // always running
             pPlayer->bobAmp = (pPlayer->bobAmp+pPosture->pace[isRunning]*4) & 2047;
             pPlayer->swayAmp = (pPlayer->swayAmp+(pPosture->pace[isRunning]*4)/2) & 2047;
