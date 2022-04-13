@@ -1119,7 +1119,7 @@ void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int 
     }
 }
 
-void viewTileSprite(int nTile, int nShade, int nPalette, int x1, int y1, int x2, int y2)
+void viewTileSprite(int nTile, int nShade, int nPalette, int x1, int y1, int x2, int y2, bool bScaled)
 {
     Rect rect1 = Rect(x1, y1, x2, y2);
     Rect rect2 = Rect(0, 0, xdim, ydim);
@@ -1131,13 +1131,19 @@ void viewTileSprite(int nTile, int nShade, int nPalette, int x1, int y1, int x2,
     dassert(nTile >= 0 && nTile < kMaxTiles);
     int width = tilesiz[nTile].x;
     int height = tilesiz[nTile].y;
+    int nScale = 65536;
+    if (bScaled && (height == width))
+    {
+        height = width = mulscale16(width<<16, xscalecorrect)>>16;
+        nScale = mulscale16(nScale, xscalecorrect);
+    }
     int bx1 = DecBy(rect1.x0+1, width);
     int by1 = DecBy(rect1.y0+1, height);
     int bx2 = IncBy(rect1.x1-1, width);
     int by2 = IncBy(rect1.y1-1, height);
     for (int x = bx1; x < bx2; x += width)
         for (int y = by1; y < by2; y += height)
-            rotatesprite(x<<16, y<<16, 65536, 0, nTile, nShade, nPalette, 64+16+8, x1, y1, x2-1, y2-1);
+            rotatesprite(x<<16, y<<16, nScale, 0, nTile, nShade, nPalette, 64+16+8, x1, y1, x2-1, y2-1);
 }
 
 void InitStatusBar(void)
@@ -2257,10 +2263,12 @@ void viewResizeView(int size)
 }
 
 #define kBackTile 253
-//#define kBackTileVanilla 230
+#define kBackTileVanilla 230
 
 void UpdateFrame(void)
 {
+    const int nTile = !VanillaMode() ? kBackTile : kBackTileVanilla;
+    const bool bScaled = !VanillaMode();
     int nPalette = 0;
     if (gGameOptions.nGameType == 3)
     {
@@ -2270,15 +2278,15 @@ void UpdateFrame(void)
             nPalette = 10;
     }
 
-    viewTileSprite(kBackTile, 0, nPalette, 0, 0, xdim, gViewY0-3);
-    viewTileSprite(kBackTile, 0, nPalette, 0, gViewY1+4, xdim, ydim);
-    viewTileSprite(kBackTile, 0, nPalette, 0, gViewY0-3, gViewX0-3, gViewY1+4);
-    viewTileSprite(kBackTile, 0, nPalette, gViewX1+4, gViewY0-3, xdim, gViewY1+4);
+    viewTileSprite(nTile, 0, nPalette, 0, 0, xdim, gViewY0-3, bScaled);
+    viewTileSprite(nTile, 0, nPalette, 0, gViewY1+4, xdim, ydim, bScaled);
+    viewTileSprite(nTile, 0, nPalette, 0, gViewY0-3, gViewX0-3, gViewY1+4, bScaled);
+    viewTileSprite(nTile, 0, nPalette, gViewX1+4, gViewY0-3, xdim, gViewY1+4, bScaled);
 
-    viewTileSprite(kBackTile, 20, nPalette, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1);
-    viewTileSprite(kBackTile, 20, nPalette, gViewX0, gViewY0-3, gViewX1+4, gViewY0);
-    viewTileSprite(kBackTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4);
-    viewTileSprite(kBackTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4);
+    viewTileSprite(nTile, 20, nPalette, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1, bScaled);
+    viewTileSprite(nTile, 20, nPalette, gViewX0, gViewY0-3, gViewX1+4, gViewY0, bScaled);
+    viewTileSprite(nTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4, bScaled);
+    viewTileSprite(nTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4, bScaled);
 }
 
 void viewDrawInterface(ClockTicks arg)
