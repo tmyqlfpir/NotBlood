@@ -2037,7 +2037,8 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
             sndStartSample(nSound, 255, 2, 0);
     }
-    viewSetMessage(buffer);
+    if (VanillaMode() || buffer[0] != '\0')
+        viewSetMessage(buffer);
 }
 
 void FragPlayer(PLAYER *pPlayer, int nSprite)
