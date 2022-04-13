@@ -2261,8 +2261,6 @@ void viewResizeView(int size)
 
 void UpdateFrame(void)
 {
-    const int nTile = !VanillaMode() ? kBackTile : kBackTileVanilla;
-    const bool bScaled = !VanillaMode();
     int nPalette = 0;
     if (gGameOptions.nGameType == 3)
     {
