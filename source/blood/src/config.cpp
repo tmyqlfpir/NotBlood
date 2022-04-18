@@ -121,6 +121,7 @@ bool gFullMap;
 int32_t gUpscaleFactor;
 int32_t gLevelStats;
 int32_t gHudRatio;
+int32_t gHudBgScale;
 int32_t gPowerupDuration;
 int32_t gPowerupTicks;
 int32_t gShowMapTitle;
@@ -387,6 +388,7 @@ void CONFIG_SetDefaults(void)
     //ud.idplayers              = 1;
     gLevelStats = 0;
     gHudRatio = 1;
+    gHudBgScale = 1;
     gPowerupDuration = 4;
     gPowerupTicks = 100;
     gShowMapTitle = 1;
