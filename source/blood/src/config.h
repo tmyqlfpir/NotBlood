@@ -101,6 +101,7 @@ extern hashtable_t h_gamefuncs;
 extern int32_t gUpscaleFactor;
 extern int32_t gLevelStats;
 extern int32_t gHudRatio;
+extern int32_t gHudBgScale;
 extern int32_t gPowerupDuration;
 extern int32_t gPowerupTicks;
 extern int32_t gShowMapTitle;

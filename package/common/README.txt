@@ -114,6 +114,7 @@ New features include:
 * cl_smoketrail3d
 * cl_particlesduration
 * cl_packitemswitch
+* hud_bgscale
 * hud_ratio
 * hud_powerupdurationticks
 * hud_showweaponselect

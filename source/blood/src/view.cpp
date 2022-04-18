@@ -2273,7 +2273,7 @@ void UpdateFrame(void)
     const int nTile = !VanillaMode() ? kBackTile : kBackTileVanilla;
     int nScale = 65536;
     int nWidth = 0, nHeight = 0;
-    if (!VanillaMode()) // scale background tiles to match hud pixel density scale
+    if (gHudBgScale) // scale background tiles to match hud pixel density scale
     {
         nWidth = tilesiz[nTile].x;
         nHeight = tilesiz[nTile].y;
