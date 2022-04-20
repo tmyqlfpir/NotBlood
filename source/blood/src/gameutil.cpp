@@ -459,7 +459,7 @@ int HitScan(spritetype *pSprite, int z, int dx, int dy, int dz, unsigned int nMa
     }
     else
     {
-        hitscangoal.x = hitscangoal.y = 0x1ffffff;
+        hitscangoal.x = hitscangoal.y = 0x1fffffff;
     }
     vec3_t pos = { x, y, z };
     hitdata_t hitData;
@@ -471,7 +471,7 @@ int HitScan(spritetype *pSprite, int z, int dx, int dy, int dz, unsigned int nMa
     gHitInfo.hitx = hitData.xyz.x;
     gHitInfo.hity = hitData.xyz.y;
     gHitInfo.hitz = hitData.xyz.z;
-    hitscangoal.x = hitscangoal.y = 0x1ffffff;
+    hitscangoal.x = hitscangoal.y = 0x1fffffff;
     pSprite->cstat = bakCstat;
     if (gHitInfo.hitsprite >= kMaxSprites || gHitInfo.hitwall >= kMaxWalls || gHitInfo.hitsect >= kMaxSectors)
         return -1;
