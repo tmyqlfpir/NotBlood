@@ -238,13 +238,20 @@ engine_src := $(engine_root)/src
 engine_inc := $(engine_root)/include
 engine_obj := $(obj)/$(engine)
 
-engine_cflags := -I$(engine_src) -I$(imgui_inc)
+engine_cflags := -I$(engine_src)
 
-engine_deps := imgui
+engine_deps :=
 
 ifneq (0,$(USE_MIMALLOC))
     engine_cflags += -I$(mimalloc_inc)
     engine_deps += mimalloc
+endif
+
+ifeq ($(RENDERTYPE),SDL)
+    ifeq ($(SDL_TARGET),2)
+        engine_cflags += -I$(imgui_inc)
+        engine_deps += imgui
+    endif
 endif
 
 ifneq (0,$(USE_PHYSFS))
@@ -652,13 +659,18 @@ COMPILERFLAGS += \
     -I$(mact_inc) \
     -I$(audiolib_inc) \
     -I$(glad_inc) \
-    -I$(imgui_inc) \
     -I$(libsmackerdec_inc) \
     -I$(hmpplay_inc) \
     -MP -MMD \
 
 ifneq (0,$(USE_MIMALLOC))
     COMPILERFLAGS += -I$(mimalloc_inc)
+endif
+
+ifeq ($(RENDERTYPE),SDL)
+    ifeq ($(SDL_TARGET),2)
+        COMPILERFLAGS += -I$(imgui_inc)
+    endif
 endif
 
 ifneq (0,$(USE_PHYSFS))
@@ -678,7 +690,6 @@ libraries := \
     audiolib \
     engine \
     glad \
-    imgui \
     libxmplite \
     mact \
     libsmackerdec \
@@ -686,6 +697,12 @@ libraries := \
 
 ifneq (0,$(USE_MIMALLOC))
     libraries += mimalloc
+endif
+
+ifeq ($(RENDERTYPE),SDL)
+    ifeq ($(SDL_TARGET),2)
+        libraries += imgui
+    endif
 endif
 
 ifneq (0,$(USE_PHYSFS))

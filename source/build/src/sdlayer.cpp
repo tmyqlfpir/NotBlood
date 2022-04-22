@@ -16,14 +16,18 @@
 #include "softsurface.h"
 
 
+#if SDL_MAJOR_VERSION >= 2
 # include "imgui.h"
 # include "imgui_impl_sdl.h"
+#endif
 
 #ifdef USE_OPENGL
 # include "glad/glad.h"
 # include "glbuild.h"
 # include "glsurface.h"
+#if SDL_MAJOR_VERSION >= 2
 # include "imgui_impl_opengl3.h"
+#endif
 #endif
 
 #if defined HAVE_GTK2
@@ -121,9 +125,11 @@ static SDL_Surface *loadappicon(void);
 
 static mutex_t m_initprintf;
 
+#if SDL_MAJOR_VERSION >= 2
 static ImGuiIO *g_ImGui_IO;
 bool g_ImGuiCaptureInput = true;
 uint8_t g_ImGuiCapturedDevices;
+#endif
 
 #ifdef _WIN32
 # if SDL_MAJOR_VERSION >= 2
@@ -1288,13 +1294,22 @@ void mouseGrabInput(bool grab)
 
 void mouseLockToWindow(char a)
 {
+#if SDL_MAJOR_VERSION >= 2
     if (!g_ImGui_IO || !g_ImGui_IO->WantCaptureMouse)
+    {
+#endif
     if (!(a & 2))
     {
         mouseGrabInput(a);
         g_mouseLockedToWindow = g_mouseGrabbed;
     }
+#if SDL_MAJOR_VERSION >= 2
+    }
+#endif
 
+#if SDL_MAJOR_VERSION == 1
+    SDL_ShowCursor(osd && (osd->flags & OSD_CAPTURE) ? SDL_ENABLE : SDL_DISABLE);
+#elif SDL_MAJOR_VERSION >= 2
     int newstate = (osd && ((osd->flags & OSD_CAPTURE) || (g_ImGuiCapturedDevices & DEV_MOUSE))) ? SDL_ENABLE : SDL_DISABLE;
 
     SDL_ShowCursor(newstate);
@@ -1306,6 +1321,7 @@ void mouseLockToWindow(char a)
         else
             g_ImGui_IO->ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
     }
+#endif
 }
 
 void mouseMoveToCenter(void)
@@ -1516,6 +1532,7 @@ static void destroy_window_resources()
 #endif
 }
 
+#if SDL_MAJOR_VERSION >= 2
 bool g_ImGuiFrameActive;
 
 void engineBeginImGuiFrame(void)
@@ -1567,6 +1584,7 @@ void engineSetupImGui(void)
     //ImFont* font = g_ImGui_IO->Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\consola.ttf", 12.0f);
     //IM_ASSERT(font != NULL);
 }
+#endif
 
 #ifdef USE_OPENGL
 void sdlayer_setvideomode_opengl(void)

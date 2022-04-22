@@ -70,12 +70,14 @@ extern int32_t r_maxfps;
 extern int32_t g_numdisplays;
 extern int32_t g_displayindex;
 
+#if SDL_MAJOR_VERSION >= 2
 extern bool g_ImGuiCaptureInput;
 extern bool g_ImGuiFrameActive;
 extern uint8_t g_ImGuiCapturedDevices;
 extern void engineBeginImGuiFrame(void);
 extern void engineEndImGuiInput(void);
 extern void engineBeginImGuiInput(void);
+#endif
 
 void calc_ylookup(int32_t bpl, int32_t lastyidx);
 
