@@ -600,7 +600,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         if (!(gGameOptions.uGameFlags&1))
             levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
         if (gEpisodeInfo[gGameOptions.nEpisode].cutALevel == gGameOptions.nLevel
-            && gEpisodeInfo[gGameOptions.nEpisode].cutsceneASmkPath)
+            && gEpisodeInfo[gGameOptions.nEpisode].cutsceneASmkPath[0])
             gGameOptions.uGameFlags |= 4;
         if ((gGameOptions.uGameFlags&4) && !gDemo.bPlaying && !gDemo.bRecording && !Bstrlen(gGameOptions.szUserMap))
             levelPlayIntroScene(gGameOptions.nEpisode);

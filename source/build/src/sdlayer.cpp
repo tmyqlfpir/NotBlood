@@ -15,10 +15,15 @@
 #include "sdl_inc.h"
 #include "softsurface.h"
 
+
+# include "imgui.h"
+# include "imgui_impl_sdl.h"
+
 #ifdef USE_OPENGL
 # include "glad/glad.h"
 # include "glbuild.h"
 # include "glsurface.h"
+# include "imgui_impl_opengl3.h"
 #endif
 
 #if defined HAVE_GTK2
@@ -115,6 +120,10 @@ static SDL_Surface *loadappicon(void);
 #endif
 
 static mutex_t m_initprintf;
+
+static ImGuiIO *g_ImGui_IO;
+bool g_ImGuiCaptureInput = true;
+uint8_t g_ImGuiCapturedDevices;
 
 #ifdef _WIN32
 # if SDL_MAJOR_VERSION >= 2
@@ -332,7 +341,6 @@ static void sighandler(int signum)
     //    if (signum==SIGSEGV)
     {
         grabmouse_low(0);
-        OSD_FlushLog();
 
 #if PRINTSTACKONSEGV
         {
@@ -467,6 +475,14 @@ int main(int argc, char *argv[])
 #endif
 
     engineSetupAllocator();
+
+#ifndef __ANDROID__
+    signal(SIGSEGV, sighandler);
+    signal(SIGILL, sighandler);  /* clang -fcatch-undefined-behavior uses an ill. insn */
+    signal(SIGABRT, sighandler);
+    signal(SIGFPE, sighandler);
+#endif
+
     engineSetupLogging(argc, argv);
     
 #if SDL_VERSION_ATLEAST(2, 0, 8)
@@ -508,12 +524,7 @@ int main(int argc, char *argv[])
 
     buildkeytranslationtable();
 
-#ifndef __ANDROID__
-    signal(SIGSEGV, sighandler);
-    signal(SIGILL, sighandler);  /* clang -fcatch-undefined-behavior uses an ill. insn */
-    signal(SIGABRT, sighandler);
-    signal(SIGFPE, sighandler);
-#else
+#ifdef __ANDROID__
     SDL_SetEventFilter(sdlayer_mobilefilter, NULL);
 #endif
 
@@ -1277,13 +1288,24 @@ void mouseGrabInput(bool grab)
 
 void mouseLockToWindow(char a)
 {
+    if (!g_ImGui_IO || !g_ImGui_IO->WantCaptureMouse)
     if (!(a & 2))
     {
         mouseGrabInput(a);
         g_mouseLockedToWindow = g_mouseGrabbed;
     }
 
-    SDL_ShowCursor((osd && osd->flags & OSD_CAPTURE) ? SDL_ENABLE : SDL_DISABLE);
+    int newstate = (osd && ((osd->flags & OSD_CAPTURE) || (g_ImGuiCapturedDevices & DEV_MOUSE))) ? SDL_ENABLE : SDL_DISABLE;
+
+    SDL_ShowCursor(newstate);
+
+    if (g_ImGui_IO)
+    {
+        if (newstate)
+            g_ImGui_IO->ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
+        else
+            g_ImGui_IO->ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+    }
 }
 
 void mouseMoveToCenter(void)
@@ -1479,6 +1501,12 @@ static void destroy_window_resources()
 #endif
 
 #if SDL_MAJOR_VERSION >= 2
+#ifdef USE_OPENGL
+    ImGui_ImplOpenGL3_Shutdown();
+#endif
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+
     if (sdl_context)
         SDL_GL_DeleteContext(sdl_context);
     sdl_context = NULL;
@@ -1486,6 +1514,58 @@ static void destroy_window_resources()
         SDL_DestroyWindow(sdl_window);
     sdl_window = NULL;
 #endif
+}
+
+bool g_ImGuiFrameActive;
+
+void engineBeginImGuiFrame(void)
+{
+    Bassert(g_ImGuiFrameActive == false);
+#ifdef USE_OPENGL
+    ImGui_ImplOpenGL3_NewFrame();
+#endif
+    ImGui_ImplSDL2_NewFrame();
+    ImGui::NewFrame();
+    g_ImGuiFrameActive = true;
+}
+
+void engineEndImGuiInput(void)
+{
+    keyFlushChars();
+    keyFlushScans();
+    ImGui::GetIO().ClearInputKeys();
+//    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+    SDL_StopTextInput();
+}
+
+void engineBeginImGuiInput(void)
+{
+    keyFlushChars();
+    keyFlushScans();
+    SDL_StartTextInput();
+//    ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
+}
+
+void engineSetupImGui(void)
+{
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    g_ImGui_IO = &ImGui::GetIO();
+    g_ImGui_IO->IniFilename = nullptr;
+    g_ImGui_IO->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+    g_ImGui_IO->ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+    g_ImGui_IO->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+#ifdef USE_OPENGL
+    ImGui_ImplSDL2_InitForOpenGL(sdl_window, sdl_context);
+    ImGui_ImplOpenGL3_Init();
+#endif
+
+    g_ImGui_IO->Fonts->AddFontDefault();
+    //ImFont* font = g_ImGui_IO->Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\consola.ttf", 12.0f);
+    //IM_ASSERT(font != NULL);
 }
 
 #ifdef USE_OPENGL
@@ -1607,6 +1687,8 @@ void setvideomode_sdlcommonpost(int32_t x, int32_t y, int32_t c, int32_t fs, int
     SDL_DisplayMode desktopmode;
     SDL_GetDesktopDisplayMode(newdisplayindex, &desktopmode);
 
+    refreshfreq = desktopmode.refresh_rate;
+
     int const matchedResolution = (desktopmode.w == x && desktopmode.h == y);
     int const borderless = (r_borderless == 1 || (r_borderless == 2 && matchedResolution)) ? SDL_WINDOW_BORDERLESS : 0;
 
@@ -1627,9 +1709,9 @@ void setvideomode_sdlcommonpost(int32_t x, int32_t y, int32_t c, int32_t fs, int
         else
 #endif
             refreshfreq = newmode.refresh_rate;
-
-        VLOG_F(LOG_GFX, "Refresh rate: %.2fHz.", refreshfreq);
     }
+
+    VLOG_F(LOG_GFX, "Refresh rate: %.2fHz.", refreshfreq);
 
     SDL_SetWindowSize(sdl_window, x, y);
 
@@ -1753,6 +1835,8 @@ int32_t videoSetMode(int32_t x, int32_t y, int32_t c, int32_t fs)
 
         SDL_GL_SetSwapInterval(sdlayer_getswapinterval(vsync_renderlayer));
         vsync_renderlayer = sdlayer_checkvsync(vsync_renderlayer);
+
+        engineSetupImGui();
     }
     else
 #endif  // defined USE_OPENGL
@@ -2000,6 +2084,13 @@ void videoShowFrame(int32_t w)
         else
         {
             glsurface_blitBuffer();
+        }
+
+        if (g_ImGuiFrameActive)
+        {
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            g_ImGuiFrameActive = false;
         }
 
         if ((r_glfinish == 1 && r_finishbeforeswap == 1) || vsync_renderlayer == 2)
@@ -2394,8 +2485,30 @@ int32_t handleevents_pollsdl(void)
     int32_t code, rv=0, j;
     SDL_Event ev;
 
+    g_ImGuiCapturedDevices = 0;
+
+    if (g_ImGui_IO)
+    {
+        if (g_ImGuiCaptureInput && g_ImGui_IO->WantCaptureKeyboard)
+            g_ImGuiCapturedDevices = DEV_KEYBOARD;
+
+        if (g_ImGui_IO->WantCaptureMouse)
+            g_ImGuiCapturedDevices |= DEV_MOUSE;
+    }
+
     while (SDL_PollEvent(&ev))
     {
+        if (g_ImGui_IO)
+        {
+            if (g_ImGui_IO->WantCaptureKeyboard && (ev.type == SDL_TEXTINPUT || ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP))
+                if (ImGui_ImplSDL2_ProcessEvent(&ev) && ev.type == SDL_TEXTINPUT)
+                    continue;
+
+            if (g_ImGui_IO->WantCaptureMouse && (ev.type == SDL_MOUSEMOTION || ev.type == SDL_MOUSEBUTTONDOWN || ev.type == SDL_MOUSEBUTTONUP || ev.type == SDL_MOUSEWHEEL))
+                if (ImGui_ImplSDL2_ProcessEvent(&ev))
+                    continue;
+        }
+
         switch (ev.type)
         {
             case SDL_TEXTINPUT:
@@ -2649,14 +2762,38 @@ int32_t handleevents(void)
     int32_t rv;
 
 #if SDL_VERSION_ATLEAST(2, 0, 9)
+    if (g_ImGuiFrameActive)
+    {
+        ImGui::EndFrame();
+        g_ImGuiFrameActive = false;
+    }
+
     if (EDUKE32_SDL_LINKED_PREREQ(linked, 2, 0, 9))
     {
         if (joystick.hasRumble)
         {
-            if (joystick.rumbleLow || joystick.rumbleHigh)
-                SDL_GameControllerRumble(controller, joystick.rumbleLow, joystick.rumbleHigh, joystick.rumbleTime);
+            auto dorumble = [](uint16_t const low, uint16_t const high, uint32_t const time)
+            {
+                if (joystick.isGameController)
+                    SDL_GameControllerRumble(controller, low, high, time);
+                else
+                    SDL_JoystickRumble(joydev, low, high, time);
+            };
 
-            joystick.rumbleTime = joystick.rumbleLow = joystick.rumbleHigh = 0;
+            static uint32_t rumbleZeroTime;
+
+            if (joystick.rumbleLow || joystick.rumbleHigh)
+            {
+                rumbleZeroTime = timerGetTicks() + joystick.rumbleTime;
+
+                dorumble(joystick.rumbleLow, joystick.rumbleHigh, joystick.rumbleTime);
+                joystick.rumbleTime = joystick.rumbleLow = joystick.rumbleHigh = 0;
+            }
+            else if (rumbleZeroTime && timerGetTicks() >= rumbleZeroTime)
+            {
+                rumbleZeroTime = 0;
+                dorumble(0, 0, 0);
+            }
         }
     }
 #endif
@@ -2745,3 +2882,4 @@ int32_t handleevents(void)
 #if SDL_MAJOR_VERSION < 2
 # include "sdlayer12.cpp"
 #endif
+
