@@ -851,6 +851,9 @@ endif
 ifeq ($(PLATFORM),WINDOWS)
     COMPILERFLAGS += -Iplatform/Windows/include
     LIBDIRS += -Lplatform/Windows/lib/$(BITS)
+    ifeq ($(SDL_TARGET),2)
+        COMPILERFLAGS += -Iplatform/Windows/include/SDL2
+    endif
 else ifeq ($(PLATFORM),DARWIN)
     ifneq ($(shell port --version &>/dev/null; echo $$?),127)
         LIBDIRS += -L/opt/local/lib

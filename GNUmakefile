@@ -160,6 +160,28 @@ mimalloc_obj := $(obj)/$(mimalloc)
 
 mimalloc_cflags := -D_WIN32_WINNT=0x0600 -DMI_USE_RTLGENRANDOM -DMI_SHOW_ERRORS -I$(mimalloc_inc) -fexceptions -Wno-cast-qual -Wno-class-memaccess -Wno-unknown-pragmas
 
+
+#### imgui
+
+imgui := imgui
+
+imgui_objs := \
+    imgui.cpp \
+    imgui_demo.cpp \
+    imgui_draw.cpp \
+    imgui_impl_opengl3.cpp \
+    imgui_impl_sdl.cpp \
+    imgui_tables.cpp \
+    imgui_widgets.cpp \
+
+imgui_root := $(source)/$(imgui)
+imgui_src := $(imgui_root)/src
+imgui_inc := $(imgui_root)/include
+imgui_obj := $(obj)/$(imgui)
+
+imgui_cflags := -I$(imgui_inc) -Wno-cast-qual -Wno-cast-function-type
+
+
 #### libsmackerdec
 
 libsmackerdec := libsmackerdec
@@ -216,9 +238,9 @@ engine_src := $(engine_root)/src
 engine_inc := $(engine_root)/include
 engine_obj := $(obj)/$(engine)
 
-engine_cflags := -I$(engine_src)
+engine_cflags := -I$(engine_src) -I$(imgui_inc)
 
-engine_deps :=
+engine_deps := imgui
 
 ifneq (0,$(USE_MIMALLOC))
     engine_cflags += -I$(mimalloc_inc)
@@ -630,6 +652,7 @@ COMPILERFLAGS += \
     -I$(mact_inc) \
     -I$(audiolib_inc) \
     -I$(glad_inc) \
+    -I$(imgui_inc) \
     -I$(libsmackerdec_inc) \
     -I$(hmpplay_inc) \
     -MP -MMD \
@@ -655,6 +678,7 @@ libraries := \
     audiolib \
     engine \
     glad \
+    imgui \
     libxmplite \
     mact \
     libsmackerdec \
