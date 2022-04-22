@@ -851,8 +851,10 @@ endif
 ifeq ($(PLATFORM),WINDOWS)
     COMPILERFLAGS += -Iplatform/Windows/include
     LIBDIRS += -Lplatform/Windows/lib/$(BITS)
-    ifeq ($(SDL_TARGET),2)
-        COMPILERFLAGS += -Iplatform/Windows/include/SDL2
+    ifeq ($(RENDERTYPE),SDL)
+        ifeq ($(SDL_TARGET),2)
+            COMPILERFLAGS += -Iplatform/Windows/include/SDL2
+        endif
     endif
 else ifeq ($(PLATFORM),DARWIN)
     ifneq ($(shell port --version &>/dev/null; echo $$?),127)
