@@ -739,7 +739,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             else if (randomItem) // randomize pickups
                 dbRandomizerMode(pSprite, NULL);
             if (gGameOptions.bQuadDamagePowerup && (pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && (pSprite->type == kItemTwoGuns)) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
-                pSprite->picnum = 30703;
+                pSprite->picnum = 30463;
         }
     }
     
