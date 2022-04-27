@@ -1687,7 +1687,7 @@ MissileType missileInfo[] = {
     },
     // Shotgun shell projectile
     {
-        30698, // use bullet sprite from TILES099.ART
+        30458, // use bullet sprite from TILES099.ART
         (625)<<12,
         0,
         32,
@@ -1697,7 +1697,7 @@ MissileType missileInfo[] = {
     },
     // Tommy gun bullet projectile
     {
-        30698, // use bullet sprite from TILES099.ART
+        30458, // use bullet sprite from TILES099.ART
         (625)<<12,
         0,
         32,
@@ -2907,7 +2907,7 @@ spritetype *actDropItem(spritetype *pSprite, int nType)
         if (gGameOptions.bQuadDamagePowerup && (nType == kItemTwoGuns) && !VanillaMode()) // if quad damage is enabled
         {
             if (pSprite2->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) // replace guns akimbo icon with quad damage icon from TILES099.ART
-                pSprite2->picnum = 30703;
+                pSprite2->picnum = 30463;
         }
     }
     return pSprite2;
