@@ -676,20 +676,20 @@ static uint32_t curRandomizerSeedThings = 0;
 
 inline int dbRandomizerRNG(const int range)
 {
-	curRandomizerSeed = (214013 * curRandomizerSeed + 2531011);
-	return mulscale(((curRandomizerSeed >> 16) & 0x7FFF), range, 15);
+    curRandomizerSeed = (214013 * curRandomizerSeed + 2531011);
+    return mulscale(((curRandomizerSeed >> 16) & 0x7FFF), range, 15);
 }
 
 inline int dbRandomizerRNGDudes(const int range)
 {
-	curRandomizerSeedDudes = (214013 * curRandomizerSeedDudes + 2531011);
-	return mulscale(((curRandomizerSeedDudes >> 16) & 0x7FFF), range, 15);
+    curRandomizerSeedDudes = (214013 * curRandomizerSeedDudes + 2531011);
+    return mulscale(((curRandomizerSeedDudes >> 16) & 0x7FFF), range, 15);
 }
 
 inline int dbRandomizerRNGThings(const int range)
 {
-	curRandomizerSeedThings = (214013 * curRandomizerSeedThings + 2531011);
-	return mulscale(((curRandomizerSeedThings >> 16) & 0x7FFF), range, 15);
+    curRandomizerSeedThings = (214013 * curRandomizerSeedThings + 2531011);
+    return mulscale(((curRandomizerSeedThings >> 16) & 0x7FFF), range, 15);
 }
 
 void dbRandomizerModeInit(void)
