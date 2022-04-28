@@ -40,6 +40,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "gameutil.h"
 #ifdef NOONE_EXTENSIONS
 #include "nnexts.h"
+#include "view.h"
 #endif
 
 #ifdef NOONE_EXTENSIONS
@@ -676,20 +677,20 @@ static uint32_t curRandomizerSeedThings = 0;
 
 inline int dbRandomizerRNG(const int range)
 {
-	curRandomizerSeed = (214013 * curRandomizerSeed + 2531011);
-	return mulscale(((curRandomizerSeed >> 16) & 0x7FFF), range, 15);
+    curRandomizerSeed = (214013 * curRandomizerSeed + 2531011);
+    return mulscale(((curRandomizerSeed >> 16) & 0x7FFF), range, 15);
 }
 
 inline int dbRandomizerRNGDudes(const int range)
 {
-	curRandomizerSeedDudes = (214013 * curRandomizerSeedDudes + 2531011);
-	return mulscale(((curRandomizerSeedDudes >> 16) & 0x7FFF), range, 15);
+    curRandomizerSeedDudes = (214013 * curRandomizerSeedDudes + 2531011);
+    return mulscale(((curRandomizerSeedDudes >> 16) & 0x7FFF), range, 15);
 }
 
 inline int dbRandomizerRNGThings(const int range)
 {
-	curRandomizerSeedThings = (214013 * curRandomizerSeedThings + 2531011);
-	return mulscale(((curRandomizerSeedThings >> 16) & 0x7FFF), range, 15);
+    curRandomizerSeedThings = (214013 * curRandomizerSeedThings + 2531011);
+    return mulscale(((curRandomizerSeedThings >> 16) & 0x7FFF), range, 15);
 }
 
 void dbRandomizerModeInit(void)
@@ -1914,16 +1915,22 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         else
         {
             initprintf("Corrupted Map file");
-            gSysRes.Unlock(pNode);
             return -1;
         }
     }
     else if (gSongId != 0)
     {
         initprintf("Corrupted Map file");
-        gSysRes.Unlock(pNode);
         return -1;
     }
+
+#ifdef NOONE_EXTENSIONS
+    if (VanillaMode() && gModernMap)
+    {
+        viewSetMessage("Warning: Modern levels are not compatible with vanilla mode");
+        viewSetMessage("Please disable vanilla mode and restart level");
+    }
+#endif
 
 #ifdef POLYMER
     if (videoGetRenderMode() == REND_POLYMER)
@@ -2362,6 +2369,7 @@ int dbSaveMap(const char *pPath, int nX, int nY, int nZ, short nAngle, short nSe
 int32_t qloadboard(const char* filename, char flags, vec3_t* dapos, int16_t* daang, int16_t* dacursectnum)
 {
     // NUKE-TODO: implement flags, see mapedit.cpp
+    UNREFERENCED_PARAMETER(flags);
     return dbLoadMap(filename, &dapos->x, &dapos->y, &dapos->z, (short*)daang, (short*)dacursectnum, NULL);
 }
 
