@@ -532,7 +532,7 @@ void netGetPackets(void)
             if (gPacketStartGame.version != word_1328AC)
                 ThrowError("\nThese versions of Blood cannot play together.\n");
             gStartNewGame = 1;
-            SetGameVanillaMode(false); // turn off vanilla mode for multiplayer so menus don't get bugged
+            SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
             break;
         case 255:
             keystatus[1] = 1;

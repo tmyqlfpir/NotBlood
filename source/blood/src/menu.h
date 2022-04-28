@@ -59,7 +59,7 @@ extern char zNetPortBuffer[6];
 void drawLoadingScreen(void);
 void SetupMenus(void);
 void UpdateNetworkMenus(void);
-void SetGameVanillaMode(bool bVanilla);
+void SetGameVanillaMode(char nState);
 void QuickSaveGame(void);
 void AutosaveGame(bool printMessage);
 void QuickLoadGame(void);
