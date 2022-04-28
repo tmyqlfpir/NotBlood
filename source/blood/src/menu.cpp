@@ -2163,9 +2163,9 @@ void SetLockSaving(CGameMenuItemZCycle *pItem)
     itemMainSave3.bEnable = !gLockManualSaving; // hide save option in main menu if lock saving mode is set
 }
 
-void SetGameVanillaMode(bool bVanilla)
+void SetGameVanillaMode(char nState)
 {
-    gVanilla = bVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
+    gVanilla = nState % ARRAY_SSIZE(pzVanillaModeStrings);
     itemOptionsChainEnhancements.bEnable = !gVanilla;
     itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
@@ -2174,7 +2174,7 @@ void SetGameVanillaMode(bool bVanilla)
 void SetVanillaMode(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == 0) && (numplayers == 1))
-        SetGameVanillaMode((bool)pItem->m_nFocus);
+        SetGameVanillaMode((char)pItem->m_nFocus);
     else
         pItem->m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
 }
@@ -3061,7 +3061,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.keySettings = itemNetStart9.m_nFocus;
     gPacketStartGame.bSpawnProtection = itemNetStart10.at20;
     ////
-    SetGameVanillaMode(false); // turn off vanilla mode for multiplayer so menus don't get bugged
+    SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
     gPacketStartGame.bQuadDamagePowerup = itemNetEnhancementBoolQuadDamagePowerup.at20;
     gPacketStartGame.bDamageInvul = itemNetEnhancementBoolDamageInvul.at20;
     gPacketStartGame.nExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
