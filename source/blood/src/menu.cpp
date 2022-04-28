@@ -3061,7 +3061,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.keySettings = itemNetStart9.m_nFocus;
     gPacketStartGame.bSpawnProtection = itemNetStart10.at20;
     ////
-    SetGameVanillaMode(false); // turn off vanilla mode for multiplayer so menus don't get bugged
+    SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
     gPacketStartGame.bQuadDamagePowerup = itemNetEnhancementBoolQuadDamagePowerup.at20;
     gPacketStartGame.bDamageInvul = itemNetEnhancementBoolDamageInvul.at20;
     gPacketStartGame.nExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
