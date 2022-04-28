@@ -1914,14 +1914,12 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         else
         {
             initprintf("Corrupted Map file");
-            gSysRes.Unlock(pNode);
             return -1;
         }
     }
     else if (gSongId != 0)
     {
         initprintf("Corrupted Map file");
-        gSysRes.Unlock(pNode);
         return -1;
     }
 
