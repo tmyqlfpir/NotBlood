@@ -40,6 +40,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "gameutil.h"
 #ifdef NOONE_EXTENSIONS
 #include "nnexts.h"
+#include "view.h"
 #endif
 
 #ifdef NOONE_EXTENSIONS
@@ -1923,6 +1924,14 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         return -1;
     }
 
+#ifdef NOONE_EXTENSIONS
+    if (VanillaMode() && gModernMap)
+    {
+        viewSetMessage("Warning: Modern levels are not compatible with vanilla mode");
+        viewSetMessage("Please disable vanilla mode and restart level");
+    }
+#endif
+
 #ifdef POLYMER
     if (videoGetRenderMode() == REND_POLYMER)
         polymer_loadboard();
@@ -2360,6 +2369,7 @@ int dbSaveMap(const char *pPath, int nX, int nY, int nZ, short nAngle, short nSe
 int32_t qloadboard(const char* filename, char flags, vec3_t* dapos, int16_t* daang, int16_t* dacursectnum)
 {
     // NUKE-TODO: implement flags, see mapedit.cpp
+    UNREFERENCED_PARAMETER(flags);
     return dbLoadMap(filename, &dapos->x, &dapos->y, &dapos->z, (short*)daang, (short*)dacursectnum, NULL);
 }
 
