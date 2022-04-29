@@ -38,6 +38,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define kEarDist (int)((32<<4) * 0.17) // distance between ears (17cm)
 
 int gSoundEarAng = 15; // angle for ear focus
+static int oldEarAng = gSoundEarAng;
+static int nEarAng = kAng15;
 
 static POINT2D earL, earR, earL0, earR0; // Ear position
 static VECTOR2D earVL, earVR; // Ear velocity
@@ -129,7 +131,6 @@ void Calc3DValues(BONKLE *pBonkle)
     int distance3D = approxDist3D(dx, dy, dz);
     distance3D = ClipLow((distance3D >> 2) + (distance3D >> 3), 64);
     const int nVol = scale(pBonkle->vol, 80, distance3D);
-    const int nEarAng = (int)(gSoundEarAng * (kAng360 / 360.f));
     lVol = Vol3d(angle - (gMe->pSprite->ang - nEarAng), nVol);
     rVol = Vol3d(angle - (gMe->pSprite->ang + nEarAng), nVol);
 
@@ -547,10 +548,20 @@ void sfxResetListenerVel(void)
     earVL = earVR = {0, 0};
 }
 
+static void sfxUpdateEarAng(void)
+{
+    if (gSoundEarAng != oldEarAng) // if ear angle setting has been changed, convert degrees to build engine degrees
+    {
+        oldEarAng = gSoundEarAng;
+        nEarAng = (int)(gSoundEarAng * (kAng360 / 360.f));
+    }
+}
+
 void sfxUpdate3DSounds(void)
 {
     sfxUpdateListenerPos();
     sfxUpdateListenerVel();
+    sfxUpdateEarAng();
     for (int i = nBonkles - 1; i >= 0; i--)
     {
         BONKLE *pBonkle = BonkleCache[i];
