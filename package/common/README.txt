@@ -44,6 +44,11 @@ New features include:
 * SONIC - Toggle fast player movement
 * NO U - Activates reflect shots power-up
 
+### Vanilla Mode
+This feature sets the game to match 1.21 DOS compatibility, and removes any bugs fixes that come with NBlood/NotBlood
+The vanilla mode option can be found within game settings, and is only available for single-player
+It should be noted that vanilla mode does not work with modern maps
+
 ### Enhancements Options
 * Replace guns akimbo with quad damage
     - Replaces the guns akimbo powerup with Quake's quad damage (lasts 22 seconds)
@@ -97,6 +102,7 @@ New features include:
 * Hitscan projectiles
     - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
     - Projectile speed is adjusted depending on difficulty and if bullet is underwater
+    - This enhancement does not support custom modern map enemies
 * Randomizer mode
     - Set the enemy/pickups randomizer mode
 * Randomizer seed
