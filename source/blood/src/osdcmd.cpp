@@ -1121,6 +1121,7 @@ int32_t registerosdcommands(void)
 #ifdef ASS_REVERSESTEREO
         { "snd_reversestereo", "reverses the stereo channels", (void *)&ReverseStereo, CVAR_BOOL, 0, 1 },
 #endif
+        { "snd_speed", "set the speed of sound m/s used for doppler calculation (default: 343, range: 10-1000)", (void *)&gSoundSpeed, CVAR_INT, 10, 1000 },
         { "snd_stereo", "enable/disable 3d stereo sound", (void *)&gStereo, CVAR_BOOL, 0, 1 },
         { "snd_fmpianofix", "enable/disable fm piano timbre fix", (void*)&gFMPianoFix, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
 //        { "snd_speech", "enables/disables player speech", (void *)&ud.config.VoiceToggle, CVAR_INT, 0, 5 },
