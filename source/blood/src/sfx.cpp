@@ -34,8 +34,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "sound.h"
 #include "trig.h"
 
-#define kSoundSpeed (int)(((32<<4) * 343) / kTicsPerSec) // speed of sound is 343m/s
 #define kEarDist (int)((32<<4) * 0.17) // distance between ears (17cm)
+
+int gSoundSpeed = 343; // speed of sound is 343m/s
+static int oldSoundSpeed = gSoundSpeed;
+static int nSoundSpeed = 5853;
 
 int gSoundEarAng = 15; // angle for ear focus
 static int oldEarAng = gSoundEarAng;
@@ -142,8 +145,8 @@ void Calc3DValues(BONKLE *pBonkle)
     const int sinVal = Sin(angle);
     const int cosVal = Cos(angle);
     const int nPitch = dmulscale30r(cosVal, pBonkle->curPos.x - pBonkle->oldPos.x, sinVal, pBonkle->curPos.y - pBonkle->oldPos.y);
-    lPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVL.dx, sinVal, earVL.dy) + kSoundSpeed, nPitch + kSoundSpeed);
-    rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + kSoundSpeed, nPitch + kSoundSpeed);
+    lPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVL.dx, sinVal, earVL.dy) + nSoundSpeed, nPitch + nSoundSpeed);
+    rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + nSoundSpeed, nPitch + nSoundSpeed);
     lPitch = ClipRange(lPitch, 5000, 50000);
     rPitch = ClipRange(rPitch, 5000, 50000);
 }
@@ -548,6 +551,15 @@ void sfxResetListenerVel(void)
     earVL = earVR = {0, 0};
 }
 
+static void sfxUpdateSpeedOfSound(void)
+{
+    if (gSoundSpeed != oldSoundSpeed) // if speed of sound setting has been changed, convert real world meters to build engine units
+    {
+        oldSoundSpeed = gSoundSpeed;
+        nSoundSpeed = (int)(((32<<4) * gSoundSpeed) / kTicsPerSec);
+    }
+}
+
 static void sfxUpdateEarAng(void)
 {
     if (gSoundEarAng != oldEarAng) // if ear angle setting has been changed, convert degrees to build engine degrees
@@ -561,6 +573,7 @@ void sfxUpdate3DSounds(void)
 {
     sfxUpdateListenerPos();
     sfxUpdateListenerVel();
+    sfxUpdateSpeedOfSound();
     sfxUpdateEarAng();
     for (int i = nBonkles - 1; i >= 0; i--)
     {
