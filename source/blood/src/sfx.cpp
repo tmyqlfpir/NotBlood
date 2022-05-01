@@ -36,6 +36,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #define kEarDist (int)((32<<4) * 0.17) // distance between ears (17cm)
 
+static POINT2D earL, earR, earL0, earR0; // Ear position
+static VECTOR2D earVL, earVR; // Ear velocity
+static int lPhase, rPhase, lVol, rVol, lPitch, rPitch;
+
 int gSoundSpeed = 343; // speed of sound is 343m/s
 static int oldSoundSpeed = gSoundSpeed;
 static int nSoundSpeed = 5853;
@@ -44,9 +48,7 @@ int gSoundEarAng = 15; // angle for ear focus
 static int oldEarAng = gSoundEarAng;
 static int nEarAng = kAng15;
 
-static POINT2D earL, earR, earL0, earR0; // Ear position
-static VECTOR2D earVL, earVR; // Ear velocity
-static int lPhase, rPhase, lVol, rVol, lPitch, rPitch;
+int gSoundUnderwaterPitch = 0; // modify pitch when underwater
 
 BONKLE Bonkle[256];
 BONKLE *BonkleCache[256];
@@ -583,7 +585,7 @@ void sfxUpdate3DSounds(void)
     sfxUpdateListenerVel();
     sfxUpdateSpeedOfSound();
     sfxUpdateEarAng();
-    const char bUnderwater = !VanillaMode() && gGameOptions.bSectorBehavior && gMe->pSprite && sectRangeIsFine(gMe->pSprite->sectnum) && IsUnderwaterSector(gMe->pSprite->sectnum); // if underwater, lower audio pitch
+    const char bUnderwater = gSoundUnderwaterPitch && !VanillaMode() && gMe->pSprite && sectRangeIsFine(gMe->pSprite->sectnum) && IsUnderwaterSector(gMe->pSprite->sectnum); // if underwater, lower audio pitch
     for (int i = nBonkles - 1; i >= 0; i--)
     {
         BONKLE *pBonkle = BonkleCache[i];

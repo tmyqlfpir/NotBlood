@@ -41,6 +41,7 @@ struct BONKLE
 
 extern int gSoundSpeed;
 extern int gSoundEarAng;
+extern int gSoundUnderwaterPitch;
 
 extern BONKLE Bonkle[256];
 extern BONKLE* BonkleCache[256];
