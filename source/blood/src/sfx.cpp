@@ -40,6 +40,10 @@ static int lPhase, rPhase, lVol, rVol, lPitch, rPitch;
 
 #define kEarDist (int)((32<<4) * 0.17) // distance between ears (17cm)
 
+static POINT2D earL, earR, earL0, earR0; // Ear position
+static VECTOR2D earVL, earVR; // Ear velocity
+static int lPhase, rPhase, lVol, rVol, lPitch, rPitch;
+
 int gSoundSpeed = 343; // speed of sound is 343m/s
 static int oldSoundSpeed = gSoundSpeed;
 static int nSoundSpeed = 5853;
