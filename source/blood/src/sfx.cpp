@@ -570,7 +570,7 @@ void sfxUpdate3DSounds(void)
     sfxUpdateListenerPos();
     sfxUpdateListenerVel();
     sfxUpdateEarAng();
-    const char bUnderwater = !VanillaMode() && gGameOptions.bSectorBehavior && sectRangeIsFine(gMe->pSprite->sectnum) && IsUnderwaterSector(gMe->pSprite->sectnum); // if underwater, lower audio pitch
+    const char bUnderwater = !VanillaMode() && gGameOptions.bSectorBehavior && gMe->pSprite && sectRangeIsFine(gMe->pSprite->sectnum) && IsUnderwaterSector(gMe->pSprite->sectnum); // if underwater, lower audio pitch
     for (int i = nBonkles - 1; i >= 0; i--)
     {
         BONKLE *pBonkle = BonkleCache[i];
