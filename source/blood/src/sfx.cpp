@@ -571,7 +571,7 @@ static void sfxUpdateEarAng(void)
 
 static void sfxModifyPitchUnderwater(spritetype *pSndSpr, int *nPitch)
 {
-    if (pSndSpr && (pSndSpr == gMe->pSprite)) // if sprite is assigned to player, don't modify pitch
+    if (pSndSpr && (pSndSpr == gMe->pSprite)) // if sound is assigned to player sprite, don't modify pitch
         return;
     *nPitch -= (int)(((32<<4) * 25) / kTicsPerSec);
     *nPitch = ClipRange(*nPitch, 5000, 50000);
