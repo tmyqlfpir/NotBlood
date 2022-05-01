@@ -93,6 +93,7 @@ It should be noted that vanilla mode does not work with modern maps
     - Allow spent bullet casings to use water sector links
     - Support spent bullet casings and blood splatter for moving sectors
     - Lower gravity of bullet casings and gibs underwater
+    - Lower audio pitch by 7% when underwater
     - Add player's velocity to spawned bullet casings
     - Make blood splatter/flare gun glow effect slope on sloped surfaces
     - Prevent glow effects from rendering over room over room surfaces
