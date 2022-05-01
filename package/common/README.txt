@@ -45,7 +45,7 @@ New features include:
 * NO U - Activates reflect shots power-up
 
 ### Vanilla Mode
-This feature sets the game to match 1.21 DOS compatibility, and removes any bugs fixes that come with NBlood/NotBlood
+This feature sets the game to match v1.21 DOS compatibility, and removes any bugs fixes that come with NBlood/NotBlood
 The vanilla mode option can be found within game settings, and is only available for single-player
 It should be noted that vanilla mode does not work with modern maps
 
@@ -137,6 +137,7 @@ It should be noted that vanilla mode does not work with modern maps
 * r_rotatespriteinterpquantize
 * r_shadowvoxels
 * snd_earangle
+* snd_speed
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only
