@@ -1700,6 +1700,8 @@ void SetupOptionsMenu(void)
     menuOptionsSound.Add(&itemOptionsSoundCDToggle, false);
     menuOptionsSound.Add(&itemOptionsSoundMusicDevice, false);
     menuOptionsSound.Add(&itemOptionsSoundSF2Bank, false);
+    itemOptionsSoundCDToggle.tooltip_pzTextUpper = "";
+    itemOptionsSoundCDToggle.tooltip_pzTextLower = "Use blood##.ogg files in base directory as redbook audio";
 
     menuOptionsSound.Add(&itemOptionsSoundApplyChanges, false);
     menuOptionsSound.Add(&itemBloodQAV, false);
