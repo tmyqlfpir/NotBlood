@@ -558,7 +558,7 @@ static void sfxUpdateSpeedOfSound(void)
 {
     if (gSoundSpeed != oldSoundSpeed) // if speed of sound setting has been changed, convert real world meters to build engine units
     {
-        oldSoundSpeed = gSoundSpeed = ClipRange(gSoundEarAng, 10, 1000);
+        oldSoundSpeed = gSoundSpeed = ClipRange(gSoundSpeed, 10, 1000);
         nSoundSpeed = (int)(((32<<4) * gSoundSpeed) / kTicsPerSec);
     }
 }
