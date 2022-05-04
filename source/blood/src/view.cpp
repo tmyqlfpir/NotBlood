@@ -1601,7 +1601,7 @@ void viewDrawAimedPlayerName(void)
     }
     else
     {
-        const int nDist = (gGameOptions.nGameType == 1) ? 640 : 512; // set hitscan distance to 16/20 meters for co-op mode
+        const int nDist = (gGameOptions.nGameType == 1) ? 640 : 512; // set hitscan distance to 20/16 meters for co-op mode
         hit = HitScan(gView->pSprite, gView->zView, gView->aim.dx, gView->aim.dy, gView->aim.dz, CLIPMASK0, nDist);
     }
     if (hit == 3)
