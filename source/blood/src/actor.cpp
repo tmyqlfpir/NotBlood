@@ -3675,7 +3675,7 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
                 case kThingZombieHead:
                     if (damageType == 3 && pSourcePlayer && gFrameClock > pSourcePlayer->laughCount && Chance(0x4000)) {
                         const int nSound = gPlayerGibThingComments[Random(10)];
-                        const bool playerAlive = VanillaMode() || pSourcePlayer->pSprite && pSourcePlayer->pXSprite && (pSourcePlayer->pXSprite->health > 0); // only trigger falling scream if player is alive
+                        const bool playerAlive = VanillaMode() || pSourcePlayer->pSprite && pSourcePlayer->pXSprite && (pSourcePlayer->pXSprite->health > 0); // only trigger gib talk if player is alive
                         if (playerAlive && (gCalebTalk <= 1))
                             sfxPlay3DSound(pSourcePlayer->pSprite, nSound, 0, 2);
                         pSourcePlayer->laughCount = (int)gFrameClock+3600;
@@ -7357,7 +7357,8 @@ bool actCanSplatWall(int nWall, int nSector, int x, int y, int z, char *nSurf)
             }
             if (bHitSkybox)
             {
-                *nSurf = kSurfNone;
+                if (nSurf)
+                    *nSurf = kSurfNone;
                 return 0;
             }
         }
