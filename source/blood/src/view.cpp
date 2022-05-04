@@ -2252,7 +2252,10 @@ void viewResizeView(int size)
         gViewY1S = divscale16(gViewY1, yscale);
     }
     videoSetViewableArea(gViewX0, gViewY0, gViewX1, gViewY1);
-    gGameMessageMgr.SetCoordinates(gViewX0S + 1, gViewY0S + 1);
+    if ((gGameOptions.nGameType == 3) && VanillaMode())
+        gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+15);
+    else
+        gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+(VanillaMode()?1:6));
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     viewUpdateHudRatio();
     viewUpdatePages();
