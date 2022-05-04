@@ -1830,6 +1830,7 @@ void UpdateNetworkMenus(void)
 void SetMonoStereo(CGameMenuItemZBool *pItem)
 {
     gStereo = pItem->at20;
+    itemOptionsSoundDoppler.bEnable = gStereo;
 }
 
 void SetCrosshair(CGameMenuItemZBool *pItem)
@@ -2685,6 +2686,7 @@ void SetupOptionsSound(CGameMenuItemChain *pItem)
     itemOptionsSoundMonoStereo.at20 = gStereo;
     itemOptionsSoundCDToggle.at20 = CDAudioToggle;
     itemOptionsSoundDoppler.at20 = DopplerToggle;
+    itemOptionsSoundDoppler.bEnable = gStereo;
     itemOptionsSoundSampleRate.m_nFocus = 0;
     for (int i = 0; i < 3; i++)
     {
