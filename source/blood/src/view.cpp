@@ -2253,9 +2253,15 @@ void viewResizeView(int size)
     }
     videoSetViewableArea(gViewX0, gViewY0, gViewX1, gViewY1);
     if ((gGameOptions.nGameType == 3) && VanillaMode())
+    {
         gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+15);
+    }
     else
-        gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+(VanillaMode()?1:6));
+    {
+        const int nOffset = !VanillaMode() && (gGameOptions.nGameType == 0) ? 6 : 1; // lower message position for single-player
+        gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+nOffset);
+    }
+    gGameMessageMgr.maxNumberOfMessagesToDisplay = !VanillaMode() && (gGameOptions.nGameType > 0) ? 3 : 4; // set max displayed messages to 3 for multiplayer (reduces on screen clutter)
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     viewUpdateHudRatio();
     viewUpdatePages();
