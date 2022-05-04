@@ -1080,7 +1080,7 @@ void RestoreInterpolations(void)
     }
 }
 
-void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int nPalette, int position, char shadow, unsigned int nStat, uint8_t alpha)
+void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int nPalette, int position, char shadow, unsigned int nStat, uint8_t alpha, char bColorStat)
 {
     if (nFont < 0 || nFont >= kFontNum || !pString) return;
     FONT *pFont = &gFont[nFont];
@@ -1115,6 +1115,8 @@ void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int 
             rotatesprite_fs_alpha(x<<16, y<<16, 65536, 0, nTile, nShade, nPalette, 26|nStat, alpha);
             x += tilesiz[nTile].x+pFont->space;
         }
+        if (bColorStat && (*s == ':'))
+            bColorStat = nPalette = 0;
         s++;
     }
 }
@@ -1309,16 +1311,16 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
         (gLevelTime/kTicsPerSec)%60,
         ((gLevelTime%kTicsPerSec)*33)/10
         );
-    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256);
+    viewDrawText(3, buffer, x, y, 20, 2, 0, true, 256, 0, 1);
     y += nHeight+1;
     if (gGameOptions.nGameType != 3)
         sprintf(buffer, "K:%d/%d", gKillMgr.at4, max(gKillMgr.at4, gKillMgr.at0));
     else
         sprintf(buffer, "K:%d", pPlayer->fragCount);
-    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256);
+    viewDrawText(3, buffer, x, y, 20, 2, 0, true, 256, 0, 1);
     y += nHeight+1;
     sprintf(buffer, "S:%d/%d", gSecretMgr.nNormalSecretsFound, max(gSecretMgr.nNormalSecretsFound, gSecretMgr.nAllSecrets)); // if we found more than there are, increase the total - some levels have a bugged counter
-    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256);
+    viewDrawText(3, buffer, x, y, 20, 2, 0, true, 256, 0, 1);
 }
 
 struct POWERUPDISPLAY
