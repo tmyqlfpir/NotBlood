@@ -7357,7 +7357,8 @@ bool actCanSplatWall(int nWall, int nSector, int x, int y, int z, char *nSurf)
             }
             if (bHitSkybox)
             {
-                *nSurf = kSurfNone;
+                if (nSurf)
+                    *nSurf = kSurfNone;
                 return 0;
             }
         }
