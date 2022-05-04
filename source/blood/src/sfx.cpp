@@ -557,7 +557,7 @@ static void sfxUpdateSpeedOfSound(void)
 {
     if (gSoundSpeed != oldSoundSpeed) // if speed of sound setting has been changed, convert real world meters to build engine units
     {
-        oldSoundSpeed = gSoundSpeed;
+        oldSoundSpeed = gSoundSpeed = ClipRange(gSoundEarAng, 10, 1000);
         nSoundSpeed = (int)(((32<<4) * gSoundSpeed) / kTicsPerSec);
     }
 }
@@ -566,7 +566,7 @@ static void sfxUpdateEarAng(void)
 {
     if (gSoundEarAng != oldEarAng) // if ear angle setting has been changed, convert degrees to build engine degrees
     {
-        oldEarAng = gSoundEarAng;
+        oldEarAng = gSoundEarAng = ClipRange(gSoundEarAng, 15, 90);
         nEarAng = (int)(gSoundEarAng * (kAng360 / 360.f));
     }
 }
