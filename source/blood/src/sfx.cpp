@@ -136,8 +136,9 @@ void Calc3DValues(BONKLE *pBonkle)
     int distance3D = approxDist3D(dx, dy, dz);
     distance3D = ClipLow((distance3D >> 2) + (distance3D >> 3), 64);
     const int nVol = scale(pBonkle->vol, 80, distance3D);
-    lVol = Vol3d(angle - (gMe->pSprite->ang - nEarAng), nVol);
-    rVol = Vol3d(angle - (gMe->pSprite->ang + nEarAng), nVol);
+    const int nEarAngle = gStereo ? nEarAng : kAng15;
+    lVol = Vol3d(angle - (gMe->pSprite->ang - nEarAngle), nVol);
+    rVol = Vol3d(angle - (gMe->pSprite->ang + nEarAngle), nVol);
 
     if (!DopplerToggle)
     {
