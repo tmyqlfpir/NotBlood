@@ -800,6 +800,7 @@ void UpdateSoundVolume(CGameMenuItemSlider *pItem);
 void UpdateMusicVolume(CGameMenuItemSlider *pItem);
 void UpdateSoundRate(CGameMenuItemZCycle *pItem);
 void UpdateNumVoices(CGameMenuItemSlider *pItem);
+void UpdateSpeakerAngle(CGameMenuItemSlider *pItem);
 void UpdateCalebTalk(CGameMenuItemZCycle *pItem);
 void UpdateMusicDevice(CGameMenuItemZCycle *pItem);
 void SetSound(CGameMenuItemChain *pItem);
@@ -854,11 +855,12 @@ CGameMenuItemSlider itemOptionsSoundSoundVolume("SOUND VOLUME:", 3, 66, 80, 180,
 CGameMenuItemSlider itemOptionsSoundMusicVolume("MUSIC VOLUME:", 3, 66, 90, 180, &MusicVolume, 0, 255, 17, UpdateMusicVolume, -1, -1, kMenuSliderPercent);
 CGameMenuItemZCycle itemOptionsSoundSampleRate("SAMPLE RATE:", 3, 66, 100, 180, 0, UpdateSoundRate, pzSoundRateStrings, 3, 0);
 CGameMenuItemSlider itemOptionsSoundNumVoices("VOICES:", 3, 66, 110, 180, NumVoices, 16, 255, 16, UpdateNumVoices, -1, -1, kMenuSliderValue);
-CGameMenuItemZCycle itemOptionsSoundCalebTalk("CALEB TALK:", 3, 66, 120, 180, 0, UpdateCalebTalk, pzCalebTalkStrings, ARRAY_SIZE(pzCalebTalkStrings), 0);
-CGameMenuItemZBool itemOptionsSoundCDToggle("REDBOOK AUDIO:", 3, 66, 130, 180, false, UpdateCDToggle, NULL, NULL);
-CGameMenuItemZCycle itemOptionsSoundMusicDevice("MIDI DRIVER:", 3, 66, 140, 180, 0, UpdateMusicDevice, pzMusicDeviceStrings, ARRAY_SIZE(pzMusicDeviceStrings), 0);
-CGameMenuItemChain itemOptionsSoundSF2Bank("SF2 BANK", 3, 66, 150, 180, 0, &menuOptionsSoundSF2, 0, NULL, 0);
-CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 160, 180, 0, NULL, 0, SetSound, 0);
+CGameMenuItemSlider itemOptionsSoundSpeakerAngle("SPEAKER ANGLE:", 3, 66, 120, 180, gSoundEarAng, 15, 90, 5, UpdateSpeakerAngle, -1, -1, kMenuSliderValue);
+CGameMenuItemZCycle itemOptionsSoundCalebTalk("CALEB TALK:", 3, 66, 130, 180, 0, UpdateCalebTalk, pzCalebTalkStrings, ARRAY_SIZE(pzCalebTalkStrings), 0);
+CGameMenuItemZBool itemOptionsSoundCDToggle("REDBOOK AUDIO:", 3, 66, 140, 180, false, UpdateCDToggle, NULL, NULL);
+CGameMenuItemZCycle itemOptionsSoundMusicDevice("MIDI DRIVER:", 3, 66, 150, 180, 0, UpdateMusicDevice, pzMusicDeviceStrings, ARRAY_SIZE(pzMusicDeviceStrings), 0);
+CGameMenuItemChain itemOptionsSoundSF2Bank("SF2 BANK", 3, 66, 160, 180, 0, &menuOptionsSoundSF2, 0, NULL, 0);
+CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 170, 180, 0, NULL, 0, SetSound, 0);
 
 
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
@@ -1696,10 +1698,13 @@ void SetupOptionsMenu(void)
     menuOptionsSound.Add(&itemOptionsSoundMusicVolume, false);
     menuOptionsSound.Add(&itemOptionsSoundSampleRate, false);
     menuOptionsSound.Add(&itemOptionsSoundNumVoices, false);
+    menuOptionsSound.Add(&itemOptionsSoundSpeakerAngle, false);
     menuOptionsSound.Add(&itemOptionsSoundCalebTalk, false);
     menuOptionsSound.Add(&itemOptionsSoundCDToggle, false);
     menuOptionsSound.Add(&itemOptionsSoundMusicDevice, false);
     menuOptionsSound.Add(&itemOptionsSoundSF2Bank, false);
+    itemOptionsSoundSpeakerAngle.tooltip_pzTextUpper = "";
+    itemOptionsSoundSpeakerAngle.tooltip_pzTextLower = "Set left/right speaker offset angle (in degrees)";
     itemOptionsSoundCDToggle.tooltip_pzTextUpper = "";
     itemOptionsSoundCDToggle.tooltip_pzTextLower = "Use blood##.ogg files in base directory as redbook audio";
 
@@ -2637,6 +2642,9 @@ void UpdateSoundRate(CGameMenuItemZCycle *pItem)
 void UpdateNumVoices(CGameMenuItemSlider *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
+void UpdateSpeakerAngle(CGameMenuItemSlider *pItem)
+{
+    gSoundEarAng = ClipRange(pItem->nValue, 15, 90);
 }
 
 void UpdateCalebTalk(CGameMenuItemZCycle *pItem)
@@ -2699,6 +2707,7 @@ void SetupOptionsSound(CGameMenuItemChain *pItem)
         }
     }
     itemOptionsSoundNumVoices.nValue = NumVoices;
+    itemOptionsSoundSpeakerAngle.nValue = gSoundEarAng;
     itemOptionsSoundCalebTalk.m_nFocus = gCalebTalk % ARRAY_SIZE(pzCalebTalkStrings);
     itemOptionsSoundMusicDevice.m_nFocus = 0;
     for (int i = 0; i < (int)ARRAY_SIZE(nMusicDeviceValues); i++)
