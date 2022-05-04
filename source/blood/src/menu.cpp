@@ -2641,7 +2641,9 @@ void UpdateSoundRate(CGameMenuItemZCycle *pItem)
 
 void UpdateNumVoices(CGameMenuItemSlider *pItem)
 {
-    UNREFERENCED_PARAMETER(pItem);
+    NumVoices = ClipRange(pItem->nValue, 16, 255);
+}
+
 void UpdateSpeakerAngle(CGameMenuItemSlider *pItem)
 {
     gSoundEarAng = ClipRange(pItem->nValue, 15, 90);
