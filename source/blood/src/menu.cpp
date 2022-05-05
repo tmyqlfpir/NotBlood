@@ -2185,6 +2185,7 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem)
         SetGameVanillaMode((char)pItem->m_nFocus);
     else
         pItem->m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
+    viewResizeView(gViewSize);
 }
 
 short gQuickLoadSlot = -1;
