@@ -187,7 +187,7 @@ It should be noted that vanilla mode does not work with modern maps
 * cl_packitemswitch
    - Enable/disable item slot switching to activated item (always enabled in multiplayer)
 * cl_quickstart
-   - Eenable/disable quick start mode (start to menu on launch/disable demo playback)
+   - Enable/disable quick start mode (start to menu on launch/disable demo playback)
 * hud_bgscale
    - Enable/disable hud background image scaling for resolution
 * hud_stats
