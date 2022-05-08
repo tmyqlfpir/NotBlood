@@ -37,12 +37,34 @@ New features include:
 * Weapon selection bar
 * Mirror mode
 
-### New cheats (press t in-game to type codes)
-* BIG BERTHA - Toggle randomized lifeleech projectiles (works for alt fire mode)
-* QSKFA - Toggle blood alpha alt fire missile for pitchfork
-* ZOOMIES - Toggle fast enemies
-* SONIC - Toggle fast player movement
-* NO U - Activates reflect shots power-up
+### Installing
+1. Extract NotBlood to a new directory
+2. Copy the following files from Blood 1.21 to NotBlood folder:
+
+   BLOOD.INI
+   BLOOD.RFF
+   BLOOD000.DEM, ..., BLOOD003.DEM (optional)
+   CP01.MAP, ..., CP09.MAP (optional, Cryptic Passage)
+   CPART07.AR_ (optional, Cryptic Passage)
+   CPART15.AR_ (optional, Cryptic Passage)
+   CPBB01.MAP, ..., CPBB04.MAP (optional, Cryptic Passage)
+   CPSL.MAP (optional, Cryptic Passage)
+   CRYPTIC.INI (optional, Cryptic Passage)
+   CRYPTIC.SMK (optional, Cryptic Passage)
+   CRYPTIC.WAV (optional, Cryptic Passage)
+   GUI.RFF
+   SOUNDS.RFF
+   SURFACE.DAT
+   TILES000.ART, ..., TILES017.ART
+   VOXEL.DAT
+
+3. Optionally, if you want to use CD audio tracks instead of MIDI, provide FLAC/OGG recordings in following format: bloodXX.flac/ogg, where XX is track number. Make sure to enable Redbook audio option in sound menu.
+4. Optionally, if you want cutscenes and you have the original CD, copy the `movie` folder into NotBlood's folder (the folder itself too).
+If you have the GOG version of the game, do the following:
+   - make a copy of `game.ins` (or `game.inst`) named `game.cue`
+   - mount the `.cue` as a virtual CD (for example with `WinCDEmu`)
+   - copy the `movie` folder from the mounted CD into NotBlood's folder
+5. Launch NotBlood (on Linux, to play Cryptic Passage, launch with the `-ini CRYPTIC.INI` parameter)
 
 ### Vanilla Mode
 This feature sets the game to match v1.21 DOS compatibility, and removes any bugs fixes that come with NBlood/NotBlood
@@ -109,36 +131,12 @@ It should be noted that vanilla mode does not work with modern maps
     - Set the enemy/pickups randomizer's seed
     - An empty string will regenerate anew for every level start
 
-### New console variables for NotBlood
-* cl_calebtalk
-* cl_chatsnd
-* cl_interpolatepanning
-* cl_interpolateweapon
-* cl_weaponhbob
-* cl_slowroomflicker
-* cl_shadowsfake3d
-* cl_smoketrail3d
-* cl_particlesduration
-* cl_packitemswitch
-* cl_quickstart
-* hud_bgscale
-* hud_ratio
-* hud_powerupdurationticks
-* hud_showweaponselect
-* hud_showweaponselecttimestart
-* hud_showweaponselecttimehold
-* hud_showweaponselecttimeend
-* hud_showweaponselectposition
-* hud_showweaponselectscale
-* notarget
-* r_drawinvisiblesprites
-* r_mirrormode
-* r_rotatespriteinterp
-* r_rotatespriteinterpquantize
-* r_shadowvoxels
-* snd_earangle
-* snd_speed
-* snd_underwaterpitch
+### New cheats (press t in-game to type codes)
+* BIG BERTHA - Toggle randomized lifeleech projectiles (works for alt fire mode)
+* QSKFA - Toggle blood alpha alt fire missile for pitchfork
+* ZOOMIES - Toggle fast enemies
+* SONIC - Toggle fast player movement
+* NO U - Activates reflect shots power-up
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only
@@ -165,31 +163,73 @@ It should be noted that vanilla mode does not work with modern maps
 * PESTCTRL - No hands/rats/spiders
 * IH8PETS! - No hands/rats/spiders/bats/hell hounds
 
-### Installing
-1. Extract NotBlood to a new directory
-2. Copy the following files from Blood 1.21 to NotBlood folder:
-
-   BLOOD.INI
-   BLOOD.RFF
-   BLOOD000.DEM, ..., BLOOD003.DEM (optional)
-   CP01.MAP, ..., CP09.MAP (optional, Cryptic Passage)
-   CPART07.AR_ (optional, Cryptic Passage)
-   CPART15.AR_ (optional, Cryptic Passage)
-   CPBB01.MAP, ..., CPBB04.MAP (optional, Cryptic Passage)
-   CPSL.MAP (optional, Cryptic Passage)
-   CRYPTIC.INI (optional, Cryptic Passage)
-   CRYPTIC.SMK (optional, Cryptic Passage)
-   CRYPTIC.WAV (optional, Cryptic Passage)
-   GUI.RFF
-   SOUNDS.RFF
-   SURFACE.DAT
-   TILES000.ART, ..., TILES017.ART
-   VOXEL.DAT
-
-3. Optionally, if you want to use CD audio tracks instead of MIDI, provide FLAC/OGG recordings in following format: bloodXX.flac/ogg, where XX is track number. Make sure to enable Redbook audio option in sound menu.
-4. Optionally, if you want cutscenes and you have the original CD, copy the `movie` folder into NotBlood's folder (the folder itself too).
-If you have the GOG version of the game, do the following:
-   - make a copy of `game.ins` (or `game.inst`) named `game.cue`
-   - mount the `.cue` as a virtual CD (for example with `WinCDEmu`)
-   - copy the `movie` folder from the mounted CD into NotBlood's folder
-5. Launch NotBlood (on Linux, to play Cryptic Passage, launch with the `-ini CRYPTIC.INI` parameter)
+### New console variables for NotBlood
+* cl_calebtalk
+    - Enable/disable Caleb's dialog lines (0: on, 1: no idle, 2: no explosion/gib, 3: off)
+* cl_chatsnd
+    - Enable/disable multiplayer chat message beep
+* cl_interpolatepanning
+    - Enable/disable sector texture panning interpolation (cl_interpolate must be set on)
+* cl_interpolateweapon
+    - Enable/disable view interpolation for drawn weapon (0: disable, 1: position, 2: position/qav animation)
+* cl_weaponhbob
+    - Enable/disable view horizontal bobbing
+* cl_slowroomflicker
+    - Enable/disable slowed flickering speed for sectors (such as E1M4's snake pit room)
+* cl_shadowsfake3d
+    - Enable/disable 3D projection for fake sprite shadows
+* cl_smoketrail3d
+    - Enable/disable 3D smoke trail positioning for tnt/spray can (single-player only)
+* cl_particlesduration
+    - Enable/disable extended particle duration modification (single-player only - turned off for modern maps)
+* cl_weaponfastswitch
+    - Enable/disable fast weapon switching
+* cl_packitemswitch
+    - Enable/disable item slot switching to activated item (always enabled in multiplayer)
+* cl_quickstart
+    - Eenable/disable quick start mode (start to menu on launch/disable demo playback)
+* hud_bgscale
+    - Enable/disable hud background image scaling for resolution
+* hud_stats
+    - Set aspect ratio screen position for hud (0: native, 1: 4:3, 2: 16:10, 3: 16:9, 3: 21:9)
+* hud_ratio
+    - Enable/disable level statistics display (0: off, 1: on [default], 2: on [4:3], 3: on [16:10], 4: on [16:9], 5: on [21:9])
+* hud_powerupdurationticks
+    - set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)
+* hud_showweaponselect
+    - Enable/disable weapon select bar display. (0: none, 1: bottom, 2: top)
+* hud_showweaponselecttimestart
+    - Length of time for selected weapon bar to appear
+* hud_showweaponselecttimehold
+    - Length of time to display selected weapon bar
+* hud_showweaponselecttimeend
+    - Length of time for selected weapon weapon bar to disappear
+* hud_showweaponselectposition
+    - Position offset for selected weapon weapon bar
+* hud_showweaponselectscale
+    - Sets scale for selected weapon weapon bar (default: 10, range: 5-20)
+* in_crouchmode
+    - Toggles crouch button (0:hold, 1:toggle)
+* notarget
+    - Toggles AI player detection
+* r_drawinvisiblesprites
+    - Forcefully draw invisible sprites
+* r_mirrormode
+    - Mirror output display: 0: off 1: mirror horizontal 2: mirror vertically 3: mirror horizontal/vertically
+* r_rotatespriteinterp
+    - Interpolate repeated rotatesprite calls
+    - 0: disable
+    - 1: only interpolate when explicitly requested with RS_LERP (half-step interpolation)
+    - 2: only interpolate when explicitly requested with RS_LERP (full interpolation)
+    - 3: interpolate if the picnum or size matches regardless of RS_LERP being set
+    - 4: relax above picnum check to include the next tile, with potentially undesirable results
+* r_rotatespriteinterpquantize
+    - Enable/disable position quantizing for interpolate repeated rotatesprite calls
+* r_shadowvoxels
+    - Enable/disable wall/floor aligned transparent voxels
+* snd_earangle
+    - Set the listening ear offset (15-90 degrees)
+* snd_speed
+    - Set the speed of sound m/s used for doppler calculation (default: 343, range: 10-1000)
+* snd_underwaterpitch
+    - Enable/disable lowering sound pitch by 7% while underwater
