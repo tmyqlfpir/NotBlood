@@ -120,6 +120,7 @@ It should be noted that vanilla mode does not work with modern maps
 * cl_smoketrail3d
 * cl_particlesduration
 * cl_packitemswitch
+* cl_quickstart
 * hud_bgscale
 * hud_ratio
 * hud_powerupdurationticks

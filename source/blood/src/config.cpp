@@ -836,21 +836,23 @@ int CONFIG_ReadSetup(void)
     //    SCRIPT_GetString(scripthandle, "Screen Setup", "Password", &ud.pwlockout[0]);
     //}
 
-    windowx = -1;
-    windowy = -1;
-
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "MaxRefreshFreq", (int32_t *)&maxrefreshfreq);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "ScreenBPP", &gSetup.bpp);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "ScreenHeight", &gSetup.ydim);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "ScreenMode", &gSetup.fullscreen);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "ScreenWidth", &gSetup.xdim);
-    SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPosX", (int32_t *)&windowx);
-    SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPosY", (int32_t *)&windowy);
-    SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPositioning", (int32_t *)&r_windowpositioning);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "CustomPalette", (int32_t *)&gCustomPalette);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "CustomPaletteCIEDE2000", (int32_t *)&gCustomPaletteCIEDE2000);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "CustomPaletteGrayscale", (int32_t *)&gCustomPaletteGrayscale);
     SCRIPT_GetNumber(scripthandle, "Screen Setup", "CustomPaletteInvert", (int32_t *)&gCustomPaletteInvert);
+
+    vec2_t windowPos;
+    if (!SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPosX", &windowPos.x)
+        && !SCRIPT_GetNumber(scripthandle, "Screen Setup", "WindowPosY", &windowPos.y))
+    {
+        g_windowPos = windowPos;
+        g_windowPosValid = true;
+    }
 
     if (gSetup.bpp < 8) gSetup.bpp = 32;
 
@@ -957,13 +959,16 @@ void CONFIG_WriteSetup(uint32_t flags)
     }
 
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "MaxRefreshFreq", maxrefreshfreq, FALSE, FALSE);
-    SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPosX", windowx, FALSE, FALSE);
-    SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPosY", windowy, FALSE, FALSE);
-    SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPositioning", r_windowpositioning, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "CustomPalette", gCustomPalette, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "CustomPaletteCIEDE2000", gCustomPaletteCIEDE2000, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "CustomPaletteGrayscale", gCustomPaletteGrayscale, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "CustomPaletteInvert", gCustomPaletteInvert, FALSE, FALSE);
+
+    if (g_windowPosValid)
+    {
+        SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPosX", g_windowPos.x, FALSE, FALSE);
+        SCRIPT_PutNumber(scripthandle, "Screen Setup", "WindowPosY", g_windowPos.y, FALSE, FALSE);
+    }
 
     //if (!NAM_WW2GI)
     //{

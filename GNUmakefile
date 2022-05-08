@@ -247,11 +247,9 @@ ifneq (0,$(USE_MIMALLOC))
     engine_deps += mimalloc
 endif
 
-ifeq ($(RENDERTYPE),SDL)
-    ifeq ($(SDL_TARGET),2)
-        engine_cflags += -I$(imgui_inc)
-        engine_deps += imgui
-    endif
+ifneq (1,$(SDL_TARGET))
+    engine_cflags += -I$(imgui_inc)
+    engine_deps += imgui
 endif
 
 ifneq (0,$(USE_PHYSFS))

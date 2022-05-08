@@ -72,7 +72,7 @@ int MUSIC_Init(int SoundCard)
         return MUSIC_Error;
     }
 
-    LOG_F(INFO, "Using external music player: \"%s\"\n", g_musicPlayerCommandLine);
+    MV_Printf("Using external music player: \"%s\"\n", g_musicPlayerCommandLine);
 
 #ifndef _WIN32
     int ws=1, numargs=0, pagesize=Bgetpagesize();
@@ -203,7 +203,7 @@ static int MUSIC_PlayExternal()
 
     if (!CreateProcess(nullptr,g_musicPlayerCommandLine,nullptr,nullptr,0,0,nullptr,nullptr,&si,&pi))
     {
-        LOG_F(ERROR, "%s: CreateProcess: %s\n", __func__, windowsGetErrorMessage(GetLastError()));
+        MV_Printf("%s: CreateProcess: %s\n", __func__, windowsGetErrorMessage(GetLastError()));
         return MUSIC_Error;
     }
     else
@@ -295,7 +295,7 @@ int MUSIC_PlaySong(char *song, int songsize, int loopflag, const char *fn /*= nu
     }
     else
     {
-        LOG_F(ERROR, "%s: fopen: %s\n", __func__, strerror(errno));
+        MV_Printf("%s: fopen: %s\n", __func__, strerror(errno));
         return MUSIC_Error;
     }
 
