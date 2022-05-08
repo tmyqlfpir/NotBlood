@@ -1293,24 +1293,18 @@ void mouseLockToWindow(char a)
 {
 #if SDL_MAJOR_VERSION >= 2
     if (!g_ImGui_IO || !g_ImGui_IO->WantCaptureMouse)
-    {
 #endif
     if (!(a & 2))
     {
         mouseGrabInput(a);
         g_mouseLockedToWindow = g_mouseGrabbed;
     }
-#if SDL_MAJOR_VERSION >= 2
-    }
-#endif
 
-#if SDL_MAJOR_VERSION == 1
-    SDL_ShowCursor(osd && (osd->flags & OSD_CAPTURE) ? SDL_ENABLE : SDL_DISABLE);
-#elif SDL_MAJOR_VERSION >= 2
     int newstate = (osd && ((osd->flags & OSD_CAPTURE) || (g_ImGuiCapturedDevices & DEV_MOUSE))) ? SDL_ENABLE : SDL_DISABLE;
 
     SDL_ShowCursor(newstate);
 
+#if SDL_MAJOR_VERSION >= 2
     if (g_ImGui_IO)
     {
         if (newstate)
@@ -1535,7 +1529,6 @@ static void destroy_window_resources()
 #endif
 }
 
-#if SDL_MAJOR_VERSION >= 2
 bool g_ImGuiFrameActive;
 
 void engineBeginImGuiFrame(void)
@@ -1595,7 +1588,6 @@ void engineSetupImGui(void)
     //IM_ASSERT(font != NULL);
 #endif
 }
-#endif
 
 #ifdef USE_OPENGL
 void sdlayer_setvideomode_opengl(void)
