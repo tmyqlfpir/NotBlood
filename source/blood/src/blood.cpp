@@ -1983,7 +1983,7 @@ int app_main(int argc, char const * const * argv)
 
     OSD_Exec("autoexec.cfg");
 
-    if (!gQuickStart)
+    if (!bQuickStart && !gQuickStart)
         credLogosDos();
     scrSetDac();
 RESTART:
