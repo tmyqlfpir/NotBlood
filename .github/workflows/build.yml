@@ -183,12 +183,13 @@ jobs:
     - name: build
       # TODO: Remove "STARTUP_WINDOW=0" once build is fixed
       run: gmake -j2 tools STARTUP_WINDOW=0
-    - name: 'prepare files for upload'
-      run: |
-        mkdir -p ./upload
-        cp ./notblood ./upload
-    - uses: actions/upload-artifact@v2
-      with:
-        name: notblood-macos
-        path: ./upload
-        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
+      # run: gmake -j2 blood tools STARTUP_WINDOW=0
+    # - name: 'prepare files for upload'
+      # run: |
+        # mkdir -p ./upload
+        # cp ./notblood ./upload
+    # - uses: actions/upload-artifact@v2
+      # with:
+        # name: notblood-macos
+        # path: ./upload
+        # if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
