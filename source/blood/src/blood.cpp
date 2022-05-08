@@ -85,7 +85,7 @@ const char* AppProperName = APPNAME;
 const char* AppTechnicalName = APPBASENAME;
 
 char SetupFilename[BMAX_PATH] = SETUPFILENAME;
-int32_t gNoSetup = 0, gCommandSetup = 0;
+int32_t gNoSetup = 0, gCommandSetup = 0, gQuickStart = 0;
 
 INPUT_MODE gInputMode;
 
@@ -96,7 +96,6 @@ unsigned int nMaxAlloc = 0x4000000;
 bool bCustomName = false;
 char bAddUserMap = false;
 bool bNoDemo = false;
-bool bQuickStart = false;
 bool bNoAutoLoad = false;
 
 int gMusicPrevLoadedEpisode = -1;
@@ -1440,7 +1439,7 @@ void ParseOptions(void)
         //        ThrowError("Missing argument");
         //    strncpy(byte_148ef0, OptArgv[0], 13);
         //    byte_148ef0[12] = 0;
-        //    bQuickStart = 1;
+        //    gQuickStart = 1;
         //    byte_148eeb = 1;
         //    if (gGameOptions.gameType == 0)
         //        gGameOptions.gameType = 2;
@@ -1449,7 +1448,7 @@ void ParseOptions(void)
             bNoDemo = 1;
             break;
         case 18:
-            bQuickStart = 1;
+            gQuickStart = 1;
             break;
         //case 12:
         //    EightyTwoFifty = 1;
@@ -1656,7 +1655,7 @@ void ParseOptions(void)
             break;
         case 44: // validate
             gDemoRunValidation = true;
-            bQuickStart = true;
+            gQuickStart = 1;
             bNoDemo = false;
             gNoSetup = true;
             gCommandSetup = false;
@@ -1984,7 +1983,7 @@ int app_main(int argc, char const * const * argv)
 
     OSD_Exec("autoexec.cfg");
 
-    if (!bQuickStart)
+    if (!gQuickStart)
         credLogosDos();
     scrSetDac();
 RESTART:
