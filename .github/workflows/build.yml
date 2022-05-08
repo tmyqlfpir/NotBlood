@@ -114,6 +114,18 @@ jobs:
         path: ./upload
         if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
 
+  build-linux-gcc-sdl12:
+    name: "Linux GCC SDL 1.2"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install-prerequisites
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libsdl1.2-dev libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev
+    - name: build
+      run: make -j2 blood tools SDL_TARGET=1
+
   build-linux-clang:
     name: "Linux Clang"
     runs-on: ubuntu-latest
@@ -135,23 +147,48 @@ jobs:
         path: ./upload
         if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
 
-  # build-macos:
-    # name: "macOS"
-    # runs-on: macos-latest
-    # steps:
-    # - uses: actions/checkout@v2
-    # - name: install-prerequisites
-      # run: |
-        # brew install sdl2 libogg libvorbis flac libvpx make
-        # brew unlink lz4
-    # - name: build
-      # run: gmake -j2 blood tools
-    # - name: 'prepare files for upload'
-      # run: |
-        # mkdir -p ./upload
-        # cp ./notblood ./upload
-    # - uses: actions/upload-artifact@v2
-      # with:
-        # name: notblood-macos
-        # path: ./upload
-        # if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
+  build-linux-clang-nogl:
+    name: "Linux Clang without GL"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install-prerequisites
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libsdl2-dev libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev clang
+    - name: build
+      run: make -j2 blood tools CLANG=1 USE_OPENGL=0
+
+  build-linux-clang-nopolymer:
+    name: "Linux Clang without Polymer"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install-prerequisites
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libsdl2-dev libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev clang
+    - name: build
+      run: make -j2 blood tools CLANG=1 POLYMER=0
+
+  build-macos:
+    name: "macOS"
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install-prerequisites
+      run: |
+        brew install sdl2 libogg libvorbis flac libvpx make
+        brew unlink lz4
+    - name: build
+      # TODO: Remove "STARTUP_WINDOW=0" once build is fixed
+      run: gmake -j2 tools STARTUP_WINDOW=0
+    - name: 'prepare files for upload'
+      run: |
+        mkdir -p ./upload
+        cp ./notblood ./upload
+    - uses: actions/upload-artifact@v2
+      with:
+        name: notblood-macos
+        path: ./upload
+        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
