@@ -2004,6 +2004,8 @@ RESTART:
         goto RESTART;
     }
     UpdateNetworkMenus();
+    if (!bNoDemo && gQuickStart && !gDemoRunValidation) // disable demo playback in quick start mode
+        bNoDemo = 1;
     if (!gDemo.bRecording && gDemo.nDemosFound > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
         gDemo.SetupPlayback(NULL);
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
