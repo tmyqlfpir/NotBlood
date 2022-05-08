@@ -1403,12 +1403,6 @@ void videoGetModes(int display)
 
     SDL_CHECKFSMODES(maxx, maxy);
 
-    SDL_ADDMODE(320, 240, 8, 0); // add original resolution as a windowed only mode option
-#ifdef USE_OPENGL
-    if (!nogl)
-        SDL_ADDMODE(320, 240, 32, 0);
-#endif
-
     // add windowed modes next
     // SDL sorts display modes largest to smallest, so we can just compare with mode 0
     // to make sure we aren't adding modes that are larger than the actual screen res

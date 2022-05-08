@@ -1478,8 +1478,6 @@ void SetupOptionsMenu(void)
     itemOptionsGameAutosaveMode.bDisableForNet = 1;
     itemOptionsGameLockSaving.bDisableForNet = 1;
     itemOptionsGameBoolVanillaMode.bDisableForNet = 1;
-    itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
-    itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
     itemOptionsGameBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's names";
     itemOptionsGameBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
     itemOptionsGameShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
@@ -1492,8 +1490,8 @@ void SetupOptionsMenu(void)
     itemOptionsGameWeaponFastSwitch.tooltip_pzTextLower = "weapon is being lowered/raised";
     itemOptionsGameAutosaveMode.tooltip_pzTextUpper = "Set when autosave will trigger";
     itemOptionsGameLockSaving.tooltip_pzTextUpper = "Disable manual saving/save scumming";
-    itemOptionsGameBoolVanillaMode.tooltip_pzTextUpper = "Forcefully disables all";
-    itemOptionsGameBoolVanillaMode.tooltip_pzTextLower = "non-vanilla features/enhancements";
+    itemOptionsGameBoolVanillaMode.tooltip_pzTextUpper = "Disable all non-vanilla features/enhancements";
+    itemOptionsGameBoolVanillaMode.tooltip_pzTextLower = "(v1.21 compatibility mode)";
 
     //////////////////////
     menuOptionsGameEnhancements.Add(&itemGameEnhancementsTitle, false);
@@ -1511,7 +1509,6 @@ void SetupOptionsMenu(void)
     menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerSeed, false);
     menuOptionsGameEnhancements.Add(&itemBloodQAV, false);
     itemOptionsChainEnhancements.bDisableForNet = 1;
-    itemOptionsChainEnhancements.bEnable = !gVanilla;
     itemEnhancementMonsterSettings.tooltip_pzTextUpper = "Set the monster settings";
     itemEnhancementMonsterSettings.tooltip_pzTextLower = "for single-player mode";
     itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
@@ -1551,6 +1548,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameLockSaving.m_nFocus = gLockManualSaving % ARRAY_SSIZE(pzLockSavingStrings);
     itemMainSave3.bEnable = !gLockManualSaving; // disable save option in main menu if lock saving mode is set
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
+    SetGameVanillaMode(gVanilla); // enable/disable menu items depending on current vanilla mode state
 
     ///////
     itemEnhancementMonsterSettings.m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
@@ -2174,9 +2172,9 @@ void SetLockSaving(CGameMenuItemZCycle *pItem)
 void SetGameVanillaMode(char nState)
 {
     gVanilla = nState % ARRAY_SSIZE(pzVanillaModeStrings);
-    itemOptionsChainEnhancements.bEnable = !gVanilla;
     itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
+    itemOptionsChainEnhancements.bEnable = !gVanilla;
 }
 
 void SetVanillaMode(CGameMenuItemZCycle *pItem)
