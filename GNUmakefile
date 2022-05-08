@@ -665,10 +665,8 @@ ifneq (0,$(USE_MIMALLOC))
     COMPILERFLAGS += -I$(mimalloc_inc)
 endif
 
-ifeq ($(RENDERTYPE),SDL)
-    ifeq ($(SDL_TARGET),2)
-        COMPILERFLAGS += -I$(imgui_inc)
-    endif
+ifneq (1,$(SDL_TARGET))
+    COMPILERFLAGS += -I$(imgui_inc)
 endif
 
 ifneq (0,$(USE_PHYSFS))
@@ -697,10 +695,8 @@ ifneq (0,$(USE_MIMALLOC))
     libraries += mimalloc
 endif
 
-ifeq ($(RENDERTYPE),SDL)
-    ifeq ($(SDL_TARGET),2)
-        libraries += imgui
-    endif
+ifneq (1,$(SDL_TARGET))
+    libraries += imgui
 endif
 
 ifneq (0,$(USE_PHYSFS))

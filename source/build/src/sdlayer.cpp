@@ -1311,7 +1311,6 @@ void mouseLockToWindow(char a)
 
     SDL_ShowCursor(newstate);
 
-#if SDL_MAJOR_VERSION >= 2
     if (g_ImGui_IO)
     {
         if (newstate)
