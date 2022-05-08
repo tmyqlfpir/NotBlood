@@ -696,7 +696,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     gSecretMgr.Clear();
     gLevelTime = 0;
     automapping = 1;
-  
+
     int modernTypesErased = 0;
     for (int i = 0; i < kMaxSprites; i++)
     {
