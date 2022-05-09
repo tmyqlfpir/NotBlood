@@ -824,6 +824,10 @@ void dbRandomizerMode(spritetype *pSprite)
     if ((gGameOptions.nRandomizerMode & 1) && (gGameOptions.nRandomizerCheat != -1)) // if enemies or enemies+weapons mode, and seed cheat is active, replace enemy
     {
         const int type = pSprite->type;
+#ifdef NOONE_EXTENSIONS
+        if ((type == kDudeModernCustom) || (type == kDudeModernCustomBurning)) // ignore custom dude types
+            return;
+#endif
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother)) // filter problematic enemy types
         {
             switch (gGameOptions.nRandomizerCheat) // replace enemy according to cheat type
