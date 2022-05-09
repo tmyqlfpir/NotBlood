@@ -127,6 +127,7 @@ It should be noted that vanilla mode does not work with modern maps
    - This enhancement does not support custom modern map enemies
 * Randomizer mode
    - Set the enemy/pickups randomizer mode
+   - The randomizer does not support custom modern map enemies
 * Randomizer seed
    - Set the enemy/pickups randomizer's seed
    - An empty string will regenerate anew for every level start
@@ -155,13 +156,6 @@ It should be noted that vanilla mode does not work with modern maps
 * BRAAAINS - Zombies only
 * OKBOOMER - TNT cultists only
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
-
-### Additional randomizer seed cheats
-* GHSTBSTR - No phantoms
-* SAFEWORD - No hands
-* SAFEWATR - No hands/gill beasts
-* PESTCTRL - No hands/rats/spiders
-* IH8PETS! - No hands/rats/spiders/bats/hell hounds
 
 ### New console variables for NotBlood
 * cl_calebtalk
