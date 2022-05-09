@@ -671,6 +671,37 @@ void PropagateMarkerReferences(void)
     }
 }
 
+char dbIsBannedDude(spritetype *pSprite, XSPRITE* pXSprite)
+{
+    if (gGameOptions.uMonsterBannedType == BANNED_NONE) // no monsters banned, return
+        return false;
+    char bErased = false;
+    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_BATS))
+        bErased = pSprite->type == kDudeBat;
+    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_RATS))
+        bErased = pSprite->type == kDudeRat;
+    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_FISH))
+        bErased = (pSprite->type == kDudeGillBeast) || (pSprite->type == kDudeBoneEel);
+    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_HANDS))
+        bErased = pSprite->type == kDudeHand;
+    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_GHOSTS))
+        bErased = pSprite->type == kDudePhantasm;
+    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_SPIDERS))
+        bErased = (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeSpiderBlack);
+    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_TCALEBS))
+        bErased = pSprite->type == kDudeTinyCaleb;
+    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_HHOUNDS))
+        bErased = pSprite->type == kDudeHellHound;
+    if (bErased && pXSprite)
+    {
+        if (pXSprite->key > 0) // drop key
+            actDropObject(pSprite, kItemKeyBase + (pXSprite->key - 1));
+        if (pXSprite->dropMsg > 0) // drop item
+            actDropObject(pSprite, pXSprite->dropMsg);
+    }
+    return bErased;
+}
+
 static uint32_t curRandomizerSeed = 0;
 static uint32_t curRandomizerSeedDudes = 0;
 static uint32_t curRandomizerSeedThings = 0;
@@ -716,11 +747,6 @@ void dbRandomizerModeInit(void)
         "BRAAAINS", // zombies only
         "OKBOOMER", // tnt cultists only
         "SNEAKYFU", // prone shotgun/tommy gun cultists only
-        "GHSTBSTR", // no phantoms
-        "SAFEWORD", // no hands
-        "SAFEWATR", // no hands/gill beasts
-        "PESTCTRL", // no hands/rats/spiders
-        "IH8PETS!", // no hands/rats/spiders/bats/hell hounds
     };
 
     const uint32_t defaultSeed = 0xCA1EB666;
@@ -769,12 +795,12 @@ void dbRandomizerModeInit(void)
     curRandomizerSeedThings = curRandomizerSeedDudes = curRandomizerSeed;
 }
 
-bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
+void dbRandomizerMode(spritetype *pSprite)
 {
     if (pSprite == NULL) // invalid sprite, don't bother processing
-        return false;
+        return;
     if (!spriRangeIsFine(pSprite->index))
-        return false;
+        return;
 
     if ((gGameOptions.nRandomizerMode >= 2) && (pSprite->type == kItemBeastVision)) // always replace beast vision if pickups or enemies+pickups mode
     {
@@ -792,7 +818,6 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
         const int type = pSprite->type;
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother)) // filter problematic enemy types
         {
-            bool erased = false;
             switch (gGameOptions.nRandomizerCheat) // replace enemy according to cheat type
             {
             case  0: // "AAAAAAAA" - phantoms only
@@ -862,26 +887,6 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
                 break;
             }
-            case 16: // "GHSTBSTR" - no phantoms
-                if (pSprite->type == kDudePhantasm)
-                    erased = true;
-                break;
-            case 17: // "SAFEWORD" - no hands
-                if (pSprite->type == kDudeHand)
-                    erased = true;
-                break;
-            case 18: // "SAFEWATR" - no hands/gill beasts
-                if ((pSprite->type == kDudeHand) || (pSprite->type == kDudeGillBeast))
-                    erased = true;
-                break;
-            case 19: // "PESTCTRL" - no hands/rats/spiders
-                if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed))
-                    erased = true;
-                break;
-            case 20: // "IH8PETS!" - no hands/rats/spiders/bats/hell hounds
-                if ((pSprite->type == kDudeRat) || (pSprite->type == kDudeHand) || (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeBat) || (pSprite->type == kDudeHellHound))
-                    erased = true;
-                break;
             default: // unknown cheat id, don't do anything
             {
                 static bool shownError = false;
@@ -891,32 +896,21 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
                 break;
             }
             }
-            if (erased)
-            {
-                if (pXSprite)
-                {
-                    if (pXSprite->key > 0) // drop key
-                        actDropObject(pSprite, kItemKeyBase + (pXSprite->key - 1));
-                    if (pXSprite->dropMsg > 0) // drop item
-                        actDropObject(pSprite, pXSprite->dropMsg);
-                }
-                pSprite->type = kDudeBat;
-            }
-            return erased;
+            return;
         }
     }
 
     if (gGameOptions.nDifficulty <= 2) // don't always replace enemies/pickups
     {
-        if (!dbRandomizerRNG(2)) return false;
+        if (!dbRandomizerRNG(2)) return;
     }
     else if (gGameOptions.nDifficulty == 3) // well done
     {
-        if (!dbRandomizerRNG(4)) return false;
+        if (!dbRandomizerRNG(4)) return;
     }
     else // extra crispy
     {
-        if (!dbRandomizerRNG(5)) return false;
+        if (!dbRandomizerRNG(5)) return;
     }
 
     if (gGameOptions.nRandomizerMode & 1) // if enemies or enemies+weapons mode, randomize enemy
@@ -977,16 +971,16 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
             pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
             break;
         }
-        case kDudeSpiderBlack:
-        {
-            const int enemiesrng[] = {kDudeCultistTNT, kDudeGargoyleFlesh, kDudeCultistShotgunProne, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla, kDudeSpiderMother};
-            pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
-            break;
-        }
         case kDudeSpiderBrown:
         case kDudeSpiderRed:
         {
             const int enemiesrng[] = {kDudeHand, kDudeTinyCaleb, kDudeCultistTNT, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistShotgunProne};
+            pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
+            break;
+        }
+        case kDudeSpiderBlack:
+        {
+            const int enemiesrng[] = {kDudeCultistTNT, kDudeGargoyleFlesh, kDudeCultistShotgunProne, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla, kDudeSpiderMother};
             pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
             break;
         }
@@ -1267,7 +1261,6 @@ bool dbRandomizerMode(spritetype *pSprite, XSPRITE* pXSprite)
             break;
         }
     }
-    return false;
 }
 
 void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)

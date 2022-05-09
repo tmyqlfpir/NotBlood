@@ -552,13 +552,13 @@ bool SavedInCurrentSession(int nSlot)
         return false;
     if (nSlot > AUTOSAVESLOT_KEY)
         return false;
-    return (gSaveGameOptions[nSlot].nEpisode == gGameOptions.nEpisode) && (gSaveGameOptions[nSlot].nLevel == gGameOptions.nLevel) && (gSaveGameOptions[nSlot].nDifficulty == gGameOptions.nDifficulty) && (gSaveGameOptions[nSlot].nEnemyHealth == gGameOptions.nEnemyHealth) && (gSaveGameOptions[nSlot].nEnemyQuantity == gGameOptions.nEnemyQuantity) && (gSaveGameOptions[nSlot].bPitchforkOnly == gGameOptions.bPitchforkOnly) && !strcmp(gSaveGameOptions[nSlot].zLevelName, gGameOptions.zLevelName);
+    return (gSaveGameOptions[nSlot].nEpisode == gGameOptions.nEpisode) && (gSaveGameOptions[nSlot].nLevel == gGameOptions.nLevel) && (gSaveGameOptions[nSlot].nDifficulty == gGameOptions.nDifficulty) && (gSaveGameOptions[nSlot].nEnemyHealth == gGameOptions.nEnemyHealth) && (gSaveGameOptions[nSlot].nEnemyQuantity == gGameOptions.nEnemyQuantity) && (gSaveGameOptions[nSlot].bPitchforkOnly == gGameOptions.bPitchforkOnly) && (gSaveGameOptions[nSlot].uMonsterBannedType == gGameOptions.uMonsterBannedType) && !strcmp(gSaveGameOptions[nSlot].zLevelName, gGameOptions.zLevelName);
 }
 
 void UpdateSavedInfo(int nSlot)
 {
     strcpy(strRestoreGameStrings[gSaveGameOptions[nSlot].nSaveGameSlot], gSaveGameOptions[nSlot].szUserGameName);
-    const bool customDiff = (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyHealth) || (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyQuantity) || gSaveGameOptions[nSlot].bPitchforkOnly;
+    const bool customDiff = (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyHealth) || (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyQuantity) || gSaveGameOptions[nSlot].bPitchforkOnly || gSaveGameOptions[nSlot].uMonsterBannedType;
     restoreGameDifficulty[gSaveGameOptions[nSlot].nSaveGameSlot] = customDiff ? 5 : gSaveGameOptions[nSlot].nDifficulty;
 }
 

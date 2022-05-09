@@ -181,11 +181,11 @@ static void SpidBirthSeqCallback(int, int nXSprite)
         }
         
         if (pSpawn) {
-            if (gGameOptions.nRandomizerMode && !VanillaMode()) {
-                if (dbRandomizerMode(pSpawn, NULL)) { // if randomizer flagged the sprite as deleted, remove sprite
-                    DeleteSprite(pSpawn->index);
-                    return;
-                }
+            if (gGameOptions.nRandomizerMode && !VanillaMode())
+                dbRandomizerMode(pSpawn);
+            if (dbIsBannedDude(pSpawn, NULL)) { // if spawned sprite is banned, remove sprite
+                DeleteSprite(pSpawn->index);
+                return;
             }
             pDudeExtraE->birthCounter++;
             if ((pSpawn->type == kDudeSpiderRed) || (pSpawn->type == kDudeSpiderBrown) || VanillaMode())
