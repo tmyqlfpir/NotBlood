@@ -313,6 +313,7 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
+    gGameOptions.uMonsterBannedType = BANNED_NONE;
     gGameOptions.uGameFlags = 0;
     gSkill = gGameOptions.nDifficulty;
     StartLevel(&gGameOptions);
