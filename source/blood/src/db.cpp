@@ -671,35 +671,43 @@ void PropagateMarkerReferences(void)
     }
 }
 
+inline char dbIsBannedDudeType(int nType)
+{
+    if (gGameOptions.uMonsterBannedType == BANNED_NONE) // no monsters banned, return
+        return false;
+    char bBanned = false;
+    if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_BATS))
+        bBanned = nType == kDudeBat;
+    if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_RATS))
+        bBanned = nType == kDudeRat;
+    if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_FISH))
+        bBanned = (nType == kDudeGillBeast) || (nType == kDudeBoneEel);
+    if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_HANDS))
+        bBanned = nType == kDudeHand;
+    if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_GHOSTS))
+        bBanned = nType == kDudePhantasm;
+    if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_SPIDERS))
+        bBanned = (nType == kDudeSpiderBrown) || (nType == kDudeSpiderRed) || (nType == kDudeSpiderBlack);
+    if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_TCALEBS))
+        bBanned = nType == kDudeTinyCaleb;
+    if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_HHOUNDS))
+        bBanned = nType == kDudeHellHound;
+    return bBanned;
+}
+
 char dbIsBannedDude(spritetype *pSprite, XSPRITE* pXSprite)
 {
     if (gGameOptions.uMonsterBannedType == BANNED_NONE) // no monsters banned, return
         return false;
-    char bErased = false;
-    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_BATS))
-        bErased = pSprite->type == kDudeBat;
-    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_RATS))
-        bErased = pSprite->type == kDudeRat;
-    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_FISH))
-        bErased = (pSprite->type == kDudeGillBeast) || (pSprite->type == kDudeBoneEel);
-    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_HANDS))
-        bErased = pSprite->type == kDudeHand;
-    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_GHOSTS))
-        bErased = pSprite->type == kDudePhantasm;
-    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_SPIDERS))
-        bErased = (pSprite->type == kDudeSpiderBrown) || (pSprite->type == kDudeSpiderRed) || (pSprite->type == kDudeSpiderBlack);
-    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_TCALEBS))
-        bErased = pSprite->type == kDudeTinyCaleb;
-    if (!bErased && (gGameOptions.uMonsterBannedType&BANNED_HHOUNDS))
-        bErased = pSprite->type == kDudeHellHound;
-    if (bErased && pXSprite)
+    const char bRemove = dbIsBannedDudeType(pSprite->type);
+    if (bRemove && pXSprite)
     {
         if (pXSprite->key > 0) // drop key
             actDropObject(pSprite, kItemKeyBase + (pXSprite->key - 1));
         if (pXSprite->dropMsg > 0) // drop item
             actDropObject(pSprite, pXSprite->dropMsg);
     }
-    return bErased;
+    return bRemove;
 }
 
 static uint32_t curRandomizerSeed = 0;
