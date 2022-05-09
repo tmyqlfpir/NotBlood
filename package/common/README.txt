@@ -156,13 +156,6 @@ It should be noted that vanilla mode does not work with modern maps
 * OKBOOMER - TNT cultists only
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
 
-### Additional randomizer seed cheats
-* GHSTBSTR - No phantoms
-* SAFEWORD - No hands
-* SAFEWATR - No hands/gill beasts
-* PESTCTRL - No hands/rats/spiders
-* IH8PETS! - No hands/rats/spiders/bats/hell hounds
-
 ### New console variables for NotBlood
 * cl_calebtalk
    - Enable/disable Caleb's dialog lines (0: on, 1: no idle, 2: no explosion/gib, 3: off)

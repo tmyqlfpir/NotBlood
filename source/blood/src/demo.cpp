@@ -165,6 +165,7 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.nEnemyQuantity = gameOptions.nDifficulty;
     gameOptions.nEnemyHealth = gameOptions.nDifficulty;
     gameOptions.bPitchforkOnly = false;
+    gameOptions.uMonsterBannedType = BANNED_NONE;
 }
 
 void WriteGameOptionsLegacy(GAMEOPTIONSLEGACY &gameOptionsLegacy, GAMEOPTIONS &gameOptions)

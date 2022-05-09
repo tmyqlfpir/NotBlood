@@ -499,13 +499,14 @@ void OperateSprite(int nSprite, XSPRITE *pXSprite, EVENT event)
             spritetype* pSpawn = actSpawnDude(pSprite, pXSprite->data1, -1, 0);
             if (pSpawn) {
                 XSPRITE *pXSpawn = &xsprite[pSpawn->extra];
-                if (gGameOptions.nRandomizerMode && !VanillaMode()) // randomize spawned enemy
-                {
-                    if (dbRandomizerMode(pSpawn, pXSpawn)) // if randomizer flagged the sprite as deleted, remove sprite
-                    {
-                        DeleteSprite(pSpawn->index);
-                        break;
-                    }
+                if (gGameOptions.nRandomizerMode && !VanillaMode()) { // randomize spawned enemy
+                    dbRandomizerMode(pSpawn);
+                    if (pXSprite && (gGameOptions.nRandomizerMode & 1)) // if randomizer is set to enemies or enemies+weapons mode, randomly scale enemies
+                        dbRandomizerModeScale(pSpawn, pXSpawn);
+                }
+                if (dbIsBannedDude(pSpawn, pXSpawn)) { // if spawned sprite is banned, remove sprite
+                    DeleteSprite(pSpawn->index);
+                    break;
                 }
                 gKillMgr.AddCount(pSpawn);
                 switch (pXSprite->data1) {

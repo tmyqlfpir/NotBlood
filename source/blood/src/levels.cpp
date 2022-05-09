@@ -86,6 +86,7 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bFriendlyFire;
     1,     // char nKeySettings;
     0,     // bool bSpawnProtection;
+    0,     // unsigned char uMonsterBannedType;
     "",    // char szUserMap[BMAX_PATH];
 };
 
