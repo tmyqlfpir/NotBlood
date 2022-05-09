@@ -127,6 +127,7 @@ It should be noted that vanilla mode does not work with modern maps
    - This enhancement does not support custom modern map enemies
 * Randomizer mode
    - Set the enemy/pickups randomizer mode
+   - The randomizer does not support custom modern map enemies
 * Randomizer seed
    - Set the enemy/pickups randomizer's seed
    - An empty string will regenerate anew for every level start
