@@ -505,6 +505,9 @@ void OperateSprite(int nSprite, XSPRITE *pXSprite, EVENT event)
                         dbRandomizerModeScale(pSpawn, pXSpawn);
                 }
                 if (dbIsBannedDude(pSpawn, pXSpawn)) { // if spawned sprite is banned, remove sprite
+                    evKill(pSpawn->index, 3);
+                    if (sprite[pSpawn->index].extra > 0)
+                        seqKill(3, sprite[pSpawn->index].extra);
                     DeleteSprite(pSpawn->index);
                     break;
                 }
