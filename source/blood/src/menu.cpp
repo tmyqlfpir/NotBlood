@@ -1966,6 +1966,7 @@ void SetRandomizerMode(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gRandomizerMode = pItem->m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
+        gGameOptions.nRandomizerMode = gRandomizerMode;
     } else {
         pItem->m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
     }
