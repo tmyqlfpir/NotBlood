@@ -259,7 +259,7 @@ void levelLoadMapInfo(IniFile *pIni, LEVELINFO *pLevelInfo, const char *pzSectio
     for (int i = 0; i < kMaxMessages; i++)
     {
         sprintf(buffer, "Message%d", i+1);
-        strncpy(pLevelInfo->Messages[i], pIni->GetKeyString(pzSection, buffer, ""), 63);
+        strncpy(pLevelInfo->Messages[i], pIni->GetKeyString(pzSection, buffer, ""), 127);
     }
 }
 
