@@ -99,7 +99,7 @@ struct LEVELINFO
     int SongId;
     int EndingA;
     int EndingB;
-    char Messages[kMaxMessages][64];
+    char Messages[kMaxMessages][128];
     char Fog;
     char Weather;
 }; // 0x8ee bytes
