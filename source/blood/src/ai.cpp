@@ -1601,7 +1601,7 @@ void aiInit(void) {
     memset(gDudeExtra, 0, sizeof(gDudeExtra));
     memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
     memset(gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
-    memset(gSpritePrevSect, 0, sizeof(gSpritePrevSect));
+    memset(gSpritePrevSect, -1, sizeof(gSpritePrevSect));
     for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
         aiInitSprite(&sprite[nSprite]);
     }
