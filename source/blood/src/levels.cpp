@@ -212,6 +212,11 @@ char * levelGetMessage(int nMessage)
     char *pMessage = gEpisodeInfo[nEpisode].levelsInfo[nLevel].Messages[nMessage];
     if (*pMessage == 0)
         return NULL;
+    if (VanillaMode() && (Bstrlen(pMessage) > 63)) // don't print incompatible messages for vanilla mode
+    {
+        OSD_Printf("> Warning: Level E%dM%d message #%d longer than 63 characters (incompatible with vanilla mode).\n", nEpisode, nLevel, nMessage);
+        pMessage[63] = '\0'; // terminate message to emulate vanilla 1.21 string size
+    }
     return pMessage;
 }
 
