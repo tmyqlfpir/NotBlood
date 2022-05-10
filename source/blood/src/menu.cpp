@@ -320,14 +320,14 @@ CGameMenuItemSlider itemCustomDifficultyEnemyQuantity("ENEMIES QUANTITY:", 3, 66
 CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 50, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemCustomDifficultyEnemyDamage("ENEMIES DAMAGE:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 70, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemCustomDifficultyMonsterBanBats("BATS:", 3, 75, 82, 161, false, NULL, "REMOVE", "SPAWN");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanRats("RATS:", 3, 75, 90, 161, false, NULL, "REMOVE", "SPAWN");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanFish("FISH:", 3, 75, 98, 161, false, NULL, "REMOVE", "SPAWN");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHands("HANDS:", 3, 75, 106, 161, false, NULL, "REMOVE", "SPAWN");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanGhosts("GHOSTS:", 3, 75, 114, 161, false, NULL, "REMOVE", "SPAWN");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanSpiders("SPIDERS:", 3, 75, 122, 161, false, NULL, "REMOVE", "SPAWN");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75, 130, 161, false, NULL, "REMOVE", "SPAWN");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 138, 161, false, NULL, "REMOVE", "SPAWN");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanBats("BATS:", 3, 75, 82, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanRats("RATS:", 3, 75, 90, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanFish("FISH:", 3, 75, 98, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanHands("HANDS:", 3, 75, 106, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanGhosts("GHOSTS:", 3, 75, 114, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanSpiders("SPIDERS:", 3, 75, 122, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75, 130, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 138, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 150, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
 CGameMenuItemTitle itemOptionsOldTitle("OPTIONS", 1, 160, 20, 2038);
