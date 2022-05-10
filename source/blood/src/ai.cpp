@@ -248,9 +248,9 @@ bool CanMove(spritetype *pSprite, int a2, int nAngle, int nRange)
     return 1;
 }
 
-static unsigned char gSpriteStuckage[kMaxSprites] = {0};
-static vec3_t gSpritePrevLoc[kMaxSprites] = {0, 0, 0};
-static short gSpritePrevSect[kMaxSprites] = {0};
+static unsigned char gSpriteStuckage[kMaxSprites];
+static vec3_t gSpritePrevLoc[kMaxSprites];
+static short gSpritePrevSect[kMaxSprites];
 
 void aiChooseDirection(spritetype *pSprite, XSPRITE *pXSprite, int a3)
 {
@@ -1599,6 +1599,9 @@ void aiInit(void) {
     memset(cumulDamage, 0, sizeof(cumulDamage));
     memset(gDudeSlope, 0, sizeof(gDudeSlope));
     memset(gDudeExtra, 0, sizeof(gDudeExtra));
+    memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
+    memset(gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
+    memset(gSpritePrevSect, -1, sizeof(gSpritePrevSect));
     for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
         aiInitSprite(&sprite[nSprite]);
     }
@@ -1896,7 +1899,7 @@ void AILoadSave::Load(void)
     Read(gDudeExtra, sizeof(gDudeExtra));
     memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
     memset(gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
-    memset(gSpritePrevSect, 0, sizeof(gSpritePrevSect));
+    memset(gSpritePrevSect, -1, sizeof(gSpritePrevSect));
 }
 
 void AILoadSave::Save(void)
