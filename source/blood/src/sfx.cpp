@@ -242,7 +242,7 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, co
         return;
 
     SFX *pEffect = (SFX*)gSoundRes.Load(hRes);
-    if (!pzSound) // if raw name override not provided, use sound slot data
+    if (!pzSound) // if raw name override not provided, use slot's raw name
         pzSound = pEffect->rawName;
     hRes = gSoundRes.Lookup(pzSound, "RAW");
     if (!hRes)
@@ -373,7 +373,7 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
     if (!hRes) return;
 
     SFX* pEffect = (SFX*)gSoundRes.Load(hRes);
-    if (!pzSound) // if raw name override not provided, use sound slot data
+    if (!pzSound) // if raw name override not provided, use slot's raw name
         pzSound = pEffect->rawName;
     hRes = gSoundRes.Lookup(pzSound, "RAW");
     if (!hRes) return;
