@@ -1277,9 +1277,10 @@ void dbRandomizerMode(spritetype *pSprite)
 
 void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
 {
-    const int curRandomCheat = gGameOptions.nRandomizerCheat;
-    const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 15); // only randomize enemy sizes if seed cheats 0-14 are active
-    if (randomCheatActive && !pXSprite->scale && !dbRandomizerRNGDudes(3)) { // if random seed cheat is being used
+    const bool randomCheatActive = (gGameOptions.nRandomizerCheat >= 0) && (gGameOptions.nRandomizerCheat <= 15); // only randomize enemy sizes if seed cheats 0-15 are active
+    if (!randomCheatActive)
+        return;
+    if (!pXSprite->scale && !dbRandomizerRNGDudes(3)) { // randomly change enemy scale (only if enemy does not have scale set already)
         switch (pSprite->type) { // make enemies randomly huge
             case kDudeRat:
                 pXSprite->scale = ClipRange(dbRandomizerRNGDudes(2048-128)+128, 128, 2048);

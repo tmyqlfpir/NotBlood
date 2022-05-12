@@ -726,12 +726,12 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         if (!VanillaMode() && (sprite[i].statnum >= 0) && (sprite[i].statnum < kMaxStatus)) // randomize sprites and replace guns akimbo with quad damage icon
         {
             pXSprite = (pSprite->extra > 0) && (pSprite->extra < kMaxXSprites) ? &xsprite[pSprite->extra] : NULL;
-            const bool bRandomEnemy = (gGameOptions.nRandomizerMode & 1) && !IsPlayerSprite(pSprite) && IsDudeSprite(pSprite);
+            const bool bRandomEnemy = (gGameOptions.nRandomizerMode & 1) && IsDudeSprite(pSprite) && !IsPlayerSprite(pSprite); // if randomizer is set to enemies or enemies+weapons mode and sprite is a dude
             const bool bRandomItem = gGameOptions.nRandomizerMode > 0;
             if (bRandomEnemy) // if randomizer enemy, randomize non-player enemy
             {
                 dbRandomizerMode(pSprite);
-                if (pXSprite && (gGameOptions.nRandomizerMode & 1)) // if randomizer is set to enemies or enemies+weapons mode, randomly scale enemies
+                if (pXSprite) // randomly scale enemies
                     dbRandomizerModeScale(pSprite, pXSprite);
             }
             else if (bRandomItem) // randomize pickups
