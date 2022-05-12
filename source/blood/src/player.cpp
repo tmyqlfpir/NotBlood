@@ -333,7 +333,10 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
             {
                 if (gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not switch weapon
                 {
-                    sfxPlay3DSound(pPlayer->pSprite, 776, 2, 0, "NOTBLOOD0"); // play quad damage active sfx
+                    if (pPlayer == gMe) // play quad damage ending sfx
+                        sndStartSample("NOTBLOOD0", 150, -1);
+                    else
+                        sfxPlay3DSoundCP(pPlayer->pSprite, 776, -1, 0, 0, 192, "NOTBLOOD0");
                     return 1;
                 }
                 if ((pPlayer->curWeapon == kWeaponPitchfork) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponSprayCan) || (pPlayer->curWeapon >= kWeaponLifeLeech)) // if weapon doesn't have a akimbo state, don't raise weapon
@@ -434,8 +437,13 @@ void powerupProcess(PLAYER *pPlayer)
         }
         else if (pPlayer->pwUpTime[i] > 0)
         {
-            if (!VanillaMode() && gGameOptions.bQuadDamagePowerup && (pPlayer->pwUpTime[kPwUpTwoGuns] == ((int)(2.987f * kTicsPerSec) * kTicsPerFrame))) // if quad damage is active
-                sfxPlay3DSound(pPlayer->pSprite, 776, 2, 0, "NOTBLOOD1"); // play quad damage ending sfx
+            if (!VanillaMode() && gGameOptions.bQuadDamagePowerup && (pPlayer->pwUpTime[kPwUpTwoGuns] == ((int)(2.987f * kTicsPerSec) * kTicsPerFrame))) // if quad damage is ending
+            {
+                if (pPlayer == gMe) // play quad damage ending sfx
+                    sndStartSample("NOTBLOOD1", 150, -1);
+                else
+                    sfxPlay3DSoundCP(pPlayer->pSprite, 776, -1, 0, 0, 192, "NOTBLOOD1");
+            }
             pPlayer->pwUpTime[i] = ClipLow(pPlayer->pwUpTime[i]-4, 0);
             if (!pPlayer->pwUpTime[i])
                 powerupDeactivate(pPlayer, i);
