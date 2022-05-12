@@ -217,19 +217,19 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, co
         return;
     if (!VanillaMode())
     {
-        if ((gGameOptions.nRandomizerCheat == 12) && Random(2) && (soundId > 1000)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
+        if ((gGameOptions.nRandomizerCheat == 12) && (soundId > 1000) && IsDudeSprite(pSprite) && QRandom(2)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
         {
             const int type = pSprite->type;
             if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))
             {
-                if (!Random(2)) // replace cultist callout with fart
+                if (!QRandom(2)) // replace cultist callout with fart
                 {
-                    soundId = 172+Random(2);
+                    soundId = 172+QRandom(2);
                 }
                 else
                 {
                     const char *pzFarts[] = {"NOTBLOOD2", "NOTBLOOD3", "NOTBLOOD4", "NOTBLOOD5"};
-                    pzSound = pzFarts[Random(ARRAY_SSIZE(pzFarts))]; // use custom fart sfx
+                    pzSound = pzFarts[QRandom(ARRAY_SSIZE(pzFarts))]; // use custom fart sfx
                     soundId = 3016; // use sound that is 22050 Hz based
                 }
             }
@@ -349,19 +349,19 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
     if (!SoundToggle || !pSprite || soundId < 0) return;
     if (!VanillaMode())
     {
-        if ((gGameOptions.nRandomizerCheat == 12) && Random(2) && (soundId > 1000)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
+        if ((gGameOptions.nRandomizerCheat == 12) && (soundId > 1000) && IsDudeSprite(pSprite) && QRandom(2)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
         {
             const int type = pSprite->type;
             if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))
             {
-                if (!Random(2)) // replace cultist callout with fart
+                if (!QRandom(2)) // replace cultist callout with fart
                 {
-                    soundId = 172+Random(2);
+                    soundId = 172+QRandom(2);
                 }
                 else
                 {
                     const char *pzFarts[] = {"NOTBLOOD2", "NOTBLOOD3", "NOTBLOOD4", "NOTBLOOD5"};
-                    pzSound = pzFarts[Random(ARRAY_SSIZE(pzFarts))]; // use custom fart sfx
+                    pzSound = pzFarts[QRandom(ARRAY_SSIZE(pzFarts))]; // use custom fart sfx
                     soundId = 3016; // use sound that is 22050 Hz based
                 }
             }
