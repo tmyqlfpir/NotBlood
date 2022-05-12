@@ -334,7 +334,7 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
                 if (gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not switch weapon
                 {
                     if (pPlayer == gMe) // play quad damage ending sfx
-                        sndStartSample("NOTBLOOD0", 150, -1);
+                        sndStartSample("NOTBLOOD0", 128, -1);
                     else
                         sfxPlay3DSoundCP(pPlayer->pSprite, 776, -1, 0, 0, 192, "NOTBLOOD0");
                     return 1;
