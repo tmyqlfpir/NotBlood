@@ -207,7 +207,7 @@ void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
     }
 }
 
-void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags)
+void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, const char *pzSound)
 {
     if (!SoundToggle)
         return;
@@ -221,7 +221,18 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags)
         {
             const int type = pSprite->type;
             if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))
-                soundId = 172+Random(2); // replace cultist callout with fart
+            {
+                if (!Random(2)) // replace cultist callout with fart
+                {
+                    soundId = 172+Random(2);
+                }
+                else
+                {
+                    const char *pzFarts[] = {"NOTBLOOD2", "NOTBLOOD3", "NOTBLOOD4", "NOTBLOOD5"};
+                    pzSound = pzFarts[Random(ARRAY_SSIZE(pzFarts))]; // use custom fart sfx
+                    soundId = 3016; // use sound that is 22050 Hz based
+                }
+            }
         }
         if ((soundId == 3017) && gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not play quote about having two guns
             soundId = 3016;
@@ -231,7 +242,9 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags)
         return;
 
     SFX *pEffect = (SFX*)gSoundRes.Load(hRes);
-    hRes = gSoundRes.Lookup(pEffect->rawName, "RAW");
+    if (!pzSound) // if raw name override not provided, use sound slot data
+        pzSound = pEffect->rawName;
+    hRes = gSoundRes.Lookup(pzSound, "RAW");
     if (!hRes)
         return;
     int size = hRes->size;
@@ -331,7 +344,7 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags)
 }
 
 // by NoOne: same as previous, but allows to set custom pitch for sound AND volume.
-void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, int pitch, int volume)
+void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, int pitch, int volume, const char *pzSound)
 {
     if (!SoundToggle || !pSprite || soundId < 0) return;
     if (!VanillaMode())
@@ -340,7 +353,18 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
         {
             const int type = pSprite->type;
             if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))
-                soundId = 172+Random(2); // replace cultist callout with fart
+            {
+                if (!Random(2)) // replace cultist callout with fart
+                {
+                    soundId = 172+Random(2);
+                }
+                else
+                {
+                    const char *pzFarts[] = {"NOTBLOOD2", "NOTBLOOD3", "NOTBLOOD4", "NOTBLOOD5"};
+                    pzSound = pzFarts[Random(ARRAY_SSIZE(pzFarts))]; // use custom fart sfx
+                    soundId = 3016; // use sound that is 22050 Hz based
+                }
+            }
         }
         if ((soundId == 3017) && gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not play quote about having two guns
             soundId = 3016;
@@ -349,7 +373,9 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
     if (!hRes) return;
 
     SFX* pEffect = (SFX*)gSoundRes.Load(hRes);
-    hRes = gSoundRes.Lookup(pEffect->rawName, "RAW");
+    if (!pzSound) // if raw name override not provided, use sound slot data
+        pzSound = pEffect->rawName;
+    hRes = gSoundRes.Lookup(pzSound, "RAW");
     if (!hRes) return;
     int size = hRes->size;
     if (size <= 0) return;
