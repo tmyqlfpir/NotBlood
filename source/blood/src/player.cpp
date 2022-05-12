@@ -440,7 +440,7 @@ void powerupProcess(PLAYER *pPlayer)
             if (!VanillaMode() && gGameOptions.bQuadDamagePowerup && (pPlayer->pwUpTime[kPwUpTwoGuns] == ((int)(2.987f * kTicsPerSec) * kTicsPerFrame))) // if quad damage is ending
             {
                 if (pPlayer == gMe) // play quad damage ending sfx
-                    sndStartSample("NOTBLOOD1", 150, -1);
+                    sndStartSample("NOTBLOOD1", 128, -1);
                 else
                     sfxPlay3DSoundCP(pPlayer->pSprite, 776, -1, 0, 0, 192, "NOTBLOOD1");
             }
