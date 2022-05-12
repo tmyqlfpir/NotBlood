@@ -155,6 +155,7 @@ It should be noted that vanilla mode does not work with modern maps
 * WEED420! - Cultists only but they're green
 * BRAAAINS - Zombies only
 * OKBOOMER - TNT cultists only
+* OKZOOMER - TNT/tesla cultists only
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
 
 ### New console variables for NotBlood

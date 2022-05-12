@@ -122,14 +122,14 @@ struct EPISODEINFO
 // MONSTER BANNED TYPE FLAGS ////////////////////////////////////
 enum {
     BANNED_NONE    =  0,
-    BANNED_BATS    =  1 <<  0,
-    BANNED_RATS    =  1 <<  1,
-    BANNED_FISH    =  1 <<  2,
-    BANNED_HANDS   =  1 <<  3,
-    BANNED_GHOSTS  =  1 <<  4,
-    BANNED_SPIDERS =  1 <<  5,
-    BANNED_TCALEBS =  1 <<  6,
-    BANNED_HHOUNDS =  1 <<  7
+    BANNED_BATS    =  1 << 0,
+    BANNED_RATS    =  1 << 1,
+    BANNED_FISH    =  1 << 2,
+    BANNED_HANDS   =  1 << 3,
+    BANNED_GHOSTS  =  1 << 4,
+    BANNED_SPIDERS =  1 << 5,
+    BANNED_TCALEBS =  1 << 6,
+    BANNED_HHOUNDS =  1 << 7
 };
 
 extern EPISODEINFO gEpisodeInfo[];

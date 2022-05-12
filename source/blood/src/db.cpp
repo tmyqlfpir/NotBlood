@@ -754,6 +754,7 @@ void dbRandomizerModeInit(void)
         "WEED420!", // cultists only but they're green (and make you dizzy on damage)
         "BRAAAINS", // zombies only
         "OKBOOMER", // tnt cultists only
+        "OKZOOMER", // tnt/tesla cultists only
         "SNEAKYFU", // prone shotgun/tommy gun cultists only
     };
 
@@ -893,7 +894,13 @@ void dbRandomizerMode(spritetype *pSprite)
             case 14: // "OKBOOMER" - tnt cultists only
                 pSprite->type = kDudeCultistTNT;
                 break;
-            case 15: // "SNEAKYFU" - prone shotgun/tommy gun cultists only
+            case 15: // "OKZOOMER" - tnt/tesla cultists only
+            {
+                const int enemiesrng[] = {kDudeCultistTesla, kDudeCultistTNT};
+                pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
+                break;
+            }
+            case 16: // "SNEAKYFU" - prone shotgun/tommy gun cultists only
             {
                 const int enemiesrng[] = {kDudeCultistShotgunProne, kDudeCultistTommyProne};
                 pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
@@ -901,10 +908,10 @@ void dbRandomizerMode(spritetype *pSprite)
             }
             default: // unknown cheat id, don't do anything
             {
-                static bool shownError = false;
-                if (!shownError) // only show once per session
+                static char bShownError = 0;
+                if (!bShownError) // only show once per session
                     initprintf("Error invalid cheat seed %s (%d)\nAdd seed cheat effect to func dbRandomizerMode()\n\n", gGameOptions.szRandomizerSeed, gGameOptions.nRandomizerCheat);
-                shownError = true;
+                bShownError = 1;
                 break;
             }
             }
@@ -1278,7 +1285,7 @@ void dbRandomizerMode(spritetype *pSprite)
 void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
 {
     const int curRandomCheat = gGameOptions.nRandomizerCheat;
-    const bool randomCheatActive = (curRandomCheat > -1) && (curRandomCheat < 15); // only randomize enemy sizes if seed cheats 0-14 are active
+    const bool randomCheatActive = (curRandomCheat >= 0) && (curRandomCheat <= 15); // only randomize enemy sizes if seed cheats 0-15 are active
     if (randomCheatActive && !pXSprite->scale && !dbRandomizerRNGDudes(3)) { // if random seed cheat is being used
         switch (pSprite->type) { // make enemies randomly huge
             case kDudeRat:
