@@ -133,6 +133,7 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST072.DEM", (int32_t)0x000047C6, 0xA4405651, 0x00000000, {(int32_t)0x000099B6, (int32_t)0x000064BE, (int32_t)0x00006DA4}},
     {"/validatedemos/TEST073.DEM", (int32_t)0x00002FD7, 0x11377903, 0x00000000, {(int32_t)0xFFFF7EC1, (int32_t)0xFFFEEF5F, (int32_t)0xFFF701A4}},
     {"/validatedemos/TEST074.DEM", (int32_t)0x0000287A, 0xACAC602D, 0x00000000, {(int32_t)0x0000D43F, (int32_t)0x000092C1, (int32_t)0x00002844}},
+    {"/validatedemos/TEST075.DEM", (int32_t)0x000013DD, 0x78D2DFA4, 0x00000000, {(int32_t)0x00002362, (int32_t)0x00013B0D, (int32_t)0x000069A4}},
 };
 
 int nBuild = 0;
