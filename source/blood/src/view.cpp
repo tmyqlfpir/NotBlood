@@ -1353,7 +1353,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
     if (!gPowerupDuration)
         return;
 
-    const short int akimboQuadDamagePicnum = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30463 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
+    const short int akimboQuadDamagePicnum = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30463 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from notblood.pk3/TILES099.ART
 
     POWERUPDISPLAY powerups[nPowerUps];
     powerups[0] = { gPowerUpInfo[kPwUpShadowCloak].picnum,  0.4f, 0, pPlayer->pwUpTime[kPwUpShadowCloak] }; // Invisibility
@@ -2803,7 +2803,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
         if (pPlayer->pXSprite->health == 0)
             break;
-        const short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30463 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from TILES099.ART
+        const short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30463 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from notblood.pk3/TILES099.ART
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
