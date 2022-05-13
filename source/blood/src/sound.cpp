@@ -268,7 +268,7 @@ void SoundCallback(intptr_t val)
 
 void sndKillSound(SAMPLE2D *pChannel);
 
-void sndStartSample(const char *pzSound, int nVolume, int nChannel)
+void sndStartSample(const char *pzSound, int nVolume, int nChannel, int nRate)
 {
     if (!SoundToggle)
         return;
@@ -287,7 +287,9 @@ void sndStartSample(const char *pzSound, int nVolume, int nChannel)
         return;
     int nSize = pChannel->at5->size;
     char *pData = (char*)gSoundRes.Lock(pChannel->at5);
-    pChannel->hVoice = FX_PlayRaw(pData, nSize, sndGetRate(1), 0, nVolume, nVolume, nVolume, nVolume, fix16_one, (intptr_t)&pChannel->hVoice);
+    if (!nRate)
+        nRate = sndGetRate(1);
+    pChannel->hVoice = FX_PlayRaw(pData, nSize, nRate, 0, nVolume, nVolume, nVolume, nVolume, fix16_one, (intptr_t)&pChannel->hVoice);
 }
 
 void sndStartSample(unsigned int nSound, int nVolume, int nChannel, bool bLoop)

@@ -63,7 +63,7 @@ void sndFadeSong(int nTime);
 void sndSetMusicVolume(int nVolume);
 void sndSetFXVolume(int nVolume);
 void sndStopSong(void);
-void sndStartSample(const char *pzSound, int nVolume, int nChannel = -1);
+void sndStartSample(const char *pzSound, int nVolume, int nChannel = -1, int nRate = 0);
 void sndStartSample(unsigned int nSound, int nVolume, int nChannel = -1, bool bLoop = false);
 void sndStartWavID(unsigned int nSound, int nVolume, int nChannel = -1);
 void sndStartWavDisk(const char *pzFile, int nVolume, int nChannel = -1);
