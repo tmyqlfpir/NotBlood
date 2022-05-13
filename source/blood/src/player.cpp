@@ -1042,6 +1042,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
         case kItemFlagBBase: {
             if (gGameOptions.nGameType != 3 || pItem->extra <= 0) return 0;
             XSPRITE * pXItem = &xsprite[pItem->extra];
+            int nPalette = 0;
             if (pItem->type == kItemFlagABase) {
                 if (pPlayer->teamId == 1) {
                     if ((pPlayer->hasFlag & 1) == 0 && pXItem->state) {
@@ -1073,7 +1074,9 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         evSend(0, 0, 81, kCmdOn);
                         sprintf(buffer, "%s captured Red Flag!", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8001, 255, 2, 0);
-                        viewSetMessage(buffer);
+                        if (!VanillaMode())  // tint message depending on team (red/blue)
+                            nPalette = (pPlayer->teamId&1) ? 7 : 10;
+                        viewSetMessage(buffer, nPalette);
 #if 0
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
@@ -1117,7 +1120,9 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         evSend(0, 0, 80, kCmdOn);
                         sprintf(buffer, "%s captured Blue Flag!", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8000, 255, 2, 0);
-                        viewSetMessage(buffer);
+                        if (!VanillaMode())  // tint message depending on team (red/blue)
+                            nPalette = (pPlayer->teamId&1) ? 7 : 10;
+                        viewSetMessage(buffer, nPalette);
 #if 0
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
@@ -2004,6 +2009,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     dassert(nKiller >= 0 && nKiller < kMaxPlayers);
     int nVictim = pVictim->pSprite->type-kDudePlayer1;
     dassert(nVictim >= 0 && nVictim < kMaxPlayers);
+    int nPalette = 0;
     if (myconnectindex == connecthead)
     {
         sprintf(buffer, "frag %d killed %d\n", pKiller->nPlayer+1, pVictim->nPlayer+1);
@@ -2055,9 +2061,11 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         sprintf(buffer, pzMessage, gProfile[nKiller].name, gProfile[nVictim].name);
         if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
             sndStartSample(nSound, 255, 2, 0);
+        if (!VanillaMode() && (gGameOptions.nGameType == 3))  // tint message depending on team (red/blue)
+            nPalette = (pKiller->teamId&1) ? 7 : 10;
     }
     if (VanillaMode() || buffer[0] != '\0')
-        viewSetMessage(buffer);
+        viewSetMessage(buffer, nPalette);
 }
 
 void FragPlayer(PLAYER *pPlayer, int nSprite)
@@ -2307,7 +2315,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
 
         if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode()) // if died in single-player and not playing demo
         {
-            extern short gQuickLoadSlot, gQuickSaveSlot;
+            extern short gQuickLoadSlot, gQuickSaveSlot; // from menu.h
             bool autosavedInSession = gAutosaveInCurLevel;
             if (!autosavedInSession) // if player has not triggered autosave in current level, check if last manual save/load was in current level
                 autosavedInSession = SavedInCurrentSession(gQuickLoadSlot) || SavedInCurrentSession(gQuickSaveSlot);
