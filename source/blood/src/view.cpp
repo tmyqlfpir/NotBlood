@@ -1534,7 +1534,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     const int x = 640/4;
     const int xoffset = (int)(640.f/(11.f/nScale));
     int yPrimary = (int)((viewDrawParametricBlend(animPos * 1.1f) * animPosRange) + animPosMin);
-    if ((gViewSize > 2) && (gShowWeaponSelect == 1)) // if full hud is displayed, bump up by a few pixels
+    if ((gViewSize > 3) && (gShowWeaponSelect == 1)) // if full hud is displayed, bump up by a few pixels
         yPrimary += 24;
     else if (gShowWeaponSelect == 2) // if drawn at the top, offset by the multiplayer stats bar height
         yPrimary += statsOffset;
@@ -1842,8 +1842,12 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gViewSize < 0) return;
 
-    if (gShowWeaponSelect && !VanillaMode())
+    char bDrawWeaponHud = gShowWeaponSelect && !VanillaMode();
+    if (bDrawWeaponHud && (gViewSize > 3)) // if hud size above 3, draw weapon select bar behind hud
+    {
         viewDrawWeaponSelect(pPlayer, pXSprite);
+        bDrawWeaponHud = 0;
+    }
 
     if (gViewSize == 1)
     {
@@ -1894,16 +1898,20 @@ void UpdateStatusBar(ClockTicks arg)
         viewDrawStats(pPlayer, 2-xscalestats, 140);
         viewDrawPowerUps(pPlayer);
     }
-    else if (gViewSize <= 2)
+    else if (gViewSize <= 3)
     {
         if (pPlayer->throwPower && pXSprite->health > 0)
             TileHGauge(2260, 124, 175, pPlayer->throwPower, 65536);
         else
             viewDrawPack(pPlayer, 166, 200-tilesiz[2201].y/2);
     }
-    if (gViewSize == 2)
+    if ((gViewSize == 2) || (gViewSize == 3))
     {
-        DrawStatSprite(2201, 34-xscalehud, 187, 16, nPalette, 256);
+        const char bKeyHolder = (gViewSize == 3); // if hud size 3, use custom key holder attached to health/ammo hud tile
+        if (bKeyHolder)
+            DrawStatSprite(30457, (37/2)+(34-xscalehud), 187, 16, nPalette, 256); // use key holder hud tile from notblood.pk3/TILES099.ART
+        else
+            DrawStatSprite(2201, 34-xscalehud, 187, 16, nPalette, 256);
         if (pXSprite->health >= 16 || ((int)totalclock&16) || pXSprite->health == 0)
         {
             DrawStatNumber("%3d", pXSprite->health>>4, 2190, 8-xscalehud, 183, 0, 0, 256);
@@ -1933,7 +1941,25 @@ void UpdateStatusBar(ClockTicks arg)
         }
         DrawPackItemInStatusBar(pPlayer, 286+xscalehud, 186, 302+xscalehud, 183, 512);
 
-        if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
+        if (bKeyHolder)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                const int nTile = 2220+i;
+                int x, y;
+                x = 75+(i>>1)*11;
+                x -= xscalehud;
+                if (i&1)
+                    y = 200-8;
+                else
+                    y = 200-19;
+                if (pPlayer->hasKey[i+1])
+                    DrawStatSprite(nTile, x, y, 0, 0, 256);
+                else
+                    DrawStatSprite(nTile, x, y, 40, 5, 256);
+            }
+        }
+        else if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
         {
             for (int i = 0; i < 6; i++)
             {
@@ -1964,7 +1990,7 @@ void UpdateStatusBar(ClockTicks arg)
         viewDrawStats(pPlayer, 2-xscalestats, 140);
         viewDrawPowerUps(pPlayer);
     }
-    else if (gViewSize > 2)
+    else if (gViewSize > 3)
     {
         viewDrawPack(pPlayer, 160, 200-tilesiz[2200].y);
         DrawStatMaskedSprite(2200, 160, 172, 16, nPalette);
@@ -2052,6 +2078,9 @@ void UpdateStatusBar(ClockTicks arg)
         viewDrawStats(pPlayer, 2-xscalestats, 140);
         viewDrawPowerUps(pPlayer);
     }
+
+    if (bDrawWeaponHud) // draw weapon select bar over hud
+        viewDrawWeaponSelect(pPlayer, pXSprite);
 
     if (gGameOptions.nGameType < 1) return;
 
@@ -2214,8 +2243,8 @@ void viewResizeView(int size)
     yscale = divscale16(ydim, 200);
     xstep = divscale16(320, xdim);
     ystep = divscale16(200, ydim);
-    gViewSize = ClipRange(size, 0, 8);
-    if (gViewSize <= 3)
+    gViewSize = ClipRange(size, 0, 9);
+    if (gViewSize <= 4)
     {
         gViewX0 = 0;
         gViewX1 = xdim-1;
@@ -2242,10 +2271,10 @@ void viewResizeView(int size)
         }
 
         int height = gViewY1-gViewY0;
-        gViewX0 += mulscale16(xdim*(gViewSize-4),4096);
-        gViewX1 -= mulscale16(xdim*(gViewSize-4),4096);
-        gViewY0 += mulscale16(height*(gViewSize-4),4096);
-        gViewY1 -= mulscale16(height*(gViewSize-4),4096);
+        gViewX0 += mulscale16(xdim*(gViewSize-5),4096);
+        gViewX1 -= mulscale16(xdim*(gViewSize-5),4096);
+        gViewY0 += mulscale16(height*(gViewSize-5),4096);
+        gViewY1 -= mulscale16(height*(gViewSize-5),4096);
         gViewX0S = divscale16(gViewX0, xscalecorrect);
         gViewY0S = divscale16(gViewY0, yscale);
         gViewX1S = divscale16(gViewX1, xscalecorrect);
@@ -2258,7 +2287,7 @@ void viewResizeView(int size)
     }
     else
     {
-        const int nOffset = !VanillaMode() && (gGameOptions.nGameType == 0) && (gViewSize < 5) ? 6 : 1; // lower message position for single-player
+        const int nOffset = !VanillaMode() && (gGameOptions.nGameType == 0) && (gViewSize < 6) ? 6 : 1; // lower message position for single-player
         gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+nOffset);
     }
     gGameMessageMgr.maxNumberOfMessagesToDisplay = !VanillaMode() && (gGameOptions.nGameType > 0) ? 3 : 4; // set max displayed messages to 3 for multiplayer (reduces on screen clutter)
@@ -2312,7 +2341,7 @@ void UpdateFrame(void)
 
 void viewDrawInterface(ClockTicks arg)
 {
-    if (gViewMode == 3 && ((gViewSize >= 3) || (gViewSize <= 2 && gGameOptions.nGameType > 0)))
+    if (gViewMode == 3 && ((gViewSize >= 4) || (gViewSize <= 3 && gGameOptions.nGameType > 0)))
     {
         UpdateFrame();
         pcBackground--;
@@ -4280,7 +4309,7 @@ RORHACK:
                 if (pXSector->color)
                     nPalette = pSector->floorpal;
             }
-            if (gViewSize == 3) // with this view size, move up so it matches the same position as full hud
+            if (gViewSize == 4) // with this view size, move up so it matches the same position as full hud
                 cY -= (int)((25.f/2.f)*65536.f);
             
             #ifdef NOONE_EXTENSIONS
