@@ -129,8 +129,8 @@ void LoadSave::LoadGame(char *pzFile)
     InitSectorFX();
     viewInitializePrediction();
     PreloadCache();
-    if (!VanillaMode() && !gMe->packSlots[1].isActive) // if diving suit is not active, turn off reverb sound effect
-        sfxSetReverb(0);
+    if (!VanillaMode()) // set reverb sound effect state
+        sfxSetReverb(gMe->packSlots[1].isActive || gMe->pwUpTime[kPwUpReflectShots]);
     ambInit();
 #ifdef YAX_ENABLE
     yax_update(numyaxbunches > 0 ? 2 : 1);
