@@ -542,7 +542,7 @@ const char *pzStatsPowerupRatioStrings[] = {
 };
 
 const char *pzHudRatioStrings[] = {
-    "DEFAULT",
+    "NATIVE",
     "4:3",
     "16:10",
     "16:9",
@@ -633,7 +633,7 @@ CGameMenuItemZCycle itemOptionsDisplayPowerupDuration("POWERUP DURATION:", 3, 66
 CGameMenuItemZBool itemOptionsDisplayBoolShowMapTitle("MAP TITLE:", 3, 66, 100, 180, gShowMapTitle, SetShowMapTitle, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 110, 180, gMessageState, SetMessages, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 120, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayHudRatio("HUD POSITION:", 3, 66, 130, 180, 0, SetHudRatio, pzHudRatioStrings, ARRAY_SSIZE(pzHudRatioStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayHudRatio("HUD ALIGNMENT:", 3, 66, 130, 180, 0, SetHudRatio, pzHudRatioStrings, ARRAY_SSIZE(pzHudRatioStrings), 0);
 CGameMenuItemZCycle itemOptionsDisplayMirrorMode("MIRROR MODE:", 3, 66, 140, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
 CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 150, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
 CGameMenuItemZBool itemOptionsDisplayBoolSlowRoomFlicker("SLOW DOWN FLICKERING LIGHTS:", 3, 66, 160, 180, gSlowRoomFlicker, SetSlowRoomFlicker, NULL, NULL);
