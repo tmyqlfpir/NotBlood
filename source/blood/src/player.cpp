@@ -453,6 +453,11 @@ void powerupProcess(PLAYER *pPlayer)
 
 void powerupClear(PLAYER *pPlayer)
 {
+    if (!VanillaMode() && (pPlayer == gMe)) // turn off reverb sound effects
+    {
+        if (pPlayer->packSlots[1].isActive || pPlayer->pwUpTime[kPwUpReflectShots]) // if diving suit/reflective shots powerup is active, turn off reverb effect
+            sfxSetReverb(0);
+    }
     for (int i = kMaxPowerUps-1; i >= 0; i--)
     {
         pPlayer->pwUpTime[i] = 0;
