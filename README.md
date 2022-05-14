@@ -8,7 +8,7 @@ New features include:
 * Difficulty based invulnerability timer for player damage ([before](https://web.archive.org/web/20220319193718if_/https://files.catbox.moe/ucs7gp.mp4)/[after](https://web.archive.org/web/20220514201922if_/https://files.catbox.moe/8hyaqm.mp4))
 * Smaller hitboxes for player projectiles ([before](https://web.archive.org/web/20220319193738if_/https://files.catbox.moe/3peiru.mp4)/[after](https://web.archive.org/web/20220514201943if_/https://files.catbox.moe/zso8g4.mp4))
 * Raymarching collision testing for player projectiles ([before](https://web.archive.org/web/20220514202239if_/https://files.catbox.moe/qxtv05.mp4)/[after](https://web.archive.org/web/20220319193719if_/https://files.catbox.moe/vo03ck.mp4))
-* Replaced sector based damage logic for player explosions ([before](https://web.archive.org/web/20220514202656if_/https://files.catbox.moe/h6xcrg.mp4)/[after](https://web.archive.org/web/20220514202724/https://files.catbox.moe/35e08d.mp4))
+* Replaced sector based damage logic for player explosions ([before](https://web.archive.org/web/20220514202656if_/https://files.catbox.moe/h6xcrg.mp4)/[after](https://web.archive.org/web/20220514202724if_/https://files.catbox.moe/35e08d.mp4))
 * Vanilla mode with optional DOS mouse handling
 * Quad damage replacement for guns akimbo powerup
 * Randomize mode for enemies and pickups (multiplayer supported)
