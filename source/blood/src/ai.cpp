@@ -1899,7 +1899,7 @@ void AILoadSave::Load(void)
     Read(gDudeExtra, sizeof(gDudeExtra));
     memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
     memset(gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
-    memset(gSpritePrevSect, 0, sizeof(gSpritePrevSect));
+    memset(gSpritePrevSect, -1, sizeof(gSpritePrevSect));
 }
 
 void AILoadSave::Save(void)
