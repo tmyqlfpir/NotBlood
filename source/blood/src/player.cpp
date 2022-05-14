@@ -437,7 +437,7 @@ void powerupProcess(PLAYER *pPlayer)
         }
         else if (pPlayer->pwUpTime[i] > 0)
         {
-            if (!VanillaMode() && gGameOptions.bQuadDamagePowerup && (pPlayer->pwUpTime[kPwUpTwoGuns] == ((int)(2.987f * kTicsPerSec) * kTicsPerFrame))) // if quad damage is ending
+            if (!VanillaMode() && gGameOptions.bQuadDamagePowerup && (i == kPwUpTwoGuns) && (pPlayer->pwUpTime[i] == ((int)(2.987f * kTicsPerSec) * kTicsPerFrame))) // if quad damage is ending
             {
                 if (pPlayer == gMe) // play quad damage ending sfx
                     sndStartSample("NOTBLOOD1", 128, -1);
@@ -453,6 +453,11 @@ void powerupProcess(PLAYER *pPlayer)
 
 void powerupClear(PLAYER *pPlayer)
 {
+    if (!VanillaMode() && (pPlayer == gMe)) // turn off reverb sound effects
+    {
+        if (pPlayer->packSlots[1].isActive || pPlayer->pwUpTime[kPwUpReflectShots]) // if diving suit/reflective shots powerup is active, turn off reverb effect
+            sfxSetReverb(0);
+    }
     for (int i = kMaxPowerUps-1; i >= 0; i--)
     {
         pPlayer->pwUpTime[i] = 0;
