@@ -696,22 +696,15 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
                 nSprite = gUpperLink[gHitInfo.hitsect];
                 if (nSprite < 0)
                     return 2;
-                nLink = sprite[nSprite].owner & 0x3fff;
-                if (nLink < 0)
-                    return 2;
             }
             else
             {
                 nSprite = gLowerLink[gHitInfo.hitsect];
                 if (nSprite < 0)
                     return 1;
-                nLink = sprite[nSprite].owner & 0x3fff;
-                if (nLink < 0)
-                    return 1;
             }
-            gHitInfo.hitsect = -1;
-            gHitInfo.hitwall = -1;
-            gHitInfo.hitsprite = -1;
+            nLink = sprite[nSprite].owner & 0x3fff;
+            gHitInfo.hitsect = gHitInfo.hitwall = gHitInfo.hitsprite = -1;
             x1 = gHitInfo.hitx + sprite[nLink].x - sprite[nSprite].x;
             y1 = gHitInfo.hity + sprite[nLink].y - sprite[nSprite].y;
             z1 = gHitInfo.hitz + sprite[nLink].z - sprite[nSprite].z;
