@@ -1579,10 +1579,7 @@ void OperateTeleport(unsigned int nSector, XSECTOR *pXSector)
                         pPlayer->angold = pSprite->ang;
                         pPlayer->q16ang = fix16_from_int(pSprite->ang);
                         if (pPlayer == gMe) // if player is listener, update ear position/reset ear velocity so audio pitch of surrounding sfx does not freak out when teleporting player
-                        {
-                            sfxUpdateListenerPos();
-                            sfxResetListenerVel();
-                        }
+                            sfxResetListener();
                     }
                 }
                 if (!VanillaMode())

@@ -536,7 +536,7 @@ void sfxKillSpriteSounds(spritetype *pSprite)
     }
 }
 
-void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *offsetPos)
+void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *pOffsetPos)
 {
     dassert(pSprite != NULL);
     for (int i = nBonkles - 1; i >= 0; i--) // update all attached sprite sfx to new position
@@ -547,11 +547,11 @@ void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *offsetPos)
             pBonkle->curPos.x = pSprite->x;
             pBonkle->curPos.y = pSprite->y;
             pBonkle->curPos.z = pSprite->z;
-            if (offsetPos)
+            if (pOffsetPos)
             {
-                pBonkle->oldPos.x = pSprite->x+(pBonkle->oldPos.x-offsetPos->x);
-                pBonkle->oldPos.y = pSprite->y+(pBonkle->oldPos.y-offsetPos->y);
-                pBonkle->oldPos.z = pSprite->z+(pBonkle->oldPos.z-offsetPos->z);
+                pBonkle->oldPos.x = pSprite->x+(pBonkle->oldPos.x-pOffsetPos->x);
+                pBonkle->oldPos.y = pSprite->y+(pBonkle->oldPos.y-pOffsetPos->y);
+                pBonkle->oldPos.z = pSprite->z+(pBonkle->oldPos.z-pOffsetPos->z);
             }
             else
                 pBonkle->oldPos = pBonkle->curPos;
@@ -561,8 +561,8 @@ void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *offsetPos)
 
 void sfxUpdateListenerPos(void)
 {
-    int dx = mulscale30(Cos(gMe->pSprite->ang + kAng90), kEarDist>>1);
-    int dy = mulscale30(Sin(gMe->pSprite->ang + kAng90), kEarDist>>1);
+    const int dx = mulscale30(Cos(gMe->pSprite->ang + kAng90), kEarDist>>1);
+    const int dy = mulscale30(Sin(gMe->pSprite->ang + kAng90), kEarDist>>1);
     earL0 = earL;
     earR0 = earR;
     earL = {gMe->pSprite->x - dx, gMe->pSprite->y - dy};
@@ -575,9 +575,21 @@ void sfxUpdateListenerVel(void)
     earVR = {earR.x - earR0.x, earR.y - earR0.y};
 }
 
-void sfxResetListenerVel(void)
+void sfxCorrectListenerPos(vec3_t const *pOldPos)
 {
-    earVL = earVR = {0, 0};
+    dassert(pOldPos != NULL);
+    const int dx = gMe->pSprite->x - pOldPos->x;
+    const int dy = gMe->pSprite->y - pOldPos->y;
+    earL.x += dx;
+    earL.y += dy;
+    earR.x += dx;
+    earR.y += dy;
+}
+
+void sfxResetListener(void)
+{
+    sfxUpdateListenerPos(); // update ear position
+    earVL = earVR = {0, 0}; // reset ear velocity
 }
 
 static void sfxUpdateSpeedOfSound(void)

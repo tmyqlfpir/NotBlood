@@ -909,8 +909,7 @@ void playerStart(int nPlayer, int bNewLevel)
         gViewMap.angle = pPlayer->pSprite->ang;
         if (!VanillaMode())
         {
-            sfxUpdateListenerPos(); // player is listener, so update ear position/reset ear velocity
-            sfxResetListenerVel();
+            sfxResetListener(); // player is listener, update ear position/reset ear velocity so audio pitch of surrounding sfx does not freak out when respawning player
             sfxUpdateSpritePos(pPlayer->pSprite); // update any assigned sfx to new player position
         }
     }
