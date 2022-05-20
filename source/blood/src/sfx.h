@@ -54,10 +54,11 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId = -1, int nFl
 void sfxKill3DSound(spritetype *pSprite, int chanId = -1, int soundId = -1);
 void sfxKillAllSounds(void);
 void sfxKillSpriteSounds(spritetype *pSprite);
-void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *offsetPos = NULL);
+void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *pOffsetPos = NULL);
 void sfxUpdateListenerPos(void);
 void sfxUpdateListenerVel(void);
-void sfxResetListenerVel(void);
+void sfxCorrectListenerPos(vec3_t const *pOldPos = NULL);
+void sfxResetListener(void);
 void sfxUpdate3DSounds(void);
 void sfxSetReverb(bool toggle);
 void sfxSetReverb2(bool toggle);
