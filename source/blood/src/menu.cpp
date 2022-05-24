@@ -2177,7 +2177,10 @@ void SetGameVanillaMode(char nState)
 void SetVanillaMode(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == 0) && (numplayers == 1))
+    {
         SetGameVanillaMode((char)pItem->m_nFocus);
+        viewClearInterpolations();
+    }
     else
         pItem->m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
     viewResizeView(gViewSize);

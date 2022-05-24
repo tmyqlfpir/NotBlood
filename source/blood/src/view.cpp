@@ -132,6 +132,7 @@ char gInterpolatePanningCeiling[(kMaxSectors+7)>>3];
 char gInterpolatePanningFloor[(kMaxSectors+7)>>3];
 
 #define kMaxInterpolations (16384*2)
+#define kMaxInterpolationsVanilla 4096
 
 INTERPOLATE gInterpolation[kMaxInterpolations];
 
@@ -989,6 +990,8 @@ void viewCorrectViewOffsets(int nPlayer, vec3_t const *oldpos)
     pView->at38 += pPlayer->pSprite->z-oldpos->z;
 }
 
+static char bInterpWarnVanilla = 0;
+
 void viewClearInterpolations(void)
 {
     nInterpolations = 0;
@@ -998,12 +1001,20 @@ void viewClearInterpolations(void)
     memset(gInterpolatePanningWall, 0, sizeof(gInterpolatePanningWall));
     memset(gInterpolatePanningCeiling, 0, sizeof(gInterpolatePanningCeiling));
     memset(gInterpolatePanningFloor, 0, sizeof(gInterpolatePanningFloor));
+    bInterpWarnVanilla = 0;
 }
 
 void viewAddInterpolation(void *data, INTERPOLATE_TYPE type)
 {
     if (nInterpolations == kMaxInterpolations)
+    {
         ThrowError("Too many interpolations");
+    }
+    else if (!bInterpWarnVanilla && VanillaMode() && (nInterpolations >= kMaxInterpolationsVanilla))
+    {
+        OSD_Printf("Warning: Interpolations over vanilla limit (%d/%d)", nInterpolations, kMaxInterpolationsVanilla);
+        bInterpWarnVanilla = 1;
+    }
     INTERPOLATE *pInterpolate = &gInterpolation[nInterpolations++];
     pInterpolate->pointer = data;
     pInterpolate->type = type;
