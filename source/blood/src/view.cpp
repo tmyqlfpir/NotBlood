@@ -432,19 +432,14 @@ void fakeProcessInput(PLAYER *pPlayer, GINPUT *pInput)
         predict.at30 = (predict.at30+pInput->q16turn)&0x7ffffff;
     if (pInput->keyFlags.spin180)
         if (!predict.at4c)
-            predict.at4c = -1024;
+            predict.at4c = -kAng180;
     if (predict.at4c < 0)
     {
-        int speed;
-        if (predict.at48 == 1)
-            speed = 64;
-        else
-            speed = 128;
-
+        const int speed = (predict.at48 == 1) ? 64 : 128;
         predict.at4c = min(predict.at4c+speed, 0);
         predict.at30 += fix16_from_int(speed);
         if (numplayers > 1 && gPrediction)
-            gViewAngleAdjust += float(speed);
+            gViewAngleAdjust += float(ClipHigh(-predict.at4c, speed)); // don't overturn when nearing end of spin
     }
 
     if (!predict.at71)
