@@ -580,7 +580,9 @@ void LoadSaveSetup(void)
     void ViewLoadSaveConstruct(void);
     void WarpLoadSaveConstruct(void);
     void WeaponLoadSaveConstruct(void);
-
+#ifdef NOONE_EXTENSIONS
+    void nnExtLoadSaveConstruct(void);
+#endif
     myLoadSave = new MyLoadSave();
 
     ActorLoadSaveConstruct();
@@ -596,4 +598,7 @@ void LoadSaveSetup(void)
     ViewLoadSaveConstruct();
     WarpLoadSaveConstruct();
     WeaponLoadSaveConstruct();
+#ifdef NOONE_EXTENSIONS
+    nnExtLoadSaveConstruct();
+#endif
 }
