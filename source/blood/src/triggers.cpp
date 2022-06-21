@@ -1007,6 +1007,21 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
             else if ((nType == FX_34) || (nType == FX_35) || (nType == FX_43)) // wall blood splat/bullet hole
             {
                 bSpriteMoved = (pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_WALL) != 0;
+                if (bSpriteMoved) // check if wall aligned sprite is connected to a wall
+                {
+                    const int nStartWall = sector[nSector].wallptr, nEndWall = nStartWall + sector[nSector].wallnum;
+                    int nFoundWall = nStartWall, nDist = INT_MAX;
+                    for (int nWall = nStartWall; nWall < nEndWall; nWall++) // check each wall distance of sector to sprite
+                    {
+                        const int nDistCurWall = GetDistToWall(pSprite->x, pSprite->y, &wall[nWall]); // find closest wall to sprite
+                        if (nDistCurWall < nDist)
+                        {
+                            nDist = nDistCurWall;
+                            nFoundWall = nWall;
+                        }
+                    }
+                    bSpriteMoved = wall[nFoundWall].nextsector == -1; // if nearest wall is not linked to a sector, drag sprite
+                }
             }
             if (bSpriteMoved)
             {
