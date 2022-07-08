@@ -771,6 +771,7 @@ static int osdfunc_toggle(osdcmdptr_t parm)
 
 void mi_log(char *msg, void *arg)
 {
+#if USE_MIMALLOC != 0
     UNREFERENCED_PARAMETER(arg);
     int len = Bstrlen(msg);
     
@@ -778,6 +779,7 @@ void mi_log(char *msg, void *arg)
         msg[--len] = '\0';
     
     VLOG_F(LOG_MEM, "%s", msg);
+#endif
 };
 
 void OSD_Init(void)
@@ -821,8 +823,10 @@ void OSD_Init(void)
 
     hash_init(&h_osd);
     hash_init(&h_cvars);
-    
+
+#if USE_MIMALLOC != 0
     mi_register_output((mi_output_fun *)(void *)&mi_log, NULL);
+#endif
     
     static osdcvardata_t cvars_osd [] =
     {
