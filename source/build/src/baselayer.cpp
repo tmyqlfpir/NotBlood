@@ -122,11 +122,17 @@ static int osdfunc_bucketlist(osdcmdptr_t UNUSED(parm))
         uint32_t const missCount     = (uint32_t)stats->missCount.load();
         uint32_t const freeCount     = (uint32_t)stats->freeCount.load();
 
-        LOG_F(INFO, "%12s: %u", "cache hit", cacheHitCount);
-        LOG_F(INFO, "%12s: %u", "hit",       hitCount);
+        if (cacheHitCount)
+            LOG_F(INFO, "%12s: %u", "cache hit", cacheHitCount);
+
+        if (hitCount)
+            LOG_F(INFO, "%12s: %u", "hit",       hitCount);
+
         if (missCount)
             LOG_F(INFO, "%12s: %s%u","miss", osd->draw.errorfmt, missCount);
-        LOG_F(INFO, "%12s: %u",  "freed",     freeCount);
+        
+        if (freeCount)
+            LOG_F(INFO, "%12s: %u",  "freed",     freeCount);
 
         uint32_t const useCount        = cacheHitCount + hitCount + missCount - freeCount;
         uint32_t const bucketBytesUsed = useCount * elementSize;
@@ -149,7 +155,7 @@ static int osdfunc_heapinfo(osdcmdptr_t UNUSED(parm))
 }
 
 void engineSetupAllocator(void)
-{
+{    
     engineCreateAllocator();
 
 #ifdef SMMALLOC_STATS_SUPPORT
@@ -166,31 +172,18 @@ const char *engineVerbosityCallback(loguru::Verbosity verbosity)
     if (gameVerbosityCallback)
     {
         auto str = gameVerbosityCallback(verbosity);
+        
         if (str != nullptr)
             return str;
     }
 
-    switch (verbosity)
-    {
-        default:
-            return nullptr;
-        case LOG_ENGINE:
-            return "ENG";
-        case LOG_GFX:
-            return "GFX";
-        case LOG_GL:
-            return "GL";
-        case LOG_ASS:
-            return "ASS";
-        case LOG_INPUT:
-            return "INPT";
-        case LOG_NET:
-            return "NET";
-        case LOG_PR:
-            return "PR";
-        case LOG_DEBUG:
-            return "DBG";
-    }
+    char const *s[] = { nullptr, "ENG", "GFX", "GL", "ASS", "INPT", "NET", "PR", "MEM" };
+
+    if ((unsigned)verbosity < ARRAY_SIZE(s))
+        return s[verbosity];
+    else if (verbosity == LOG_DEBUG)
+        return "DBG";
+    else return nullptr;
 }
 
 bool g_useLogCallback = true;
@@ -483,6 +476,19 @@ int32_t vsync=0;
 int32_t r_finishbeforeswap=0;
 int32_t r_glfinish=0;
 
+struct glinfo_t glinfo =
+{
+    "Unknown",  // vendor
+    "Unknown",  // renderer
+    "0.0.0",    // version
+    "",         // extensions
+
+    1.0,        // max anisotropy
+    64,         // max texture size
+    0,          // structure filled
+    0,          // supported extensions
+};
+
 // DEBUG OUTPUT
 #ifdef USE_OPENGL
 void PR_CALLBACK gl_debugOutputCallback(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,GLvoid *userParam)
@@ -514,19 +520,6 @@ void PR_CALLBACK gl_debugOutputCallback(GLenum source,GLenum type,GLuint id,GLen
     }
     VLOG_F(type == GL_DEBUG_TYPE_ERROR_ARB ? (int)loguru::Verbosity_ERROR : LOG_GL, "%s (%s severity)", message, s);
 }
-
-struct glinfo_t glinfo =
-{
-    "Unknown",  // vendor
-    "Unknown",  // renderer
-    "0.0.0",    // version
-    "",         // extensions
-
-    1.0,        // max anisotropy
-    64,         // max texture size
-    0,          // structure filled
-    0,          // supported extensions
-};
 
 void fill_glinfo(void)
 {
@@ -635,6 +628,15 @@ int32_t (*baselayer_osdcmd_vidmode_func)(osdcmdptr_t parm);
 
 static int osdfunc_setrendermode(osdcmdptr_t parm)
 {
+    static const char *const modes[] = {
+#ifdef NOASM
+        "software (C)",
+#else
+        "software (x86 ASM)",
+#endif
+        nullptr, nullptr, "Polymost", "Polymer (for great justice)"
+    };
+    
     if (parm->numparms != 1)
         return OSDCMD_SHOWHELP;
 
@@ -643,6 +645,9 @@ static int osdfunc_setrendermode(osdcmdptr_t parm)
     if (m != REND_CLASSIC && m != REND_POLYMOST && m != REND_POLYMER)
         return OSDCMD_SHOWHELP;
 
+    if (videoGetRenderMode() == m)
+        return OSDCMD_OK;
+    
     if ((m==REND_CLASSIC) != (bpp==8) && baselayer_osdcmd_vidmode_func)
     {
         // Mismatch between video mode and requested renderer, do auto switch.
@@ -668,29 +673,7 @@ static int osdfunc_setrendermode(osdcmdptr_t parm)
     }
 
     videoSetRenderMode(m);
-
-    char const *renderer = "other";
-
-    switch (videoGetRenderMode())
-    {
-    case REND_CLASSIC:
-#ifdef NOASM
-        renderer = "classic software (C)";
-#else
-        renderer = "classic software (ASM)";
-#endif
-        break;
-    case REND_POLYMOST:
-        renderer = "polygonal OpenGL";
-        break;
-#ifdef POLYMER
-    case REND_POLYMER:
-        renderer = "great justice (Polymer)";
-        break;
-#endif
-    }
-
-    VLOG_F(LOG_GFX, "Rendering method changed to %s.", renderer);
+    VLOG_F(LOG_GFX, "Rendering method changed to %s.", modes[videoGetRenderMode()]);
 
     return OSDCMD_OK;
 }
@@ -816,6 +799,7 @@ int32_t baselayer_init(void)
           (void *) &r_screenxy, SCREENASPECT_CVAR_TYPE, 0, 9999 },
         { "r_mirrormode","mirror output display: 0: off 1: mirror horizontal 2: mirror vertically 3: mirror horizontal/vertically",(void *) &r_mirrormode, CVAR_INT, 0, 3 },
         { "r_fpgrouscan","use floating-point numbers for slope rendering",(void *) &r_fpgrouscan, CVAR_BOOL, 0, 1 },
+        { "r_hightile","enable/disable hightile texture rendering",(void *) &usehightile, CVAR_BOOL, 0, 1 },
         { "r_novoxmips","turn off/on the use of mipmaps when rendering 8-bit voxels",(void *) &novoxmips, CVAR_BOOL, 0, 1 },
         { "r_rotatespriteinterp", "interpolate repeated rotatesprite calls\n"
                          "Mode numbers are:\n"
