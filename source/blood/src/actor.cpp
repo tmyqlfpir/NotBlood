@@ -5604,7 +5604,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             {
                 XWALL *pXWall = &xwall[nXWall];
                 if (pXWall->triggerVector)
-                    trTriggerWall(nWall, pXWall, kCmdWallImpact, nShooter);
+                    trTriggerWall(nWall, pXWall, kCmdWallImpact, (nShooter >= 0) ? nShooter : kCauserGame);
             }
             break;
         }
@@ -5649,7 +5649,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             {
                 XSPRITE *pXSprite = &xsprite[nXSprite];
                 if (pXSprite->Vector)
-                    trTriggerSprite(nSprite, pXSprite, kCmdSpriteImpact, nShooter);
+                    trTriggerSprite(nSprite, pXSprite, kCmdSpriteImpact, (nShooter >= 0) ? nShooter : kCauserGame);
             }
             if (pSprite->statnum == kStatThing)
             {
