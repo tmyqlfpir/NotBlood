@@ -4560,7 +4560,7 @@ int MoveThing(spritetype *pSprite)
                                 if (pWall->extra > 0) {
                                     XWALL *pXWall = &xwall[pWall->extra];
                                     if (pXWall->triggerVector) { // break tile (glass, etc)
-                                        trTriggerWall(nHitWall, pXWall, kCmdWallImpact);
+                                        trTriggerWall(nHitWall, pXWall, kCmdWallImpact, pSprite->index);
                                         bounce = false;
                                         xvel[nSprite] >>= 1; // reduce speed by half
                                         yvel[nSprite] >>= 1;
@@ -5604,7 +5604,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             {
                 XWALL *pXWall = &xwall[nXWall];
                 if (pXWall->triggerVector)
-                    trTriggerWall(nWall, pXWall, kCmdWallImpact);
+                    trTriggerWall(nWall, pXWall, kCmdWallImpact, nShooter);
             }
             break;
         }
@@ -5649,7 +5649,7 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             {
                 XSPRITE *pXSprite = &xsprite[nXSprite];
                 if (pXSprite->Vector)
-                    trTriggerSprite(nSprite, pXSprite, kCmdSpriteImpact);
+                    trTriggerSprite(nSprite, pXSprite, kCmdSpriteImpact, nShooter);
             }
             if (pSprite->statnum == kStatThing)
             {
