@@ -575,15 +575,15 @@ void sfxUpdateListenerVel(void)
     earVR = {earR.x - earR0.x, earR.y - earR0.y};
 }
 
-void sfxCorrectListenerPos(vec3_t const *pOldPos)
+void sfxCorrectListenerPos(void)
 {
-    dassert(pOldPos != NULL);
-    const int dx = gMe->pSprite->x - pOldPos->x;
-    const int dy = gMe->pSprite->y - pOldPos->y;
-    earL.x += dx;
-    earL.y += dy;
-    earR.x += dx;
-    earR.y += dy;
+    sfxUpdateListenerPos();
+    earL0 = earL;
+    earR0 = earR;
+    earL0.x += -earVL.dx;
+    earL0.y += -earVL.dy;
+    earR0.x += -earVR.dx;
+    earR0.y += -earVR.dy;
 }
 
 void sfxResetListener(void)

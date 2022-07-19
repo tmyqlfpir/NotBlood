@@ -57,7 +57,7 @@ void sfxKillSpriteSounds(spritetype *pSprite);
 void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *pOffsetPos = NULL);
 void sfxUpdateListenerPos(void);
 void sfxUpdateListenerVel(void);
-void sfxCorrectListenerPos(vec3_t const *pOldPos = NULL);
+void sfxCorrectListenerPos(void);
 void sfxResetListener(void);
 void sfxUpdate3DSounds(void);
 void sfxSetReverb(bool toggle);
