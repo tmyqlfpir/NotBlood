@@ -1837,6 +1837,10 @@ void UpdateStatusBar(ClockTicks arg)
     XSPRITE *pXSprite = pPlayer->pXSprite;
 
     int nPalette = 0;
+    int nThrowPower = pPlayer->throwPower;
+    const char bVanilla = VanillaMode();
+    if (!bVanilla && gViewInterpolate && (pPlayer->throwPower > 0) && (pPlayer->throwPower > pPlayer->throwPowerOld))
+        nThrowPower = interpolate(pPlayer->throwPowerOld, pPlayer->throwPower, gInterpolate);
 
     if (gGameOptions.nGameType == 3)
     {
@@ -1848,7 +1852,7 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gViewSize < 0) return;
 
-    char bDrawWeaponHud = gShowWeaponSelect && !VanillaMode();
+    char bDrawWeaponHud = gShowWeaponSelect && !bVanilla;
     if (bDrawWeaponHud && (gViewSize > 3)) // if hud size above 3, draw weapon select bar behind hud
     {
         viewDrawWeaponSelect(pPlayer, pXSprite);
@@ -1898,7 +1902,7 @@ void UpdateStatusBar(ClockTicks arg)
         }
 
         if (pPlayer->throwPower && pXSprite->health > 0)
-            TileHGauge(2260, 124, 175-10, pPlayer->throwPower, 65536);
+            TileHGauge(2260, 124, 175-10, nThrowPower, 65536);
         else
             viewDrawPack(pPlayer, 166, 200-tilesiz[2201].y/2-30);
         viewDrawStats(pPlayer, 2-xscalestats, 140);
@@ -1907,7 +1911,7 @@ void UpdateStatusBar(ClockTicks arg)
     else if (gViewSize <= 3)
     {
         if (pPlayer->throwPower && pXSprite->health > 0)
-            TileHGauge(2260, 124, 175, pPlayer->throwPower, 65536);
+            TileHGauge(2260, 124, 175, nThrowPower, 65536);
         else
             viewDrawPack(pPlayer, 166, 200-tilesiz[2201].y/2);
     }
@@ -2062,7 +2066,7 @@ void UpdateStatusBar(ClockTicks arg)
             TileHGauge(2208, 44, 190, pPlayer->armor[2], 3200);
             DrawStatNumber("%3d", pPlayer->armor[2]>>4, 2230, 50, 193, 0, 0);
         }
-        sprintf(gTempStr, "v%s", VanillaMode() ? "1.21" : GetVersionString());
+        sprintf(gTempStr, "v%s", bVanilla ? "1.21" : GetVersionString());
         viewDrawText(3, gTempStr, 20, 191, 32, 0, 1, 0);
 
         for (int i = 0; i < 6; i++)
@@ -2079,7 +2083,7 @@ void UpdateStatusBar(ClockTicks arg)
         DrawStatMaskedSprite(2202, 201, 185, pPlayer->isRunning ? 16 : 40);
         if (pPlayer->throwPower && pXSprite->health > 0)
         {
-            TileHGauge(2260, 124, 175, pPlayer->throwPower, 65536);
+            TileHGauge(2260, 124, 175, nThrowPower, 65536);
         }
         viewDrawStats(pPlayer, 2-xscalestats, 140);
         viewDrawPowerUps(pPlayer);
@@ -2092,7 +2096,7 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gGameOptions.nGameType == 3)
     {
-        if (VanillaMode())
+        if (bVanilla)
         {
             viewDrawCtfHudVanilla(arg);
         }

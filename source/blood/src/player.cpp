@@ -847,7 +847,7 @@ void playerStart(int nPlayer, int bNewLevel)
         playerSetGodMode(pPlayer, 1);
     gInfiniteAmmo = 0;
     gFullMap = 0;
-    pPlayer->throwPower = 0;
+    pPlayer->throwPower = pPlayer->throwPowerOld = 0;
     pPlayer->deathTime = 0;
     pPlayer->nextWeapon = kWeaponNone;
     pPlayer->lastWeapon = kWeaponPitchfork;
