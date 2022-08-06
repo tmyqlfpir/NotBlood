@@ -668,7 +668,7 @@ void WeaponLower(PLAYER *pPlayer)
     dassert(pPlayer != NULL);
     if (checkLitSprayOrTNT(pPlayer))
         return;
-    pPlayer->throwPower = 0;
+    pPlayer->throwPower = pPlayer->throwPowerOld = 0;
     const int prevWeapon = pPlayer->curWeapon;
     const int prevState = pPlayer->weaponState;
     switch (pPlayer->curWeapon)
@@ -1134,7 +1134,7 @@ void ThrowCan(int, PLAYER *pPlayer)
         XSPRITE *pXSprite = &xsprite[nXSprite];
         pXSprite->Impact = 1;
         UseAmmo(pPlayer, 6, gAmmoItemData[0].count);
-        pPlayer->throwPower = 0;
+        pPlayer->throwPower = pPlayer->throwPowerOld = 0;
     }
 }
 
@@ -1157,7 +1157,7 @@ void ExplodeCan(int, PLAYER *pPlayer)
     UseAmmo(pPlayer, 6, gAmmoItemData[0].count);
     StartQAV(pPlayer, 15, -1);
     pPlayer->curWeapon = kWeaponNone;
-    pPlayer->throwPower = 0;
+    pPlayer->throwPower = pPlayer->throwPowerOld = 0;
 }
 
 void ThrowBundle(int, PLAYER *pPlayer)
@@ -1173,7 +1173,7 @@ void ThrowBundle(int, PLAYER *pPlayer)
     else
         evPost(pSprite->index, 3, pPlayer->fuseTime, kCmdOn, pPlayer->nSprite);
     UseAmmo(pPlayer, 5, 1);
-    pPlayer->throwPower = 0;
+    pPlayer->throwPower = pPlayer->throwPowerOld = 0;
 }
 
 void DropBundle(int, PLAYER *pPlayer)
@@ -1192,7 +1192,7 @@ void ExplodeBundle(int, PLAYER *pPlayer)
     UseAmmo(pPlayer, 5, 1);
     StartQAV(pPlayer, 24, -1, 0);
     pPlayer->curWeapon = kWeaponNone;
-    pPlayer->throwPower = 0;
+    pPlayer->throwPower = pPlayer->throwPowerOld = 0;
 }
 
 void ThrowProx(int, PLAYER *pPlayer)
@@ -1202,7 +1202,7 @@ void ThrowProx(int, PLAYER *pPlayer)
     spritetype *pSprite = playerFireThing(pPlayer, 0, -9460, kThingArmedProxBomb, nSpeed);
     evPost(pSprite->index, 3, 240, kCmdOn, pPlayer->nSprite);
     UseAmmo(pPlayer, 10, 1);
-    pPlayer->throwPower = 0;
+    pPlayer->throwPower = pPlayer->throwPowerOld = 0;
 }
 
 void DropProx(int, PLAYER *pPlayer)
@@ -1221,7 +1221,7 @@ void ThrowRemote(int, PLAYER *pPlayer)
     XSPRITE *pXSprite = &xsprite[nXSprite];
     pXSprite->rxID = 90+(pPlayer->pSprite->type-kDudePlayer1);
     UseAmmo(pPlayer, 11, 1);
-    pPlayer->throwPower = 0;
+    pPlayer->throwPower = pPlayer->throwPowerOld = 0;
 }
 
 void DropRemote(int, PLAYER *pPlayer)
@@ -2014,6 +2014,7 @@ char processSprayCan(PLAYER *pPlayer)
         return 1;
     case 7:
     {
+        pPlayer->throwPowerOld = pPlayer->throwPower;
         pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
         if (!pPlayer->input.buttonFlags.shoot)
         {
@@ -2021,6 +2022,7 @@ char processSprayCan(PLAYER *pPlayer)
                 pPlayer->fuseTime = pPlayer->weaponTimer;
             pPlayer->weaponState = 1;
             StartQAV(pPlayer, 14, nClientThrowCan, 0);
+            pPlayer->throwPowerOld = pPlayer->throwPower;
         }
         return 1;
     }
@@ -2052,6 +2054,7 @@ char processTNT(PLAYER *pPlayer)
         return 1;
     case 6:
     {
+        pPlayer->throwPowerOld = pPlayer->throwPower;
         pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
         if (!pPlayer->input.buttonFlags.shoot)
         {
@@ -2059,6 +2062,7 @@ char processTNT(PLAYER *pPlayer)
                 pPlayer->fuseTime = pPlayer->weaponTimer;
             pPlayer->weaponState = 1;
             StartQAV(pPlayer, 23, nClientThrowBundle, 0);
+            pPlayer->throwPowerOld = pPlayer->throwPower;
         }
         return 1;
     }
@@ -2071,12 +2075,14 @@ char processProxy(PLAYER *pPlayer)
     switch (pPlayer->weaponState)
     {
     case 9:
+        pPlayer->throwPowerOld = pPlayer->throwPower;
         pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
         pPlayer->weaponTimer = 0;
         if (!pPlayer->input.buttonFlags.shoot)
         {
             pPlayer->weaponState = 8;
             StartQAV(pPlayer, 29, nClientThrowProx, 0);
+            pPlayer->throwPowerOld = pPlayer->throwPower;
         }
         return 1;
     }
@@ -2088,11 +2094,13 @@ char processRemote(PLAYER *pPlayer)
     switch (pPlayer->weaponState)
     {
     case 13:
+        pPlayer->throwPowerOld = pPlayer->throwPower;
         pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
         if (!pPlayer->input.buttonFlags.shoot)
         {
             pPlayer->weaponState = 11;
             StartQAV(pPlayer, 39, nClientThrowRemote, 0);
+            pPlayer->throwPowerOld = pPlayer->throwPower;
         }
         return 1;
     }
@@ -2104,6 +2112,7 @@ void processPitchfork(PLAYER *pPlayer)
     if (pPlayer->weaponState < 3)
         return;
     const int chargeSpeed = powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup ? 240 : 210; // charge slower when quad damage is active (fireball alt fire attack)
+    pPlayer->throwPowerOld = pPlayer->throwPower;
     pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime, chargeSpeed), 65536);
     if ((pPlayer->weaponState == 3) && (pPlayer->throwPower == 65536) && powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup) // if maxed throwing power and quad damage is active
     {
@@ -2116,7 +2125,7 @@ void processPitchfork(PLAYER *pPlayer)
         StartQAV(pPlayer, 2, -1, 0);
         FirePitchfork(1, pPlayer);
         pPlayer->weaponState = 0;
-        pPlayer->throwPower = 0;
+        pPlayer->throwPower = pPlayer->throwPowerOld = 0;
     }
 }
 
@@ -2124,6 +2133,7 @@ void processLifeLeech(PLAYER *pPlayer)
 {
     if (pPlayer->weaponState != 3)
         return;
+    pPlayer->throwPowerOld = pPlayer->throwPower;
     pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
     if (!pPlayer->input.buttonFlags.shoot2)
     {
@@ -2138,7 +2148,7 @@ void processLifeLeech(PLAYER *pPlayer)
             StartQAV(pPlayer, 119, -1, 0);
             AltFireLifeLeech(1, pPlayer);
             pPlayer->weaponState = -1;
-            pPlayer->throwPower = 0;
+            pPlayer->throwPower = pPlayer->throwPowerOld = 0;
         }
     }
 }
@@ -2237,7 +2247,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             }
         }
         WeaponLower(pPlayer);
-        pPlayer->throwPower = 0;
+        pPlayer->throwPower = pPlayer->throwPowerOld = 0;
         if (!VanillaMode()) // if not in vanilla mode, find next weapon to switch to
         {
             if (WeaponIsEquipable(pPlayer, pPlayer->lastWeapon)) // switch to last weapon if available
@@ -2734,7 +2744,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                         return;
                     pPlayer->weaponState = 3;
                     pPlayer->throwTime = (int)gFrameClock;
-                    pPlayer->throwPower = 0;
+                    pPlayer->throwPower = pPlayer->throwPowerOld = 0;
                     return;
                 }
             }
@@ -2888,7 +2898,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                     return;
                 pPlayer->weaponState = 3;
                 pPlayer->throwTime = (int)gFrameClock;
-                pPlayer->throwPower = 0;
+                pPlayer->throwPower = pPlayer->throwPowerOld = 0;
             }
             else if (gGameOptions.nGameType <= 1 && !checkAmmo2(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
             {
