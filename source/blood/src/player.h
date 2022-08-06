@@ -159,6 +159,7 @@ struct PLAYER
     int                 fuseTime;
     int                 throwTime;
     int                 throwPower;
+    int                 throwPowerOld;
     Aim                 aim;  // world
     //int               at1c6;
     Aim                 relAim;  // relative
@@ -346,7 +347,7 @@ inline void playerResetWeaponState(PLAYER *pPlayer)
     pPlayer->weaponTimer = 0;
     pPlayer->fuseTime = 0;
     pPlayer->throwTime = 0;
-    pPlayer->throwPower = 0;
+    pPlayer->throwPower = pPlayer->throwPowerOld = 0;
     pPlayer->qavLoop = 0;
 }
 
