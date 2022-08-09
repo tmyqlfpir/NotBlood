@@ -63,7 +63,7 @@ void ambProcess(void)
             if (pXSprite->state)
             {
                 int nDist = approxDist3D(pSprite, gMe->pSprite);
-                int vs = mulscale16(ClipHigh(pXSprite->data4, 127), pXSprite->busy);
+                int vs = ClipHigh(mulscale16(pXSprite->data4, pXSprite->busy), 127);
                 ambChannels[pSprite->owner].at4 += ClipRange(scale(nDist, pXSprite->data1, pXSprite->data2, vs, 0), 0, vs);
             }
         }
