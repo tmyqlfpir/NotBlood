@@ -62,14 +62,8 @@ void ambProcess(void)
             XSPRITE *pXSprite = &xsprite[nXSprite];
             if (pXSprite->state)
             {
-                int dx = pSprite->x-gMe->pSprite->x;
-                int dy = pSprite->y-gMe->pSprite->y;
-                int dz = pSprite->z-gMe->pSprite->z;
-                dx >>= 4;
-                dy >>= 4;
-                dz >>= 8;
-                int nDist = ksqrt(dx*dx+dy*dy+dz*dz);
-                int vs = mulscale16(pXSprite->data4, pXSprite->busy);
+                int nDist = approxDist3D(pSprite, gMe->pSprite);
+                int vs = mulscale16(ClipHigh(pXSprite->data4, 127), pXSprite->busy);
                 ambChannels[pSprite->owner].at4 += ClipRange(scale(nDist, pXSprite->data1, pXSprite->data2, vs, 0), 0, vs);
             }
         }

@@ -831,6 +831,14 @@ inline int approxDist3D(int dx, int dy, int dz)
     return ksqrt(dx*dx+dy*dy+dz*dz);
 }
 
+inline int approxDist3D(spritetype *pSprite1, spritetype *pSprite2)
+{
+    const int dx = pSprite1->x-pSprite2->x;
+    const int dy = pSprite1->y-pSprite2->y;
+    const int dz = pSprite1->z-pSprite2->z;
+    return approxDist3D(dx, dy, dz);
+}
+
 class Rect {
 public:
     int x0, y0, x1, y1;
