@@ -307,26 +307,26 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
         #endif
         case kItemFeatherFall:
         case kItemJumpBoots:
-            pPlayer->damageControl[0]++;
+            pPlayer->damageControl[kDamageFall]++;
             break;
         case kItemReflectShots: // reflective shots
             if (pPlayer == gMe && gGameOptions.nGameType == 0)
                 sfxSetReverb2(1);
             break;
         case kItemDeathMask:
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < kDamageMax; i++)
                 pPlayer->damageControl[i]++;
             break;
         case kItemDivingSuit: // diving suit
-            pPlayer->damageControl[4]++;
+            pPlayer->damageControl[kDamageDrown]++;
             if (pPlayer == gMe && gGameOptions.nGameType == 0)
                 sfxSetReverb(1);
             break;
         case kItemGasMask:
-            pPlayer->damageControl[4]++;
+            pPlayer->damageControl[kDamageDrown]++;
             break;
         case kItemArmorAsbest:
-            pPlayer->damageControl[1]++;
+            pPlayer->damageControl[kDamageBurn]++;
             break;
         case kItemTwoGuns:
             if (!VanillaMode())
@@ -371,14 +371,14 @@ void powerupDeactivate(PLAYER *pPlayer, int nPowerUp)
         #endif
         case kItemFeatherFall:
         case kItemJumpBoots:
-            pPlayer->damageControl[0]--;
+            pPlayer->damageControl[kDamageFall]--;
             break;
         case kItemDeathMask:
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < kDamageMax; i++)
                 pPlayer->damageControl[i]--;
             break;
         case kItemDivingSuit:
-            pPlayer->damageControl[4]--;
+            pPlayer->damageControl[kDamageDrown]--;
             if (pPlayer == gMe && VanillaMode() ? true : pPlayer->pwUpTime[24] == 0)
                 sfxSetReverb(0);
             break;
@@ -387,10 +387,10 @@ void powerupDeactivate(PLAYER *pPlayer, int nPowerUp)
                 sfxSetReverb(0);
             break;
         case kItemGasMask:
-            pPlayer->damageControl[4]--;
+            pPlayer->damageControl[kDamageDrown]--;
             break;
         case kItemArmorAsbest:
-            pPlayer->damageControl[1]--;
+            pPlayer->damageControl[kDamageBurn]--;
             break;
         case kItemTwoGuns:
             if (!VanillaMode())
@@ -636,7 +636,7 @@ void playerSetRace(PLAYER *pPlayer, int nLifeMode)
     // By NoOne: don't forget to change clipdist for grow and shrink modes
     pPlayer->pSprite->clipdist = pDudeInfo->clipdist;
     
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < kDamageMax; i++)
         pDudeInfo->curDamage[i] = mulscale8(Handicap[gProfile[pPlayer->nPlayer].skill], pDudeInfo->startDamage[i]);
 }
 
@@ -644,12 +644,12 @@ void playerSetGodMode(PLAYER *pPlayer, char bGodMode)
 {
     if (bGodMode)
     {
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < kDamageMax; i++)
             pPlayer->damageControl[i]++;
     }
     else
     {
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < kDamageMax; i++)
             pPlayer->damageControl[i]--;
     }
     pPlayer->godMode = bGodMode;
@@ -687,7 +687,7 @@ void playerResetPowerUps(PLAYER* pPlayer)
 
 void playerSpawnProtection(PLAYER* pPlayer)
 {
-    for (int i = 0; i < 7; i++) // set invul state to damage types
+    for (int i = 0; i < kDamageMax; i++) // set invul state to damage types
         pPlayer->damageControl[i]++;
     pPlayer->pwUpTime[kPwUpDeathMask] = kTicRate*2; // set spawn protection for 2 seconds
 }
@@ -938,7 +938,7 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->hasFlag = 0;
     for (int i = 0; i < 8; i++)
         pPlayer->used2[i] = -1;
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < kDamageMax; i++)
         pPlayer->damageControl[i] = 0;
     if (pPlayer->godMode)
         playerSetGodMode(pPlayer, 1);

@@ -2602,7 +2602,7 @@ void actInit(bool bSaveLoad) {
         ///////////////
 
         for (int i = 0; i < kDudeMax - kDudeBase; i++)
-            for (int j = 0; j < 7; j++)
+            for (int j = 0; j < kDamageMax; j++)
                 dudeInfo[i].curDamage[j] = mulscale8(DudeDifficulty[gGameOptions.nEnemyHealth], dudeInfo[i].startDamage[j]);
 
         for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
