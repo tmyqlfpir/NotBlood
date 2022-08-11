@@ -524,7 +524,7 @@ bool nnExtIsImmune(spritetype* pSprite, int dmgType, int minScale) {
         else if (IsDudeSprite(pSprite)) {
             if (IsPlayerSprite(pSprite)) return (gPlayer[pSprite->type - kDudePlayer1].damageControl[dmgType]);
             else if (pSprite->type == kDudeModernCustom) return (gGenDudeExtra[pSprite->index].dmgControl[dmgType] <= minScale);
-            else return (getDudeInfo(pSprite->type)->at70[dmgType] <= minScale);
+            else return (getDudeInfo(pSprite->type)->curDamage[dmgType] <= minScale);
         }
     }
 
