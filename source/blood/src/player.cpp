@@ -929,7 +929,7 @@ void playerReset(PLAYER *pPlayer)
         3, 4, 2, 8, 9, 10, 7, 1, 1, 1, 1, 1, 1, 1
     };
     dassert(pPlayer != NULL);
-    for (int i = 0; i < 14; i++)
+    for (int i = 0; i < kWeaponMax; i++)
     {
         pPlayer->hasWeapon[i] = gInfiniteAmmo;
         pPlayer->weaponMode[i] = 0;
@@ -939,7 +939,7 @@ void playerReset(PLAYER *pPlayer)
     pPlayer->qavCallback = -1;
     pPlayer->input.newWeapon = kWeaponPitchfork;
     pPlayer->lastWeapon = kWeaponPitchfork;
-    for (int i = 0; i < 14; i++)
+    for (int i = 0; i < kWeaponMax; i++)
     {
         pPlayer->weaponOrder[0][i] = dword_136400[i];
         pPlayer->weaponOrder[1][i] = dword_136438[i];
