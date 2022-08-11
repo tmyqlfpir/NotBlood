@@ -989,14 +989,8 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->hand = 0;
     pPlayer->nWaterPal = 0;
     playerResetPowerUps(pPlayer);
-
-    if (gGameOptions.nGameType > 0)
-    {
-        if (gGameOptions.bSpawnProtection)
-            playerSpawnProtection(pPlayer);
-        if (gGameOptions.nSpawnWeapon > 0)
-            playerSpawnWeapon(pPlayer, gGameOptions.nSpawnWeapon+kWeaponPitchfork);
-    }
+    if ((gGameOptions.nGameType > 0) && gGameOptions.bSpawnProtection)
+        playerSpawnProtection(pPlayer);
 
     if (pPlayer == gMe)
     {
@@ -1057,6 +1051,9 @@ void playerReset(PLAYER *pPlayer)
     pPlayer->weaponQav = -1;
     pPlayer->qavLoop = 0;
     pPlayer->packItemId = -1;
+
+    if ((gGameOptions.nGameType > 0) && (gGameOptions.nSpawnWeapon > 0))
+        playerSpawnWeapon(pPlayer, gGameOptions.nSpawnWeapon+kWeaponPitchfork);
 
     for (int i = 0; i < 5; i++) {
         pPlayer->packSlots[i].isActive = 0;
