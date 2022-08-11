@@ -704,7 +704,7 @@ void playerSpawnWeapon(PLAYER* pPlayer, int nSpawnWeapon)
             pPlayer->hasWeapon[i] = 1;
         for (int i = 0; i < 12; i++)
             pPlayer->ammoCount[i] = gAmmoInfo[i].max;
-        pPlayer->input.newWeapon = Random(kWeaponRemoteTNT-kWeaponPitchfork+1)+kWeaponFlare; // switch to random weapon on spawn (between flare gun to remote tnt)
+        pPlayer->input.newWeapon = Random(kWeaponRemoteTNT-kWeaponFlare+1)+kWeaponFlare; // switch to random weapon on spawn (between flare gun to remote tnt)
         return;
     }
 
