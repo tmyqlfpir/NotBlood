@@ -797,6 +797,17 @@ void playerResetPosture(PLAYER* pPlayer) {
         gCrouchToggleState = 0;
 }
 
+const int nZoneRandList[kMaxPlayers][kMaxPlayers] = {
+    {0, 7, 6, 5, 4, 3, 2, 1},
+    {1, 2, 3, 4, 5, 6, 7, 0},
+    {2, 0, 5, 3, 4, 1, 6, 7},
+    {3, 5, 6, 0, 4, 1, 7, 2},
+    {4, 7, 2, 6, 3, 5, 0, 1},
+    {5, 3, 2, 6, 7, 1, 4, 0},
+    {6, 5, 3, 2, 1, 0, 7, 4},
+    {7, 4, 1, 3, 2, 5, 0, 6}
+};
+
 void playerStart(int nPlayer, int bNewLevel)
 {
     PLAYER* pPlayer = &gPlayer[nPlayer];
@@ -842,31 +853,40 @@ void playerStart(int nPlayer, int bNewLevel)
     else {
         int zoneId = Random(kMaxPlayers);
         if ((gGameOptions.nGameType >= 2) && !VanillaMode()) { // search for a safe random spawn for bloodbath/teams mode
-            bool checkZone[kMaxPlayers] = {false, false, false, false, false, false, false, false};
-            int maxRetries = 12;
-            while (maxRetries-- > 0) {
-                zoneId = Random(kMaxPlayers); // re-roll new random spawn
-                if (checkZone[zoneId]) // we've already checked this zone, skip
-                    continue;
-                checkZone[zoneId] = true;
-                bool spawnTooClose = false;
+            const int nSearchList = zoneId;
+            for (int nZone = 0; nZone < kMaxPlayers; nZone++) {
+                pStartZone = &gStartZone[nZoneRandList[nSearchList][nZone]];
+                char bSpawnTooClose = false;
                 for (int i = connecthead; i >= 0; i = connectpoint2[i]) { // check every connected player
-                    if ((gPlayer[i].pSprite == NULL) || (gPlayer[i].pXSprite == NULL)) // invalid player, skip
+                    if (!gPlayer[i].pSprite || !gPlayer[i].pXSprite) // invalid player, skip
                         continue;
-                    if (gPlayer[i].pSprite->sectnum < 0 || gPlayer[i].pSprite->sectnum >= numsectors) // invalid sector, skip
+                    if (!sectRangeIsFine(gPlayer[i].pSprite->sectnum)) // invalid sector, skip
                         continue;
-                    const bool activeEnemy = (gPlayer[i].pXSprite->health > 0) && !IsTargetTeammate(&gPlayer[nPlayer], gPlayer[i].pSprite);
-                    if ((i == nPlayer) || !activeEnemy) // only check our current location or that of an alive/enemy player, otherwise skip
+                    const bool activeEnemy = (gPlayer[i].pXSprite->health > 0) && !IsTargetTeammate(pPlayer, gPlayer[i].pSprite);
+                    if ((i == nPlayer) && !activeEnemy) // only check our current location or that of an alive/enemy player, otherwise skip
                         continue;
-                    const int sectorScanDepth = (i == nPlayer) ? 0 : 3; // use a smaller scanning depth if we're checking near self
-                    if (AreSectorsNeighbors(gPlayer[i].pSprite->sectnum, gStartZone[zoneId].sectnum, sectorScanDepth, true, true)) // this spawn is too close to another player/self, stop checking rest of players
+                    const int nDist = approxDist3D(pStartZone->x-gPlayer[i].pSprite->x, pStartZone->y-gPlayer[i].pSprite->y, pStartZone->z-gPlayer[i].pSprite->z);
+                    if (nDist < 32*5) // if within 5 meters of each other
                     {
-                        spawnTooClose = true;
+                        bSpawnTooClose = true;
                         break;
                     }
+                    const vec3_t startpos = {pStartZone->x, pStartZone->y, getflorzofslope(pStartZone->sectnum, pStartZone->x, pStartZone->y) - (32<<8)}; // get start/enemy position (and offset by 1 meter from floor)
+                    const vec3_t enemypos = {gPlayer[i].pSprite->x, gPlayer[i].pSprite->y, gPlayer[i].pSprite->z - (32<<8)};
+                    if (cansee(startpos.x, startpos.y, startpos.z, pStartZone->sectnum, enemypos.x, enemypos.y, enemypos.z, gPlayer[i].pSprite->sectnum)) // this spawn is in viewable range of another player/self, stop checking rest of players
+                    {
+                        if (nDist < 32*12) // if within 12 meters of each other
+                        {
+                            bSpawnTooClose = true;
+                            break;
+                        }
+                    }
                 }
-                if (!spawnTooClose) // if we found a safe spawn point, quit searching
+                if (!bSpawnTooClose) // if we found a safe spawn point, quit searching
+                {
+                    zoneId = nZoneRandList[nSearchList][nZone];
                     break;
+                }
             }
         }
         pStartZone = &gStartZone[zoneId];
