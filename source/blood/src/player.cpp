@@ -685,6 +685,103 @@ void playerResetPowerUps(PLAYER* pPlayer)
     }
 }
 
+void playerSpawnProtection(PLAYER* pPlayer)
+{
+    for (int i = 0; i < 7; i++) // set invul state to damage types
+        pPlayer->damageControl[i]++;
+    pPlayer->pwUpTime[kPwUpDeathMask] = kTicRate*2; // set spawn protection for 2 seconds
+}
+
+void playerSpawnWeapon(PLAYER* pPlayer, int nSpawnWeapon)
+{
+    if (nSpawnWeapon == 13) // random weapon
+    {
+        nSpawnWeapon = Random(kWeaponRemoteTNT-kWeaponFlare+1)+kWeaponFlare; // give random weapon (between flare gun to remote tnt)
+    }
+    else if (nSpawnWeapon == 14) // all weapons
+    {
+        for (int i = 0; i < kWeaponMax; i++)
+            pPlayer->hasWeapon[i] = 1;
+        for (int i = 0; i < 12; i++)
+            pPlayer->ammoCount[i] = gAmmoInfo[i].max;
+        pPlayer->input.newWeapon = Random(kWeaponRemoteTNT-kWeaponPitchfork+1)+kWeaponFlare; // switch to random weapon on spawn (between flare gun to remote tnt)
+        return;
+    }
+
+    int nWeaponType = 0;
+    switch (nSpawnWeapon)
+    {
+        case kWeaponFlare:
+            pPlayer->hasWeapon[kWeaponFlare] = 1;
+            pPlayer->input.newWeapon = kWeaponFlare;
+            nWeaponType = gWeaponItemData[kItemWeaponFlarePistol-kItemWeaponBase].ammoType;
+            pPlayer->ammoCount[nWeaponType] = 7;
+            break;
+        case kWeaponShotgun:
+            pPlayer->hasWeapon[kWeaponShotgun] = 1;
+            pPlayer->input.newWeapon = kWeaponShotgun;
+            nWeaponType = gWeaponItemData[kItemWeaponSawedoff-kItemWeaponBase].ammoType;
+            pPlayer->ammoCount[nWeaponType] = 10;
+            break;
+        case kWeaponTommy:
+            pPlayer->hasWeapon[kWeaponTommy] = 1;
+            pPlayer->input.newWeapon = kWeaponTommy;
+            nWeaponType = gWeaponItemData[kItemWeaponTommygun-kItemWeaponBase].ammoType;
+            pPlayer->ammoCount[nWeaponType] = 50;
+            break;
+        case kWeaponNapalm:
+            pPlayer->hasWeapon[kWeaponNapalm] = 1;
+            pPlayer->input.newWeapon = kWeaponNapalm;
+            nWeaponType = gWeaponItemData[kItemWeaponNapalmLauncher-kItemWeaponBase].ammoType;
+            pPlayer->ammoCount[nWeaponType] = 5;
+            break;
+        case kWeaponTNT:
+            pPlayer->hasWeapon[kWeaponTNT] = 1;
+            pPlayer->input.newWeapon = kWeaponTNT;
+            nWeaponType = gWeaponItemData[kItemWeaponTNT-kItemWeaponBase].ammoType;
+            pPlayer->ammoCount[nWeaponType] = 5;
+            break;
+        case kWeaponSprayCan:
+            pPlayer->hasWeapon[kWeaponSprayCan] = 1;
+            pPlayer->input.newWeapon = kWeaponSprayCan;
+            nWeaponType = gWeaponItemData[kItemWeaponSprayCan-kItemWeaponBase].ammoType;
+            pPlayer->ammoCount[nWeaponType] = 300;
+            break;
+        case kWeaponTesla:
+            pPlayer->hasWeapon[kWeaponTesla] = 1;
+            pPlayer->input.newWeapon = kWeaponTesla;
+            nWeaponType = gWeaponItemData[kItemWeaponTeslaCannon-kItemWeaponBase].ammoType;
+            pPlayer->ammoCount[nWeaponType] = 25;
+            break;
+        case kWeaponLifeLeech:
+            pPlayer->hasWeapon[kWeaponLifeLeech] = 1;
+            pPlayer->input.newWeapon = kWeaponLifeLeech;
+            nWeaponType = gWeaponItemData[kItemWeaponLifeLeech-kItemWeaponBase].ammoType;
+            pPlayer->ammoCount[nWeaponType] = 25;
+            break;
+        case kWeaponVoodoo:
+            pPlayer->hasWeapon[kWeaponVoodoo] = 1;
+            pPlayer->input.newWeapon = kWeaponVoodoo;
+            nWeaponType = gWeaponItemData[kItemWeaponVoodooDoll-kItemWeaponBase].ammoType;
+            pPlayer->ammoCount[nWeaponType] = 25;
+            break;
+        case kWeaponProxyTNT:
+            pPlayer->hasWeapon[kWeaponProxyTNT] = 1;
+            pPlayer->input.newWeapon = kWeaponProxyTNT;
+            nWeaponType = 10;
+            pPlayer->ammoCount[nWeaponType] = 3;
+            break;
+        case kWeaponRemoteTNT:
+            pPlayer->hasWeapon[kWeaponRemoteTNT] = 1;
+            pPlayer->input.newWeapon = kWeaponRemoteTNT;
+            nWeaponType = 11;
+            pPlayer->ammoCount[nWeaponType] = 5;
+            break;
+        default: // invalid weapon, this should never be reached
+            break;
+    }
+}
+
 void playerResetPosture(PLAYER* pPlayer) {
     memcpy(pPlayer->pPosture, gPostureDefaults, sizeof(gPostureDefaults));
     if (!VanillaMode()) {
@@ -892,11 +989,13 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->hand = 0;
     pPlayer->nWaterPal = 0;
     playerResetPowerUps(pPlayer);
-    if ((gGameOptions.nGameType > 0) && gGameOptions.bSpawnProtection) // set spawn protection for 2 seconds
+
+    if (gGameOptions.nGameType > 0)
     {
-        for (int i = 0; i < 7; i++) // set invul state to damage types
-            pPlayer->damageControl[i]++;
-        pPlayer->pwUpTime[kPwUpDeathMask] = kTicRate*2;
+        if (gGameOptions.bSpawnProtection)
+            playerSpawnProtection(pPlayer);
+        if (gGameOptions.nSpawnWeapon > 0)
+            playerSpawnWeapon(pPlayer, gGameOptions.nSpawnWeapon+kWeaponPitchfork);
     }
 
     if (pPlayer == gMe)
@@ -929,7 +1028,7 @@ void playerReset(PLAYER *pPlayer)
         3, 4, 2, 8, 9, 10, 7, 1, 1, 1, 1, 1, 1, 1
     };
     dassert(pPlayer != NULL);
-    for (int i = 0; i < 14; i++)
+    for (int i = 0; i < kWeaponMax; i++)
     {
         pPlayer->hasWeapon[i] = gInfiniteAmmo;
         pPlayer->weaponMode[i] = 0;
@@ -939,7 +1038,7 @@ void playerReset(PLAYER *pPlayer)
     pPlayer->qavCallback = -1;
     pPlayer->input.newWeapon = kWeaponPitchfork;
     pPlayer->lastWeapon = kWeaponPitchfork;
-    for (int i = 0; i < 14; i++)
+    for (int i = 0; i < kWeaponMax; i++)
     {
         pPlayer->weaponOrder[0][i] = dword_136400[i];
         pPlayer->weaponOrder[1][i] = dword_136438[i];

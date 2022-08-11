@@ -2194,7 +2194,7 @@ void trPlayerCtrlEraseStuff(XSPRITE* pXSource, PLAYER* pPlayer) {
         case 1: // erase weapons
             WeaponLower(pPlayer);
 
-            for (int i = 0; i < 14; i++) {
+            for (int i = 0; i < kWeaponMax; i++) {
                 pPlayer->hasWeapon[i] = false;
                 // also erase ammo
                 if (i < 12) pPlayer->ammoCount[i] = 0;

@@ -292,51 +292,51 @@ inline void playerResetWeaponState(PLAYER *pPlayer)
         return;
     switch (pPlayer->curWeapon) // set weapon state to something safe
     {
-    case 1: // pitchfork
+    case kWeaponPitchfork:
         pPlayer->weaponQav = 1;
         pPlayer->weaponState = 0;
         break;
-    case 2: // flare pistol
+    case kWeaponFlare:
         pPlayer->weaponQav = 42;
         pPlayer->weaponState = 2;
         break;
-    case 3: // shotgun
+    case kWeaponShotgun:
         pPlayer->weaponQav = 53;
         pPlayer->weaponState = 3;
         break;
-    case 4: // tommy gun
+    case kWeaponTommy:
         pPlayer->weaponQav = 65;
         pPlayer->weaponState = 0;
         break;
-    case 5: // napalm launcher
+    case kWeaponNapalm:
         pPlayer->weaponQav = 90;
         pPlayer->weaponState = 2;
         break;
-    case 6: // dynamite
+    case kWeaponTNT:
         pPlayer->weaponQav = 20;
         pPlayer->weaponState = 0;
         break;
-    case 7: // spray can
+    case kWeaponSprayCan:
         pPlayer->weaponQav = 9;
         pPlayer->weaponState = 3;
         break;
-    case 8: // tesla cannon
+    case kWeaponTesla:
         pPlayer->weaponQav = 75;
         pPlayer->weaponState = 2;
         break;
-    case 9: // life leech
+    case kWeaponLifeLeech:
         pPlayer->weaponQav = 112;
         pPlayer->weaponState = 2;
         break;
-    case 10: // voodoo doll
+    case kWeaponVoodoo:
         pPlayer->weaponQav = 101;
         pPlayer->weaponState = 2;
         break;
-    case 11: // proximity
+    case kWeaponProxyTNT:
         pPlayer->weaponQav = 27;
         pPlayer->weaponState = 7;
         break;
-    case 12: // remote
+    case kWeaponRemoteTNT:
         pPlayer->weaponQav = 36;
         pPlayer->weaponState = 10;
         break;

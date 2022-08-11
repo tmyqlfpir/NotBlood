@@ -86,6 +86,7 @@ struct PKT_STARTGAME {
     bool bSectorBehavior;
     bool bHitscanProjectiles;
     bool bFriendlyFire;
+    int nSpawnWeapon;
     bool bSpawnProtection;
     char szRandomizerSeed[9];
 };
