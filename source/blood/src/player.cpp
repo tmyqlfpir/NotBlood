@@ -715,7 +715,7 @@ void playerSpawnWeapon(PLAYER* pPlayer, int nSpawnWeapon)
             pPlayer->hasWeapon[kWeaponFlare] = 1;
             pPlayer->input.newWeapon = kWeaponFlare;
             nWeaponType = gWeaponItemData[kItemWeaponFlarePistol-kItemWeaponBase].ammoType;
-            pPlayer->ammoCount[nWeaponType] = 7;
+            pPlayer->ammoCount[nWeaponType] = 8;
             break;
         case kWeaponShotgun:
             pPlayer->hasWeapon[kWeaponShotgun] = 1;
