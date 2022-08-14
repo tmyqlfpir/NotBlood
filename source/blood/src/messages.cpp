@@ -310,9 +310,16 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     strcpy(buffer, levelGetFilename(nEpisode, nLevel));
     ChangeExtension(buffer, ".DEM");
     gDemo.Create(buffer);
+    gGameOptions.nMonsterSettings = 1;
+    gGameOptions.nMonsterRespawnTime = 3600;
+    gGameOptions.nRandomizerMode = 0;
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
+    gGameOptions.bFriendlyFire = false;
+    gGameOptions.nKeySettings = 0;
+    gGameOptions.nSpawnWeapon = 0;
+    gGameOptions.bSpawnProtection = false;
     gGameOptions.uMonsterBannedType = BANNED_NONE;
     gGameOptions.uGameFlags = 0;
     gSkill = gGameOptions.nDifficulty;
