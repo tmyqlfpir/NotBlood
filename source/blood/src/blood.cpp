@@ -604,9 +604,12 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             gGameOptions.uGameFlags |= 4;
         if ((gGameOptions.uGameFlags&4) && !gDemo.bPlaying && !gDemo.bRecording && !Bstrlen(gGameOptions.szUserMap))
             levelPlayIntroScene(gGameOptions.nEpisode);
-
-        ///////
-        if (!VanillaMode())
+        if (VanillaMode())
+        {
+            gGameOptions.nMonsterSettings = 1; // spawn enemies
+            gGameOptions.nMonsterRespawnTime = 3600; // default (48 secs)
+        }
+        else
         {
             gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
             if (gMonsterSettings >= 2)
@@ -614,6 +617,8 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             else
                 gGameOptions.nMonsterRespawnTime = 3600; // default (48 secs)
         }
+
+        ///////
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
@@ -880,6 +885,10 @@ void StartNetworkLevel(void)
         gGameOptions.nKeySettings = gPacketStartGame.keySettings;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
         gGameOptions.bSpawnProtection = gPacketStartGame.bSpawnProtection;
+        if (gPacketStartGame.userMap)
+            levelAddUserMap(gPacketStartGame.userMapName);
+        else
+            levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
         
         ///////
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
@@ -899,11 +908,6 @@ void StartNetworkLevel(void)
         gGameOptions.bPitchforkOnly = false;
         gGameOptions.uMonsterBannedType = BANNED_NONE;
         ///////
-
-        if (gPacketStartGame.userMap)
-            levelAddUserMap(gPacketStartGame.userMapName);
-        else
-            levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
     }
     StartLevel(&gGameOptions);
 }
