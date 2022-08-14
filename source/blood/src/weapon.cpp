@@ -2310,11 +2310,11 @@ void WeaponProcess(PLAYER *pPlayer) {
         if (processRemote(pPlayer))
             return;
         break;
-    case 9:
+    case kWeaponLifeLeech:
         if (WeaponsNotBlood() && !VanillaMode()) // allow player to charge up throw like tnt
             processLifeLeech(pPlayer);
         break;
-    case 1:
+    case kWeaponPitchfork:
         if (WeaponsNotBlood() && !VanillaMode()) // allow player to charge up pitchfork attack
             processPitchfork(pPlayer);
         break;
