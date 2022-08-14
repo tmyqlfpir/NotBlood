@@ -2133,23 +2133,22 @@ void processLifeLeech(PLAYER *pPlayer)
 {
     if (pPlayer->weaponState != 3)
         return;
+    if (gGameOptions.nGameType <= 1 && !checkAmmo2(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
+    {
+        sfxPlay3DSound(pPlayer->pSprite, 494, 2, 0);
+        StartQAV(pPlayer, 116, nClientFireLifeLeech, 0);
+        pPlayer->weaponState = 2;
+        pPlayer->throwPower = pPlayer->throwPowerOld = 0;
+        return;
+    }
     pPlayer->throwPowerOld = pPlayer->throwPower;
     pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
     if (!pPlayer->input.buttonFlags.shoot2)
     {
-        if (gGameOptions.nGameType <= 1 && !checkAmmo2(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
-        {
-            sfxPlay3DSound(pPlayer->pSprite, 494, 2, 0);
-            StartQAV(pPlayer, 116, nClientFireLifeLeech, 0);
-            pPlayer->weaponState = 2;
-        }
-        else
-        {
-            StartQAV(pPlayer, 119, -1, 0);
-            AltFireLifeLeech(1, pPlayer);
-            pPlayer->weaponState = -1;
-            pPlayer->throwPower = pPlayer->throwPowerOld = 0;
-        }
+        StartQAV(pPlayer, 119, -1, 0);
+        AltFireLifeLeech(1, pPlayer);
+        pPlayer->weaponState = -1;
+        pPlayer->throwPower = pPlayer->throwPowerOld = 0;
     }
 }
 
@@ -2310,11 +2309,11 @@ void WeaponProcess(PLAYER *pPlayer) {
         if (processRemote(pPlayer))
             return;
         break;
-    case 9:
+    case kWeaponLifeLeech:
         if (WeaponsNotBlood() && !VanillaMode()) // allow player to charge up throw like tnt
             processLifeLeech(pPlayer);
         break;
-    case 1:
+    case kWeaponPitchfork:
         if (WeaponsNotBlood() && !VanillaMode()) // allow player to charge up pitchfork attack
             processPitchfork(pPlayer);
         break;
