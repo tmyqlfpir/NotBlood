@@ -880,6 +880,10 @@ void StartNetworkLevel(void)
         gGameOptions.nKeySettings = gPacketStartGame.keySettings;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
         gGameOptions.bSpawnProtection = gPacketStartGame.bSpawnProtection;
+        if (gPacketStartGame.userMap)
+            levelAddUserMap(gPacketStartGame.userMapName);
+        else
+            levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
         
         ///////
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
@@ -899,11 +903,6 @@ void StartNetworkLevel(void)
         gGameOptions.bPitchforkOnly = false;
         gGameOptions.uMonsterBannedType = BANNED_NONE;
         ///////
-
-        if (gPacketStartGame.userMap)
-            levelAddUserMap(gPacketStartGame.userMapName);
-        else
-            levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
     }
     StartLevel(&gGameOptions);
 }

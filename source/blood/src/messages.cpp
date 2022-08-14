@@ -310,6 +310,8 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     strcpy(buffer, levelGetFilename(nEpisode, nLevel));
     ChangeExtension(buffer, ".DEM");
     gDemo.Create(buffer);
+    gGameOptions.nMonsterSettings = 1;
+    gGameOptions.nMonsterRespawnTime = 3600;
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
