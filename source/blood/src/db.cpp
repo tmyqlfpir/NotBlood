@@ -674,8 +674,8 @@ void PropagateMarkerReferences(void)
 inline char dbIsBannedDudeType(int nType)
 {
     if (gGameOptions.uMonsterBannedType == BANNED_NONE) // no monsters banned, return
-        return false;
-    char bBanned = false;
+        return 0;
+    char bBanned = 0;
     if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_BATS))
         bBanned = nType == kDudeBat;
     if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_RATS))
@@ -698,7 +698,7 @@ inline char dbIsBannedDudeType(int nType)
 char dbIsBannedDude(spritetype *pSprite, XSPRITE* pXSprite)
 {
     if (gGameOptions.uMonsterBannedType == BANNED_NONE) // no monsters banned, return
-        return false;
+        return 0;
     const char bRemove = dbIsBannedDudeType(pSprite->type);
     if (bRemove && pXSprite)
     {
