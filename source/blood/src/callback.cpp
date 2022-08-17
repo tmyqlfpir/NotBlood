@@ -207,21 +207,20 @@ void fxArcSpark(int nSprite) // 7
 
 void fxDynPuff(int nSprite) // 8
 {
-    int callbackTicks = 12;
+    int nCallbackTicks = 12;
     spritetype *pSprite = &sprite[nSprite];
     if (zvel[nSprite])
     {
-        const bool bSmokeTrail3D = gSmokeTrail3D && !VanillaMode() && actSpriteOwnerIsDude(pSprite) && ((pSprite->type == kThingArmedTNTStick) || (pSprite->type == kThingArmedTNTBundle) || (pSprite->type == kThingArmedSpray));
-        if (bSmokeTrail3D && (gGameOptions.nGameType == 0)) // feature is single-player only (causes desync)
+        const bool bSmokeTrail3D = gSmokeTrail3D && !VanillaMode() && (gGameOptions.nGameType == 0) && actSpriteOwnerIsDude(pSprite) && ((pSprite->type == kThingArmedTNTStick) || (pSprite->type == kThingArmedTNTBundle) || (pSprite->type == kThingArmedSpray));
+        if (bSmokeTrail3D) // feature is single-player only (causes desync)
         {
-            const bool bPlayerOwned = actSpriteOwnerIsPlayer(pSprite);
             const int nTile = 3436;
             const int frames = picanm[nTile].num;
             const int frameoffset = qanimateoffs(nTile, 32768+nSprite);
-            const int angleOffset = frameoffset * (2047 / (frames+1));
-            int angle = (pSprite->ang+((-angleOffset)-512))&2047;
-            if (!bPlayerOwned) // chances are if an enemy is throwing tnt at the player, the angle will be inverted - so rotate by 180 degrees
-                angle = (angle+1024)&2047;
+            const int angleOffset = frameoffset * (kAngMask / (frames+1));
+            int angle = (pSprite->ang+((-angleOffset)-kAng90))&kAngMask;
+            if (actSpriteOwnerIsPlayer(pSprite)) // chances are if an enemy is throwing tnt at the player, the angle will be inverted - so rotate by 180 degrees
+                angle = (angle+kAng180)&kAngMask;
             int nDist = (pSprite->xrepeat*(tilesiz[pSprite->picnum+frameoffset].x/2))>>3;
             nDist += nDist>>2;
             int x = pSprite->x + mulscale30(nDist, Cos(angle));
@@ -233,14 +232,14 @@ void fxDynPuff(int nSprite) // 8
                 xvel[pFX->index] = xvel[nSprite] + mulscale30(nDist<<10, Cos(angle));
                 yvel[pFX->index] = yvel[nSprite] + mulscale30(nDist<<10, Sin(angle));
                 zvel[pFX->index] = zvel[nSprite];
-                callbackTicks = 10;
+                nCallbackTicks = 10;
             }
         }
-        else
+        else // original
         {
             int nDist = (pSprite->xrepeat*(tilesiz[pSprite->picnum].x/2))>>2;
-            int x = pSprite->x + mulscale30(nDist, Cos(pSprite->ang-512));
-            int y = pSprite->y + mulscale30(nDist, Sin(pSprite->ang-512));
+            int x = pSprite->x + mulscale30(nDist, Cos(pSprite->ang-kAng90));
+            int y = pSprite->y + mulscale30(nDist, Sin(pSprite->ang-kAng90));
             int z = pSprite->z;
             spritetype *pFX = gFX.fxSpawn(FX_7, pSprite->sectnum, x, y, z);
             if (pFX)
@@ -251,7 +250,7 @@ void fxDynPuff(int nSprite) // 8
             }
         }
     }
-    evPost(nSprite, 3, callbackTicks, kCallbackFXDynPuff);
+    evPost(nSprite, 3, nCallbackTicks, kCallbackFXDynPuff);
 }
 
 void Respawn(int nSprite) // 9
