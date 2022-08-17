@@ -1026,20 +1026,20 @@ void dbRandomizerMode(spritetype *pSprite)
         case kDudeCultistShotgun:
         case kDudeCultistTommy:
         {
-            const int enemiesrng[] = {kDudeInnocent, kDudeZombieAxeBuried, kDudeZombieAxeNormal, kDudeGillBeast, kDudeZombieButcher, kDudeCultistTNT, kDudeCultistShotgun, kDudeCultistShotgunProne, kDudeCultistTommyProne};
+            const int enemiesrng[] = {kDudeInnocent, kDudeZombieAxeBuried, kDudeZombieAxeNormal, kDudeGillBeast, kDudeCultistTesla, kDudeCultistTNT, kDudeCultistShotgun, kDudeCultistShotgunProne, kDudeCultistTommyProne};
             pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
             break;
         }
         case kDudeCultistShotgunProne:
         case kDudeCultistTommyProne:
         {
-            const int enemiesrng[] = {kDudeGillBeast, kDudeZombieButcher, kDudeSpiderBlack, kDudeCultistShotgun, kDudeCultistTommy, kDudeCultistTNT, kDudeHellHound, kDudeCultistTesla};
+            const int enemiesrng[] = {kDudeGillBeast, kDudeZombieAxeLaying, kDudeSpiderBlack, kDudeCultistShotgun, kDudeCultistTommy, kDudeCultistTNT, kDudeHellHound, kDudeCultistTesla};
             pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
             break;
         }
         case kDudeCultistTNT:
         {
-            const int enemiesrng[] = {kDudeZombieAxeNormal, kDudeGillBeast, kDudeZombieButcher, kDudeCultistTommy, kDudeCultistShotgunProne, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla};
+            const int enemiesrng[] = {kDudeZombieAxeNormal, kDudeGillBeast, kDudeZombieAxeLaying, kDudeCultistTommy, kDudeCultistShotgunProne, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla};
             pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
             break;
         }
