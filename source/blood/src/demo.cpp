@@ -173,7 +173,7 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.nEnemyQuantity = gameOptions.nDifficulty;
     gameOptions.nEnemyHealth = gameOptions.nDifficulty;
     gameOptions.bPitchforkOnly = false;
-    gameOptions.bFriendlyFire = false;
+    gameOptions.bFriendlyFire = true;
     gameOptions.nKeySettings = 0;
     gameOptions.nSpawnWeapon = 0;
     gameOptions.bSpawnProtection = false;
