@@ -1244,12 +1244,25 @@ void dbRandomizerMode(spritetype *pSprite)
             }
             switch (pSprite->picnum)
             {
+                case 520: // skull cup
+                case 521: // wine glass (half-empty)
+                case 574: // wine glass (empty)
+                case 759: // wine bottle
+                {
+                    const int pickupsrngtype[] = {kItemAmmoSawedoffFew, kItemAmmoTommygunFew, kItemAmmoTNTBundle};
+                    const int pickupsrngpicnum[] = {619, 813, 589};
+                    const int rng = dbRandomizerRNGThings(ARRAY_SSIZE(pickupsrngtype));
+                    pSprite->type = pickupsrngtype[rng];
+                    pSprite->picnum = pickupsrngpicnum[rng];
+                    changespritestat(pSprite->index, kStatItem);
+                    break;
+                }
                 case 605: // glass bottle
                 case 606: // glass bottle
                 case 616: // glass jug
                 {
-                    const int pickupsrngtype[] = {kItemAmmoSawedoffFew, kItemAmmoTommygunFew, kItemAmmoTommygunDrum, kItemAmmoSawedoffBox};
-                    const int pickupsrngpicnum[] = {619, 813, 817, 812};
+                    const int pickupsrngtype[] = {kItemAmmoSawedoffFew, kItemAmmoTommygunFew, kItemAmmoTommygunDrum, kItemAmmoSawedoffBox, kItemAmmoTNTBox};
+                    const int pickupsrngpicnum[] = {619, 813, 817, 812, 809};
                     const int rng = dbRandomizerRNGThings(ARRAY_SSIZE(pickupsrngtype));
                     pSprite->type = pickupsrngtype[rng];
                     pSprite->picnum = pickupsrngpicnum[rng];
@@ -1262,8 +1275,8 @@ void dbRandomizerMode(spritetype *pSprite)
                 {
                     if (dbRandomizerRNGThings(2)) // lower chance of replacing object
                         break;
-                    const int pickupsrngtype[] = {kItemHealthLifeEssense, kItemAmmoTommygunDrum, kItemAmmoSawedoffBox};
-                    const int pickupsrngpicnum[] = {2169, 817, 812};
+                    const int pickupsrngtype[] = {kItemHealthLifeEssense, kItemAmmoTommygunDrum, kItemAmmoSawedoffBox, kItemAmmoTNTBox};
+                    const int pickupsrngpicnum[] = {2169, 817, 812, 809};
                     const int rng = dbRandomizerRNGThings(ARRAY_SSIZE(pickupsrngtype));
                     pSprite->type = pickupsrngtype[rng];
                     pSprite->picnum = pickupsrngpicnum[rng];
