@@ -4560,7 +4560,8 @@ int MoveThing(spritetype *pSprite)
                                 if (pWall->extra > 0) {
                                     XWALL *pXWall = &xwall[pWall->extra];
                                     if (pXWall->triggerVector) { // break tile (glass, etc)
-                                        trTriggerWall(nHitWall, pXWall, kCmdWallImpact, pSprite->index);
+                                        const int nOwner = actSpriteOwnerToSpriteId(pSprite);
+                                        trTriggerWall(nHitWall, pXWall, kCmdWallImpact, (nOwner >= 0) ? nOwner : nSprite);
                                         bounce = false;
                                         xvel[nSprite] >>= 1; // reduce speed by half
                                         yvel[nSprite] >>= 1;
@@ -6460,7 +6461,7 @@ void actProcessSprites(void)
             if (nWall == -1)
                 break;
             XWALL *pXWall = &xwall[wall[nWall].extra];
-            trTriggerWall(nWall, pXWall, kCmdWallImpact, nOwner);
+            trTriggerWall(nWall, pXWall, kCmdWallImpact, (nOwner >= 0) ? nOwner : kCauserGame);
         }
 
         for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
@@ -6561,7 +6562,7 @@ void actProcessSprites(void)
                     if (/*pXImpact->state == pXImpact->restState ||*/ !TestBitString(sectmap, pImpact->sectnum) || !CheckProximity(pImpact, x, y, z, nSector, radius))
                         continue;
                     
-                    trTriggerSprite(pImpact->index, pXImpact, kCmdSpriteImpact, nOwner);
+                    trTriggerSprite(pImpact->index, pXImpact, kCmdSpriteImpact, (nOwner >= 0) ? nOwner : kCauserGame);
                 }
             }
 
