@@ -674,8 +674,8 @@ void PropagateMarkerReferences(void)
 inline char dbIsBannedDudeType(int nType)
 {
     if (gGameOptions.uMonsterBannedType == BANNED_NONE) // no monsters banned, return
-        return false;
-    char bBanned = false;
+        return 0;
+    char bBanned = 0;
     if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_BATS))
         bBanned = nType == kDudeBat;
     if (!bBanned && (gGameOptions.uMonsterBannedType&BANNED_RATS))
@@ -698,7 +698,7 @@ inline char dbIsBannedDudeType(int nType)
 char dbIsBannedDude(spritetype *pSprite, XSPRITE* pXSprite)
 {
     if (gGameOptions.uMonsterBannedType == BANNED_NONE) // no monsters banned, return
-        return false;
+        return 0;
     const char bRemove = dbIsBannedDudeType(pSprite->type);
     if (bRemove && pXSprite)
     {
@@ -919,11 +919,11 @@ void dbRandomizerMode(spritetype *pSprite)
         }
     }
 
-    if (gGameOptions.nDifficulty <= 2) // don't always replace enemies/pickups
+    if (gGameOptions.nEnemyQuantity <= 2) // don't always replace enemies/pickups
     {
         if (!dbRandomizerRNG(2)) return;
     }
-    else if (gGameOptions.nDifficulty == 3) // well done
+    else if (gGameOptions.nEnemyQuantity == 3) // well done
     {
         if (!dbRandomizerRNG(4)) return;
     }
@@ -1026,20 +1026,20 @@ void dbRandomizerMode(spritetype *pSprite)
         case kDudeCultistShotgun:
         case kDudeCultistTommy:
         {
-            const int enemiesrng[] = {kDudeInnocent, kDudeZombieAxeBuried, kDudeZombieAxeNormal, kDudeGillBeast, kDudeZombieButcher, kDudeCultistTNT, kDudeCultistShotgun, kDudeCultistShotgunProne, kDudeCultistTommyProne};
+            const int enemiesrng[] = {kDudeInnocent, kDudeZombieAxeBuried, kDudeZombieAxeNormal, kDudeGillBeast, kDudeCultistTesla, kDudeCultistTNT, kDudeCultistShotgun, kDudeCultistShotgunProne, kDudeCultistTommyProne};
             pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
             break;
         }
         case kDudeCultistShotgunProne:
         case kDudeCultistTommyProne:
         {
-            const int enemiesrng[] = {kDudeGillBeast, kDudeZombieButcher, kDudeSpiderBlack, kDudeCultistShotgun, kDudeCultistTommy, kDudeCultistTNT, kDudeHellHound, kDudeCultistTesla};
+            const int enemiesrng[] = {kDudeGillBeast, kDudeZombieAxeLaying, kDudeSpiderBlack, kDudeCultistShotgun, kDudeCultistTommy, kDudeCultistTNT, kDudeHellHound, kDudeCultistTesla};
             pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
             break;
         }
         case kDudeCultistTNT:
         {
-            const int enemiesrng[] = {kDudeZombieAxeNormal, kDudeGillBeast, kDudeZombieButcher, kDudeCultistTommy, kDudeCultistShotgunProne, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla};
+            const int enemiesrng[] = {kDudeZombieAxeNormal, kDudeGillBeast, kDudeZombieAxeLaying, kDudeCultistTommy, kDudeCultistShotgunProne, kDudeHellHound, kDudeCultistTommyProne, kDudeCultistTesla};
             pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
             break;
         }
@@ -1234,14 +1234,35 @@ void dbRandomizerMode(spritetype *pSprite)
         {
             if (pSprite->statnum != kStatThing) // unexpected type, don't replace
                 break;
+            if (xspriRangeIsFine(pSprite->extra))
+            {
+                XSPRITE *pXSprite = &xsprite[pSprite->extra];
+                if (pXSprite->key > 0) // sprite has key attached, don't replace
+                    break;
+                if (pXSprite->dropMsg > 0) // item has item attached, don't replace
+                    break;
+            }
             switch (pSprite->picnum)
             {
+                case 520: // skull cup
+                case 521: // wine glass (half-empty)
+                case 574: // wine glass (empty)
+                case 759: // wine bottle
+                {
+                    const int pickupsrngtype[] = {kItemAmmoSawedoffFew, kItemAmmoTommygunFew, kItemAmmoTNTBundle};
+                    const int pickupsrngpicnum[] = {619, 813, 589};
+                    const int rng = dbRandomizerRNGThings(ARRAY_SSIZE(pickupsrngtype));
+                    pSprite->type = pickupsrngtype[rng];
+                    pSprite->picnum = pickupsrngpicnum[rng];
+                    changespritestat(pSprite->index, kStatItem);
+                    break;
+                }
                 case 605: // glass bottle
                 case 606: // glass bottle
                 case 616: // glass jug
                 {
-                    const int pickupsrngtype[] = {kItemAmmoSawedoffFew, kItemAmmoTommygunFew, kItemAmmoTommygunDrum, kItemAmmoSawedoffBox};
-                    const int pickupsrngpicnum[] = {619, 813, 817, 812};
+                    const int pickupsrngtype[] = {kItemAmmoSawedoffFew, kItemAmmoTommygunFew, kItemAmmoTommygunDrum, kItemAmmoSawedoffBox, kItemAmmoTNTBox};
+                    const int pickupsrngpicnum[] = {619, 813, 817, 812, 809};
                     const int rng = dbRandomizerRNGThings(ARRAY_SSIZE(pickupsrngtype));
                     pSprite->type = pickupsrngtype[rng];
                     pSprite->picnum = pickupsrngpicnum[rng];
@@ -1254,8 +1275,8 @@ void dbRandomizerMode(spritetype *pSprite)
                 {
                     if (dbRandomizerRNGThings(2)) // lower chance of replacing object
                         break;
-                    const int pickupsrngtype[] = {kItemHealthLifeEssense, kItemAmmoTommygunDrum, kItemAmmoSawedoffBox};
-                    const int pickupsrngpicnum[] = {2169, 817, 812};
+                    const int pickupsrngtype[] = {kItemHealthLifeEssense, kItemAmmoTommygunDrum, kItemAmmoSawedoffBox, kItemAmmoTNTBox};
+                    const int pickupsrngpicnum[] = {2169, 817, 812, 809};
                     const int rng = dbRandomizerRNGThings(ARRAY_SSIZE(pickupsrngtype));
                     pSprite->type = pickupsrngtype[rng];
                     pSprite->picnum = pickupsrngpicnum[rng];
