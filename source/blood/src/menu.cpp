@@ -79,6 +79,7 @@ void SetMouseSensitivity(CGameMenuItemSliderFloat *);
 void SetMouseAimFlipped(CGameMenuItemZBool *);
 void SetTurnSpeed(CGameMenuItemSlider *);
 void SetCrouchToggle(CGameMenuItemZBool *);
+void SetAutoRun(CGameMenuItemZBool *);
 void ResetKeys(CGameMenuItemChain *);
 void ResetKeysClassic(CGameMenuItemChain *);
 void SetMessages(CGameMenuItemZBool *);
@@ -888,11 +889,12 @@ CGameMenuItemChain itemOptionsControlKeyboard("KEYBOARD SETUP", 1, 0, 60, 320, 1
 CGameMenuItemChain itemOptionsControlMouse("MOUSE SETUP", 1, 0, 80, 320, 1, &menuOptionsControlMouse, -1, SetupMouseMenu, 0);
 
 CGameMenuItemTitle itemOptionsControlKeyboardTitle("KEYBOARD SETUP", 1, 160, 20, 2038);
-CGameMenuItemSlider itemOptionsControlKeyboardSliderTurnSpeed("Key Turn Speed:", 1, 18, 60, 280, gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
-CGameMenuItemZBool itemOptionsControlKeyboardBoolCrouchToggle("Crouch Toggle:", 1, 18, 80, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
-CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 110, 320, 1, &menuKeys, -1, NULL, 0);
-CGameMenuItemChain itemOptionsControlKeyboardReset("Reset Keys (default)...", 1, 0, 130, 320, 1, &menuKeys, -1, ResetKeys, 0);
-CGameMenuItemChain itemOptionsControlKeyboardResetClassic("Reset Keys (classic)...", 1, 0, 150, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
+CGameMenuItemSlider itemOptionsControlKeyboardSliderTurnSpeed("Key Turn Speed:", 1, 18, 50, 280, gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
+CGameMenuItemZBool itemOptionsControlKeyboardBoolCrouchToggle("Crouch Toggle:", 1, 18, 70, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
+CGameMenuItemZBool itemOptionsControlKeyboardBoolAutoRun("Always Run:", 1, 18, 90, 280, gAutoRun, SetAutoRun, NULL, NULL);
+CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 125, 320, 1, &menuKeys, -1, NULL, 0);
+CGameMenuItemChain itemOptionsControlKeyboardReset("Reset Keys (default)...", 1, 0, 145, 320, 1, &menuKeys, -1, ResetKeys, 0);
+CGameMenuItemChain itemOptionsControlKeyboardResetClassic("Reset Keys (classic)...", 1, 0, 165, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
 
 void SetMouseAimMode(CGameMenuItemZBool *pItem);
 void SetMouseVerticalAim(CGameMenuItemZBool *pItem);
@@ -1743,6 +1745,7 @@ void SetupOptionsMenu(void)
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardTitle, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardSliderTurnSpeed, true);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardBoolCrouchToggle, false);
+    menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardBoolAutoRun, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardList, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardReset, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardResetClassic, false);
@@ -1750,6 +1753,7 @@ void SetupOptionsMenu(void)
 
     itemOptionsControlKeyboardSliderTurnSpeed.nValue = gTurnSpeed;
     itemOptionsControlKeyboardBoolCrouchToggle.at20 = gCrouchToggle;
+    itemOptionsControlKeyboardBoolAutoRun.at20 = gAutoRun;
 
     menuOptionsControlMouse.Add(&itemOptionsControlMouseTitle, false);
     menuOptionsControlMouse.Add(&itemOptionsControlMouseButton, true);
@@ -2098,6 +2102,11 @@ void SetTurnSpeed(CGameMenuItemSlider *pItem)
 void SetCrouchToggle(CGameMenuItemZBool *pItem)
 {
     gCrouchToggle = pItem->at20;
+}
+
+void SetAutoRun(CGameMenuItemZBool *pItem)
+{
+    gAutoRun = pItem->at20;
 }
 
 void SetAutoAim(CGameMenuItemZCycle *pItem)
