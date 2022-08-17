@@ -3962,7 +3962,7 @@ void viewDrawScreen(void)
         bool bDelirium = powerupCheck(gView, kPwUpDeliriumShroom) > 0;
         static bool bDeliriumOld = false;
         int tiltcs, tiltdim;
-        char v4 = powerupCheck(gView, kPwUpCrystalBall) > 0;
+        const char bCrystalBall = (powerupCheck(gView, kPwUpCrystalBall) > 0) && (gNetPlayers > 1);
 #ifdef USE_OPENGL
         renderSetRollAngle(0);
 #endif
@@ -3999,7 +3999,7 @@ void viewDrawScreen(void)
                 renderSetRollAngle(v78);
 #endif
         }
-        else if (v4 && gNetPlayers > 1)
+        else if (bCrystalBall)
         {
             int tmp = ((int)totalclock/240)%(gNetPlayers-1);
             int i = connecthead;
@@ -4357,7 +4357,7 @@ RORHACK:
             rotatesprite(0, 200<<16, 65536, 0, 2358, 0, 0, 256+22, gViewX0, gViewY0, gViewX1, gViewY1);
             rotatesprite(320<<16, 200<<16, 65536, 1024, 2358, 0, 0, 512+18, gViewX0, gViewY0, gViewX1, gViewY1);
         }
-        if (v4 && gNetPlayers > 1)
+        if (bCrystalBall)
         {
             DoLensEffect();
             viewingRange = viewingrange;
