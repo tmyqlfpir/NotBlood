@@ -6461,7 +6461,7 @@ void actProcessSprites(void)
             if (nWall == -1)
                 break;
             XWALL *pXWall = &xwall[wall[nWall].extra];
-            trTriggerWall(nWall, pXWall, kCmdWallImpact, (nOwner >= 0) ? nOwner : kCauserGame);
+            trTriggerWall(nWall, pXWall, kCmdWallImpact, (nOwner >= 0) ? nOwner : nSprite);
         }
 
         for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
@@ -6562,7 +6562,7 @@ void actProcessSprites(void)
                     if (/*pXImpact->state == pXImpact->restState ||*/ !TestBitString(sectmap, pImpact->sectnum) || !CheckProximity(pImpact, x, y, z, nSector, radius))
                         continue;
                     
-                    trTriggerSprite(pImpact->index, pXImpact, kCmdSpriteImpact, (nOwner >= 0) ? nOwner : kCauserGame);
+                    trTriggerSprite(pImpact->index, pXImpact, kCmdSpriteImpact, (nOwner >= 0) ? nOwner : nSprite);
                 }
             }
 
