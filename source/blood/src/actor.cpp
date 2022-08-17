@@ -7953,7 +7953,7 @@ void G_AddGameLight(int lightRadius, int spriteNum, int zOffset, int lightRange,
 void actDoLight(int nSprite)
 {
     auto const pSprite = &sprite[nSprite];
-    int savedFires = 0;
+    //int savedFires = 0;
     if (((sector[pSprite->sectnum].floorz - sector[pSprite->sectnum].ceilingz) < 16) || pSprite->z > sector[pSprite->sectnum].floorz)
     {
         if (gPolymerLight[nSprite].lightptr != NULL)
