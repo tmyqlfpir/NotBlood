@@ -1234,6 +1234,14 @@ void dbRandomizerMode(spritetype *pSprite)
         {
             if (pSprite->statnum != kStatThing) // unexpected type, don't replace
                 break;
+            if (xspriRangeIsFine(pSprite->extra))
+            {
+                XSPRITE *pXSprite = &xsprite[pSprite->extra];
+                if (pXSprite->key > 0) // sprite has key attached, don't replace
+                    break;
+                if (pXSprite->dropMsg > 0) // item has item attached, don't replace
+                    break;
+            }
             switch (pSprite->picnum)
             {
                 case 605: // glass bottle
