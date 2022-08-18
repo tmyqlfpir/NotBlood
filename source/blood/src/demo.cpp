@@ -541,7 +541,7 @@ _DEMOPLAYBACK:
                     char bNewDemo = 1;
                     for (int index = 0; gDemoRunValidation && (index < ARRAY_SSIZE(gDemoValidate)); index++)
                     {
-                        if ((gDemoValidate[index].nInputTicks != nInputTicks) || !pCurrentDemo || !pCurrentDemo->zName) // demo ticks not matching/demo name does not exist, skip
+                        if ((gDemoValidate[index].nInputTicks != nInputTicks) || !pCurrentDemo) // demo ticks not matching/demo name does not exist, skip
                             continue;
                         if (Bstrcasecmp(gDemoValidate[index].zName, pCurrentDemo->zName)) // demo name does not match, skip
                             continue;
@@ -572,7 +572,7 @@ _DEMOPLAYBACK:
                             OSD_Printf("Demo Synced\n");
                         break;
                     }
-                    if (gDemoRunValidation && bNewDemo && pCurrentDemo && pCurrentDemo->zName) // print validation result for new demo
+                    if (gDemoRunValidation && bNewDemo && pCurrentDemo) // print validation result for new demo
                         OSD_Printf("{\"%s\", (int32_t)0x%08X, 0x%08X, 0x%08X, {(int32_t)0x%08X, (int32_t)0x%08X, (int32_t)0x%08X}},", pCurrentDemo->zName, nInputTicks, wrandomseed, (unsigned int)xsprite[gPlayer[0].pSprite->extra].health, (unsigned int)gPlayer[0].pSprite->x, (unsigned int)gPlayer[0].pSprite->y, (unsigned int)gPlayer[0].pSprite->z);
                     if (nDemosFound > 1)
                     {
