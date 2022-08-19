@@ -3953,7 +3953,7 @@ void viewDrawScreen(void)
         if (!bLink && gViewInterpolate && !VanillaMode()) // double check current sector for interpolated movement (fixes ROR glitch such as E3M5's scanning room doorway)
         {
             int nFoundSect = nSectnum;
-            if (FindSector(cX, cY, cZ, &nFoundSect) && (nFoundSect != nSectnum) && AreSectorsNeighbors(nSectnum, nFoundSect, 2)) // if newly found sector is connected to current sector, set as view sector
+            if (FindSector(cX, cY, cZ, &nFoundSect) && (nFoundSect != nSectnum) && AreSectorsNeighbors(nSectnum, nFoundSect, 1)) // if newly found sector is connected to current sector, set as view sector
                 nSectnum = nFoundSect;
         }
         int v78 = gViewInterpolate ? interpolateang(gScreenTiltO, gScreenTilt, gInterpolate) : gScreenTilt;

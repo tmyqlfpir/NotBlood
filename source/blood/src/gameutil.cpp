@@ -45,11 +45,11 @@ short gUpperLink[kMaxSectors];
 short gLowerLink[kMaxSectors];
 HITINFO gHitInfo;
 
-static bool AreSectorsNeighborsDepthCheck(int sect1, int sect2, int depth, bool checkRORSectors, char *pSectBit)
+static bool AreSectorsNeighborsDepthCheck(int nSect1, int nSect2, int nDepth, bool bCheckRORSectors, char *pSectBit)
 {
-    if (checkRORSectors) // room over room sector checking
+    if (bCheckRORSectors) // room over room sector checking
     {
-        const int nSprite[2] = {gUpperLink[sect1], gLowerLink[sect1]};
+        const int nSprite[2] = {gUpperLink[nSect1], gLowerLink[nSect1]};
         for (int i = 0; i < 2; i++)
         {
             if (!spriRangeIsFine(nSprite[i])) // invalid sprite, skip
@@ -57,72 +57,72 @@ static bool AreSectorsNeighborsDepthCheck(int sect1, int sect2, int depth, bool 
             const int nLink = sprite[nSprite[i]].owner;
             if (!spriRangeIsFine(nLink)) // invalid sprite, skip
                 continue;
-            const int nextSect = sprite[nLink].sectnum;
-            if (!sectRangeIsFine(nextSect)) // invalid sector, skip
+            const int nSectNext = sprite[nLink].sectnum;
+            if (!sectRangeIsFine(nSectNext)) // invalid sector, skip
                 continue;
             const bool floorLinked = i == 0;
-            const int nextSectPic = floorLinked ? sector[nextSect].ceilingpicnum : sector[nextSect].floorpicnum;
+            const int nextSectPic = floorLinked ? sector[nSectNext].ceilingpicnum : sector[nSectNext].floorpicnum;
             if ((nextSectPic < 4080) || (nextSectPic > 4095)) // if other room is not open air, skip
                 continue;
-            if (TestBitString(pSectBit, nextSect)) // if we've already checked this sector, skip
+            if (TestBitString(pSectBit, nSectNext)) // if we've already checked this sector, skip
                 continue;
-            if (nextSect == sect2) // howdy neighbor
+            if (nSectNext == nSect2) // howdy neighbor
                 return 1;
-            if (depth > 0)
+            if (nDepth > 0)
             {
-                SetBitString(pSectBit, nextSect); // set the next sector as checked
-                if (AreSectorsNeighborsDepthCheck(nextSect, sect2, depth, checkRORSectors, pSectBit))
+                SetBitString(pSectBit, nSectNext); // set the next sector as checked
+                if (AreSectorsNeighborsDepthCheck(nSectNext, nSect2, nDepth, bCheckRORSectors, pSectBit))
                     return 1;
             }
         }
     }
-    const int nStartWall = sector[sect1].wallptr;
-    const int nEndWall = nStartWall + sector[sect1].wallnum;
+    const int nStartWall = sector[nSect1].wallptr;
+    const int nEndWall = nStartWall + sector[nSect1].wallnum;
     for (int i = nStartWall; i < nEndWall; i++) // check all walls
     {
-        const int nextSect = wall[i].nextsector;
-        if (nextSect < 0) // if next wall isn't linked to a sector, skip
+        const int nSectNext = wall[i].nextsector;
+        if (nSectNext < 0) // if next wall isn't linked to a sector, skip
             continue;
-        if (!sectRangeIsFine(nextSect)) // invalid sector, skip
+        if (!sectRangeIsFine(nSectNext)) // invalid sector, skip
             continue;
-        if (TestBitString(pSectBit, nextSect)) // if we've already checked this sector, skip
+        if (TestBitString(pSectBit, nSectNext)) // if we've already checked this sector, skip
             continue;
-        if (nextSect == sect2) // howdy neighbor
+        if (nSectNext == nSect2) // howdy neighbor
             return 1;
-        if (depth > 0)
+        if (nDepth > 0)
         {
-            SetBitString(pSectBit, nextSect); // set the next sector as checked
-            if (AreSectorsNeighborsDepthCheck(nextSect, sect2, depth-1, checkRORSectors, pSectBit))
+            SetBitString(pSectBit, nSectNext); // set the next sector as checked
+            if (AreSectorsNeighborsDepthCheck(nSectNext, nSect2, nDepth-1, bCheckRORSectors, pSectBit))
                 return 1;
         }
     }
     return 0;
 }
 
-bool AreSectorsNeighbors(int sect1, int sect2, int depth, bool checkSameSector, bool checkRORSectors)
+bool AreSectorsNeighbors(int nSect1, int nSect2, int nDepth, bool bCheckSameSector, bool bCheckRORSectors)
 {
-    if (checkSameSector)
+    if (bCheckSameSector)
     {
-        if (sect1 == sect2) // same sector
+        if (nSect1 == nSect2) // same sector
             return 1;
     }
-    dassert(sect1 >= 0 && sect1 < kMaxSectors);
-    dassert(sect2 >= 0 && sect2 < kMaxSectors);
+    dassert(nSect1 >= 0 && nSect1 < kMaxSectors);
+    dassert(nSect2 >= 0 && nSect2 < kMaxSectors);
     char sectbits[(kMaxSectors+7)>>3];
     memset(sectbits, 0, sizeof(sectbits));
-    int srcSect, dstSect;
-    if (sector[sect1].wallnum < sector[sect2].wallnum)
+    int nSrcSect, nDstSect;
+    if (sector[nSect1].wallnum < sector[nSect2].wallnum)
     {
-        srcSect = sect1;
-        dstSect = sect2;
+        nSrcSect = nSect1;
+        nDstSect = nSect2;
     }
     else
     {
-        srcSect = sect2;
-        dstSect = sect1;
+        nSrcSect = nSect2;
+        nDstSect = nSect1;
     }
-    SetBitString(sectbits, srcSect); // set the source sector as checked
-    return AreSectorsNeighborsDepthCheck(srcSect, dstSect, depth, checkRORSectors, sectbits);
+    SetBitString(sectbits, nSrcSect); // set the source sector as checked
+    return AreSectorsNeighborsDepthCheck(nSrcSect, nDstSect, nDepth, bCheckRORSectors, sectbits);
 }
 
 bool FindSector(int nX, int nY, int nZ, int *nSector)
