@@ -3003,7 +3003,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                         pTSprite->cstat &= ~(4|8);
                         pTSprite->yoffset += picanm[pTSprite->picnum].yofs;
                         pTSprite->picnum = voxelIndex[pTSprite->picnum];
-                        if (!voxoff[pTSprite->picnum])
+                        if (!voxoff[pTSprite->picnum][0])
                             qloadvoxel(pTSprite->picnum);
                         if ((picanm[nTile].extra&7) == 7)
                         {
