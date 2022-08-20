@@ -2193,7 +2193,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
                 gPlayerScoreTicks[pKiller->teamId]+=120;
             }
         }
-        if ((gGameOptions.nGameType >= 2) && bKilledEnemy) // calculate multi kill/killing spree for bloodbath/teams mode (ignore friendly fire)
+        if (!VanillaMode() && (gGameOptions.nGameType >= 2) && bKilledEnemy) // calculate multi kill/killing spree for bloodbath/teams mode (ignore friendly fire)
         {
             const char bKillerAlive = pKiller->pXSprite->health > 0;
             const char bKillerSpreeActive = (gFrameClock - gMultiKillsTicks[nKiller]) < nKillingSpreeTime;
