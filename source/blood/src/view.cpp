@@ -1789,7 +1789,7 @@ void flashTeamScore(ClockTicks arg, int team, bool show)
 
 void viewDrawCtfHud(ClockTicks arg)
 {
-    if (0 == gViewSize)
+    if (gViewSize == 0)
     {
         flashTeamScore(arg, 0, false);
         flashTeamScore(arg, 1, false);

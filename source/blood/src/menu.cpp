@@ -872,11 +872,11 @@ CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 170, 180
 
 
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
-void UpdateChatMessageSound(CGameMenuItemZBool *pItem);
+void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem);
 
 CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
 CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 60, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
-CGameMenuItemZBool itemOptionsChatSound("CHAT BEEP:", 3, 66, 70, 180, true, UpdateChatMessageSound, NULL, NULL);
+CGameMenuItemZBool itemOptionsPlayerChatSound("CHAT BEEP:", 3, 66, 70, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
 
 CGameMenu menuOptionsControlKeyboard;
 CGameMenu menuOptionsControlMouse;
@@ -1722,7 +1722,7 @@ void SetupOptionsMenu(void)
     itemOptionsSoundSpeakerAngle.tooltip_pzTextUpper = "";
     itemOptionsSoundSpeakerAngle.tooltip_pzTextLower = "Set left/right speaker offset angle (in degrees)";
     itemOptionsSoundCDToggle.tooltip_pzTextUpper = "";
-    itemOptionsSoundCDToggle.tooltip_pzTextLower = "Use blood##.ogg files in base directory as redbook audio";
+    itemOptionsSoundCDToggle.tooltip_pzTextLower = "Use blood##.ogg/flac files in base directory as redbook audio";
 
     menuOptionsSound.Add(&itemOptionsSoundApplyChanges, false);
     menuOptionsSound.Add(&itemBloodQAV, false);
@@ -1732,10 +1732,10 @@ void SetupOptionsMenu(void)
 
     menuOptionsPlayer.Add(&itemOptionsPlayerTitle, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
-    menuOptionsPlayer.Add(&itemOptionsChatSound, true);
+    menuOptionsPlayer.Add(&itemOptionsPlayerChatSound, false);
     menuOptionsPlayer.Add(&itemBloodQAV, false);
 
-    itemOptionsChatSound.at20 = gChatSnd;
+    itemOptionsPlayerChatSound.at20 = gChatSnd;
 
     menuOptionsControl.Add(&itemOptionsControlTitle, false);
     menuOptionsControl.Add(&itemOptionsControlKeyboard, true);
@@ -2777,7 +2777,7 @@ void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
         netBroadcastPlayerInfo(myconnectindex);
 }
 
-void UpdateChatMessageSound(CGameMenuItemZBool *pItem)
+void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem)
 {
     gChatSnd = pItem->at20;
 }

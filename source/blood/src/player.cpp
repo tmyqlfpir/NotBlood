@@ -55,14 +55,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "nnexts.h"
 #endif
 
-PROFILE gProfile[kMaxPlayers];
-PROFILE gProfileNet[kMaxPlayers];
-
 PLAYER gPlayer[kMaxPlayers];
 PLAYER *gMe, *gView;
 
+PROFILE gProfile[kMaxPlayers];
+PROFILE gProfileNet[kMaxPlayers];
+
 bool gBlueFlagDropped = false;
 bool gRedFlagDropped = false;
+
+int gPlayerScores[kMaxPlayers];
+ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
 // V = has effect in game, X = no effect in game
 POWERUPINFO gPowerUpInfo[kMaxPowerUps] = {
@@ -1085,9 +1088,6 @@ void playerReset(PLAYER *pPlayer)
     // reset posture (mainly required for resetting movement speed and jump height)
     playerResetPosture(pPlayer);
 }
-
-int gPlayerScores[kMaxPlayers];
-ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
 void playerResetScores(int nPlayer)
 {

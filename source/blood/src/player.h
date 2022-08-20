@@ -246,11 +246,11 @@ void playerResetPosture(PLAYER* pPlayer);
 extern PLAYER  gPlayer[kMaxPlayers];
 extern PLAYER *gMe, *gView;
 
-extern bool gBlueFlagDropped;
-extern bool gRedFlagDropped;
-
 extern PROFILE gProfile[kMaxPlayers];
 extern PROFILE gProfileNet[kMaxPlayers];
+
+extern bool gBlueFlagDropped;
+extern bool gRedFlagDropped;
 
 extern int         gPlayerScores[kMaxPlayers];
 extern ClockTicks  gPlayerScoreTicks[kMaxPlayers];
