@@ -1844,13 +1844,11 @@ void viewDrawMultiKill(ClockTicks arg)
             nY += 5;
         }
     }
-    int nPalette = 7;
     const int nPlayer = gMe->nPlayer;
+    const int nPalette = (gGameOptions.nGameType == 3) ? ((gMe->teamId&1) ? 7 : 10) : 7; // tint message depending on team (red/blue)
     const char bShowMultiKill = (gFrameClock - gMultiKillsTicks[nPlayer]) < (int)(kTicRate * 1.5); // show multi kill message for 1.5 seconds
     if (((int)totalclock & 16) && bShowMultiKill) // flash multi kill message
     {
-        if (gGameOptions.nGameType == 3)  // tint message depending on team (red/blue)
-            nPalette = (gMe->teamId&1) ? 7 : 10;
         switch (gMultiKillsFrags[nPlayer])
         {
             case 0:
@@ -1913,10 +1911,7 @@ void viewDrawMultiKill(ClockTicks arg)
                 sprintf(buffer, "%s is Godlike!", gProfile[gAnnounceKillingSpreePlayer].name); // 25+
                 break;
         }
-        if (gGameOptions.nGameType == 3)  // tint message depending on team (red/blue)
-            nPalette = (gPlayer[gAnnounceKillingSpreePlayer].teamId&1) ? 7 : 10;
-        if (buffer[0] != '\0')
-            viewDrawText(0, buffer, 160, nY, -128, nPalette, 1, 1);
+        viewDrawText(0, buffer, 160, nY, -128, nPalette, 1, 1);
         gAnnounceKillingSpreeTicks = gAnnounceKillingSpreeTicks - arg;
         if (gAnnounceKillingSpreeTicks < 0) // reset currently announced kill streak
             playerResetAnnounceKillingSpree();
