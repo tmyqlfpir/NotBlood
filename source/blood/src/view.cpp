@@ -1875,20 +1875,42 @@ void viewDrawMultiKill(ClockTicks arg)
         char buffer[128] = {'\0'};
         switch (gMultiKillsFrags[gAnnounceKillingSpreePlayer])
         {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                return;
             case 5:
-                sprintf(buffer, "%s is on a killing spree!", gProfile[gAnnounceKillingSpreePlayer].name);
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                sprintf(buffer, "%s is on a killing spree!", gProfile[gAnnounceKillingSpreePlayer].name); // 5-9
                 break;
             case 10:
-                sprintf(buffer, "%s is on a rampage!", gProfile[gAnnounceKillingSpreePlayer].name);
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+                sprintf(buffer, "%s is on a rampage!", gProfile[gAnnounceKillingSpreePlayer].name); // 10-14
                 break;
             case 15:
-                sprintf(buffer, "%s is dominating!", gProfile[gAnnounceKillingSpreePlayer].name);
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+                sprintf(buffer, "%s is dominating!", gProfile[gAnnounceKillingSpreePlayer].name); // 15-19
                 break;
             case 20:
-                sprintf(buffer, "%s is unstoppable!", gProfile[gAnnounceKillingSpreePlayer].name);
+            case 21:
+            case 22:
+            case 23:
+            case 24:
+                sprintf(buffer, "%s is unstoppable!", gProfile[gAnnounceKillingSpreePlayer].name); // 20-24
                 break;
             default:
-                sprintf(buffer, "%s is Godlike!", gProfile[gAnnounceKillingSpreePlayer].name);
+                sprintf(buffer, "%s is Godlike!", gProfile[gAnnounceKillingSpreePlayer].name); // 25+
                 break;
         }
         if (gGameOptions.nGameType == 3)  // tint message depending on team (red/blue)
