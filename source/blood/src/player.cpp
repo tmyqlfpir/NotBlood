@@ -55,14 +55,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "nnexts.h"
 #endif
 
-PROFILE gProfile[kMaxPlayers];
-PROFILE gProfileNet[kMaxPlayers];
-
 PLAYER gPlayer[kMaxPlayers];
 PLAYER *gMe, *gView;
 
+PROFILE gProfile[kMaxPlayers];
+PROFILE gProfileNet[kMaxPlayers];
+
 bool gBlueFlagDropped = false;
 bool gRedFlagDropped = false;
+
+int gPlayerScores[kMaxPlayers];
+ClockTicks gPlayerScoreTicks[kMaxPlayers];
+
+int gMultiKillsFrags[kMaxPlayers];
+ClockTicks gMultiKillsTicks[kMaxPlayers];
+
+int gAnnounceKillingSpreePlayer = kMaxPlayers;
+ClockTicks gAnnounceKillingSpreeTicks;
 
 // V = has effect in game, X = no effect in game
 POWERUPINFO gPowerUpInfo[kMaxPowerUps] = {
@@ -191,12 +200,12 @@ void PlayerKneelsOver(int, int);
 int nPlayerSurviveClient = seqRegisterClient(PlayerSurvive);
 int nPlayerKneelClient = seqRegisterClient(PlayerKneelsOver);
 
-struct VICTORY {
-    const char *at0;
-    int at4;
+struct KILLMSG {
+    const char *pzMessage;
+    int nSound;
 };
 
-VICTORY gVictory[] = {
+KILLMSG gVictory[] = {
     { "%s boned %s like a fish", 4100 },
     { "%s castrated %s", 4101 },
     { "%s creamed %s", 4102 },
@@ -224,18 +233,17 @@ VICTORY gVictory[] = {
     { "%s body bagged %s", 4124 },
 };
 
-struct SUICIDE {
-    const char *at0;
-    int at4;
-};
-
-SUICIDE gSuicide[] = {
+KILLMSG gSuicide[] = {
     { "%s is excrement", 4202 },
     { "%s is hamburger", 4203 },
     { "%s suffered scrotum separation", 4204 },
     { "%s volunteered for population control", 4206 },
     { "%s has suicided", 4207 },
 };
+
+KILLMSG gKillingSpreeFrag = {"%s's killing spree was ended by %s", 4110};
+
+KILLMSG gKillingSpreeSuicide = {"%s was looking good until they killed themselves", 4207};
 
 struct DAMAGEINFO {
     int at0;
@@ -797,6 +805,17 @@ void playerResetPosture(PLAYER* pPlayer) {
         gCrouchToggleState = 0;
 }
 
+const int nZoneRandList[kMaxPlayers][kMaxPlayers] = {
+    {0, 7, 6, 5, 4, 3, 2, 1},
+    {1, 2, 3, 4, 5, 6, 7, 0},
+    {2, 0, 5, 3, 4, 1, 6, 7},
+    {3, 5, 6, 0, 4, 1, 7, 2},
+    {4, 7, 2, 6, 3, 5, 0, 1},
+    {5, 3, 2, 6, 7, 1, 4, 0},
+    {6, 5, 3, 2, 1, 0, 7, 4},
+    {7, 4, 1, 3, 2, 5, 0, 6}
+};
+
 void playerStart(int nPlayer, int bNewLevel)
 {
     PLAYER* pPlayer = &gPlayer[nPlayer];
@@ -842,7 +861,6 @@ void playerStart(int nPlayer, int bNewLevel)
     else {
         int zoneId = Random(kMaxPlayers);
         if ((gGameOptions.nGameType >= 2) && !VanillaMode()) { // search for a safe random spawn for bloodbath/teams mode
-            const int nZoneRandList[kMaxPlayers][kMaxPlayers] = {{6, 4, 5, 0, 7, 2, 1, 3}, {7, 4, 5, 6, 0, 1, 2, 3}, {4, 5, 7, 3, 2, 6, 0, 1}, {5, 7, 2, 3, 1, 0, 4, 6}, {2, 1, 6, 3, 0, 7, 4, 5}, {4, 3, 5, 0, 2, 7, 6, 1}, {3, 2, 4, 6, 7, 5, 0, 1}, {0, 1, 2, 3, 4, 5, 6, 7}};
             const int nSearchList = zoneId;
             for (int nZone = 0; nZone < kMaxPlayers; nZone++) {
                 pStartZone = &gStartZone[nZoneRandList[nSearchList][nZone]];
@@ -853,24 +871,19 @@ void playerStart(int nPlayer, int bNewLevel)
                     if (!sectRangeIsFine(gPlayer[i].pSprite->sectnum)) // invalid sector, skip
                         continue;
                     const bool activeEnemy = (gPlayer[i].pXSprite->health > 0) && !IsTargetTeammate(pPlayer, gPlayer[i].pSprite);
-                    if ((i == nPlayer) || !activeEnemy) // only check our current location or that of an alive/enemy player, otherwise skip
+                    if ((i == nPlayer) && !activeEnemy) // only check our current location or that of an alive/enemy player, otherwise skip
                         continue;
-                    const int nSectorScanDepth = (i == nPlayer) ? 0 : 3; // use a smaller scanning depth if we're checking near self
-                    const char bSectorTooClose = AreSectorsNeighbors(gPlayer[i].pSprite->sectnum, pStartZone->sectnum, nSectorScanDepth, true, true);
                     const int nDist = approxDist3D(pStartZone->x-gPlayer[i].pSprite->x, pStartZone->y-gPlayer[i].pSprite->y, pStartZone->z-gPlayer[i].pSprite->z);
-                    if (bSectorTooClose) // this spawn is too close to another player/self, stop checking rest of players
+                    if (nDist < 32*5) // if within 5 meters of each other
                     {
-                        if (nDist < ((32<<4)*4)) // if within 4 meters of each other
-                        {
-                            bSpawnTooClose = true;
-                            break;
-                        }
-                        continue;
+                        bSpawnTooClose = true;
+                        break;
                     }
-                    const char bCanSee = cansee(pStartZone->x, pStartZone->y, getflorzofslope(pStartZone->sectnum, pStartZone->x, pStartZone->y) + (70<<8), pStartZone->sectnum, gPlayer[i].pSprite->x, gPlayer[i].pSprite->y, gPlayer[i].zView, gPlayer[i].pSprite->sectnum);
-                    if (bCanSee) // this spawn is in viewable range of another player/self, stop checking rest of players
+                    const vec3_t startpos = {pStartZone->x, pStartZone->y, getflorzofslope(pStartZone->sectnum, pStartZone->x, pStartZone->y) - (32<<8)}; // get start/enemy position (and offset by 1 meter from floor)
+                    const vec3_t enemypos = {gPlayer[i].pSprite->x, gPlayer[i].pSprite->y, gPlayer[i].pSprite->z - (32<<8)};
+                    if (cansee(startpos.x, startpos.y, startpos.z, pStartZone->sectnum, enemypos.x, enemypos.y, enemypos.z, gPlayer[i].pSprite->sectnum)) // this spawn is in viewable range of another player/self, stop checking rest of players
                     {
-                        if (nDist < ((32<<4)*6)) // if within 6 meters of each other
+                        if (nDist < 32*12) // if within 12 meters of each other
                         {
                             bSpawnTooClose = true;
                             break;
@@ -1026,6 +1039,10 @@ void playerStart(int nPlayer, int bNewLevel)
         pPlayer->posture = 1;
         pPlayer->pXSprite->medium = kMediumWater;
     }
+    gMultiKillsFrags[nPlayer] = 0;
+    gMultiKillsTicks[nPlayer] = 0;
+    if (bNewLevel || (nPlayer == gAnnounceKillingSpreePlayer))
+        playerResetAnnounceKillingSpree();
 }
 
 void playerReset(PLAYER *pPlayer)
@@ -1080,9 +1097,6 @@ void playerReset(PLAYER *pPlayer)
     // reset posture (mainly required for resetting movement speed and jump height)
     playerResetPosture(pPlayer);
 }
-
-int gPlayerScores[kMaxPlayers];
-ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
 void playerResetScores(int nPlayer)
 {
@@ -2123,12 +2137,16 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     int nVictim = pVictim->pSprite->type-kDudePlayer1;
     dassert(nVictim >= 0 && nVictim < kMaxPlayers);
     int nPalette = 0;
+    const ClockTicks nKillingSpreeTime = kTicRate * 3; // three seconds window for kill sprees
+    const char bKillingSpreeStopped = !VanillaMode() && (gGameOptions.nGameType >= 2) && gMultiKill && (gMultiKillsFrags[nVictim] >= 5) && ((gFrameClock - gMultiKillsTicks[nVictim]) < nKillingSpreeTime);
     if (myconnectindex == connecthead)
     {
         sprintf(buffer, "frag %d killed %d\n", pKiller->nPlayer+1, pVictim->nPlayer+1);
         netBroadcastFrag(buffer);
         buffer[0] = 0;
     }
+    if (nVictim == gAnnounceKillingSpreePlayer) // if victim is currently being announced for their kill spree, end it
+        playerResetAnnounceKillingSpree();
     if (nKiller == nVictim)
     {
         pKiller->fraggerId = -1;
@@ -2136,15 +2154,17 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         {
             pKiller->fragCount--;
             pKiller->fragInfo[nKiller]--;
+            gMultiKillsFrags[nVictim] = 0; // reset multi kill counter
         }
         if (gGameOptions.nGameType == 3)
             gPlayerScores[pKiller->teamId]--;
-        int nMessage = Random(5);
-        int nSound = gSuicide[nMessage].at4;
+        const int nMessage = Random(5);
+        const int nSound = !bKillingSpreeStopped ? gSuicide[nMessage].nSound : gKillingSpreeSuicide.nSound;
+        const char* pzMessage = !bKillingSpreeStopped ? gSuicide[nMessage].pzMessage : gKillingSpreeSuicide.pzMessage;
         if (gMe->handTime <= 0)
         {
             if (!VanillaMode() && (gGameOptions.nGameType > 0)) // use unused suicide messages for multiplayer
-                sprintf(buffer, gSuicide[nMessage].at0, gProfile[nKiller].name);
+                sprintf(buffer, pzMessage, gProfile[nKiller].name);
             else if (pKiller == gMe)
                 sprintf(buffer, "You killed yourself!");
             if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
@@ -2153,30 +2173,56 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     }
     else
     {
+        char bKilledEnemy = 1;
         if (VanillaMode() || gGameOptions.nGameType != 1)
         {
             pKiller->fragCount++;
             pKiller->fragInfo[nKiller]++;
+            gMultiKillsFrags[nVictim] = 0;
         }
         if (gGameOptions.nGameType == 3)
         {
-            if (pKiller->teamId == pVictim->teamId)
+            if (pKiller->teamId == pVictim->teamId) // teammate was killed
+            {
                 gPlayerScores[pKiller->teamId]--;
+                bKilledEnemy = 0;
+            }
             else
             {
                 gPlayerScores[pKiller->teamId]++;
                 gPlayerScoreTicks[pKiller->teamId]+=120;
             }
         }
-        int nMessage = Random(25);
-        int nSound = gVictory[nMessage].at4;
-        const char* pzMessage = gVictory[nMessage].at0;
+        if ((gGameOptions.nGameType >= 2) && bKilledEnemy) // calculate multi kill/killing spree for bloodbath/teams mode (ignore friendly fire)
+        {
+            const char bKillerAlive = pKiller->pXSprite->health > 0;
+            const char bKillerSpreeActive = (gFrameClock - gMultiKillsTicks[nKiller]) < nKillingSpreeTime;
+            if (bKillerSpreeActive && bKillerAlive) // if killed enemy within multi kill time window, reward point
+            {
+                gMultiKillsFrags[nKiller]++;
+                if ((pKiller != gMe) && ((gMultiKillsFrags[nKiller] % 5) == 0)) // announce killing spree every 5 kills
+                {
+                    gAnnounceKillingSpreePlayer = nKiller;
+                    gAnnounceKillingSpreeTicks = kTicRate * 3;
+                    if (gMultiKill == 2)
+                        sndStartSample("NOTBLOOD6", 128, -1, 22050); // play killing spree sfx
+                }
+            }
+            else
+            {
+                gMultiKillsFrags[nKiller] = 1; // rset multi kill to 1 (outside of time window)
+            }
+            gMultiKillsTicks[nKiller] = gFrameClock;
+        }
+        const int nMessage = Random(25);
+        const int nSound = !bKillingSpreeStopped ? gVictory[nMessage].nSound : gKillingSpreeFrag.nSound;
+        const char* pzMessage = !bKillingSpreeStopped ? gVictory[nMessage].pzMessage : gKillingSpreeFrag.pzMessage;
         sprintf(buffer, pzMessage, gProfile[nKiller].name, gProfile[nVictim].name);
         if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
             sndStartSample(nSound, 255, 2, 0);
-        if (!VanillaMode() && (gGameOptions.nGameType == 3))  // tint message depending on team (red/blue)
-            nPalette = (pKiller->teamId&1) ? 7 : 10;
     }
+    if (!VanillaMode() && (gGameOptions.nGameType == 3))  // tint message depending on team (red/blue)
+        nPalette = (pKiller->teamId&1) ? 7 : 10;
     if (VanillaMode() || buffer[0] != '\0')
         viewSetMessage(buffer, nPalette);
 }

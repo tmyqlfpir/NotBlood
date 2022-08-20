@@ -1789,7 +1789,7 @@ void flashTeamScore(ClockTicks arg, int team, bool show)
 
 void viewDrawCtfHud(ClockTicks arg)
 {
-    if (0 == gViewSize)
+    if (gViewSize == 0)
     {
         flashTeamScore(arg, 0, false);
         flashTeamScore(arg, 1, false);
@@ -1829,6 +1829,76 @@ void viewDrawCtfHud(ClockTicks arg)
     else if (redFlagTaken)
         DrawStatMaskedSprite(4097, 307+xscalectfhud, 111, 0, redFlagCarrierColor ? 2 : 10, 512, 65536);
     flashTeamScore(arg, 1, true);
+}
+
+void viewDrawMultiKill(ClockTicks arg)
+{
+    if (gViewSize == 0)
+        return;
+
+    int nY = 40;
+    if (gGameOptions.nGameType > 0) // offset for multiplayer stats bar
+    {
+        for (int nRows = (gNetPlayers - 1) / 4; nRows >= 0; nRows--)
+        {
+            nY += 5;
+        }
+    }
+    int nPalette = 7;
+    const int nPlayer = gMe->nPlayer;
+    const char bShowMultiKill = (gFrameClock - gMultiKillsTicks[nPlayer]) < (int)(kTicRate * 1.5); // show multi kill message for 1.5 seconds
+    if (((int)totalclock & 16) && bShowMultiKill) // flash multi kill message
+    {
+        if (gGameOptions.nGameType == 3)  // tint message depending on team (red/blue)
+            nPalette = (gMe->teamId&1) ? 7 : 10;
+        switch (gMultiKillsFrags[nPlayer])
+        {
+            case 0:
+            case 1:
+                break;
+            case 2:
+                viewDrawText(0, "Double Kill!", 160, nY, -128, nPalette, 1, 1);
+                break;
+            case 3:
+                viewDrawText(0, "Multi Kill!", 160, nY, -128, nPalette, 1, 1);
+                break;
+            case 4:
+                viewDrawText(0, "ULTRA KILL!!", 160, nY, -128, nPalette, 1, 1);
+                break;
+            default:
+                viewDrawText(0, "M O N S T E R  K I L L !!!", 160, nY, -128, nPalette, 1, 1);
+                break;
+        }
+    }
+    else if (!bShowMultiKill && (gAnnounceKillingSpreeTicks > 0) && (gAnnounceKillingSpreePlayer < kMaxPlayers)) // announce player's kill streak
+    {
+        char buffer[128] = {'\0'};
+        switch (gMultiKillsFrags[gAnnounceKillingSpreePlayer])
+        {
+            case 5:
+                sprintf(buffer, "%s is on a killing spree!", gProfile[gAnnounceKillingSpreePlayer].name);
+                break;
+            case 10:
+                sprintf(buffer, "%s is on a rampage!", gProfile[gAnnounceKillingSpreePlayer].name);
+                break;
+            case 15:
+                sprintf(buffer, "%s is dominating!", gProfile[gAnnounceKillingSpreePlayer].name);
+                break;
+            case 20:
+                sprintf(buffer, "%s is unstoppable!", gProfile[gAnnounceKillingSpreePlayer].name);
+                break;
+            default:
+                sprintf(buffer, "%s is Godlike!", gProfile[gAnnounceKillingSpreePlayer].name);
+                break;
+        }
+        if (gGameOptions.nGameType == 3)  // tint message depending on team (red/blue)
+            nPalette = (gPlayer[gAnnounceKillingSpreePlayer].teamId&1) ? 7 : 10;
+        if (buffer[0] != '\0')
+            viewDrawText(0, buffer, 160, nY, -128, nPalette, 1, 1);
+        gAnnounceKillingSpreeTicks = gAnnounceKillingSpreeTicks - arg;
+        if (gAnnounceKillingSpreeTicks < 0) // reset currently announced kill streak
+            playerResetAnnounceKillingSpree();
+    }
 }
 
 void UpdateStatusBar(ClockTicks arg)
@@ -2093,6 +2163,8 @@ void UpdateStatusBar(ClockTicks arg)
         viewDrawWeaponSelect(pPlayer, pXSprite);
 
     if (gGameOptions.nGameType < 1) return;
+
+    if ((gGameOptions.nGameType >= 2) && gMultiKill) viewDrawMultiKill(arg);
 
     if (gGameOptions.nGameType == 3)
     {
