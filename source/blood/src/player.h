@@ -254,6 +254,10 @@ extern bool gRedFlagDropped;
 
 extern int         gPlayerScores[kMaxPlayers];
 extern ClockTicks  gPlayerScoreTicks[kMaxPlayers];
+extern int         gMultiKillsFrags[kMaxPlayers];
+extern ClockTicks  gMultiKillsTicks[kMaxPlayers];
+extern int         gAnnounceKillingSpreePlayer;
+extern ClockTicks  gAnnounceKillingSpreeTicks;
 extern AMMOINFO    gAmmoInfo[];
 extern POWERUPINFO gPowerUpInfo[kMaxPowerUps];
 
@@ -349,6 +353,12 @@ inline void playerResetWeaponState(PLAYER *pPlayer)
     pPlayer->throwTime = 0;
     pPlayer->throwPower = pPlayer->throwPowerOld = 0;
     pPlayer->qavLoop = 0;
+}
+
+inline void playerResetAnnounceKillingSpree(void)
+{
+    gAnnounceKillingSpreePlayer = kMaxPlayers;
+    gAnnounceKillingSpreeTicks = 0;
 }
 
 int         powerupCheck(PLAYER *pPlayer, int nPowerUp);

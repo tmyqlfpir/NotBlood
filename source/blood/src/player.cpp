@@ -67,6 +67,12 @@ bool gRedFlagDropped = false;
 int gPlayerScores[kMaxPlayers];
 ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
+int gMultiKillsFrags[kMaxPlayers];
+ClockTicks gMultiKillsTicks[kMaxPlayers];
+
+int gAnnounceKillingSpreePlayer = kMaxPlayers;
+ClockTicks gAnnounceKillingSpreeTicks;
+
 // V = has effect in game, X = no effect in game
 POWERUPINFO gPowerUpInfo[kMaxPowerUps] = {
     { -1, 1, 1, 1 },            // 00: V keys
@@ -194,12 +200,12 @@ void PlayerKneelsOver(int, int);
 int nPlayerSurviveClient = seqRegisterClient(PlayerSurvive);
 int nPlayerKneelClient = seqRegisterClient(PlayerKneelsOver);
 
-struct VICTORY {
-    const char *at0;
-    int at4;
+struct KILLMSG {
+    const char *pzMessage;
+    int nSound;
 };
 
-VICTORY gVictory[] = {
+KILLMSG gVictory[] = {
     { "%s boned %s like a fish", 4100 },
     { "%s castrated %s", 4101 },
     { "%s creamed %s", 4102 },
@@ -227,18 +233,17 @@ VICTORY gVictory[] = {
     { "%s body bagged %s", 4124 },
 };
 
-struct SUICIDE {
-    const char *at0;
-    int at4;
-};
-
-SUICIDE gSuicide[] = {
+KILLMSG gSuicide[] = {
     { "%s is excrement", 4202 },
     { "%s is hamburger", 4203 },
     { "%s suffered scrotum separation", 4204 },
     { "%s volunteered for population control", 4206 },
     { "%s has suicided", 4207 },
 };
+
+KILLMSG gKillingSpreeFrag = {"%s's killing spree was ended by %s", 4110};
+
+KILLMSG gKillingSpreeSuicide = {"%s was looking good until they killed themselves", 4207};
 
 struct DAMAGEINFO {
     int at0;
@@ -1034,6 +1039,10 @@ void playerStart(int nPlayer, int bNewLevel)
         pPlayer->posture = 1;
         pPlayer->pXSprite->medium = kMediumWater;
     }
+    gMultiKillsFrags[nPlayer] = 0;
+    gMultiKillsTicks[nPlayer] = 0;
+    if (bNewLevel || (nPlayer == gAnnounceKillingSpreePlayer))
+        playerResetAnnounceKillingSpree();
 }
 
 void playerReset(PLAYER *pPlayer)
@@ -2128,12 +2137,16 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     int nVictim = pVictim->pSprite->type-kDudePlayer1;
     dassert(nVictim >= 0 && nVictim < kMaxPlayers);
     int nPalette = 0;
+    const ClockTicks nKillingSpreeTime = kTicRate * 3; // three seconds window for kill sprees
+    const char bKillingSpreeStopped = !VanillaMode() && (gGameOptions.nGameType >= 2) && gMultiKill && (gMultiKillsFrags[nVictim] >= 5) && ((gFrameClock - gMultiKillsTicks[nVictim]) < nKillingSpreeTime);
     if (myconnectindex == connecthead)
     {
         sprintf(buffer, "frag %d killed %d\n", pKiller->nPlayer+1, pVictim->nPlayer+1);
         netBroadcastFrag(buffer);
         buffer[0] = 0;
     }
+    if (nVictim == gAnnounceKillingSpreePlayer) // if victim is currently being announced for their kill spree, end it
+        playerResetAnnounceKillingSpree();
     if (nKiller == nVictim)
     {
         pKiller->fraggerId = -1;
@@ -2141,15 +2154,17 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         {
             pKiller->fragCount--;
             pKiller->fragInfo[nKiller]--;
+            gMultiKillsFrags[nVictim] = 0; // reset multi kill counter
         }
         if (gGameOptions.nGameType == 3)
             gPlayerScores[pKiller->teamId]--;
-        int nMessage = Random(5);
-        int nSound = gSuicide[nMessage].at4;
+        const int nMessage = Random(5);
+        const int nSound = !bKillingSpreeStopped ? gSuicide[nMessage].nSound : gKillingSpreeSuicide.nSound;
+        const char* pzMessage = !bKillingSpreeStopped ? gSuicide[nMessage].pzMessage : gKillingSpreeSuicide.pzMessage;
         if (gMe->handTime <= 0)
         {
             if (!VanillaMode() && (gGameOptions.nGameType > 0)) // use unused suicide messages for multiplayer
-                sprintf(buffer, gSuicide[nMessage].at0, gProfile[nKiller].name);
+                sprintf(buffer, pzMessage, gProfile[nKiller].name);
             else if (pKiller == gMe)
                 sprintf(buffer, "You killed yourself!");
             if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
@@ -2158,24 +2173,50 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     }
     else
     {
+        char bKilledEnemy = 1;
         if (VanillaMode() || gGameOptions.nGameType != 1)
         {
             pKiller->fragCount++;
             pKiller->fragInfo[nKiller]++;
+            gMultiKillsFrags[nVictim] = 0;
         }
         if (gGameOptions.nGameType == 3)
         {
-            if (pKiller->teamId == pVictim->teamId)
+            if (pKiller->teamId == pVictim->teamId) // teammate was killed
+            {
                 gPlayerScores[pKiller->teamId]--;
+                bKilledEnemy = 0;
+            }
             else
             {
                 gPlayerScores[pKiller->teamId]++;
                 gPlayerScoreTicks[pKiller->teamId]+=120;
             }
         }
-        int nMessage = Random(25);
-        int nSound = gVictory[nMessage].at4;
-        const char* pzMessage = gVictory[nMessage].at0;
+        if ((gGameOptions.nGameType >= 2) && bKilledEnemy) // calculate multi kill/killing spree for bloodbath/teams mode (ignore friendly fire)
+        {
+            const char bKillerAlive = pKiller->pXSprite->health > 0;
+            const char bKillerSpreeActive = (gFrameClock - gMultiKillsTicks[nKiller]) < nKillingSpreeTime;
+            if (bKillerSpreeActive && bKillerAlive) // if killed enemy within multi kill time window, reward point
+            {
+                gMultiKillsFrags[nKiller]++;
+                if ((pKiller != gMe) && ((gMultiKillsFrags[nKiller] % 5) == 0)) // announce killing spree every 5 kills
+                {
+                    gAnnounceKillingSpreePlayer = nKiller;
+                    gAnnounceKillingSpreeTicks = kTicRate * 3;
+                    if (gMultiKill == 2)
+                        sndStartSample("NOTBLOOD6", 128, -1, 22050); // play killing spree sfx
+                }
+            }
+            else
+            {
+                gMultiKillsFrags[nKiller] = 1; // rset multi kill to 1 (outside of time window)
+            }
+            gMultiKillsTicks[nKiller] = gFrameClock;
+        }
+        const int nMessage = Random(25);
+        const int nSound = !bKillingSpreeStopped ? gVictory[nMessage].nSound : gKillingSpreeFrag.nSound;
+        const char* pzMessage = !bKillingSpreeStopped ? gVictory[nMessage].pzMessage : gKillingSpreeFrag.pzMessage;
         sprintf(buffer, pzMessage, gProfile[nKiller].name, gProfile[nVictim].name);
         if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
             sndStartSample(nSound, 255, 2, 0);
