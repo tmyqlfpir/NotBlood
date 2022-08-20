@@ -2179,9 +2179,9 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         sprintf(buffer, pzMessage, gProfile[nKiller].name, gProfile[nVictim].name);
         if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
             sndStartSample(nSound, 255, 2, 0);
-        if (!VanillaMode() && (gGameOptions.nGameType == 3))  // tint message depending on team (red/blue)
-            nPalette = (pKiller->teamId&1) ? 7 : 10;
     }
+    if (!VanillaMode() && (gGameOptions.nGameType == 3))  // tint message depending on team (red/blue)
+        nPalette = (pKiller->teamId&1) ? 7 : 10;
     if (VanillaMode() || buffer[0] != '\0')
         viewSetMessage(buffer, nPalette);
 }
