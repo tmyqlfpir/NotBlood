@@ -617,7 +617,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
-        gGameOptions.bProjectileBehavior = gProjectileBehavior;
+        gGameOptions.nProjectileBehavior = gProjectileBehavior;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gWeaponsVer;
@@ -655,7 +655,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
-        gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
+        gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
@@ -889,7 +889,7 @@ void StartNetworkLevel(void)
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
-        gGameOptions.bProjectileBehavior = gPacketStartGame.bProjectileBehavior;
+        gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
@@ -2983,7 +2983,11 @@ bool WeaponsV10x(void) {
 }
 
 bool ProjectilesNotBlood(void) {
-    return gGameOptions.bProjectileBehavior == 1; // notblood's projectile collision
+    return gGameOptions.nProjectileBehavior == 1; // notblood's projectile collision
+}
+
+bool ProjectilesRaze(void) {
+    return gGameOptions.nProjectileBehavior == 2; // raze's projectile collision
 }
 
 bool EnemiesNotBlood(void) {

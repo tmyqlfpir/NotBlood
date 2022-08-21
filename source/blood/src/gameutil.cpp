@@ -976,7 +976,7 @@ unsigned int ClipMove(int *x, int *y, int *z, int *nSector, int xv, int yv, int 
     return nRes;
 }
 
-unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask)
+unsigned int ClipMoveEDuke(int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask, spritetype *raySprite)
 {
     // while this function may look as hideous as any build engine internals, it's been carefully setup like a stack of cards
     // do not touch unless you know what you're doing, or are severely drunk

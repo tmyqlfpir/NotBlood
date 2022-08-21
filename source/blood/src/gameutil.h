@@ -82,7 +82,7 @@ int GetDistToLine(int x1, int y1, int x2, int y2, int x3, int y3);
 int GetDistToWall(int x, int y, const walltype* pWall);
 int CheckHitSpriteAlpha(int x, int y, int dx, int dy, HITINFO *pHitInfo);
 unsigned int ClipMove(int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask);
-unsigned int ClipMoveEDuke(spritetype *raySprite, int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask);
+unsigned int ClipMoveEDuke(int *x, int *y, int *z, int *nSector, int xv, int yv, int wd, int cd, int fd, unsigned int nMask, spritetype *raySprite = NULL);
 int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit);
 int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit, short *pWalls = NULL, bool newSectCheckMethod = false, bool sectCheckNotBlood = false);
 int picWidth(short nPic, short repeat);

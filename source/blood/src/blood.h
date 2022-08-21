@@ -85,6 +85,7 @@ bool WeaponsNotBlood(void);
 bool WeaponsV10x(void);
 bool ExplosionsNotBlood(void);
 bool ProjectilesNotBlood(void);
+bool ProjectilesRaze(void);
 bool EnemiesNotBlood(void);
 bool fileExistsRFF(int id, const char* ext);
 int sndTryPlaySpecialMusic(int nMusic);

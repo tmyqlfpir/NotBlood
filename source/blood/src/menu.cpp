@@ -61,7 +61,7 @@ void SetMonsters(CGameMenuItemZCycle*);
 void SetQuadDamagePowerup(CGameMenuItemZBool*);
 void SetDamageInvul(CGameMenuItemZBool*);
 void SetExplosionBehavior(CGameMenuItemZCycle*);
-void SetProjectileBehavior(CGameMenuItemZBool*);
+void SetProjectileBehavior(CGameMenuItemZCycle*);
 void SetEnemyBehavior(CGameMenuItemZBool*);
 void SetEnemyRandomTNT(CGameMenuItemZBool*);
 void SetWeaponsVer(CGameMenuItemZCycle*);
@@ -233,6 +233,12 @@ const char *pzMonsterStrings[] =
 };
 
 const char *pzExplosionBehaviorStrings[] = {
+    "Original",
+    "NotBlood",
+    "Raze",
+};
+
+const char *pzProjectileBehaviorStrings[] = {
     "Original",
     "NotBlood",
     "Raze",
@@ -439,7 +445,7 @@ CGameMenuItemChain itemNetStart14("START GAME", 1, 0, 175, 320, 1, 0, -1, StartN
 CGameMenuItemZBool itemNetEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, false, NULL, NULL, NULL);
 CGameMenuItemZBool itemNetEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 55, 180, false, NULL, NULL, NULL);
 CGameMenuItemZCycle itemNetEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
-CGameMenuItemZBool itemNetEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZCycle itemNetEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
 CGameMenuItemZBool itemNetEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 85, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
 CGameMenuItemZBool itemNetEnhancementBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 95, 180, false, NULL, NULL, NULL);
 CGameMenuItemZCycle itemNetEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 105, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
@@ -618,7 +624,7 @@ CGameMenuItemZCycle itemEnhancementMonsterSettings("MONSTERS:", 3, 66, 45, 180, 
 CGameMenuItemZBool itemEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 55, 180, false, SetQuadDamagePowerup, NULL, NULL);
 CGameMenuItemZBool itemEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 65, 180, false, SetDamageInvul, NULL, NULL);
 CGameMenuItemZCycle itemEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 75, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
-CGameMenuItemZBool itemEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 85, 180, false, SetProjectileBehavior, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZCycle itemEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 85, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
 CGameMenuItemZBool itemEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, false, SetEnemyBehavior, "NOTBLOOD", "ORIGINAL");
 CGameMenuItemZBool itemEnhancementBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, false, SetEnemyRandomTNT, NULL, NULL);
 CGameMenuItemZCycle itemEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
@@ -1274,7 +1280,7 @@ void SetupNetStartMenu(void)
     itemNetEnhancementBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
     itemNetEnhancementBoolDamageInvul.at20 = !!gDamageInvul;
     itemNetEnhancementExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
-    itemNetEnhancementProjectileBehavior.at20 = !!gProjectileBehavior;
+    itemNetEnhancementProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     itemNetEnhancementEnemyBehavior.at20 = !!gEnemyBehavior;
     itemNetEnhancementBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
     itemNetEnhancementWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
@@ -1581,9 +1587,9 @@ void SetupOptionsMenu(void)
     itemEnhancementBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
     itemEnhancementBoolDamageInvul.at20 = !!gDamageInvul;
     itemEnhancementExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
+    itemEnhancementProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     itemEnhancementWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     itemEnhancementSectorBehavior.at20 = !!gSectorBehavior;
-    itemEnhancementProjectileBehavior.at20 = !!gProjectileBehavior;
     itemEnhancementEnemyBehavior.at20 = !!gEnemyBehavior;
     itemEnhancementBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
     itemEnhancementBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
@@ -1938,13 +1944,13 @@ void SetExplosionBehavior(CGameMenuItemZCycle *pItem)
     }
 }
 
-void SetProjectileBehavior(CGameMenuItemZBool *pItem)
+void SetProjectileBehavior(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
-        gProjectileBehavior = pItem->at20;
-        gGameOptions.bProjectileBehavior = gProjectileBehavior;
+        gProjectileBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
+        gGameOptions.nProjectileBehavior = gProjectileBehavior;
     } else {
-        pItem->at20 = !!gProjectileBehavior;
+        pItem->m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     }
 }
 
@@ -3144,7 +3150,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.bQuadDamagePowerup = itemNetEnhancementBoolQuadDamagePowerup.at20;
     gPacketStartGame.bDamageInvul = itemNetEnhancementBoolDamageInvul.at20;
     gPacketStartGame.nExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
-    gPacketStartGame.bProjectileBehavior = itemNetEnhancementProjectileBehavior.at20;
+    gPacketStartGame.nProjectileBehavior = itemNetEnhancementProjectileBehavior.m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     gPacketStartGame.bEnemyBehavior = itemNetEnhancementEnemyBehavior.at20;
     gPacketStartGame.bEnemyRandomTNT = itemNetEnhancementBoolEnemyRandomTNT.at20;
     gPacketStartGame.nWeaponsVer = itemNetEnhancementWeaponsVer.m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
