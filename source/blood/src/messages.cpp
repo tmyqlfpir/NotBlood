@@ -359,7 +359,7 @@ void CGameMessageMgr::SetState(char state)
         this->state = 1;
 }
 
-void CGameMessageMgr::Add(const char *pText, char a2, const int pal, const MESSAGE_PRIORITY priority)
+void CGameMessageMgr::Add(const char *pText, char a2, const int pal, const MESSAGE_PRIORITY priority, COLORSTR *pColorStr)
 {
     if (a2 && messageFlags)
     {
@@ -370,6 +370,16 @@ void CGameMessageMgr::Add(const char *pText, char a2, const int pal, const MESSA
         pMessage->pal = pal;
         pMessage->priority = priority;
         pMessage->deleted = false;
+        if (pColorStr) // load color string info if provided
+        {
+            pMessage->colorStr = *pColorStr;
+        }
+        else // set to bypass value
+        {
+            pMessage->colorStr.nPal1 = pMessage->colorStr.nPal2 = 0;
+            pMessage->colorStr.nColor1[0] = pMessage->colorStr.nColor1[1] = -1; // this will be ignored by viewDrawText() unless given legal values
+            pMessage->colorStr.nColor2[0] = pMessage->colorStr.nColor2[1] = -1;
+        }
         nextMessagesIndex = (nextMessagesIndex+1)%kMessageLogSize;
         if (VanillaMode())
         {
@@ -450,7 +460,7 @@ void CGameMessageMgr::Display(void)
             for (int i = 0; i < messagesToDisplayCount; i++)
             {
                 messageStruct* pMessage = messagesToDisplay[i];
-                viewDrawText(nFont, pMessage->text, x+1, y, shade, pMessage->pal, 0, false, 256);
+                viewDrawText(nFont, pMessage->text, x+1, y, shade, pMessage->pal, 0, false, 256, 0, &pMessage->colorStr);
                 if (gViewMode == 3)
                 {
                     int height;
