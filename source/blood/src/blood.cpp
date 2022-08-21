@@ -1208,8 +1208,11 @@ void ProcessFrame(void)
             gPaused = !gPaused;
             if (gPaused && gGameOptions.nGameType > 0 && numplayers > 1)
             {
-                sprintf(buffer,"%s paused the game",gProfile[i].name);
-                viewSetMessage(buffer);
+                int nPal = 10; // 10: dark blue
+                if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+                    nPal = (gPlayer[i].teamId&1) ? 7 : 10;
+                sprintf(buffer,"\r%s\r paused the game",gProfile[i].name);
+                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 0);
             }
         }
     }
