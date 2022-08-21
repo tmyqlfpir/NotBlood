@@ -4492,7 +4492,7 @@ static int NotBloodAdjustHitbox(spritetype *pSprite, int top, int bottom, int wa
 
     vec3_t tempxyz = {pSprite->x, pSprite->y, pSprite->z};
     int tempsec = pSprite->sectnum;
-    const int moved = ClipMoveEDuke(NULL, &tempxyz.x, &tempxyz.y, &tempxyz.z, &tempsec, xvel[nSprite]>>12, yvel[nSprite]>>12, walldist, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
+    const int moved = ClipMoveEDuke(&tempxyz.x, &tempxyz.y, &tempxyz.z, &tempsec, xvel[nSprite]>>12, yvel[nSprite]>>12, walldist, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
     if ((moved & 0xc000) == 0x8000) // use a small hitbox if the sprite collided with a wall
         return smallwd;
     return walldist;
@@ -4516,7 +4516,11 @@ int MoveThing(spritetype *pSprite)
         int wd = pSprite->clipdist<<2;
         short bakCstat = pSprite->cstat;
         pSprite->cstat &= ~257;
-        if (ProjectilesNotBlood() && (pSprite->owner >= 0) && !VanillaMode()) // improved clipmove accuracy
+        if (ProjectilesRaze() && (pSprite->owner >= 0) && !VanillaMode()) // improved clipmove accuracy (raze)
+        {
+            v8 = gSpriteHit[nXSprite].hit = ClipMoveEDuke((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
+        }
+        else if (ProjectilesNotBlood() && (pSprite->owner >= 0) && !VanillaMode()) // improved clipmove accuracy and adjust hitboxes (notblood)
         {
             spritetype *raySprite = NULL;
             const int tinywd = NotBloodAdjustHitbox(pSprite, top, bottom, wd);
@@ -4525,9 +4529,9 @@ int MoveThing(spritetype *pSprite)
                 wd = tinywd;
                 raySprite = pSprite; // set raycast collisions to be used
             }
-            v8 = gSpriteHit[nXSprite].hit = ClipMoveEDuke(raySprite, (int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
+            v8 = gSpriteHit[nXSprite].hit = ClipMoveEDuke((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0, raySprite);
         }
-        else
+        else // original
         {
             v8 = gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, xvel[nSprite]>>12, yvel[nSprite]>>12, wd, (pSprite->z-top)/4, (bottom-pSprite->z)/4, CLIPMASK0);
         }
@@ -5395,7 +5399,14 @@ int MoveMissile(spritetype *pSprite)
         int nSector2 = pSprite->sectnum;
         clipmoveboxtracenum = 1;
         int vdx;
-        if (ProjectilesNotBlood() && pOwner && !isFlameSprite && !VanillaMode()) // improved clipmove accuracy
+        if (ProjectilesRaze() && pOwner && !isFlameSprite && !VanillaMode()) // improved clipmove accuracy (raze)
+        {
+            const short bakSpriteCstat = pSprite->cstat;
+            pSprite->cstat &= ~257; // remove self collisions for accurate clipmove
+            vdx = ClipMoveEDuke(&x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
+            pSprite->cstat = bakSpriteCstat;
+        }
+        else if (ProjectilesNotBlood() && pOwner && !isFlameSprite && !VanillaMode()) // improved clipmove accuracy and adjust hitboxes (notblood)
         {
             const short bakSpriteCstat = pSprite->cstat;
             pSprite->cstat &= ~257; // remove self collisions for accurate clipmove
@@ -5406,10 +5417,10 @@ int MoveMissile(spritetype *pSprite)
                 wd = tinywd;
                 raySprite = pSprite; // set raycast collisions to be used
             }
-            vdx = ClipMoveEDuke(raySprite, &x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
+            vdx = ClipMoveEDuke(&x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0, raySprite);
             pSprite->cstat = bakSpriteCstat;
         }
-        else
+        else // original
         {
             vdx = ClipMove(&x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
         }
@@ -7068,7 +7079,6 @@ spritetype * actFireThing(spritetype *pSprite, int a2, int a3, int a4, int thing
 
 spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, int a6, int nType)
 {
-    
     dassert(nType >= kMissileBase && nType < kMissileMax);
     char v4 = 0;
     int nSprite = pSprite->index;

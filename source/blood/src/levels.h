@@ -57,7 +57,7 @@ struct GAMEOPTIONS {
     bool bQuadDamagePowerup;
     bool bDamageInvul;
     int nExplosionBehavior;
-    bool bProjectileBehavior;
+    int nProjectileBehavior;
     bool bEnemyBehavior;
     bool bEnemyRandomTNT;
     int nWeaponsVer;

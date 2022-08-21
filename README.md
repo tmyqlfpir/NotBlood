@@ -33,6 +33,7 @@ New features include:
 * Custom difficult options for singleplayer
 * Set item box selection to activated item
 * Ability to record 1.21 compatible demos
+* Colored names for multiplayer messages
 * Interpolated level texture panning
 * Drag and drop folder mod support ([demo](https://web.archive.org/web/20220514203004if_/https://files.catbox.moe/lb7nxb.mp4))
 * Customizable palette adjustment
