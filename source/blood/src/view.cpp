@@ -1923,7 +1923,15 @@ void viewDrawMultiKill(ClockTicks arg)
                 sprintf(buffer, "%s is Godlike!", gProfile[gAnnounceKillingSpreePlayer].name); // 25+
                 break;
         }
-        viewDrawText(0, buffer, 160, nY, -128, nPalette, 1, 1);
+        uint8_t nAlpha = 0;
+        if (gAnnounceKillingSpreeTicks <= 255)
+        {
+            if (videoGetRenderMode() != REND_CLASSIC) // high quality fade
+                nAlpha = 255 - (int)gAnnounceKillingSpreeTicks;
+            else
+                nAlpha = ClipLow(100 - (int)gAnnounceKillingSpreeTicks, 0);
+        }
+        viewDrawText(0, buffer, 160, nY, -128, nPalette, 1, 1, 0, nAlpha);
         gAnnounceKillingSpreeTicks = gAnnounceKillingSpreeTicks - arg;
         if (gAnnounceKillingSpreeTicks < 0) // reset currently announced kill streak
             playerResetAnnounceKillingSpree();
