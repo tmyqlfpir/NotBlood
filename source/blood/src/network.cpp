@@ -1394,8 +1394,11 @@ void faketimerhandler(void)
 void netPlayerQuit(int nPlayer)
 {
     char buffer[128];
-    sprintf(buffer, "%s left the game with %d frags.", gProfile[nPlayer].name, gPlayer[nPlayer].fragCount);
-    viewSetMessage(buffer);
+    int nPal = 10; // 10: dark blue
+    if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+        nPal = (gPlayer[nPlayer].teamId&1) ? 7 : 10;
+    sprintf(buffer, "\r%s\r left the game with %d frags.", gProfile[nPlayer].name, gPlayer[nPlayer].fragCount);
+    viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 0);
     if (gGameStarted)
     {
         seqKill(3, gPlayer[nPlayer].pSprite->extra);
