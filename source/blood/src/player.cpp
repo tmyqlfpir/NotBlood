@@ -2199,10 +2199,10 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
                 gMultiKillsFrags[nKiller]++;
                 if ((pKiller != gMe) && ((gMultiKillsFrags[nKiller] % 5) == 0)) // announce killing spree every 5 kills
                 {
+                    if ((gMultiKill == 2) && (gAnnounceKillingSpreeTicks == 0)) // only play sfx if multi kill alert setting is on, and if there isn't a multi kill alert already active
+                        sndStartSample("NOTBLOOD6", 128, -1, 22050);
                     gAnnounceKillingSpreePlayer = nKiller;
                     gAnnounceKillingSpreeTicks = kTicRate * 3;
-                    if (gMultiKill == 2)
-                        sndStartSample("NOTBLOOD6", 128, -1, 22050); // play killing spree sfx
                 }
             }
             else
