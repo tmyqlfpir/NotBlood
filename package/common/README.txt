@@ -83,8 +83,10 @@ It should be noted that vanilla mode does not work with modern maps
    - Fixes rare cases where enemies appear to ignore explosive damage due to sector/span order
    - Includes two methods to choose from: NotBlood (check linked sectors once) and Raze (always check linked sectors)
 * Projectiles behavior
+   - Player projectile hitboxes have been reduced so it's easier to throw/target around corners
    - For player projectiles, it'll use the improved eduke32's clipmove() logic as well as raymatching per tick
-   - This feature also adjusts certain hitboxes so it's easier to throw/target around corners
+   - When spawning player projectiles, it'll do a alpha pixel check for initial hitscan that return a non-dude sprite hit (e.g: throwing TNT up close to the tree sprites in CPSL.MAP)
+   - Includes two methods to choose from: NotBlood and Raze (don't adjust hitboxes, don't raymarch collisions per tick and don't do alpha mask testing when spawning projectiles)
 * Enemy behavior
    - Fixes various original 1.21 bugs with enemies such as:
    - Tiny Caleb using the wrong burning sprite

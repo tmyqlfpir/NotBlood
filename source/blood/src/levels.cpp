@@ -71,7 +71,7 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bQuadDamagePowerup;
     0,     // bool bDamageInvul;
     0,     // int nExplosionBehavior;
-    0,     // bool bProjectileBehavior;
+    0,     // int nProjectileBehavior;
     0,     // bool bEnemyBehavior;
     0,     // bool bEnemyRandomTNT;
     1,     // int nWeaponsVer;
@@ -477,7 +477,7 @@ void LevelsLoadSave::Load(void)
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
-        gGameOptions.bProjectileBehavior = gProjectileBehavior;
+        gGameOptions.nProjectileBehavior = gProjectileBehavior;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gWeaponsVer;
