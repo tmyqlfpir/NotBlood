@@ -37,6 +37,11 @@ enum MESSAGE_PRIORITY {
     MESSAGE_PRIORITY_SYSTEM = 100
 };
 
+struct COLORSTR {
+    int nPal1, nPal2; // palettes used for text 1 and 2 sub-strings
+    int nColor1[2], nColor2[2]; // start/end offsets within string
+};
+
 class CGameMessageMgr
 {
 public:
@@ -47,6 +52,7 @@ public:
         int pal;
         MESSAGE_PRIORITY priority;
         bool deleted = false;
+        COLORSTR colorStr;
     };
     char state;
     int x;
@@ -65,7 +71,7 @@ public:
     messageStruct messages[kMessageLogSize];
     CGameMessageMgr();
     void SetState(char state);
-    void Add(const char *pText, char a2, const int pal = 0, const MESSAGE_PRIORITY priority = MESSAGE_PRIORITY_NORMAL);
+    void Add(const char *pText, char a2, const int pal = 0, const MESSAGE_PRIORITY priority = MESSAGE_PRIORITY_NORMAL, COLORSTR *pColorStr = NULL);
     void Display(void);
     void Clear();
     void SetMaxMessages(int nMessages);

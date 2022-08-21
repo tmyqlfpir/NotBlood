@@ -1086,8 +1086,9 @@ void RestoreInterpolations(void)
     }
 }
 
-void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int nPalette, int position, char shadow, unsigned int nStat, uint8_t alpha, char bColorStat)
+void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int nPalette, int position, char shadow, unsigned int nStat, uint8_t alpha, COLORSTR *pColorStr)
 {
+    const int bakPal = nPalette;
     if (nFont < 0 || nFont >= kFontNum || !pString) return;
     FONT *pFont = &gFont[nFont];
 
@@ -1108,10 +1109,18 @@ void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int 
             width >>= 1;
         x -= width;
     }
-    const char *s = pString;
-    while (*s)
+    for (int i = 0; pString[i]; i++)
     {
-        int nTile = ((*s-' ')&127) + pFont->tile;
+        if (pColorStr)
+        {
+            if (i == pColorStr->nColor1[0]) // first color position, change palette
+                nPalette = pColorStr->nPal1;
+            else if (i == pColorStr->nColor2[0]) // second color position, change palette
+                nPalette = pColorStr->nPal2;
+            else if ((i == pColorStr->nColor1[1]) || (i == pColorStr->nColor2[1])) // end of colored text, restore palette
+                nPalette = bakPal;
+        }
+        int nTile = ((pString[i]-' ')&127) + pFont->tile;
         if (tilesiz[nTile].x && tilesiz[nTile].y)
         {
             if (shadow)
@@ -1121,9 +1130,6 @@ void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int 
             rotatesprite_fs_alpha(x<<16, y<<16, 65536, 0, nTile, nShade, nPalette, 26|nStat, alpha);
             x += tilesiz[nTile].x+pFont->space;
         }
-        if (bColorStat && (*s == ':'))
-            bColorStat = nPalette = 0;
-        s++;
     }
 }
 
@@ -1305,11 +1311,16 @@ int dword_14C508;
 
 void viewDrawStats(PLAYER *pPlayer, int x, int y)
 {
+    COLORSTR colorStr = {0};
     const int nFont = 3;
     char buffer[128];
     if (!gLevelStats)
         return;
 
+    colorStr.nPal1 = 2; // set text group color to gold
+    colorStr.nColor1[0] = 0; // color first two characters of stat string
+    colorStr.nColor1[1] = 2;
+    colorStr.nColor2[0] = colorStr.nColor2[1] = -1;
     int nHeight;
     viewGetFontInfo(nFont, NULL, NULL, &nHeight);
     sprintf(buffer, "T:%d:%02d.%02d",
@@ -1317,16 +1328,16 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
         (gLevelTime/kTicsPerSec)%60,
         ((gLevelTime%kTicsPerSec)*33)/10
         );
-    viewDrawText(3, buffer, x, y, 20, 2, 0, true, 256, 0, 1);
+    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
     y += nHeight+1;
     if (gGameOptions.nGameType != 3)
         sprintf(buffer, "K:%d/%d", gKillMgr.at4, max(gKillMgr.at4, gKillMgr.at0));
     else
         sprintf(buffer, "K:%d", pPlayer->fragCount);
-    viewDrawText(3, buffer, x, y, 20, 2, 0, true, 256, 0, 1);
+    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
     y += nHeight+1;
     sprintf(buffer, "S:%d/%d", gSecretMgr.nNormalSecretsFound, max(gSecretMgr.nNormalSecretsFound, gSecretMgr.nAllSecrets)); // if we found more than there are, increase the total - some levels have a bugged counter
-    viewDrawText(3, buffer, x, y, 20, 2, 0, true, 256, 0, 1);
+    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
 }
 
 struct POWERUPDISPLAY
@@ -1870,7 +1881,7 @@ void viewDrawMultiKill(ClockTicks arg)
     }
     else if (!bShowMultiKill && (gAnnounceKillingSpreeTicks > 0) && (gAnnounceKillingSpreePlayer < kMaxPlayers)) // announce player's kill streak
     {
-        char buffer[128] = {'\0'};
+        char buffer[128] = "";
         switch (gMultiKillsFrags[gAnnounceKillingSpreePlayer])
         {
             case 0:
@@ -3659,10 +3670,43 @@ void viewSetSystemMessage(const char* pMessage, ...) {
     gGameMessageMgr.Add(buffer, 15, 7, MESSAGE_PRIORITY_NORMAL);
 }
 
-void viewSetMessage(const char *pMessage, const int pal, const MESSAGE_PRIORITY priority)
+void viewSetMessage(const char *pMessage, const int nPal, const MESSAGE_PRIORITY nPriority)
 {
     OSD_Printf("%s\n", pMessage);
-    gGameMessageMgr.Add(pMessage, 15, pal, priority);
+    gGameMessageMgr.Add(pMessage, 15, nPal, nPriority);
+}
+
+void viewSetMessageColor(const char *pMessage, const int nPal, const MESSAGE_PRIORITY nPriority, const int nPal1, const int nPal2)
+{
+    int nColorPart = 0;
+    int nColorOffsets[4] = {-1, -1, -1, -1}; // stores 4 points in string where color is to be set for player names/flags
+    size_t nLength = strlen(pMessage);
+
+    for (size_t i = 0; i < nLength; i++)
+    {
+        if (pMessage[i] != '\r') // this is the start/stop flag used to detect color offsets
+            continue;
+        Bmemmove((void *)&pMessage[i], (void *)&pMessage[i + 1], nLength - i); // remove \r character from string
+        if (nColorPart < 4)
+        {
+            nColorOffsets[nColorPart] = i;
+            nColorPart++;
+        }
+        nLength--;
+    }
+    if ((nColorPart != 2) && (nColorPart != 4)) // something went very wrong, don't color message
+        nColorOffsets[0] = nColorOffsets[1] = nColorOffsets[2] = nColorOffsets[3] = -1;
+
+    OSD_Printf("%s\n", pMessage);
+    if (VanillaMode())
+    {
+        gGameMessageMgr.Add(pMessage, 15, nPal, nPriority);
+    }
+    else
+    {
+        COLORSTR colorStr = {nPal1, nPal2, {nColorOffsets[0], nColorOffsets[1]}, {nColorOffsets[2], nColorOffsets[3]}}; // set info for coloring sub-strings within string
+        gGameMessageMgr.Add(pMessage, 15, nPal, nPriority, &colorStr);
+    }
 }
 
 void viewDisplayMessage(void)
