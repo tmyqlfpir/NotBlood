@@ -1311,13 +1311,14 @@ int dword_14C508;
 
 void viewDrawStats(PLAYER *pPlayer, int x, int y)
 {
-    COLORSTR colorStr = {0};
+    COLORSTR colorStr;
     const int nFont = 3;
     char buffer[128];
     if (!gLevelStats)
         return;
 
-    colorStr.nPal1 = 2; // set text group color to gold
+    colorStr.nPal1 = 2; // set text group palette
+    colorStr.nPal2 = 0;
     colorStr.nColor1[0] = 0; // color first two characters of stat string
     colorStr.nColor1[1] = 2;
     colorStr.nColor2[0] = colorStr.nColor2[1] = -1;
@@ -3676,7 +3677,7 @@ void viewSetMessage(const char *pMessage, const int nPal, const MESSAGE_PRIORITY
     gGameMessageMgr.Add(pMessage, 15, nPal, nPriority);
 }
 
-void viewSetMessageColor(const char *pMessage, const int nPal, const MESSAGE_PRIORITY nPriority, const int nPal1, const int nPal2)
+void viewSetMessageColor(char *pMessage, const int nPal, const MESSAGE_PRIORITY nPriority, const int nPal1, const int nPal2)
 {
     int nColorPart = 0;
     int nColorOffsets[4] = {-1, -1, -1, -1}; // stores 4 points in string where color is to be set for player names/flags
