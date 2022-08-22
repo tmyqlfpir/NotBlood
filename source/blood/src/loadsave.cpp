@@ -97,7 +97,8 @@ void LoadSave::Write(void *pData, int nSize)
 
 void LoadSave::LoadGame(char *pzFile)
 {
-    bool demoWasPlayed = gDemo.bPlaying;
+    const char bDemoWasPlayed = gDemo.bPlaying;
+    const char bGameWasStarted = gGameStarted;
     if (gDemo.bPlaying || gDemo.bRecording)
         gDemo.Close();
 
@@ -212,7 +213,8 @@ void LoadSave::LoadGame(char *pzFile)
     }
 
     if (MusicRestartsOnLoadToggle
-        || demoWasPlayed
+        || bDemoWasPlayed
+        || !bGameWasStarted
         || (gMusicPrevLoadedEpisode != gGameOptions.nEpisode || gMusicPrevLoadedLevel != gGameOptions.nLevel))
     {
         levelTryPlayMusicOrNothing(gGameOptions.nEpisode, gGameOptions.nLevel);
