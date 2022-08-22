@@ -788,7 +788,6 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         {
             if (numplayers == 1)
             {
-                gProfile[i].skill = gGameOptions.nDifficulty;
                 gProfile[i].nAutoAim = gAutoAim;
                 gProfile[i].nWeaponSwitch = gWeaponSwitch;
                 gProfile[i].bWeaponFastSwitch = gWeaponFastSwitch;

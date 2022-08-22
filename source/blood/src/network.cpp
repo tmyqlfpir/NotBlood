@@ -579,7 +579,6 @@ void netBroadcastMyLogoff(bool bRestart)
 void netBroadcastPlayerInfo(int nPlayer)
 {
     PROFILE *pProfile = &gProfile[nPlayer];
-    pProfile->skill = gSkill;
     Bstrncpyz(pProfile->name, szPlayerName, sizeof(szPlayerName));
     pProfile->nAutoAim = gAutoAim;
     pProfile->nWeaponSwitch = gWeaponSwitch;
@@ -588,6 +587,7 @@ void netBroadcastPlayerInfo(int nPlayer)
     gProfileNet[nPlayer] = gProfile[nPlayer];
     if (numplayers < 2)
         return;
+    pProfile->skill = gProfileNet[nPlayer].skill = gSkill; // only update skill if in multiplayer
     char *pPacket = packet;
     PutPacketByte(pPacket, 251);
     PutPacketBuffer(pPacket, pProfile, sizeof(PROFILE));
@@ -597,12 +597,14 @@ void netBroadcastPlayerInfo(int nPlayer)
 void netBroadcastPlayerInfoUpdate(int nPlayer)
 {
     PROFILE *pProfile = &gProfileNet[nPlayer];
-    pProfile->skill = gSkill;
     Bstrncpyz(pProfile->name, szPlayerName, sizeof(szPlayerName));
     pProfile->nAutoAim = gAutoAim;
     pProfile->nWeaponSwitch = gWeaponSwitch;
     pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
     pProfile->nWeaponHBobbing = gWeaponHBobbing;
+    if (numplayers < 2)
+        return;
+    pProfile->skill = gSkill; // only update skill if in multiplayer
     char *pPacket = packet;
     PutPacketByte(pPacket, 253);
     PutPacketBuffer(pPacket, pProfile, sizeof(PROFILE));
