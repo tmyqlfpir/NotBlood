@@ -317,7 +317,6 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.uMonsterBannedType = BANNED_NONE;
     gGameOptions.uGameFlags = 0;
-    gSkill = gGameOptions.nDifficulty;
     StartLevel(&gGameOptions);
     for (int i = 0; i < 8; i++) // set to 1.21 defaults so demo playback syncs
     {

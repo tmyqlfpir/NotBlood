@@ -2244,7 +2244,6 @@ void ShowDifficulties()
 void SetDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     gGameOptions.nDifficulty = pItem->at30;
-    gSkill = gGameOptions.nDifficulty;
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
@@ -2273,7 +2272,6 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
     gGameOptions.nDifficulty = ClipRange(itemCustomDifficultyEnemyDamage.nValue, 0, 4);
-    gSkill = gGameOptions.nDifficulty;
     gGameOptions.nEnemyQuantity = ClipRange(itemCustomDifficultyEnemyQuantity.nValue, 0, 4);
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
