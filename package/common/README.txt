@@ -227,6 +227,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable position quantizing for interpolate repeated rotatesprite calls
 * r_shadowvoxels
    - Enable/disable wall/floor aligned transparent voxels
+* skill
+   - Changes the skill handicap for multiplayer (default: 2, range: 0-4)
 * snd_earangle
    - Set the listening ear offset (15-90 degrees)
 * snd_speed

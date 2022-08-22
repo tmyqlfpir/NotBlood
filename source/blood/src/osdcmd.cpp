@@ -1111,6 +1111,7 @@ int32_t registerosdcommands(void)
 
 //
 //        { "skill","changes the game skill setting", (void *)&ud.m_player_skill, CVAR_INT|CVAR_FUNCPTR|CVAR_NOSAVE/*|CVAR_NOMULTI*/, 0, 5 },
+        { "skill", "changes the skill handicap for multiplayer (default: 2, range: 0-4)", (void *)&gSkill, CVAR_INT, 0, 4 },
 //
 //        { "snd_ambience", "enables/disables ambient sounds", (void *)&ud.config.AmbienceToggle, CVAR_BOOL, 0, 1 },
         { "snd_doppler", "enables/disables audio doppler effect (stereo only)", (void *)&DopplerToggle, CVAR_BOOL, 0, 1 },

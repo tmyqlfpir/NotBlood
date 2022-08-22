@@ -880,6 +880,7 @@ CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 170, 180
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
 void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem);
 void UpdatePlayerMultiKill(CGameMenuItemZCycle *pItem);
+void UpdatePlayerSkill(CGameMenuItemZCycle *pItem);
 
 const char *pzPlayerMultiKillStrings[] = {
     "OFF",
@@ -887,10 +888,19 @@ const char *pzPlayerMultiKillStrings[] = {
     "SFX+ON",
 };
 
+const char *pzPlayerSkillStrings[] = {
+    "VERY EASY",
+    "EASY",
+    "NORMAL",
+    "HARD",
+    "VERY HARD"
+};
+
 CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
 CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 60, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
 CGameMenuItemZBool itemOptionsPlayerChatSound("CHAT BEEP:", 3, 66, 70, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
 CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 80, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
+CGameMenuItemZCycle itemOptionsPlayerHandicap("HANDICAP:", 3, 66, 90, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
 
 CGameMenu menuOptionsControlKeyboard;
 CGameMenu menuOptionsControlMouse;
@@ -1736,7 +1746,7 @@ void SetupOptionsMenu(void)
     itemOptionsSoundSpeakerAngle.tooltip_pzTextUpper = "";
     itemOptionsSoundSpeakerAngle.tooltip_pzTextLower = "Set left/right speaker offset angle (in degrees)";
     itemOptionsSoundCDToggle.tooltip_pzTextUpper = "";
-    itemOptionsSoundCDToggle.tooltip_pzTextLower = "Use blood##.ogg/flac files in base directory as redbook audio";
+    itemOptionsSoundCDToggle.tooltip_pzTextLower = "Use blood##.ogg/flac files in base folder as redbook audio";
 
     menuOptionsSound.Add(&itemOptionsSoundApplyChanges, false);
     menuOptionsSound.Add(&itemBloodQAV, false);
@@ -1748,12 +1758,16 @@ void SetupOptionsMenu(void)
     menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
     menuOptionsPlayer.Add(&itemOptionsPlayerChatSound, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerMultiKill, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerHandicap, false);
     menuOptionsPlayer.Add(&itemBloodQAV, false);
 
     itemOptionsPlayerChatSound.at20 = gChatSnd;
     itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
+    itemOptionsPlayerHandicap.m_nFocus = gSkill % ARRAY_SSIZE(pzPlayerSkillStrings);
     itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
     itemOptionsPlayerMultiKill.tooltip_pzTextLower = "(for bloodbath/teams multiplayer)";
+    itemOptionsPlayerHandicap.tooltip_pzTextUpper = "Set player's handicap damage modifier";
+    itemOptionsPlayerHandicap.tooltip_pzTextLower = "(only for multiplayer)";
 
     menuOptionsControl.Add(&itemOptionsControlTitle, false);
     menuOptionsControl.Add(&itemOptionsControlKeyboard, true);
@@ -2244,7 +2258,6 @@ void ShowDifficulties()
 void SetDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     gGameOptions.nDifficulty = pItem->at30;
-    gSkill = gGameOptions.nDifficulty;
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
@@ -2273,7 +2286,6 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
     gGameOptions.nDifficulty = ClipRange(itemCustomDifficultyEnemyDamage.nValue, 0, 4);
-    gSkill = gGameOptions.nDifficulty;
     gGameOptions.nEnemyQuantity = ClipRange(itemCustomDifficultyEnemyQuantity.nValue, 0, 4);
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
@@ -2803,6 +2815,13 @@ void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem)
 void UpdatePlayerMultiKill(CGameMenuItemZCycle *pItem)
 {
     gMultiKill = pItem->m_nFocus % ARRAY_SIZE(pzPlayerMultiKillStrings);
+}
+
+void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
+{
+    gSkill = pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings);
+    if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        netBroadcastPlayerInfoUpdate(myconnectindex);
 }
 
 void SetMouseAimMode(CGameMenuItemZBool *pItem)
