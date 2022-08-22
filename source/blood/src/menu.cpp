@@ -889,11 +889,11 @@ const char *pzPlayerMultiKillStrings[] = {
 };
 
 const char *pzPlayerSkillStrings[] = {
-    "VERY EASY",
-    "EASY",
-    "NORMAL",
-    "HARD",
-    "VERY HARD"
+    "-2",
+    "-1",
+    "OFF",
+    "+1",
+    "+2"
 };
 
 CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
@@ -1763,7 +1763,7 @@ void SetupOptionsMenu(void)
 
     itemOptionsPlayerChatSound.at20 = gChatSnd;
     itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
-    itemOptionsPlayerHandicap.m_nFocus = gSkill % ARRAY_SSIZE(pzPlayerSkillStrings);
+    itemOptionsPlayerHandicap.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because strings are swapped (lower skill == easier)
     itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
     itemOptionsPlayerMultiKill.tooltip_pzTextLower = "(for bloodbath/teams multiplayer)";
     itemOptionsPlayerHandicap.tooltip_pzTextUpper = "Set player's handicap damage modifier";
@@ -2819,7 +2819,7 @@ void UpdatePlayerMultiKill(CGameMenuItemZCycle *pItem)
 
 void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
 {
-    gSkill = pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings);
+    gSkill = 4 - (pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings)); // invert because strings are swapped (lower skill == easier)
     if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
         netBroadcastPlayerInfoUpdate(myconnectindex);
 }
