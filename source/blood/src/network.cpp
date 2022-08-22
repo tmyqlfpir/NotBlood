@@ -604,7 +604,7 @@ void netBroadcastPlayerInfoUpdate(int nPlayer)
     pProfile->nWeaponHBobbing = gWeaponHBobbing;
     if (numplayers < 2)
         return;
-    pProfile->skill = gProfileNet[nPlayer].skill = gSkill; // only update skill if in multiplayer
+    pProfile->skill = gSkill; // only update skill if in multiplayer
     char *pPacket = packet;
     PutPacketByte(pPacket, 253);
     PutPacketBuffer(pPacket, pProfile, sizeof(PROFILE));
