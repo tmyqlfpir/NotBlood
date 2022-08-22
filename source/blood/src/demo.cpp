@@ -508,10 +508,10 @@ _DEMOPLAYBACK:
                 memcpy(&gGameOptions, &m_gameOptions, sizeof(GAMEOPTIONS));
                 gSkill = gGameOptions.nDifficulty;
                 gGameOptions.uGameFlags &= ~1; // don't let demo attempt to load player health from gHealthTemp
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < kMaxPlayers; i++)
                     playerInit(i, 0);
                 StartLevel(&gGameOptions);
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < kMaxPlayers; i++)
                 {
                     gProfile[i].nAutoAim = 1;
                     gProfile[i].nWeaponSwitch = 1;
