@@ -194,7 +194,7 @@ void ShutDown(void)
     // PORT_TODO: Check argument
     if (syncstate)
         printf("A packet was lost! (syncstate)\n");
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < kMaxLoadSaveSlot; i++)
     {
         if (gSaveGamePic[i])
             Resource::Free(gSaveGamePic[i]);
@@ -911,12 +911,12 @@ static void DoQuickLoad(void)
 {
     if (!gGameMenuMgr.m_bActive)
     {
-        if (gQuickLoadSlot != -1)
+        if (gQuickLoadSlot != kLoadSaveNull)
         {
             QuickLoadGame();
             return;
         }
-        if (gQuickLoadSlot == -1 && gQuickSaveSlot != -1)
+        if (gQuickLoadSlot == kLoadSaveNull && gQuickSaveSlot != kLoadSaveNull)
         {
             gQuickLoadSlot = gQuickSaveSlot;
             QuickLoadGame();
@@ -924,7 +924,7 @@ static void DoQuickLoad(void)
         }
         else if (gLockManualSaving && gAutosaveInCurLevel) // if quicksave slot is not set, and manual saving is locked, load autosave
         {
-            gQuickLoadSlot = AUTOSAVESLOT_START;
+            gQuickLoadSlot = kLoadSaveSlotSpawn;
             QuickLoadGame();
             return;
         }
@@ -942,7 +942,7 @@ static void DoQuickSave(void)
             viewSetMessage("Change lock save settings to save...");
             return;
         }
-        if (gQuickSaveSlot != -1)
+        if (gQuickSaveSlot != kLoadSaveNull)
         {
             QuickSaveGame();
             return;
@@ -955,12 +955,12 @@ int DoRestoreSave(void)
 {
     if (gGameOptions.nGameType > 0 || numplayers > 1) // in multiplayer game, do not save
         return 0;
-    if (SavedInCurrentSession(gQuickLoadSlot)) // if quickload is set to save from current session, load save
+    if (LoadSavedInCurrentSession(gQuickLoadSlot)) // if quickload is set to save from current session, load save
     {
         QuickLoadGame();
         return 1;
     }
-    else if (SavedInCurrentSession(gQuickSaveSlot)) // if quicksaved has saved in session, load save
+    else if (LoadSavedInCurrentSession(gQuickSaveSlot)) // if quicksaved has saved in session, load save
     {
         gQuickLoadSlot = gQuickSaveSlot;
         QuickLoadGame();
@@ -968,7 +968,7 @@ int DoRestoreSave(void)
     }
     else if (gAutosaveInCurLevel) // if autosaved in session, load autosave
     {
-        gQuickLoadSlot = AUTOSAVESLOT_START;
+        gQuickLoadSlot = kLoadSaveSlotSpawn;
         QuickLoadGame();
         return 1;
     }

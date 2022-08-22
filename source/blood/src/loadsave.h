@@ -24,8 +24,25 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <stdio.h>
 #include "levels.h"
 
-#define AUTOSAVESLOT_START 10
-#define AUTOSAVESLOT_KEY (AUTOSAVESLOT_START+1)
+// load save slot ids
+enum
+{
+    kLoadSaveNull         = -1,
+    kLoadSaveSlot0        = 0,
+    kLoadSaveSlot1        = 1,
+    kLoadSaveSlot2        = 2,
+    kLoadSaveSlot3        = 3,
+    kLoadSaveSlot4        = 4,
+    kLoadSaveSlot5        = 5,
+    kLoadSaveSlot6        = 6,
+    kLoadSaveSlot7        = 7,
+    kLoadSaveSlot8        = 8,
+    kLoadSaveSlot9        = 9,
+    kLoadSaveSlotAutosave = 10,
+    kLoadSaveSlotSpawn    = kLoadSaveSlotAutosave,
+    kLoadSaveSlotKey      = 11,
+    kMaxLoadSaveSlot      = 12,
+};
 
 class LoadSave {
 public:
@@ -55,10 +72,10 @@ public:
 };
 
 extern unsigned int gSavedOffset;
-extern GAMEOPTIONS gSaveGameOptions[];
-extern char *gSaveGamePic[12];
-bool SavedInCurrentSession(int nSlot);
-void UpdateSavedInfo(int nSlot);
+extern GAMEOPTIONS gSaveGameOptions[kMaxLoadSaveSlot];
+extern char *gSaveGamePic[kMaxLoadSaveSlot];
+bool LoadSavedInCurrentSession(int nSlot);
+void LoadUpdateSaveGame(int nSlot, int nSkill);
 void LoadSavedInfo(void);
 void LoadAutosavedInfo(void);
 void LoadSaveSetup(void);

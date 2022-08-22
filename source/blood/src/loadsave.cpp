@@ -47,8 +47,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "nnexts.h"
 #endif
 
-GAMEOPTIONS gSaveGameOptions[12];
-char *gSaveGamePic[12];
+GAMEOPTIONS gSaveGameOptions[kMaxLoadSaveSlot];
+char *gSaveGamePic[kMaxLoadSaveSlot];
 unsigned int gSavedOffset = 0;
 
 unsigned int dword_27AA38 = 0;
@@ -499,34 +499,33 @@ void LoadSavedInfo(void)
 {
     auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "game00*.sav", BUILDVFS_FIND_FILE);
     int nCount = 0;
-    for (auto pIterator = pList; pIterator != NULL && nCount < 10; pIterator = pIterator->next, nCount++)
+    for (auto pIterator = pList; pIterator != NULL && nCount <= kLoadSaveSlot9; pIterator = pIterator->next, nCount++)
     {
         int hFile = kopen4loadfrommod(pIterator->name, 0);
         if (hFile == -1)
             ThrowError("Error loading save file header.");
-        int vc;
-        short v4;
-        vc = 0;
-        v4 = word_27AA54;
-        if ((uint32_t)kread(hFile, &vc, sizeof(vc)) != sizeof(vc))
+        int id = 0;
+        short version = word_27AA54;
+        short nSkill = 0;
+        if ((uint32_t)kread(hFile, &id, sizeof(id)) != sizeof(id))
         {
             kclose(hFile);
             continue;
         }
-        if (vc != 0x5653424e/*'VSBN'*/)
+        if (id != 0x5653424e/*'VSBN'*/)
         {
             kclose(hFile);
             continue;
         }
-        kread(hFile, &v4, sizeof(v4));
-        if (v4 != BYTEVERSION)
+        kread(hFile, &version, sizeof(version));
+        if (version != BYTEVERSION)
         {
             kclose(hFile);
             continue;
         }
         if ((uint32_t)kread(hFile, &gSaveGameOptions[nCount], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
             ThrowError("Error reading save file.");
-        UpdateSavedInfo(nCount);
+        LoadUpdateSaveGame(nCount, nSkill);
         kclose(hFile);
     }
     klistfree(pList);
@@ -535,54 +534,79 @@ void LoadSavedInfo(void)
 void LoadAutosavedInfo(void)
 {
     auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "gameautosave*.sav", BUILDVFS_FIND_FILE);
-    int nCount = 0;
-    for (auto pIterator = pList; pIterator != NULL && nCount < 2; pIterator = pIterator->next, nCount++)
+    int nCount = kLoadSaveSlotAutosave;
+    for (auto pIterator = pList; pIterator != NULL && nCount < kMaxLoadSaveSlot; pIterator = pIterator->next, nCount++)
     {
         int hFile = kopen4loadfrommod(pIterator->name, 0);
         if (hFile == -1)
             ThrowError("Error loading save file header.");
-        int vc;
-        short v4;
-        vc = 0;
-        v4 = word_27AA54;
-        if ((uint32_t)kread(hFile, &vc, sizeof(vc)) != sizeof(vc))
+        int id = 0;
+        short version = word_27AA54;
+        short nSkill = 0;
+        if ((uint32_t)kread(hFile, &id, sizeof(id)) != sizeof(id))
         {
             kclose(hFile);
             continue;
         }
-        if (vc != 0x5653424e/*'VSBN'*/)
+        if (id != 0x5653424e/*'VSBN'*/)
         {
             kclose(hFile);
             continue;
         }
-        kread(hFile, &v4, sizeof(v4));
-        if (v4 != BYTEVERSION)
+        kread(hFile, &version, sizeof(version));
+        if (version != BYTEVERSION)
         {
             kclose(hFile);
             continue;
         }
-        if ((uint32_t)kread(hFile, &gSaveGameOptions[AUTOSAVESLOT_START+nCount], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
+        if ((uint32_t)kread(hFile, &gSaveGameOptions[nCount], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
             ThrowError("Error reading save file.");
-        UpdateSavedInfo(AUTOSAVESLOT_START+nCount);
+        LoadUpdateSaveGame(nCount, nSkill);
         kclose(hFile);
     }
     klistfree(pList);
 }
 
-bool SavedInCurrentSession(int nSlot)
+bool LoadSavedInCurrentSession(int nSlot)
 {
-    if (nSlot < 0)
+    if ((nSlot < kLoadSaveSlot0) || (nSlot >= kMaxLoadSaveSlot))
         return false;
-    if (nSlot > AUTOSAVESLOT_KEY)
+    if (gSaveGameOptions[nSlot].nEpisode != gGameOptions.nEpisode)
         return false;
-    return (gSaveGameOptions[nSlot].nEpisode == gGameOptions.nEpisode) && (gSaveGameOptions[nSlot].nLevel == gGameOptions.nLevel) && (gSaveGameOptions[nSlot].nDifficulty == gGameOptions.nDifficulty) && (gSaveGameOptions[nSlot].nEnemyHealth == gGameOptions.nEnemyHealth) && (gSaveGameOptions[nSlot].nEnemyQuantity == gGameOptions.nEnemyQuantity) && (gSaveGameOptions[nSlot].bPitchforkOnly == gGameOptions.bPitchforkOnly) && (gSaveGameOptions[nSlot].uMonsterBannedType == gGameOptions.uMonsterBannedType) && !strcmp(gSaveGameOptions[nSlot].zLevelName, gGameOptions.zLevelName);
+    if (gSaveGameOptions[nSlot].nLevel != gGameOptions.nLevel)
+        return false;
+    if (gSaveGameOptions[nSlot].nDifficulty != gGameOptions.nDifficulty)
+        return false;
+    if (gSaveGameOptions[nSlot].nEnemyHealth != gGameOptions.nEnemyHealth)
+        return false;
+    if (gSaveGameOptions[nSlot].nEnemyQuantity != gGameOptions.nEnemyQuantity)
+        return false;
+    if (gSaveGameOptions[nSlot].bPitchforkOnly != gGameOptions.bPitchforkOnly)
+        return false;
+    if (gSaveGameOptions[nSlot].uMonsterBannedType != gGameOptions.uMonsterBannedType)
+        return false;
+    if (gSaveGameOptions[nSlot].nRandomizerCheat != gGameOptions.nRandomizerCheat)
+        return false;
+    if (Bstrncmp(gSaveGameOptions[nSlot].zLevelName, gGameOptions.zLevelName, sizeof(gSaveGameOptions[nSlot].zLevelName)))
+        return false;
+    return true;
 }
 
-void UpdateSavedInfo(int nSlot)
+void LoadUpdateSaveGame(int nSlot, int nSkill)
 {
-    strcpy(strRestoreGameStrings[gSaveGameOptions[nSlot].nSaveGameSlot], gSaveGameOptions[nSlot].szUserGameName);
-    const bool customDiff = (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyHealth) || (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyQuantity) || gSaveGameOptions[nSlot].bPitchforkOnly || gSaveGameOptions[nSlot].uMonsterBannedType;
-    restoreGameDifficulty[gSaveGameOptions[nSlot].nSaveGameSlot] = customDiff ? 5 : gSaveGameOptions[nSlot].nDifficulty;
+    gSaveGameProfileSkill[nSlot] = nSkill;
+    Bstrncpyz(strRestoreGameStrings[gSaveGameOptions[nSlot].nSaveGameSlot], gSaveGameOptions[nSlot].szUserGameName, sizeof(strRestoreGameStrings[gSaveGameOptions[nSlot].nSaveGameSlot]));
+
+    char nDifficulty = gSaveGameOptions[nSlot].nDifficulty;
+    if (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyHealth)
+        nDifficulty = 5;
+    else if (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyQuantity)
+        nDifficulty = 5;
+    else if (gSaveGameOptions[nSlot].bPitchforkOnly)
+        nDifficulty = 5;
+    else if (gSaveGameOptions[nSlot].uMonsterBannedType)
+        nDifficulty = 5;
+    restoreGameDifficulty[gSaveGameOptions[nSlot].nSaveGameSlot] = nDifficulty;
 }
 
 static MyLoadSave *myLoadSave;
