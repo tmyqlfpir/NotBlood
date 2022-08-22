@@ -1845,7 +1845,7 @@ void viewDrawCtfHud(ClockTicks arg)
 
 void viewDrawMultiKill(ClockTicks arg)
 {
-    if (gViewSize == 0)
+    if ((gViewSize == 0) || (gMultiKill == 0))
         return;
 
     int nY = 40;
@@ -1859,8 +1859,10 @@ void viewDrawMultiKill(ClockTicks arg)
     const int nPlayer = gMe->nPlayer;
     const int nPalette = (gGameOptions.nGameType == 3) ? ((gMe->teamId&1) ? 7 : 10) : 7; // tint message depending on team (red/blue)
     const char bShowMultiKill = (gFrameClock - gMultiKillsTicks[nPlayer]) < (int)(kTicRate * 1.5); // show multi kill message for 1.5 seconds
-    if (((int)totalclock & 16) && bShowMultiKill) // flash multi kill message
+    if (bShowMultiKill)
     {
+        if ((int)totalclock & 16) // flash multi kill message
+            return;
         switch (gMultiKillsFrags[nPlayer])
         {
             case 0:
@@ -1880,7 +1882,7 @@ void viewDrawMultiKill(ClockTicks arg)
                 break;
         }
     }
-    else if (!bShowMultiKill && (gAnnounceKillingSpreeTicks > 0) && (gAnnounceKillingSpreePlayer < kMaxPlayers)) // announce player's kill streak
+    else if ((gAnnounceKillingSpreeTicks > 0) && (gAnnounceKillingSpreePlayer < kMaxPlayers)) // announce player's kill streak
     {
         char buffer[128] = "";
         switch (gMultiKillsFrags[gAnnounceKillingSpreePlayer])
@@ -2201,7 +2203,7 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gGameOptions.nGameType < 1) return;
 
-    if ((gGameOptions.nGameType >= 2) && gMultiKill) viewDrawMultiKill(arg);
+    if (gGameOptions.nGameType >= 2) viewDrawMultiKill(arg);
 
     if (gGameOptions.nGameType == 3)
     {
