@@ -715,7 +715,9 @@ int VectorScan(spritetype *pSprite, int nOffset, int nZOffset, int dx, int dy, i
                 pAdjustedRORPos->z = pAdjustedRORPos->z + sprite[nLink].z - sprite[nSprite].z;
             }
             pos = { x1, y1, z1 };
-            hitscan(&pos, sprite[nLink].sectnum, dx, dy, dz<<4, &hitData, CLIPMASK1);
+            hitData.xyz.z = gHitInfo.hitz;
+            hitscan(&pos, sprite[nLink].sectnum,
+                dx, dy, dz << 4, &hitData, CLIPMASK1);
             gHitInfo.hitsect = hitData.sect;
             gHitInfo.hitwall = hitData.wall;
             gHitInfo.hitsprite = hitData.sprite;
