@@ -463,29 +463,6 @@ void LevelsLoadSave::Load(void)
     Read(&gNextLevel, sizeof(gNextLevel));
     Read(&gGameOptions, sizeof(gGameOptions));
     Read(&gGameStarted, sizeof(gGameStarted));
-
-    if (gGameOptions.nGameType == 0) // if not multiplayer, update the game options by loading the current set settings
-    {
-        if (!VanillaMode())
-        {
-            gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
-            if (gMonsterSettings >= 2)
-                gGameOptions.nMonsterRespawnTime = divscale16((gMonsterSettings - 1) * 15 * 120, 0xa000);
-            else
-                gGameOptions.nMonsterRespawnTime = 3600; // default (48 secs)
-        }
-        gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
-        gGameOptions.bDamageInvul = gDamageInvul;
-        gGameOptions.nExplosionBehavior = gExplosionBehavior;
-        gGameOptions.nProjectileBehavior = gProjectileBehavior;
-        gGameOptions.bEnemyBehavior = gEnemyBehavior;
-        gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
-        gGameOptions.nWeaponsVer = gWeaponsVer;
-        gGameOptions.bSectorBehavior = gSectorBehavior;
-        gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
-        gGameOptions.nRandomizerMode = gRandomizerMode;
-        Bmemcpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
-    }
 }
 
 void LevelsLoadSave::Save(void)

@@ -108,7 +108,7 @@ void ResetVideoColor(CGameMenuItemChain *);
 void SetupVideoPolymostMenu(CGameMenuItemChain *);
 #endif
 
-char strRestoreGameStrings[][16] = 
+char strRestoreGameStrings[kMaxLoadSaveSlot][16] = 
 {
     "<Empty>",
     "<Empty>",
@@ -125,7 +125,7 @@ char strRestoreGameStrings[][16] =
     "<Empty>",
 };
 
-char restoreGameDifficulty[] = 
+char restoreGameDifficulty[kMaxLoadSaveSlot] = 
 {
     2,
     2,
@@ -343,17 +343,18 @@ CGameMenuItemChain itemDifficultyCustom("< CUSTOM >", 1, 0, 155, 320, 1, &menuCu
 CGameMenuItemTitle itemCustomDifficultyTitle("CUSTOM", 1, 160, 20, 2038);
 CGameMenuItemSlider itemCustomDifficultyEnemyQuantity("ENEMIES QUANTITY:", 3, 66, 40, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 50, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemSlider itemCustomDifficultyEnemyDamage("ENEMIES DAMAGE:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 70, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemCustomDifficultyMonsterBanBats("BATS:", 3, 75, 82, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanRats("RATS:", 3, 75, 90, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanFish("FISH:", 3, 75, 98, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHands("HANDS:", 3, 75, 106, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanGhosts("GHOSTS:", 3, 75, 114, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanSpiders("SPIDERS:", 3, 75, 122, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75, 130, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 138, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 150, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
+CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemSlider itemCustomDifficultyPlayerDamage("PLAYER DAMAGE TAKEN:", 3, 66, 70, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 80, 180, false, NULL, NULL, NULL);
+CGameMenuItemZBool itemCustomDifficultyMonsterBanBats("BATS:", 3, 75, 91, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanRats("RATS:", 3, 75, 99, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanFish("FISH:", 3, 75, 107, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanHands("HANDS:", 3, 75, 115, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanGhosts("GHOSTS:", 3, 75, 123, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanSpiders("SPIDERS:", 3, 75, 131, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75, 139, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 147, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 158, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
 CGameMenuItemTitle itemOptionsOldTitle("OPTIONS", 1, 160, 20, 2038);
 CGameMenuItemChain itemOption1("CONTROLS...", 3, 0, 40, 320, 1, &menuControls, -1, NULL, 0);
@@ -393,31 +394,31 @@ CGameMenuItemTitle itemKeysTitle("KEY SETUP", 1, 160, 20, 2038);
 CGameMenuItemKeyList itemKeyList("", 3, 56, 40, 200, 16, NUMGAMEFUNCTIONS, 0);
 
 CGameMenuItemTitle itemSaveTitle("Save Game", 1, 160, 20, 2038);
-CGameMenuItemZEditBitmap itemSaveGame1(NULL, 3, 20, 60, 320, strRestoreGameStrings[0], 16, 1, SaveGame, 0);
-CGameMenuItemZEditBitmap itemSaveGame2(NULL, 3, 20, 70, 320, strRestoreGameStrings[1], 16, 1, SaveGame, 1);
-CGameMenuItemZEditBitmap itemSaveGame3(NULL, 3, 20, 80, 320, strRestoreGameStrings[2], 16, 1, SaveGame, 2);
-CGameMenuItemZEditBitmap itemSaveGame4(NULL, 3, 20, 90, 320, strRestoreGameStrings[3], 16, 1, SaveGame, 3);
-CGameMenuItemZEditBitmap itemSaveGame5(NULL, 3, 20, 100, 320, strRestoreGameStrings[4], 16, 1, SaveGame, 4);
-CGameMenuItemZEditBitmap itemSaveGame6(NULL, 3, 20, 110, 320, strRestoreGameStrings[5], 16, 1, SaveGame, 5);
-CGameMenuItemZEditBitmap itemSaveGame7(NULL, 3, 20, 120, 320, strRestoreGameStrings[6], 16, 1, SaveGame, 6);
-CGameMenuItemZEditBitmap itemSaveGame8(NULL, 3, 20, 130, 320, strRestoreGameStrings[7], 16, 1, SaveGame, 7);
-CGameMenuItemZEditBitmap itemSaveGame9(NULL, 3, 20, 140, 320, strRestoreGameStrings[8], 16, 1, SaveGame, 8);
-CGameMenuItemZEditBitmap itemSaveGame10(NULL, 3, 20, 150, 320, strRestoreGameStrings[9], 16, 1, SaveGame, 9);
+CGameMenuItemZEditBitmap itemSaveGame0(NULL, 3, 20, 60, 320, strRestoreGameStrings[kLoadSaveSlot0], 16, 1, SaveGame, kLoadSaveSlot0);
+CGameMenuItemZEditBitmap itemSaveGame1(NULL, 3, 20, 70, 320, strRestoreGameStrings[kLoadSaveSlot1], 16, 1, SaveGame, kLoadSaveSlot1);
+CGameMenuItemZEditBitmap itemSaveGame2(NULL, 3, 20, 80, 320, strRestoreGameStrings[kLoadSaveSlot2], 16, 1, SaveGame, kLoadSaveSlot2);
+CGameMenuItemZEditBitmap itemSaveGame3(NULL, 3, 20, 90, 320, strRestoreGameStrings[kLoadSaveSlot3], 16, 1, SaveGame, kLoadSaveSlot3);
+CGameMenuItemZEditBitmap itemSaveGame4(NULL, 3, 20, 100, 320, strRestoreGameStrings[kLoadSaveSlot4], 16, 1, SaveGame, kLoadSaveSlot4);
+CGameMenuItemZEditBitmap itemSaveGame5(NULL, 3, 20, 110, 320, strRestoreGameStrings[kLoadSaveSlot5], 16, 1, SaveGame, kLoadSaveSlot5);
+CGameMenuItemZEditBitmap itemSaveGame6(NULL, 3, 20, 120, 320, strRestoreGameStrings[kLoadSaveSlot6], 16, 1, SaveGame, kLoadSaveSlot6);
+CGameMenuItemZEditBitmap itemSaveGame7(NULL, 3, 20, 130, 320, strRestoreGameStrings[kLoadSaveSlot7], 16, 1, SaveGame, kLoadSaveSlot7);
+CGameMenuItemZEditBitmap itemSaveGame8(NULL, 3, 20, 140, 320, strRestoreGameStrings[kLoadSaveSlot8], 16, 1, SaveGame, kLoadSaveSlot8);
+CGameMenuItemZEditBitmap itemSaveGame9(NULL, 3, 20, 150, 320, strRestoreGameStrings[kLoadSaveSlot9], 16, 1, SaveGame, kLoadSaveSlot9);
 CGameMenuItemBitmapLS itemSaveGamePic(NULL, 3, 0, 0, 2050);
 
 CGameMenuItemTitle itemLoadTitle("Load Game", 1, 160, 20, 2038);
-CGameMenuItemZEditBitmap itemLoadGame1(NULL, 3, 20, 60, 320, strRestoreGameStrings[0], 16, 1, LoadGame, 0);
-CGameMenuItemZEditBitmap itemLoadGame2(NULL, 3, 20, 70, 320, strRestoreGameStrings[1], 16, 1, LoadGame, 1);
-CGameMenuItemZEditBitmap itemLoadGame3(NULL, 3, 20, 80, 320, strRestoreGameStrings[2], 16, 1, LoadGame, 2);
-CGameMenuItemZEditBitmap itemLoadGame4(NULL, 3, 20, 90, 320, strRestoreGameStrings[3], 16, 1, LoadGame, 3);
-CGameMenuItemZEditBitmap itemLoadGame5(NULL, 3, 20, 100, 320, strRestoreGameStrings[4], 16, 1, LoadGame, 4);
-CGameMenuItemZEditBitmap itemLoadGame6(NULL, 3, 20, 110, 320, strRestoreGameStrings[5], 16, 1, LoadGame, 5);
-CGameMenuItemZEditBitmap itemLoadGame7(NULL, 3, 20, 120, 320, strRestoreGameStrings[6], 16, 1, LoadGame, 6);
-CGameMenuItemZEditBitmap itemLoadGame8(NULL, 3, 20, 130, 320, strRestoreGameStrings[7], 16, 1, LoadGame, 7);
-CGameMenuItemZEditBitmap itemLoadGame9(NULL, 3, 20, 140, 320, strRestoreGameStrings[8], 16, 1, LoadGame, 8);
-CGameMenuItemZEditBitmap itemLoadGame10(NULL, 3, 20, 150, 320, strRestoreGameStrings[9], 16, 1, LoadGame, 9);
-CGameMenuItemZEditBitmap itemLoadGameAutosaveStart(NULL, 3, 20, 170, 320, strRestoreGameStrings[AUTOSAVESLOT_START], 16, 1, LoadGame, AUTOSAVESLOT_START);
-CGameMenuItemZEditBitmap itemLoadGameAutosaveKey(NULL, 3, 20, 180, 320, strRestoreGameStrings[AUTOSAVESLOT_KEY], 16, 1, LoadGame, AUTOSAVESLOT_KEY);
+CGameMenuItemZEditBitmap itemLoadGame0(NULL, 3, 20, 60, 320, strRestoreGameStrings[kLoadSaveSlot0], 16, 1, LoadGame, kLoadSaveSlot0);
+CGameMenuItemZEditBitmap itemLoadGame1(NULL, 3, 20, 70, 320, strRestoreGameStrings[kLoadSaveSlot1], 16, 1, LoadGame, kLoadSaveSlot1);
+CGameMenuItemZEditBitmap itemLoadGame2(NULL, 3, 20, 80, 320, strRestoreGameStrings[kLoadSaveSlot2], 16, 1, LoadGame, kLoadSaveSlot2);
+CGameMenuItemZEditBitmap itemLoadGame3(NULL, 3, 20, 90, 320, strRestoreGameStrings[kLoadSaveSlot3], 16, 1, LoadGame, kLoadSaveSlot3);
+CGameMenuItemZEditBitmap itemLoadGame4(NULL, 3, 20, 100, 320, strRestoreGameStrings[kLoadSaveSlot4], 16, 1, LoadGame, kLoadSaveSlot4);
+CGameMenuItemZEditBitmap itemLoadGame5(NULL, 3, 20, 110, 320, strRestoreGameStrings[kLoadSaveSlot5], 16, 1, LoadGame, kLoadSaveSlot5);
+CGameMenuItemZEditBitmap itemLoadGame6(NULL, 3, 20, 120, 320, strRestoreGameStrings[kLoadSaveSlot6], 16, 1, LoadGame, kLoadSaveSlot6);
+CGameMenuItemZEditBitmap itemLoadGame7(NULL, 3, 20, 130, 320, strRestoreGameStrings[kLoadSaveSlot7], 16, 1, LoadGame, kLoadSaveSlot7);
+CGameMenuItemZEditBitmap itemLoadGame8(NULL, 3, 20, 140, 320, strRestoreGameStrings[kLoadSaveSlot8], 16, 1, LoadGame, kLoadSaveSlot8);
+CGameMenuItemZEditBitmap itemLoadGame9(NULL, 3, 20, 150, 320, strRestoreGameStrings[kLoadSaveSlot9], 16, 1, LoadGame, kLoadSaveSlot9);
+CGameMenuItemZEditBitmap itemLoadGameAutosaveStart(NULL, 3, 20, 170, 320, strRestoreGameStrings[kLoadSaveSlotSpawn], 16, 1, LoadGame, kLoadSaveSlotSpawn);
+CGameMenuItemZEditBitmap itemLoadGameAutosaveKey(NULL, 3, 20, 180, 320, strRestoreGameStrings[kLoadSaveSlotKey], 16, 1, LoadGame, kLoadSaveSlotKey);
 CGameMenuItemBitmapLS itemLoadGamePic(NULL, 3, 0, 0, 2518);
 
 CGameMenu menuMultiUserMaps;
@@ -878,9 +879,9 @@ CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 170, 180
 
 
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
+void UpdatePlayerSkill(CGameMenuItemZCycle *pItem);
 void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem);
 void UpdatePlayerMultiKill(CGameMenuItemZCycle *pItem);
-void UpdatePlayerSkill(CGameMenuItemZCycle *pItem);
 
 const char *pzPlayerMultiKillStrings[] = {
     "OFF",
@@ -891,16 +892,16 @@ const char *pzPlayerMultiKillStrings[] = {
 const char *pzPlayerSkillStrings[] = {
     "-2",
     "-1",
-    "OFF",
+    "DEFAULT",
     "+1",
-    "+2"
+    "+2",
 };
 
 CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
-CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 60, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
-CGameMenuItemZBool itemOptionsPlayerChatSound("CHAT BEEP:", 3, 66, 70, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
-CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 80, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
-CGameMenuItemZCycle itemOptionsPlayerHandicap("HANDICAP:", 3, 66, 90, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
+CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 65, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
+CGameMenuItemZCycle itemOptionsPlayerSkill("HEALTH HANDICAP:", 3, 66, 75, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
+CGameMenuItemZBool itemOptionsPlayerChatSound("CHAT BEEP:", 3, 66, 90, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
+CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 100, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
 
 CGameMenu menuOptionsControlKeyboard;
 CGameMenu menuOptionsControlMouse;
@@ -1091,7 +1092,8 @@ void SetupDifficultyMenu(void)
     menuCustomDifficulty.Add(&itemCustomDifficultyTitle, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyQuantity, true);
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyHealth, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyDamage, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyDifficulty, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyPlayerDamage, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyPitchfork, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanBats, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanRats, false);
@@ -1103,12 +1105,11 @@ void SetupDifficultyMenu(void)
     menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanHellHounds, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyStart, false);
     menuCustomDifficulty.Add(&itemBloodQAV, false);
-    itemCustomDifficultyEnemyQuantity.tooltip_pzTextUpper = "Sets how many enemies";
-    itemCustomDifficultyEnemyQuantity.tooltip_pzTextLower = "are spawned in the level";
-    itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "Sets the enemy's starting health";
-    itemCustomDifficultyEnemyDamage.tooltip_pzTextUpper = "Sets the enemy's damage and difficulty";
-    itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "Player will lose all weapons";
-    itemCustomDifficultyPitchfork.tooltip_pzTextLower = "and inventory on new level";
+    itemCustomDifficultyEnemyQuantity.tooltip_pzTextUpper = "Set how many enemies will spawn in the level";
+    itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "Set enemy's starting health";
+    itemCustomDifficultyEnemyDifficulty.tooltip_pzTextUpper = "Set enemy's behavior difficulty";
+    itemCustomDifficultyPlayerDamage.tooltip_pzTextUpper = "Set player's damage taken scale";
+    itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "Player will lose all items on new level";
 }
 
 void SetupEpisodeMenu(void)
@@ -1306,7 +1307,8 @@ void SetupNetStartMenu(void)
 void SetupSaveGameMenu(void)
 {
     menuSaveGame.Add(&itemSaveTitle, false);
-    menuSaveGame.Add(&itemSaveGame1, true);
+    menuSaveGame.Add(&itemSaveGame0, true);
+    menuSaveGame.Add(&itemSaveGame1, false);
     menuSaveGame.Add(&itemSaveGame2, false);
     menuSaveGame.Add(&itemSaveGame3, false);
     menuSaveGame.Add(&itemSaveGame4, false);
@@ -1315,55 +1317,55 @@ void SetupSaveGameMenu(void)
     menuSaveGame.Add(&itemSaveGame7, false);
     menuSaveGame.Add(&itemSaveGame8, false);
     menuSaveGame.Add(&itemSaveGame9, false);
-    menuSaveGame.Add(&itemSaveGame10, false);
     menuSaveGame.Add(&itemSaveGamePic, false);
     menuSaveGame.Add(&itemBloodQAV, false);
 
+    itemSaveGame0.at2c = &itemSaveGamePic;
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot0], "<Empty>"))
+        itemSaveGame0.at37 = 1;
+
     itemSaveGame1.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[0], "<Empty>"))
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot1], "<Empty>"))
         itemSaveGame1.at37 = 1;
 
     itemSaveGame2.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[1], "<Empty>"))
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot2], "<Empty>"))
         itemSaveGame2.at37 = 1;
 
     itemSaveGame3.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[2], "<Empty>"))
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot3], "<Empty>"))
         itemSaveGame3.at37 = 1;
 
     itemSaveGame4.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[3], "<Empty>"))
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot4], "<Empty>"))
         itemSaveGame4.at37 = 1;
 
     itemSaveGame5.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[4], "<Empty>"))
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot5], "<Empty>"))
         itemSaveGame5.at37 = 1;
 
     itemSaveGame6.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[5], "<Empty>"))
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot6], "<Empty>"))
         itemSaveGame6.at37 = 1;
 
     itemSaveGame7.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[6], "<Empty>"))
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot7], "<Empty>"))
         itemSaveGame7.at37 = 1;
 
     itemSaveGame8.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[7], "<Empty>"))
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot8], "<Empty>"))
         itemSaveGame8.at37 = 1;
 
     itemSaveGame9.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[8], "<Empty>"))
+    if (!strcmp(strRestoreGameStrings[kLoadSaveSlot9], "<Empty>"))
         itemSaveGame9.at37 = 1;
-
-    itemSaveGame10.at2c = &itemSaveGamePic;
-    if (!strcmp(strRestoreGameStrings[9], "<Empty>"))
-        itemSaveGame10.at37 = 1;
 }
 
 void SetupLoadGameMenu(void)
 {
     menuLoadGame.Add(&itemLoadTitle, false);
-    menuLoadGame.Add(&itemLoadGame1, true);
+    menuLoadGame.Add(&itemLoadGame0, true);
+    menuLoadGame.Add(&itemLoadGame1, false);
     menuLoadGame.Add(&itemLoadGame2, false);
     menuLoadGame.Add(&itemLoadGame3, false);
     menuLoadGame.Add(&itemLoadGame4, false);
@@ -1372,11 +1374,11 @@ void SetupLoadGameMenu(void)
     menuLoadGame.Add(&itemLoadGame7, false);
     menuLoadGame.Add(&itemLoadGame8, false);
     menuLoadGame.Add(&itemLoadGame9, false);
-    menuLoadGame.Add(&itemLoadGame10, false);
     menuLoadGame.Add(&itemLoadGameAutosaveStart, false);
     menuLoadGame.Add(&itemLoadGameAutosaveKey, false);
     menuLoadGame.Add(&itemLoadGamePic, false);
     itemLoadGamePic.at28 = gMenuPicnum;
+    itemLoadGame0.at35 = 0;
     itemLoadGame1.at35 = 0;
     itemLoadGame2.at35 = 0;
     itemLoadGame3.at35 = 0;
@@ -1386,9 +1388,9 @@ void SetupLoadGameMenu(void)
     itemLoadGame7.at35 = 0;
     itemLoadGame8.at35 = 0;
     itemLoadGame9.at35 = 0;
-    itemLoadGame10.at35 = 0;
     itemLoadGameAutosaveStart.at35 = 0;
     itemLoadGameAutosaveKey.at35 = 0;
+    itemLoadGame0.at2c = &itemLoadGamePic;
     itemLoadGame1.at2c = &itemLoadGamePic;
     itemLoadGame2.at2c = &itemLoadGamePic;
     itemLoadGame3.at2c = &itemLoadGamePic;
@@ -1398,7 +1400,6 @@ void SetupLoadGameMenu(void)
     itemLoadGame7.at2c = &itemLoadGamePic;
     itemLoadGame8.at2c = &itemLoadGamePic;
     itemLoadGame9.at2c = &itemLoadGamePic;
-    itemLoadGame10.at2c = &itemLoadGamePic;
     itemLoadGameAutosaveStart.at2c = &itemLoadGamePic;
     itemLoadGameAutosaveKey.at2c = &itemLoadGamePic;
     menuLoadGame.Add(&itemBloodQAV, false);
@@ -1756,18 +1757,18 @@ void SetupOptionsMenu(void)
 
     menuOptionsPlayer.Add(&itemOptionsPlayerTitle, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
+    menuOptionsPlayer.Add(&itemOptionsPlayerSkill, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerChatSound, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerMultiKill, false);
-    menuOptionsPlayer.Add(&itemOptionsPlayerHandicap, false);
     menuOptionsPlayer.Add(&itemBloodQAV, false);
-
-    itemOptionsPlayerChatSound.at20 = gChatSnd;
-    itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
-    itemOptionsPlayerHandicap.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because strings are swapped (lower skill == easier)
+    itemOptionsPlayerSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
+    itemOptionsPlayerSkill.tooltip_pzTextLower = "(only for multiplayer)";
     itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
     itemOptionsPlayerMultiKill.tooltip_pzTextLower = "(for bloodbath/teams multiplayer)";
-    itemOptionsPlayerHandicap.tooltip_pzTextUpper = "Set player's handicap damage modifier";
-    itemOptionsPlayerHandicap.tooltip_pzTextLower = "(only for multiplayer)";
+
+    itemOptionsPlayerSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
+    itemOptionsPlayerChatSound.at20 = gChatSnd;
+    itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
 
     menuOptionsControl.Add(&itemOptionsControlTitle, false);
     menuOptionsControl.Add(&itemOptionsControlKeyboard, true);
@@ -2247,8 +2248,8 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem)
     viewResizeView(gViewSize);
 }
 
-short gQuickLoadSlot = -1;
-short gQuickSaveSlot = -1;
+short gQuickLoadSlot = kLoadSaveNull;
+short gQuickSaveSlot = kLoadSaveNull;
 
 void ShowDifficulties()
 {
@@ -2260,6 +2261,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nDifficulty = pItem->at30;
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
+    playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.uMonsterBannedType = BANNED_NONE;
     gGameOptions.nLevel = 0;
@@ -2270,7 +2272,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
         gDemo.Close();
     gStartNewGame = true;
     gAutosaveInCurLevel = false;
-    gQuickLoadSlot = gQuickSaveSlot = -1;
+    gQuickLoadSlot = gQuickSaveSlot = kLoadSaveNull;
     gCheatMgr.ResetCheats();
     if (Bstrlen(gGameOptions.szUserMap))
     {
@@ -2285,9 +2287,10 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
 void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
-    gGameOptions.nDifficulty = ClipRange(itemCustomDifficultyEnemyDamage.nValue, 0, 4);
+    gGameOptions.nDifficulty = ClipRange(itemCustomDifficultyEnemyDifficulty.nValue, 0, 4);
     gGameOptions.nEnemyQuantity = ClipRange(itemCustomDifficultyEnemyQuantity.nValue, 0, 4);
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
+    playerSetSkill(itemCustomDifficultyPlayerDamage.nValue);
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
     gGameOptions.uMonsterBannedType = BANNED_NONE;
     if (itemCustomDifficultyMonsterBanBats.at20)
@@ -2314,7 +2317,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
         gDemo.Close();
     gStartNewGame = true;
     gAutosaveInCurLevel = false;
-    gQuickLoadSlot = gQuickSaveSlot = -1;
+    gQuickLoadSlot = gQuickSaveSlot = kLoadSaveNull;
     gCheatMgr.ResetCheats();
     if (Bstrlen(gGameOptions.szUserMap))
     {
@@ -2807,6 +2810,13 @@ void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
         netBroadcastPlayerInfo(myconnectindex);
 }
 
+void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
+{
+    gSkill = 4 - (pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
+    if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        netBroadcastPlayerInfoUpdate(myconnectindex);
+}
+
 void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem)
 {
     gChatSnd = pItem->at20;
@@ -2815,13 +2825,6 @@ void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem)
 void UpdatePlayerMultiKill(CGameMenuItemZCycle *pItem)
 {
     gMultiKill = pItem->m_nFocus % ARRAY_SIZE(pzPlayerMultiKillStrings);
-}
-
-void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
-{
-    gSkill = 4 - (pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings)); // invert because strings are swapped (lower skill == easier)
-    if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
-        netBroadcastPlayerInfoUpdate(myconnectindex);
 }
 
 void SetMouseAimMode(CGameMenuItemZBool *pItem)
@@ -2968,39 +2971,39 @@ void TenProcess(CGameMenuItem7EA1C *pItem)
     UNREFERENCED_PARAMETER(pItem);
 }
 
-static void UpdateSaveGameItemText(int nSlot)
+inline void UpdateSaveGameItemText(int nSlot)
 {
     switch (nSlot) // set save slot text flag
     {
-    case 0:
+    case kLoadSaveSlot0:
+        itemSaveGame0.at37 = 0;
+        break;
+    case kLoadSaveSlot1:
         itemSaveGame1.at37 = 0;
         break;
-    case 1:
+    case kLoadSaveSlot2:
         itemSaveGame2.at37 = 0;
         break;
-    case 2:
+    case kLoadSaveSlot3:
         itemSaveGame3.at37 = 0;
         break;
-    case 3:
+    case kLoadSaveSlot4:
         itemSaveGame4.at37 = 0;
         break;
-    case 4:
+    case kLoadSaveSlot5:
         itemSaveGame5.at37 = 0;
         break;
-    case 5:
+    case kLoadSaveSlot6:
         itemSaveGame6.at37 = 0;
         break;
-    case 6:
+    case kLoadSaveSlot7:
         itemSaveGame7.at37 = 0;
         break;
-    case 7:
+    case kLoadSaveSlot8:
         itemSaveGame8.at37 = 0;
         break;
-    case 8:
+    case kLoadSaveSlot9:
         itemSaveGame9.at37 = 0;
-        break;
-    case 9:
-        itemSaveGame10.at37 = 0;
         break;
     default:
         break;
@@ -3019,7 +3022,9 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
         return;
     }
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", nSlot);
+    memset(gGameOptions.szUserGameName, 0, sizeof(gGameOptions.szSaveGameName));
     strcpy(gGameOptions.szUserGameName, strRestoreGameStrings[nSlot]);
+    memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = nSlot;
     viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[nSlot]);
@@ -3028,7 +3033,7 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     LoadSave::SaveGame(strSaveGameName);
     gGameOptions.picEntry = gSavedOffset;
     gSaveGameOptions[nSlot] = gGameOptions;
-    UpdateSavedInfo(nSlot);
+    LoadUpdateSaveGame(nSlot, gProfile[myconnectindex].skill);
     UpdateSaveGameItemText(nSlot);
     gQuickSaveSlot = gQuickLoadSlot = nSlot;
     gGameMenuMgr.Deactivate();
@@ -3046,7 +3051,9 @@ void QuickSaveGame(void)
         return;
     }*/
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", gQuickSaveSlot);
+    memset(gGameOptions.szUserGameName, 0, sizeof(gGameOptions.szSaveGameName));
     strcpy(gGameOptions.szUserGameName, strRestoreGameStrings[gQuickSaveSlot]);
+    memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = gQuickSaveSlot;
     viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[gQuickSaveSlot]);
@@ -3054,36 +3061,36 @@ void QuickSaveGame(void)
     LoadSave::SaveGame(strSaveGameName);
     gGameOptions.picEntry = gSavedOffset;
     gSaveGameOptions[gQuickSaveSlot] = gGameOptions;
-    UpdateSavedInfo(gQuickSaveSlot);
+    LoadUpdateSaveGame(gQuickSaveSlot, gProfile[myconnectindex].skill);
     UpdateSaveGameItemText(gQuickSaveSlot);
     gQuickLoadSlot = gQuickSaveSlot;
     gGameMenuMgr.Deactivate();
     viewSetMessage("Game saved");
 }
 
-void AutosaveGame(bool levelStartSave)
+void AutosaveGame(bool bLevelStartSave)
 {
     char strSaveGameName[BMAX_PATH];
-    int nSlot = levelStartSave ? AUTOSAVESLOT_START : AUTOSAVESLOT_KEY;
+    int nSlot = bLevelStartSave ? kLoadSaveSlotSpawn : kLoadSaveSlotKey;
     if (gGameOptions.nGameType > 0 || !gGameStarted)
         return;
-    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot - AUTOSAVESLOT_START);
-    snprintf(gGameOptions.szUserGameName, sizeof(gGameOptions.szUserGameName), "%s %s", gGameOptions.zLevelName, nSlot == AUTOSAVESLOT_START ? "start": "key");
+    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot - kLoadSaveSlotSpawn);
+    snprintf(gGameOptions.szUserGameName, sizeof(gGameOptions.szUserGameName), "%s %s", gGameOptions.zLevelName, nSlot == kLoadSaveSlotSpawn ? "start": "key");
     snprintf(gGameOptions.szSaveGameName, sizeof(gGameOptions.szSaveGameName), "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = nSlot;
     const PLAYER playerTemp = *gMe; // temp player struct while we make autosaving a little more easier (blood is stressful enough already)
-    if (!levelStartSave) // if key save, reset problematic weapon states
+    if (!bLevelStartSave) // if key save, reset problematic weapon states
     {
         playerResetWeaponState(gMe);
         gMe->invulTime = (int)gFrameClock; // in case they get hitscanned right after loading
     }
     LoadSave::SaveGame(strSaveGameName);
     *gMe = playerTemp; // restore current player struct
-    if (!levelStartSave) // don't print message on level start autosaves
+    if (!bLevelStartSave) // don't print message on level start autosaves
         viewSetMessage("Autosaved...");
     gGameOptions.picEntry = gSavedOffset;
     gSaveGameOptions[nSlot] = gGameOptions;
-    UpdateSavedInfo(nSlot);
+    LoadUpdateSaveGame(nSlot, gProfile[myconnectindex].skill);
     gQuickLoadSlot = nSlot;
     gAutosaveInCurLevel = true;
 }
@@ -3095,13 +3102,13 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     int nSlot = pItem->at28;
     if (gGameOptions.nGameType > 0)
         return;
-    if (nSlot < AUTOSAVESLOT_START)
+    if (nSlot <= kLoadSaveSlot9)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot);
     else
-        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot == AUTOSAVESLOT_START ? 0 : 1);
+        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot == kLoadSaveSlotSpawn ? 0 : 1);
     if (!testkopen(strLoadGameName, 0))
         return;
-    if (SavedInCurrentSession(nSlot)) // if save slot is from a different session, set autosave state to false
+    if (!gGameStarted || LoadSavedInCurrentSession(nSlot)) // if save slot is from a different session, set autosave state to false
         gAutosaveInCurLevel = false;
     viewLoadingScreen(gMenuPicnum, "Loading", "Loading Saved Game", strRestoreGameStrings[nSlot]);
     videoNextPage();
@@ -3115,13 +3122,13 @@ void QuickLoadGame(void)
     char strLoadGameName[BMAX_PATH];
     if (gGameOptions.nGameType > 0)
         return;
-    if (gQuickLoadSlot < AUTOSAVESLOT_START)
+    if (gQuickLoadSlot < kLoadSaveSlotAutosave)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot);
     else
-        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", gQuickLoadSlot == AUTOSAVESLOT_START ? 0 : 1);
+        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", gQuickLoadSlot == kLoadSaveSlotSpawn ? 0 : 1);
     if (!testkopen(strLoadGameName, 0))
         return;
-    if (!SavedInCurrentSession(gQuickLoadSlot)) // if save slot is from a different session, set autosave state to false
+    if (!LoadSavedInCurrentSession(gQuickLoadSlot)) // if save slot is from a different session, set autosave state to false
         gAutosaveInCurLevel = false;
     viewLoadingScreen(gMenuPicnum, "Loading", "Loading Saved Game", strRestoreGameStrings[gQuickLoadSlot]);
     videoNextPage();

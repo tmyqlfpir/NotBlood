@@ -61,5 +61,5 @@ void SetupMenus(void);
 void UpdateNetworkMenus(void);
 void SetGameVanillaMode(char nState);
 void QuickSaveGame(void);
-void AutosaveGame(bool printMessage);
+void AutosaveGame(bool bLevelStartSave);
 void QuickLoadGame(void);

@@ -2197,7 +2197,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
             if (bKillerSpreeActive && bKillerAlive) // if killed enemy within multi kill time window, reward point
             {
                 gMultiKillsFrags[nKiller]++;
-                if ((pKiller != gMe) && ((gMultiKillsFrags[nKiller] % 5) == 0)) // announce killing spree every 5 kills
+                if (gMultiKill && (pKiller != gMe) && ((gMultiKillsFrags[nKiller] % 5) == 0)) // announce killing spree every 5 kills
                 {
                     if ((gMultiKill == 2) && (gAnnounceKillingSpreeTicks == 0)) // only play sfx if multi kill alert setting is on, and if there isn't a multi kill alert already active
                         sndStartSample("NOTBLOOD6", 128, -1, 22050);
@@ -2342,7 +2342,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
             const DUDEINFO *pDudeInfo = getDudeInfo(pPlayer->pSprite->type);
             const XSPRITE *pXSprite = pPlayer->pXSprite;
             const int nHealth = clamp(pXSprite->health / ((pDudeInfo->startHealth<<4)>>3), 0, INVUL_LEVELS-1); // divide health into invul array range (0-7)
-            const int nInvulTicks = ((invulTimers[nHealth]/4) * (4-gGameOptions.nDifficulty+1))>>1; // scale invul ticks depending on current difficulty
+            const int nInvulTicks = ((invulTimers[nHealth]/4) * (4-gProfile[pPlayer->nPlayer].skill+1))>>1; // scale invul ticks depending on current difficulty
             const bool invulState = pPlayer->invulTime > gFrameClock - nInvulTicks;
             if ((pPlayer->invulTime != gFrameClock) && invulState) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
                 return 0;
@@ -2484,10 +2484,10 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode(true)) // if died in single-player and not playing demo
         {
             extern short gQuickLoadSlot, gQuickSaveSlot; // from menu.h
-            bool autosavedInSession = gAutosaveInCurLevel;
-            if (!autosavedInSession) // if player has not triggered autosave in current level, check if last manual save/load was in current level
-                autosavedInSession = SavedInCurrentSession(gQuickLoadSlot) || SavedInCurrentSession(gQuickSaveSlot);
-            if (autosavedInSession)
+            bool bAutosavedInSession = gAutosaveInCurLevel;
+            if (!bAutosavedInSession) // if player has not triggered autosave in current level, check if last manual save/load was in current level
+                bAutosavedInSession = LoadSavedInCurrentSession(gQuickLoadSlot) || LoadSavedInCurrentSession(gQuickSaveSlot);
+            if (bAutosavedInSession)
                 viewSetMessage("press \"use\" to load last save or press \"enter\" to restart level"); // string borrowed from bloodgdx (thank you M210)
             else
                 viewSetMessage("press \"use\" or \"enter\" to restart level");
