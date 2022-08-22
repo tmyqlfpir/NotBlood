@@ -361,6 +361,13 @@ inline void playerResetAnnounceKillingSpree(void)
     gAnnounceKillingSpreeTicks = 0;
 }
 
+inline void playerSetSkill(int nSkill)
+{
+    nSkill = ClipRange(nSkill, 0, 4);
+    for (int i = 0; i < kMaxPlayers; i++) // set all player's skill setting
+        gProfile[i].skill = (char)nSkill;
+}
+
 int         powerupCheck(PLAYER *pPlayer, int nPowerUp);
 char        powerupActivate(PLAYER *pPlayer, int nPowerUp);
 void        powerupDeactivate(PLAYER *pPlayer, int nPowerUp);

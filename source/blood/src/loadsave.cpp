@@ -48,6 +48,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #endif
 
 GAMEOPTIONS gSaveGameOptions[kMaxLoadSaveSlot];
+int gSaveGameProfileSkill[kMaxLoadSaveSlot];
 char *gSaveGamePic[kMaxLoadSaveSlot];
 unsigned int gSavedOffset = 0;
 
@@ -287,6 +288,8 @@ void MyLoadSave::Load(void)
     Read(&version, sizeof(version));
     if (version != BYTEVERSION)
         ThrowError("Incompatible version of saved game found!");
+    short nSkill;
+    Read(&nSkill, sizeof(nSkill));
     Read(&gGameOptions, sizeof(gGameOptions));
     Read(&numsectors, sizeof(numsectors));
     Read(&numwalls, sizeof(numwalls));
@@ -399,6 +402,8 @@ void MyLoadSave::Save(void)
     Write(&id, sizeof(id));
     short version = BYTEVERSION;
     Write(&version, sizeof(version));
+    short nSkill = (short)gProfile[myconnectindex].skill;
+    Write(&nSkill, sizeof(nSkill));
     for (int nSprite = 0; nSprite < kMaxSprites; nSprite++)
     {
         if (sprite[nSprite].statnum < kMaxStatus && nSprite > nNumSprites)
@@ -525,6 +530,7 @@ void LoadSavedInfo(void)
             kclose(hFile);
             continue;
         }
+        kread(hFile, &nSkill, sizeof(nSkill));
         if ((uint32_t)kread(hFile, &gSaveGameOptions[nCount], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
             ThrowError("Error reading save file.");
         LoadUpdateSaveGame(nCount, nSkill);
@@ -561,6 +567,7 @@ void LoadAutosavedInfo(void)
             kclose(hFile);
             continue;
         }
+        kread(hFile, &nSkill, sizeof(nSkill));
         if ((uint32_t)kread(hFile, &gSaveGameOptions[nCount], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
             ThrowError("Error reading save file.");
         LoadUpdateSaveGame(nCount, nSkill);
@@ -583,6 +590,8 @@ bool LoadSavedInCurrentSession(int nSlot)
         return false;
     if (gSaveGameOptions[nSlot].nEnemyQuantity != gGameOptions.nEnemyQuantity)
         return false;
+    if (gSaveGameProfileSkill[nSlot] != (int)gProfile[myconnectindex].skill)
+        return false;
     if (gSaveGameOptions[nSlot].bPitchforkOnly != gGameOptions.bPitchforkOnly)
         return false;
     if (gSaveGameOptions[nSlot].uMonsterBannedType != gGameOptions.uMonsterBannedType)
@@ -603,6 +612,8 @@ void LoadUpdateSaveGame(int nSlot, int nSkill)
     if (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyHealth)
         nDifficulty = 5;
     else if (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyQuantity)
+        nDifficulty = 5;
+    else if (gSaveGameOptions[nSlot].nDifficulty != (char)gSaveGameProfileSkill[nSlot])
         nDifficulty = 5;
     else if (gSaveGameOptions[nSlot].bPitchforkOnly)
         nDifficulty = 5;

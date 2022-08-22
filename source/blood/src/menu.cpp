@@ -343,17 +343,18 @@ CGameMenuItemChain itemDifficultyCustom("< CUSTOM >", 1, 0, 155, 320, 1, &menuCu
 CGameMenuItemTitle itemCustomDifficultyTitle("CUSTOM", 1, 160, 20, 2038);
 CGameMenuItemSlider itemCustomDifficultyEnemyQuantity("ENEMIES QUANTITY:", 3, 66, 40, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 50, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemSlider itemCustomDifficultyEnemyDamage("ENEMIES DAMAGE:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 70, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemCustomDifficultyMonsterBanBats("BATS:", 3, 75, 82, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanRats("RATS:", 3, 75, 90, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanFish("FISH:", 3, 75, 98, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHands("HANDS:", 3, 75, 106, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanGhosts("GHOSTS:", 3, 75, 114, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanSpiders("SPIDERS:", 3, 75, 122, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75, 130, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 138, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 150, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
+CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemSlider itemCustomDifficultyPlayerDamage("PLAYER DAMAGE TAKEN:", 3, 66, 70, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 80, 180, false, NULL, NULL, NULL);
+CGameMenuItemZBool itemCustomDifficultyMonsterBanBats("BATS:", 3, 75, 91, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanRats("RATS:", 3, 75, 99, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanFish("FISH:", 3, 75, 107, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanHands("HANDS:", 3, 75, 115, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanGhosts("GHOSTS:", 3, 75, 123, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanSpiders("SPIDERS:", 3, 75, 131, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75, 139, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 147, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 158, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
 CGameMenuItemTitle itemOptionsOldTitle("OPTIONS", 1, 160, 20, 2038);
 CGameMenuItemChain itemOption1("CONTROLS...", 3, 0, 40, 320, 1, &menuControls, -1, NULL, 0);
@@ -1091,7 +1092,8 @@ void SetupDifficultyMenu(void)
     menuCustomDifficulty.Add(&itemCustomDifficultyTitle, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyQuantity, true);
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyHealth, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyDamage, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyDifficulty, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyPlayerDamage, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyPitchfork, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanBats, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanRats, false);
@@ -1103,12 +1105,11 @@ void SetupDifficultyMenu(void)
     menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanHellHounds, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyStart, false);
     menuCustomDifficulty.Add(&itemBloodQAV, false);
-    itemCustomDifficultyEnemyQuantity.tooltip_pzTextUpper = "Sets how many enemies";
-    itemCustomDifficultyEnemyQuantity.tooltip_pzTextLower = "are spawned in the level";
-    itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "Sets the enemy's starting health";
-    itemCustomDifficultyEnemyDamage.tooltip_pzTextUpper = "Sets the enemy's damage and difficulty";
-    itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "Player will lose all weapons";
-    itemCustomDifficultyPitchfork.tooltip_pzTextLower = "and inventory on new level";
+    itemCustomDifficultyEnemyQuantity.tooltip_pzTextUpper = "Set how many enemies will spawn in the level";
+    itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "Set enemy's starting health";
+    itemCustomDifficultyEnemyDifficulty.tooltip_pzTextUpper = "Set enemy's behavior difficulty";
+    itemCustomDifficultyPlayerDamage.tooltip_pzTextUpper = "Set player's damage taken scale";
+    itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "Player will lose all items on new level";
 }
 
 void SetupEpisodeMenu(void)
@@ -2260,6 +2261,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nDifficulty = pItem->at30;
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
+    playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.uMonsterBannedType = BANNED_NONE;
     gGameOptions.nLevel = 0;
@@ -2285,9 +2287,10 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
 void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
-    gGameOptions.nDifficulty = ClipRange(itemCustomDifficultyEnemyDamage.nValue, 0, 4);
+    gGameOptions.nDifficulty = ClipRange(itemCustomDifficultyEnemyDifficulty.nValue, 0, 4);
     gGameOptions.nEnemyQuantity = ClipRange(itemCustomDifficultyEnemyQuantity.nValue, 0, 4);
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
+    playerSetSkill(itemCustomDifficultyPlayerDamage.nValue);
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
     gGameOptions.uMonsterBannedType = BANNED_NONE;
     if (itemCustomDifficultyMonsterBanBats.at20)
