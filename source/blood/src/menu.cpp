@@ -1736,7 +1736,7 @@ void SetupOptionsMenu(void)
     itemOptionsSoundSpeakerAngle.tooltip_pzTextUpper = "";
     itemOptionsSoundSpeakerAngle.tooltip_pzTextLower = "Set left/right speaker offset angle (in degrees)";
     itemOptionsSoundCDToggle.tooltip_pzTextUpper = "";
-    itemOptionsSoundCDToggle.tooltip_pzTextLower = "Use blood##.ogg/flac files in base directory as redbook audio";
+    itemOptionsSoundCDToggle.tooltip_pzTextLower = "Use blood##.ogg/flac files in base folder as redbook audio";
 
     menuOptionsSound.Add(&itemOptionsSoundApplyChanges, false);
     menuOptionsSound.Add(&itemBloodQAV, false);
