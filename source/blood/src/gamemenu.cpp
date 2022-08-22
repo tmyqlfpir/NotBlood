@@ -667,6 +667,8 @@ bool CGameMenuItemZBool::Event(CGameMenuEvent &event)
 {
     switch (event.at0)
     {
+    case kMenuEventLeft:
+    case kMenuEventRight:
     case kMenuEventEnter:
     case kMenuEventSpace:
         at20 = !at20;
