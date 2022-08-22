@@ -222,6 +222,29 @@ void LoadSave::LoadGame(char *pzFile)
 
     netBroadcastPlayerInfo(myconnectindex);
     //sndPlaySong(gGameOptions.zLevelSong, 1);
+
+    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) // if single-player, update the game options/player profile by loading the current set settings
+    {
+        if (!VanillaMode())
+        {
+            gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
+            if (gMonsterSettings >= 2)
+                gGameOptions.nMonsterRespawnTime = divscale16((gMonsterSettings - 1) * 15 * 120, 0xa000);
+            else
+                gGameOptions.nMonsterRespawnTime = 3600; // default (48 secs)
+        }
+        gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
+        gGameOptions.bDamageInvul = gDamageInvul;
+        gGameOptions.nExplosionBehavior = gExplosionBehavior;
+        gGameOptions.nProjectileBehavior = gProjectileBehavior;
+        gGameOptions.bEnemyBehavior = gEnemyBehavior;
+        gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
+        gGameOptions.nWeaponsVer = gWeaponsVer;
+        gGameOptions.bSectorBehavior = gSectorBehavior;
+        gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
+        gGameOptions.nRandomizerMode = gRandomizerMode;
+        Bmemcpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
+    }
 }
 
 void LoadSave::SaveGame(char *pzFile)
@@ -474,7 +497,7 @@ void MyLoadSave::Save(void)
 
 void LoadSavedInfo(void)
 {
-    auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "game*.sav", BUILDVFS_FIND_FILE);
+    auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "game00*.sav", BUILDVFS_FIND_FILE);
     int nCount = 0;
     for (auto pIterator = pList; pIterator != NULL && nCount < 10; pIterator = pIterator->next, nCount++)
     {

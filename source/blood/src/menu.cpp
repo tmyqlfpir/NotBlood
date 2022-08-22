@@ -3019,7 +3019,9 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
         return;
     }
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", nSlot);
+    memset(gGameOptions.szUserGameName, 0, sizeof(gGameOptions.szSaveGameName));
     strcpy(gGameOptions.szUserGameName, strRestoreGameStrings[nSlot]);
+    memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = nSlot;
     viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[nSlot]);
@@ -3046,7 +3048,9 @@ void QuickSaveGame(void)
         return;
     }*/
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", gQuickSaveSlot);
+    memset(gGameOptions.szUserGameName, 0, sizeof(gGameOptions.szSaveGameName));
     strcpy(gGameOptions.szUserGameName, strRestoreGameStrings[gQuickSaveSlot]);
+    memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = gQuickSaveSlot;
     viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[gQuickSaveSlot]);
