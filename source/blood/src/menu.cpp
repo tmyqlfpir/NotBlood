@@ -155,8 +155,9 @@ const char *zMonsterStrings[] =
     "Bring 'em on",
     "Respawn (15 Secs)",
     "Respawn (30 Secs)",
-    "Respawn (45 Secs)",
     "Respawn (60 Secs)",
+    "Respawn (90 Secs)",
+    "Respawn (120 Secs)",
 };
 
 const char *zWeaponStrings[] =
@@ -228,8 +229,9 @@ const char *pzMonsterStrings[] =
     "Default",
     "Respawn (15 Secs)",
     "Respawn (30 Secs)",
-    "Respawn (45 Secs)",
     "Respawn (60 Secs)",
+    "Respawn (90 Secs)",
+    "Respawn (120 Secs)",
 };
 
 const char *pzExplosionBehaviorStrings[] = {
@@ -1924,10 +1926,12 @@ void SetMonsters(CGameMenuItemZCycle *pItem)
         if (!VanillaMode())
         {
             gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
-            if (gMonsterSettings >= 2)
-                gGameOptions.nMonsterRespawnTime = divscale16((gMonsterSettings - 1) * 15 * 120, 0xa000);
+            if (gMonsterSettings <= 1)
+                gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
+            else if (gMonsterSettings == 2)
+                gGameOptions.nMonsterRespawnTime = 15 * kTicRate; // 15 secs
             else
-                gGameOptions.nMonsterRespawnTime = 3600; // default (48 secs)
+                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 2) * 30 * kTicRate;
         }
     } else {
         pItem->m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);

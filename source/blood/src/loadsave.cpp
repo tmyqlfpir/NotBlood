@@ -231,10 +231,12 @@ void LoadSave::LoadGame(char *pzFile)
         if (!VanillaMode())
         {
             gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
-            if (gMonsterSettings >= 2)
-                gGameOptions.nMonsterRespawnTime = divscale16((gMonsterSettings - 1) * 15 * 120, 0xa000);
+            if (gMonsterSettings <= 1)
+                gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
+            else if (gMonsterSettings == 2)
+                gGameOptions.nMonsterRespawnTime = 15 * kTicRate; // 15 secs
             else
-                gGameOptions.nMonsterRespawnTime = 3600; // default (48 secs)
+                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 2) * 30 * kTicRate;
         }
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
