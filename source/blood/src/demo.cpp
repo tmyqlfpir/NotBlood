@@ -54,96 +54,100 @@ struct DEMOVALIDATE {
     uint32_t wrandomseed;
     uint32_t health;
     vec3_t xyz;
+    char nAutoAim;
 };
 
 DEMOVALIDATE gDemoValidate[] = {
-    {"/validatedemos/TEST000.DEM", (int32_t)0x00000DB1, 0x68E811AD, 0x00000000, {(int32_t)0x00002239, (int32_t)0x00006A75, (int32_t)0x000029A4}},
-    {"/validatedemos/TEST001.DEM", (int32_t)0x000008E3, 0x898BFCFE, 0x00000000, {(int32_t)0x00001AC0, (int32_t)0x00003F49, (int32_t)0x000025A4}},
-    {"/validatedemos/TEST002.DEM", (int32_t)0x00000CE0, 0xCAF89634, 0x00000000, {(int32_t)0x0000C8ED, (int32_t)0x00009AF9, (int32_t)0x000159A4}},
-    {"/validatedemos/TEST003.DEM", (int32_t)0x00000B87, 0x4488E1A6, 0x00000000, {(int32_t)0xFFFFD54C, (int32_t)0xFFFFD41F, (int32_t)0x000019A4}},
+    {"/validatedemos/TEST000.DEM", (int32_t)0x00000DB1, 0x68E811AD, 0x00000000, {(int32_t)0x00002239, (int32_t)0x00006A75, (int32_t)0x000029A4}, 1},
+    {"/validatedemos/TEST001.DEM", (int32_t)0x000008E3, 0x898BFCFE, 0x00000000, {(int32_t)0x00001AC0, (int32_t)0x00003F49, (int32_t)0x000025A4}, 1},
+    {"/validatedemos/TEST002.DEM", (int32_t)0x00000CE0, 0xCAF89634, 0x00000000, {(int32_t)0x0000C8ED, (int32_t)0x00009AF9, (int32_t)0x000159A4}, 1},
+    {"/validatedemos/TEST003.DEM", (int32_t)0x00000B87, 0x4488E1A6, 0x00000000, {(int32_t)0xFFFFD54C, (int32_t)0xFFFFD41F, (int32_t)0x000019A4}, 1},
     // custom validation demos below
-    {"/validatedemos/TEST004.DEM", (int32_t)0x00000C14, 0x6E8F8936, 0x00000000, {(int32_t)0x00003D02, (int32_t)0x00009F6E, (int32_t)0x000069A4}},
-    {"/validatedemos/TEST005.DEM", (int32_t)0x00001BF9, 0xE8B80FD0, 0x00000000, {(int32_t)0x00000162, (int32_t)0x00007AE0, (int32_t)0xFFFEFDA4}},
-    {"/validatedemos/TEST006.DEM", (int32_t)0x000036C8, 0xABF22136, 0x00000000, {(int32_t)0xFFFF2181, (int32_t)0x000091B1, (int32_t)0x000083CE}},
-    {"/validatedemos/TEST007.DEM", (int32_t)0x00004DA6, 0xB7FB11EB, 0x00000000, {(int32_t)0x0000F4DC, (int32_t)0x000053C9, (int32_t)0x000125A4}},
-    {"/validatedemos/TEST008.DEM", (int32_t)0x0000347B, 0x02CB1319, 0x00000BED, {(int32_t)0xFFFF8138, (int32_t)0xFFFED30A, (int32_t)0xFFFF7D50}},
-    {"/validatedemos/TEST009.DEM", (int32_t)0x000026AF, 0x4F91391D, 0x00000000, {(int32_t)0xFFFF3824, (int32_t)0xFFFF91BF, (int32_t)0x00007BA4}},
-    {"/validatedemos/TEST010.DEM", (int32_t)0x00000E96, 0xFF23FAE8, 0x00000000, {(int32_t)0xFFFF23DD, (int32_t)0xFFFF9EE0, (int32_t)0x00006DA4}},
-    {"/validatedemos/TEST011.DEM", (int32_t)0x00001706, 0x3A7DD0B0, 0x00000000, {(int32_t)0x0000CD98, (int32_t)0x00004C0A, (int32_t)0x00011DF5}},
-    {"/validatedemos/TEST012.DEM", (int32_t)0x00003D72, 0xE4A69539, 0x00000000, {(int32_t)0xFFFF8745, (int32_t)0xFFFED4C6, (int32_t)0xFFFF99A4}},
-    {"/validatedemos/TEST013.DEM", (int32_t)0x000028CE, 0x93096ADB, 0x0000046A, {(int32_t)0xFFFF826E, (int32_t)0xFFFED2C1, (int32_t)0xFFFF7D50}},
-    {"/validatedemos/TEST014.DEM", (int32_t)0x00000F77, 0xA8160C3C, 0x00000000, {(int32_t)0xFFFFC8D7, (int32_t)0xFFFF930F, (int32_t)0xFFFFA5A4}},
-    {"/validatedemos/TEST015.DEM", (int32_t)0x000016CB, 0xF6F9315E, 0x00000000, {(int32_t)0xFFFFF7A1, (int32_t)0x00007494, (int32_t)0xFFFE6651}},
-    {"/validatedemos/TEST016.DEM", (int32_t)0x0000165C, 0x45F41D2E, 0x00000000, {(int32_t)0x00001A1C, (int32_t)0x00008D3F, (int32_t)0xFFFF39A4}},
-    {"/validatedemos/TEST017.DEM", (int32_t)0x000033F7, 0x52634976, 0x00000640, {(int32_t)0x0000AC77, (int32_t)0x000012AB, (int32_t)0xFFFFFD50}},
-    {"/validatedemos/TEST018.DEM", (int32_t)0x00002D0C, 0x60DCE40A, 0x00000000, {(int32_t)0x0000645F, (int32_t)0x0000CB1B, (int32_t)0xFFFFC9A4}},
-    {"/validatedemos/TEST019.DEM", (int32_t)0x00000337, 0x4A0013E6, 0x00000640, {(int32_t)0xFFFF9FCC, (int32_t)0x00003E52, (int32_t)0xFFFF63D4}},
-    {"/validatedemos/TEST020.DEM", (int32_t)0x000009DE, 0xC0725AF1, 0x00000000, {(int32_t)0xFFFFC1CF, (int32_t)0x000064AD, (int32_t)0x000061A4}},
-    {"/validatedemos/TEST021.DEM", (int32_t)0x000019A4, 0x8BE81A09, 0x00000000, {(int32_t)0xFFFF161C, (int32_t)0x00004DB3, (int32_t)0xFFFFEEFE}},
-    {"/validatedemos/TEST022.DEM", (int32_t)0x00000EB3, 0x37E4D6D6, 0x00000000, {(int32_t)0x00004869, (int32_t)0x0000170D, (int32_t)0x000129A4}},
-    {"/validatedemos/TEST023.DEM", (int32_t)0x00001F68, 0x19B46535, 0x00000000, {(int32_t)0xFFFFDE10, (int32_t)0xFFFFD970, (int32_t)0xFFFFE9A4}},
-    {"/validatedemos/TEST024.DEM", (int32_t)0x00003C97, 0x7F3AE994, 0x00000640, {(int32_t)0xFFFFD2F2, (int32_t)0xFFFF8DD4, (int32_t)0xFFFF0950}},
-    {"/validatedemos/TEST025.DEM", (int32_t)0x0000182B, 0x330C60F2, 0x00000000, {(int32_t)0xFFFF94C1, (int32_t)0xFFFFAA81, (int32_t)0x000019A4}},
-    {"/validatedemos/TEST026.DEM", (int32_t)0x00002364, 0x37059BD3, 0x00000000, {(int32_t)0x0000456F, (int32_t)0xFFFFF8B8, (int32_t)0x000099A4}},
-    {"/validatedemos/TEST027.DEM", (int32_t)0x00001731, 0x250E075B, 0x00000000, {(int32_t)0x0000043F, (int32_t)0xFFFFD0C1, (int32_t)0x000119A4}},
-    {"/validatedemos/TEST028.DEM", (int32_t)0x00002FB4, 0xDF294819, 0x00000842, {(int32_t)0x000056A8, (int32_t)0xFFFFD628, (int32_t)0xFFFFFD9F}},
-    {"/validatedemos/TEST029.DEM", (int32_t)0x000017BB, 0xD184192B, 0x00000A1A, {(int32_t)0xFFFFAD5B, (int32_t)0xFFFF4573, (int32_t)0xFFFFE550}},
-    {"/validatedemos/TEST030.DEM", (int32_t)0x0000396B, 0x5031BC75, 0x00000000, {(int32_t)0x0000B326, (int32_t)0x000074C4, (int32_t)0x0000D9A4}},
-    {"/validatedemos/TEST031.DEM", (int32_t)0x000023D1, 0xC5DCAC81, 0x00000640, {(int32_t)0x00009BEE, (int32_t)0x00006CC8, (int32_t)0x00003550}},
-    {"/validatedemos/TEST032.DEM", (int32_t)0x000013BC, 0xCA389D8F, 0x00000000, {(int32_t)0x00009B71, (int32_t)0x000092A4, (int32_t)0x000159A4}},
-    {"/validatedemos/TEST033.DEM", (int32_t)0x00000BA4, 0xB06865D4, 0x00000000, {(int32_t)0x00009415, (int32_t)0x00007E5D, (int32_t)0x000159A4}},
-    {"/validatedemos/TEST034.DEM", (int32_t)0x000019C7, 0x7F7D0178, 0x00000640, {(int32_t)0x00009B90, (int32_t)0x00006CF1, (int32_t)0x000035E4}},
-    {"/validatedemos/TEST035.DEM", (int32_t)0x0000066A, 0xD7607579, 0x00000000, {(int32_t)0x0000B31C, (int32_t)0x0000B03F, (int32_t)0x000159A4}},
-    {"/validatedemos/TEST036.DEM", (int32_t)0x000016DC, 0x79095E8C, 0x00000000, {(int32_t)0x0000C2AB, (int32_t)0x000094C1, (int32_t)0x000059A4}},
-    {"/validatedemos/TEST037.DEM", (int32_t)0x00000B4A, 0xF9F76876, 0x00000000, {(int32_t)0x0000D00B, (int32_t)0x0000ACC8, (int32_t)0x000159A4}},
-    {"/validatedemos/TEST038.DEM", (int32_t)0x0000384B, 0x46086DB2, 0x0000032F, {(int32_t)0x000103E8, (int32_t)0xFFFFC601, (int32_t)0x000005E4}}, // at this point msvc created binaries will desync for some weird reason
-    {"/validatedemos/TEST039.DEM", (int32_t)0x000034D7, 0xC6E9D184, 0x00000000, {(int32_t)0x0000FA87, (int32_t)0x00006C32, (int32_t)0x000025A4}},
-    {"/validatedemos/TEST040.DEM", (int32_t)0x0000385B, 0x246696C4, 0x00000000, {(int32_t)0x00010BC8, (int32_t)0x00005F46, (int32_t)0xFFFFC1A4}},
-    {"/validatedemos/TEST041.DEM", (int32_t)0x00001BA1, 0x8377D75C, 0x00000000, {(int32_t)0x00006EBF, (int32_t)0x0000463F, (int32_t)0x00079DA4}},
-    {"/validatedemos/TEST042.DEM", (int32_t)0x00000A75, 0x61288D5E, 0x00000000, {(int32_t)0x0000A14F, (int32_t)0x00005D22, (int32_t)0x000069A4}},
-    {"/validatedemos/TEST043.DEM", (int32_t)0x000036FF, 0xD89DFDDD, 0x00000000, {(int32_t)0x00008B93, (int32_t)0x0000873F, (int32_t)0x000099A4}},
-    {"/validatedemos/TEST044.DEM", (int32_t)0x000012BD, 0xD53A7E17, 0x00000000, {(int32_t)0x0000BF3F, (int32_t)0x000079F1, (int32_t)0xFFFFC9A4}},
-    {"/validatedemos/TEST045.DEM", (int32_t)0x00000579, 0xDCE04A38, 0x00000000, {(int32_t)0x0000CA14, (int32_t)0x000081E9, (int32_t)0x000159A4}},
-    {"/validatedemos/TEST046.DEM", (int32_t)0x00000106, 0x363D780D, 0x00000000, {(int32_t)0xFFFFFF64, (int32_t)0x00009418, (int32_t)0xFFFFE1A4}},
-    {"/validatedemos/TEST047.DEM", (int32_t)0x00000B5F, 0x11F8A1D5, 0x000003BD, {(int32_t)0x00009A45, (int32_t)0x0000847F, (int32_t)0x0000BD50}},
-    {"/validatedemos/TEST048.DEM", (int32_t)0x00000AF3, 0x6E949D93, 0x00000000, {(int32_t)0xFFFF3468, (int32_t)0xFFFFD441, (int32_t)0x000061A4}},
-    {"/validatedemos/TEST049.DEM", (int32_t)0x00000C8F, 0x4E28530B, 0x00000000, {(int32_t)0xFFFFED7C, (int32_t)0x0000C8C0, (int32_t)0x000009A4}},
-    {"/validatedemos/TEST050.DEM", (int32_t)0x0000230B, 0xEA61B563, 0x00000000, {(int32_t)0x000029C1, (int32_t)0x00002C3F, (int32_t)0x000071A4}},
-    {"/validatedemos/TEST051.DEM", (int32_t)0x00002EA8, 0x19510828, 0x00000000, {(int32_t)0x00001FE4, (int32_t)0x000031D9, (int32_t)0x00000DA4}},
-    {"/validatedemos/TEST052.DEM", (int32_t)0x00005088, 0x04A4F873, 0x00000C80, {(int32_t)0x0000C0F4, (int32_t)0x0000B5ED, (int32_t)0xFFFF9F3F}},
-    {"/validatedemos/TEST053.DEM", (int32_t)0x000022BA, 0x93F42352, 0x00000000, {(int32_t)0x00001B69, (int32_t)0x000045D8, (int32_t)0x000011A4}},
-    {"/validatedemos/TEST054.DEM", (int32_t)0x00002C67, 0xE914FDC5, 0x00000000, {(int32_t)0xFFFF66E4, (int32_t)0x000049FF, (int32_t)0x000012E4}},
-    {"/validatedemos/TEST055.DEM", (int32_t)0x00001F8B, 0x1B5F1C0F, 0x00000000, {(int32_t)0xFFFFDD1F, (int32_t)0x00003A35, (int32_t)0x000059A4}},
-    {"/validatedemos/TEST056.DEM", (int32_t)0x00003EE5, 0xD02F860D, 0x00000000, {(int32_t)0xFFFF8824, (int32_t)0x0000543E, (int32_t)0x0000C1A4}},
-    {"/validatedemos/TEST057.DEM", (int32_t)0x00006979, 0xD9EC81A9, 0x00000000, {(int32_t)0xFFFF9197, (int32_t)0x000063D2, (int32_t)0x000061A4}},
-    {"/validatedemos/TEST058.DEM", (int32_t)0x00001C16, 0xD85F3129, 0x0000082F, {(int32_t)0xFFFFADAA, (int32_t)0xFFFF67D4, (int32_t)0xFFFFDD50}},
-    {"/validatedemos/TEST059.DEM", (int32_t)0x0000244B, 0x1E82B956, 0x00000000, {(int32_t)0x000000A4, (int32_t)0x00001F09, (int32_t)0x000219A4}},
-    {"/validatedemos/TEST060.DEM", (int32_t)0x000067CF, 0x086B69C7, 0x00000315, {(int32_t)0xFFFFA704, (int32_t)0x0000D1A8, (int32_t)0xFFFFFD50}},
-    {"/validatedemos/TEST061.DEM", (int32_t)0x000014BB, 0x89393200, 0x00000000, {(int32_t)0xFFFFC242, (int32_t)0xFFFF7FAD, (int32_t)0xFFFFCDA4}},
-    {"/validatedemos/TEST062.DEM", (int32_t)0x00002180, 0xB2F4CC77, 0x00000000, {(int32_t)0xFFFFB4AD, (int32_t)0x0000137E, (int32_t)0x000061A4}},
-    {"/validatedemos/TEST063.DEM", (int32_t)0x00000736, 0xB077ACC3, 0x00000000, {(int32_t)0xFFFF61FF, (int32_t)0xFFFFE7BA, (int32_t)0x000119A4}},
-    {"/validatedemos/TEST064.DEM", (int32_t)0x0000443E, 0x5FE50A44, 0x00000000, {(int32_t)0xFFFFF382, (int32_t)0x000086A6, (int32_t)0x000235A4}},
-    {"/validatedemos/TEST065.DEM", (int32_t)0x00003EBD, 0xA7A0D9C5, 0x00000247, {(int32_t)0xFFFF6B20, (int32_t)0xFFFFC641, (int32_t)0xFFFE1950}},
-    {"/validatedemos/TEST066.DEM", (int32_t)0x00003229, 0xAD1A9240, 0x00000000, {(int32_t)0xFFFF2809, (int32_t)0x0000A21E, (int32_t)0xFFFF59A4}},
-    {"/validatedemos/TEST067.DEM", (int32_t)0x0000374C, 0x19C88BDF, 0x00000615, {(int32_t)0xFFFFBC69, (int32_t)0xFFFF71B6, (int32_t)0xFFF9B97D}},
-    {"/validatedemos/TEST068.DEM", (int32_t)0x000045FF, 0x06B9C43C, 0x000004B9, {(int32_t)0xFFFEFF2E, (int32_t)0xFFFEE747, (int32_t)0xFFFE7950}},
-    {"/validatedemos/TEST069.DEM", (int32_t)0x00004B51, 0x1806DD38, 0x00000000, {(int32_t)0xFFFF430F, (int32_t)0x0000CF3F, (int32_t)0x000211A4}},
-    {"/validatedemos/TEST070.DEM", (int32_t)0x00001070, 0xA2B9B378, 0x00000000, {(int32_t)0x0000D06B, (int32_t)0x0001176F, (int32_t)0x000189A4}},
-    {"/validatedemos/TEST071.DEM", (int32_t)0x000082E6, 0xC74AB5A2, 0x0000016C, {(int32_t)0xFFFF80A0, (int32_t)0x00005BA3, (int32_t)0x00002950}},
-    {"/validatedemos/TEST072.DEM", (int32_t)0x000047C6, 0xA4405651, 0x00000000, {(int32_t)0x000099B6, (int32_t)0x000064BE, (int32_t)0x00006DA4}},
-    {"/validatedemos/TEST073.DEM", (int32_t)0x00002FD7, 0x11377903, 0x00000000, {(int32_t)0xFFFF7EC1, (int32_t)0xFFFEEF5F, (int32_t)0xFFF701A4}},
-    {"/validatedemos/TEST074.DEM", (int32_t)0x0000287A, 0xACAC602D, 0x00000000, {(int32_t)0x0000D43F, (int32_t)0x000092C1, (int32_t)0x00002844}},
-    {"/validatedemos/TEST075.DEM", (int32_t)0x000013DD, 0x78D2DFA4, 0x00000000, {(int32_t)0x00002362, (int32_t)0x00013B0D, (int32_t)0x000069A4}},
-    {"/validatedemos/TEST076.DEM", (int32_t)0x0000368A, 0x99FF70C3, 0x00000094, {(int32_t)0x00005624, (int32_t)0xFFFFD547, (int32_t)0x000000CE}},
-    {"/validatedemos/TEST077.DEM", (int32_t)0x00000837, 0x731125E0, 0x00000536, {(int32_t)0xFFFF8914, (int32_t)0xFFFF7F20, (int32_t)0x00002AEA}},
-    {"/validatedemos/TEST078.DEM", (int32_t)0x000004BB, 0x40CD5E4D, 0x00000640, {(int32_t)0x0001FCBB, (int32_t)0x0000412E, (int32_t)0x0004BAB4}},
-    {"/validatedemos/TEST079.DEM", (int32_t)0x000019E3, 0x4B34312A, 0x00000000, {(int32_t)0x000144F5, (int32_t)0x000143BE, (int32_t)0x00006DA4}},
-    {"/validatedemos/TEST080.DEM", (int32_t)0x00001169, 0xF488E48C, 0x00000000, {(int32_t)0x00008898, (int32_t)0xFFFF5BCD, (int32_t)0x00005DA4}},
-    {"/validatedemos/TEST081.DEM", (int32_t)0x00000864, 0xC181DEFE, 0x00000442, {(int32_t)0x00007927, (int32_t)0x00009CD7, (int32_t)0x00013D50}},
-    {"/validatedemos/TEST082.DEM", (int32_t)0x0000147B, 0x52769222, 0x000005EC, {(int32_t)0x00009BC9, (int32_t)0x00006EF9, (int32_t)0x00003550}},
-    {"/validatedemos/TEST083.DEM", (int32_t)0x00005D8D, 0xB9847039, 0x00000000, {(int32_t)0xFFFFC05A, (int32_t)0x0000AADA, (int32_t)0x000035A4}},
-    {"/validatedemos/TEST084.DEM", (int32_t)0x00004328, 0x74A65BA3, 0x0000009E, {(int32_t)0x000089F0, (int32_t)0xFFFF861C, (int32_t)0xFFFFF950}},
-    {"/validatedemos/TEST085.DEM", (int32_t)0x0000561D, 0x759EAFB7, 0x00000A6E, {(int32_t)0xFFFFF591, (int32_t)0x000059D9, (int32_t)0x00001DE4}},
+    {"/validatedemos/TEST004.DEM", (int32_t)0x00000C14, 0x6E8F8936, 0x00000000, {(int32_t)0x00003D02, (int32_t)0x00009F6E, (int32_t)0x000069A4}, 1},
+    {"/validatedemos/TEST005.DEM", (int32_t)0x00001BF9, 0xE8B80FD0, 0x00000000, {(int32_t)0x00000162, (int32_t)0x00007AE0, (int32_t)0xFFFEFDA4}, 1},
+    {"/validatedemos/TEST006.DEM", (int32_t)0x000036C8, 0xABF22136, 0x00000000, {(int32_t)0xFFFF2181, (int32_t)0x000091B1, (int32_t)0x000083CE}, 1},
+    {"/validatedemos/TEST007.DEM", (int32_t)0x00004DA6, 0xB7FB11EB, 0x00000000, {(int32_t)0x0000F4DC, (int32_t)0x000053C9, (int32_t)0x000125A4}, 1},
+    {"/validatedemos/TEST008.DEM", (int32_t)0x0000347B, 0x02CB1319, 0x00000BED, {(int32_t)0xFFFF8138, (int32_t)0xFFFED30A, (int32_t)0xFFFF7D50}, 1},
+    {"/validatedemos/TEST009.DEM", (int32_t)0x000026AF, 0x4F91391D, 0x00000000, {(int32_t)0xFFFF3824, (int32_t)0xFFFF91BF, (int32_t)0x00007BA4}, 1},
+    {"/validatedemos/TEST010.DEM", (int32_t)0x00000E96, 0xFF23FAE8, 0x00000000, {(int32_t)0xFFFF23DD, (int32_t)0xFFFF9EE0, (int32_t)0x00006DA4}, 1},
+    {"/validatedemos/TEST011.DEM", (int32_t)0x00001706, 0x3A7DD0B0, 0x00000000, {(int32_t)0x0000CD98, (int32_t)0x00004C0A, (int32_t)0x00011DF5}, 1},
+    {"/validatedemos/TEST012.DEM", (int32_t)0x00003D72, 0xE4A69539, 0x00000000, {(int32_t)0xFFFF8745, (int32_t)0xFFFED4C6, (int32_t)0xFFFF99A4}, 1},
+    {"/validatedemos/TEST013.DEM", (int32_t)0x000028CE, 0x93096ADB, 0x0000046A, {(int32_t)0xFFFF826E, (int32_t)0xFFFED2C1, (int32_t)0xFFFF7D50}, 1},
+    {"/validatedemos/TEST014.DEM", (int32_t)0x00000F77, 0xA8160C3C, 0x00000000, {(int32_t)0xFFFFC8D7, (int32_t)0xFFFF930F, (int32_t)0xFFFFA5A4}, 1},
+    {"/validatedemos/TEST015.DEM", (int32_t)0x000016CB, 0xF6F9315E, 0x00000000, {(int32_t)0xFFFFF7A1, (int32_t)0x00007494, (int32_t)0xFFFE6651}, 1},
+    {"/validatedemos/TEST016.DEM", (int32_t)0x0000165C, 0x45F41D2E, 0x00000000, {(int32_t)0x00001A1C, (int32_t)0x00008D3F, (int32_t)0xFFFF39A4}, 1},
+    {"/validatedemos/TEST017.DEM", (int32_t)0x000033F7, 0x52634976, 0x00000640, {(int32_t)0x0000AC77, (int32_t)0x000012AB, (int32_t)0xFFFFFD50}, 1},
+    {"/validatedemos/TEST018.DEM", (int32_t)0x00002D0C, 0x60DCE40A, 0x00000000, {(int32_t)0x0000645F, (int32_t)0x0000CB1B, (int32_t)0xFFFFC9A4}, 1},
+    {"/validatedemos/TEST019.DEM", (int32_t)0x00000337, 0x4A0013E6, 0x00000640, {(int32_t)0xFFFF9FCC, (int32_t)0x00003E52, (int32_t)0xFFFF63D4}, 1},
+    {"/validatedemos/TEST020.DEM", (int32_t)0x000009DE, 0xC0725AF1, 0x00000000, {(int32_t)0xFFFFC1CF, (int32_t)0x000064AD, (int32_t)0x000061A4}, 1},
+    {"/validatedemos/TEST021.DEM", (int32_t)0x000019A4, 0x8BE81A09, 0x00000000, {(int32_t)0xFFFF161C, (int32_t)0x00004DB3, (int32_t)0xFFFFEEFE}, 1},
+    {"/validatedemos/TEST022.DEM", (int32_t)0x00000EB3, 0x37E4D6D6, 0x00000000, {(int32_t)0x00004869, (int32_t)0x0000170D, (int32_t)0x000129A4}, 1},
+    {"/validatedemos/TEST023.DEM", (int32_t)0x00001F68, 0x19B46535, 0x00000000, {(int32_t)0xFFFFDE10, (int32_t)0xFFFFD970, (int32_t)0xFFFFE9A4}, 1},
+    {"/validatedemos/TEST024.DEM", (int32_t)0x00003C97, 0x7F3AE994, 0x00000640, {(int32_t)0xFFFFD2F2, (int32_t)0xFFFF8DD4, (int32_t)0xFFFF0950}, 1},
+    {"/validatedemos/TEST025.DEM", (int32_t)0x0000182B, 0x330C60F2, 0x00000000, {(int32_t)0xFFFF94C1, (int32_t)0xFFFFAA81, (int32_t)0x000019A4}, 1},
+    {"/validatedemos/TEST026.DEM", (int32_t)0x00002364, 0x37059BD3, 0x00000000, {(int32_t)0x0000456F, (int32_t)0xFFFFF8B8, (int32_t)0x000099A4}, 1},
+    {"/validatedemos/TEST027.DEM", (int32_t)0x00001731, 0x250E075B, 0x00000000, {(int32_t)0x0000043F, (int32_t)0xFFFFD0C1, (int32_t)0x000119A4}, 1},
+    {"/validatedemos/TEST028.DEM", (int32_t)0x00002FB4, 0xDF294819, 0x00000842, {(int32_t)0x000056A8, (int32_t)0xFFFFD628, (int32_t)0xFFFFFD9F}, 1},
+    {"/validatedemos/TEST029.DEM", (int32_t)0x000017BB, 0xD184192B, 0x00000A1A, {(int32_t)0xFFFFAD5B, (int32_t)0xFFFF4573, (int32_t)0xFFFFE550}, 1},
+    {"/validatedemos/TEST030.DEM", (int32_t)0x0000396B, 0x5031BC75, 0x00000000, {(int32_t)0x0000B326, (int32_t)0x000074C4, (int32_t)0x0000D9A4}, 1},
+    {"/validatedemos/TEST031.DEM", (int32_t)0x000023D1, 0xC5DCAC81, 0x00000640, {(int32_t)0x00009BEE, (int32_t)0x00006CC8, (int32_t)0x00003550}, 1},
+    {"/validatedemos/TEST032.DEM", (int32_t)0x000013BC, 0xCA389D8F, 0x00000000, {(int32_t)0x00009B71, (int32_t)0x000092A4, (int32_t)0x000159A4}, 1},
+    {"/validatedemos/TEST033.DEM", (int32_t)0x00000BA4, 0xB06865D4, 0x00000000, {(int32_t)0x00009415, (int32_t)0x00007E5D, (int32_t)0x000159A4}, 1},
+    {"/validatedemos/TEST034.DEM", (int32_t)0x000019C7, 0x7F7D0178, 0x00000640, {(int32_t)0x00009B90, (int32_t)0x00006CF1, (int32_t)0x000035E4}, 1},
+    {"/validatedemos/TEST035.DEM", (int32_t)0x0000066A, 0xD7607579, 0x00000000, {(int32_t)0x0000B31C, (int32_t)0x0000B03F, (int32_t)0x000159A4}, 1},
+    {"/validatedemos/TEST036.DEM", (int32_t)0x000016DC, 0x79095E8C, 0x00000000, {(int32_t)0x0000C2AB, (int32_t)0x000094C1, (int32_t)0x000059A4}, 1},
+    {"/validatedemos/TEST037.DEM", (int32_t)0x00000B4A, 0xF9F76876, 0x00000000, {(int32_t)0x0000D00B, (int32_t)0x0000ACC8, (int32_t)0x000159A4}, 1},
+    {"/validatedemos/TEST038.DEM", (int32_t)0x0000384B, 0x46086DB2, 0x0000032F, {(int32_t)0x000103E8, (int32_t)0xFFFFC601, (int32_t)0x000005E4}, 1}, // at this point msvc created binaries will desync for some weird reason
+    {"/validatedemos/TEST039.DEM", (int32_t)0x000034D7, 0xC6E9D184, 0x00000000, {(int32_t)0x0000FA87, (int32_t)0x00006C32, (int32_t)0x000025A4}, 1},
+    {"/validatedemos/TEST040.DEM", (int32_t)0x0000385B, 0x246696C4, 0x00000000, {(int32_t)0x00010BC8, (int32_t)0x00005F46, (int32_t)0xFFFFC1A4}, 1},
+    {"/validatedemos/TEST041.DEM", (int32_t)0x00001BA1, 0x8377D75C, 0x00000000, {(int32_t)0x00006EBF, (int32_t)0x0000463F, (int32_t)0x00079DA4}, 1},
+    {"/validatedemos/TEST042.DEM", (int32_t)0x00000A75, 0x61288D5E, 0x00000000, {(int32_t)0x0000A14F, (int32_t)0x00005D22, (int32_t)0x000069A4}, 1},
+    {"/validatedemos/TEST043.DEM", (int32_t)0x000036FF, 0xD89DFDDD, 0x00000000, {(int32_t)0x00008B93, (int32_t)0x0000873F, (int32_t)0x000099A4}, 1},
+    {"/validatedemos/TEST044.DEM", (int32_t)0x000012BD, 0xD53A7E17, 0x00000000, {(int32_t)0x0000BF3F, (int32_t)0x000079F1, (int32_t)0xFFFFC9A4}, 1},
+    {"/validatedemos/TEST045.DEM", (int32_t)0x00000579, 0xDCE04A38, 0x00000000, {(int32_t)0x0000CA14, (int32_t)0x000081E9, (int32_t)0x000159A4}, 1},
+    {"/validatedemos/TEST046.DEM", (int32_t)0x00000106, 0x363D780D, 0x00000000, {(int32_t)0xFFFFFF64, (int32_t)0x00009418, (int32_t)0xFFFFE1A4}, 1},
+    {"/validatedemos/TEST047.DEM", (int32_t)0x00000B5F, 0x11F8A1D5, 0x000003BD, {(int32_t)0x00009A45, (int32_t)0x0000847F, (int32_t)0x0000BD50}, 1},
+    {"/validatedemos/TEST048.DEM", (int32_t)0x00000AF3, 0x6E949D93, 0x00000000, {(int32_t)0xFFFF3468, (int32_t)0xFFFFD441, (int32_t)0x000061A4}, 1},
+    {"/validatedemos/TEST049.DEM", (int32_t)0x00000C8F, 0x4E28530B, 0x00000000, {(int32_t)0xFFFFED7C, (int32_t)0x0000C8C0, (int32_t)0x000009A4}, 1},
+    {"/validatedemos/TEST050.DEM", (int32_t)0x0000230B, 0xEA61B563, 0x00000000, {(int32_t)0x000029C1, (int32_t)0x00002C3F, (int32_t)0x000071A4}, 1},
+    {"/validatedemos/TEST051.DEM", (int32_t)0x00002EA8, 0x19510828, 0x00000000, {(int32_t)0x00001FE4, (int32_t)0x000031D9, (int32_t)0x00000DA4}, 1},
+    {"/validatedemos/TEST052.DEM", (int32_t)0x00005088, 0x04A4F873, 0x00000C80, {(int32_t)0x0000C0F4, (int32_t)0x0000B5ED, (int32_t)0xFFFF9F3F}, 1},
+    {"/validatedemos/TEST053.DEM", (int32_t)0x000022BA, 0x93F42352, 0x00000000, {(int32_t)0x00001B69, (int32_t)0x000045D8, (int32_t)0x000011A4}, 1},
+    {"/validatedemos/TEST054.DEM", (int32_t)0x00002C67, 0xE914FDC5, 0x00000000, {(int32_t)0xFFFF66E4, (int32_t)0x000049FF, (int32_t)0x000012E4}, 1},
+    {"/validatedemos/TEST055.DEM", (int32_t)0x00001F8B, 0x1B5F1C0F, 0x00000000, {(int32_t)0xFFFFDD1F, (int32_t)0x00003A35, (int32_t)0x000059A4}, 1},
+    {"/validatedemos/TEST056.DEM", (int32_t)0x00003EE5, 0xD02F860D, 0x00000000, {(int32_t)0xFFFF8824, (int32_t)0x0000543E, (int32_t)0x0000C1A4}, 1},
+    {"/validatedemos/TEST057.DEM", (int32_t)0x00006979, 0xD9EC81A9, 0x00000000, {(int32_t)0xFFFF9197, (int32_t)0x000063D2, (int32_t)0x000061A4}, 1},
+    {"/validatedemos/TEST058.DEM", (int32_t)0x00001C16, 0xD85F3129, 0x0000082F, {(int32_t)0xFFFFADAA, (int32_t)0xFFFF67D4, (int32_t)0xFFFFDD50}, 1},
+    {"/validatedemos/TEST059.DEM", (int32_t)0x0000244B, 0x1E82B956, 0x00000000, {(int32_t)0x000000A4, (int32_t)0x00001F09, (int32_t)0x000219A4}, 1},
+    {"/validatedemos/TEST060.DEM", (int32_t)0x000067CF, 0x086B69C7, 0x00000315, {(int32_t)0xFFFFA704, (int32_t)0x0000D1A8, (int32_t)0xFFFFFD50}, 1},
+    {"/validatedemos/TEST061.DEM", (int32_t)0x000014BB, 0x89393200, 0x00000000, {(int32_t)0xFFFFC242, (int32_t)0xFFFF7FAD, (int32_t)0xFFFFCDA4}, 1},
+    {"/validatedemos/TEST062.DEM", (int32_t)0x00002180, 0xB2F4CC77, 0x00000000, {(int32_t)0xFFFFB4AD, (int32_t)0x0000137E, (int32_t)0x000061A4}, 1},
+    {"/validatedemos/TEST063.DEM", (int32_t)0x00000736, 0xB077ACC3, 0x00000000, {(int32_t)0xFFFF61FF, (int32_t)0xFFFFE7BA, (int32_t)0x000119A4}, 1},
+    {"/validatedemos/TEST064.DEM", (int32_t)0x0000443E, 0x5FE50A44, 0x00000000, {(int32_t)0xFFFFF382, (int32_t)0x000086A6, (int32_t)0x000235A4}, 1},
+    {"/validatedemos/TEST065.DEM", (int32_t)0x00003EBD, 0xA7A0D9C5, 0x00000247, {(int32_t)0xFFFF6B20, (int32_t)0xFFFFC641, (int32_t)0xFFFE1950}, 1},
+    {"/validatedemos/TEST066.DEM", (int32_t)0x00003229, 0xAD1A9240, 0x00000000, {(int32_t)0xFFFF2809, (int32_t)0x0000A21E, (int32_t)0xFFFF59A4}, 1},
+    {"/validatedemos/TEST067.DEM", (int32_t)0x0000374C, 0x19C88BDF, 0x00000615, {(int32_t)0xFFFFBC69, (int32_t)0xFFFF71B6, (int32_t)0xFFF9B97D}, 1},
+    {"/validatedemos/TEST068.DEM", (int32_t)0x000045FF, 0x06B9C43C, 0x000004B9, {(int32_t)0xFFFEFF2E, (int32_t)0xFFFEE747, (int32_t)0xFFFE7950}, 1},
+    {"/validatedemos/TEST069.DEM", (int32_t)0x00004B51, 0x1806DD38, 0x00000000, {(int32_t)0xFFFF430F, (int32_t)0x0000CF3F, (int32_t)0x000211A4}, 1},
+    {"/validatedemos/TEST070.DEM", (int32_t)0x00001070, 0xA2B9B378, 0x00000000, {(int32_t)0x0000D06B, (int32_t)0x0001176F, (int32_t)0x000189A4}, 1},
+    {"/validatedemos/TEST071.DEM", (int32_t)0x000082E6, 0xC74AB5A2, 0x0000016C, {(int32_t)0xFFFF80A0, (int32_t)0x00005BA3, (int32_t)0x00002950}, 1},
+    {"/validatedemos/TEST072.DEM", (int32_t)0x000047C6, 0xA4405651, 0x00000000, {(int32_t)0x000099B6, (int32_t)0x000064BE, (int32_t)0x00006DA4}, 1},
+    {"/validatedemos/TEST073.DEM", (int32_t)0x00002FD7, 0x11377903, 0x00000000, {(int32_t)0xFFFF7EC1, (int32_t)0xFFFEEF5F, (int32_t)0xFFF701A4}, 1},
+    {"/validatedemos/TEST074.DEM", (int32_t)0x0000287A, 0xACAC602D, 0x00000000, {(int32_t)0x0000D43F, (int32_t)0x000092C1, (int32_t)0x00002844}, 1},
+    {"/validatedemos/TEST075.DEM", (int32_t)0x000013DD, 0x78D2DFA4, 0x00000000, {(int32_t)0x00002362, (int32_t)0x00013B0D, (int32_t)0x000069A4}, 1},
+    {"/validatedemos/TEST076.DEM", (int32_t)0x0000368A, 0x99FF70C3, 0x00000094, {(int32_t)0x00005624, (int32_t)0xFFFFD547, (int32_t)0x000000CE}, 1},
+    {"/validatedemos/TEST077.DEM", (int32_t)0x00000837, 0x731125E0, 0x00000536, {(int32_t)0xFFFF8914, (int32_t)0xFFFF7F20, (int32_t)0x00002AEA}, 1},
+    {"/validatedemos/TEST078.DEM", (int32_t)0x000004BB, 0x40CD5E4D, 0x00000640, {(int32_t)0x0001FCBB, (int32_t)0x0000412E, (int32_t)0x0004BAB4}, 1},
+    {"/validatedemos/TEST079.DEM", (int32_t)0x000019E3, 0x4B34312A, 0x00000000, {(int32_t)0x000144F5, (int32_t)0x000143BE, (int32_t)0x00006DA4}, 1},
+    {"/validatedemos/TEST080.DEM", (int32_t)0x00001169, 0xF488E48C, 0x00000000, {(int32_t)0x00008898, (int32_t)0xFFFF5BCD, (int32_t)0x00005DA4}, 1},
+    {"/validatedemos/TEST081.DEM", (int32_t)0x00000864, 0xC181DEFE, 0x00000442, {(int32_t)0x00007927, (int32_t)0x00009CD7, (int32_t)0x00013D50}, 1},
+    {"/validatedemos/TEST082.DEM", (int32_t)0x0000147B, 0x52769222, 0x000005EC, {(int32_t)0x00009BC9, (int32_t)0x00006EF9, (int32_t)0x00003550}, 1},
+    {"/validatedemos/TEST083.DEM", (int32_t)0x00005D8D, 0xB9847039, 0x00000000, {(int32_t)0xFFFFC05A, (int32_t)0x0000AADA, (int32_t)0x000035A4}, 1},
+    {"/validatedemos/TEST084.DEM", (int32_t)0x00004328, 0x74A65BA3, 0x0000009E, {(int32_t)0x000089F0, (int32_t)0xFFFF861C, (int32_t)0xFFFFF950}, 1},
+    {"/validatedemos/TEST085.DEM", (int32_t)0x0000561D, 0x759EAFB7, 0x00000A6E, {(int32_t)0xFFFFF591, (int32_t)0x000059D9, (int32_t)0x00001DE4}, 1},
+    {"/validatedemos/TEST086.DEM", (int32_t)0x00002820, 0x3701B79E, 0x00000000, {(int32_t)0x000018C5, (int32_t)0xFFFFC8C1, (int32_t)0x000019A4}, 0},
+    {"/validatedemos/TEST087.DEM", (int32_t)0x000068CF, 0x0112953A, 0x00000640, {(int32_t)0x00000913, (int32_t)0x00005B0A, (int32_t)0x0001C150}, 0},
+    {"/validatedemos/TEST088.DEM", (int32_t)0x000023DF, 0x4F0E5AB3, 0x00000000, {(int32_t)0xFFFF99A5, (int32_t)0xFFFFE2E1, (int32_t)0x000021A4}, 0},
 };
 
 int nBuild = 0;
@@ -494,6 +498,7 @@ _DEMOPLAYBACK:
         {
             if (!v4)
             {
+                char nAutoAim = 1;
                 viewResizeView(gViewSize);
                 viewSetMessage("");
                 gNetPlayers = atf.nNetPlayers;
@@ -511,9 +516,18 @@ _DEMOPLAYBACK:
                 for (int i = 0; i < kMaxPlayers; i++)
                     playerInit(i, 0);
                 StartLevel(&gGameOptions);
+                for (int index = 0; gDemoRunValidation && (index < ARRAY_SSIZE(gDemoValidate)); index++)
+                {
+                    if ((gDemoValidate[index].nInputTicks != nInputTicks) || !pCurrentDemo) // demo ticks not matching/demo name does not exist, skip
+                        continue;
+                    if (Bstrcasecmp(gDemoValidate[index].zName, pCurrentDemo->zName)) // demo name does not match, skip
+                        continue;
+                    nAutoAim = gDemoValidate[index].nAutoAim;
+                    break;
+                }
                 for (int i = 0; i < kMaxPlayers; i++)
                 {
-                    gProfile[i].nAutoAim = 1;
+                    gProfile[i].nAutoAim = nAutoAim;
                     gProfile[i].nWeaponSwitch = 1;
                     gProfile[i].bWeaponFastSwitch = 0;
                     gProfile[i].nWeaponHBobbing = 1;
@@ -575,7 +589,7 @@ _DEMOPLAYBACK:
                         break;
                     }
                     if (gDemoRunValidation && bNewDemo && pCurrentDemo) // print validation result for new demo
-                        OSD_Printf("{\"%s\", (int32_t)0x%08X, 0x%08X, 0x%08X, {(int32_t)0x%08X, (int32_t)0x%08X, (int32_t)0x%08X}},", pCurrentDemo->zName, nInputTicks, wrandomseed, (unsigned int)xsprite[gPlayer[0].pSprite->extra].health, (unsigned int)gPlayer[0].pSprite->x, (unsigned int)gPlayer[0].pSprite->y, (unsigned int)gPlayer[0].pSprite->z);
+                        OSD_Printf("{\"%s\", (int32_t)0x%08X, 0x%08X, 0x%08X, {(int32_t)0x%08X, (int32_t)0x%08X, (int32_t)0x%08X}, 1},", pCurrentDemo->zName, nInputTicks, wrandomseed, (unsigned int)xsprite[gPlayer[0].pSprite->extra].health, (unsigned int)gPlayer[0].pSprite->x, (unsigned int)gPlayer[0].pSprite->y, (unsigned int)gPlayer[0].pSprite->z);
                     if (nDemosFound > 1)
                     {
                         v4 = 0;
