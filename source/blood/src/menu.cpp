@@ -346,15 +346,15 @@ CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 50
 CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemCustomDifficultyPlayerDamage("PLAYER DAMAGE TAKEN:", 3, 66, 70, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 80, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemCustomDifficultyMonsterBanBats("BATS:", 3, 75, 91, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanRats("RATS:", 3, 75, 99, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanFish("FISH:", 3, 75, 107, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHands("HANDS:", 3, 75, 115, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanGhosts("GHOSTS:", 3, 75, 123, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanSpiders("SPIDERS:", 3, 75, 131, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75, 139, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 147, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 158, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
+CGameMenuItemZBool itemCustomDifficultyMonsterBanBats("BATS:", 3, 75, 93, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanRats("RATS:", 3, 75, 101, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanFish("FISH:", 3, 75, 109, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanHands("HANDS:", 3, 75, 117, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanGhosts("GHOSTS:", 3, 75, 125, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanSpiders("SPIDERS:", 3, 75, 133, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75, 141, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 149, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 161, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
 CGameMenuItemTitle itemOptionsOldTitle("OPTIONS", 1, 160, 20, 2038);
 CGameMenuItemChain itemOption1("CONTROLS...", 3, 0, 40, 320, 1, &menuControls, -1, NULL, 0);
@@ -1105,11 +1105,16 @@ void SetupDifficultyMenu(void)
     menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanHellHounds, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyStart, false);
     menuCustomDifficulty.Add(&itemBloodQAV, false);
-    itemCustomDifficultyEnemyQuantity.tooltip_pzTextUpper = "Set how many enemies will spawn in the level";
-    itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "Set enemy's starting health";
-    itemCustomDifficultyEnemyDifficulty.tooltip_pzTextUpper = "Set enemy's behavior difficulty";
-    itemCustomDifficultyPlayerDamage.tooltip_pzTextUpper = "Set player's damage taken scale";
-    itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "Player will lose all items on new level";
+    itemCustomDifficultyEnemyQuantity.tooltip_pzTextUpper = "";
+    itemCustomDifficultyEnemyQuantity.tooltip_pzTextLower = "Set how many enemies will spawn in the level";
+    itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "";
+    itemCustomDifficultyEnemyHealth.tooltip_pzTextLower = "Set enemy's starting health";
+    itemCustomDifficultyEnemyDifficulty.tooltip_pzTextUpper = "";
+    itemCustomDifficultyEnemyDifficulty.tooltip_pzTextLower = "Set enemy's behavior difficulty";
+    itemCustomDifficultyPlayerDamage.tooltip_pzTextUpper = "";
+    itemCustomDifficultyPlayerDamage.tooltip_pzTextLower = "Set player's damage taken scale";
+    itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "";
+    itemCustomDifficultyPitchfork.tooltip_pzTextLower = "Player will lose all items on new level";
 }
 
 void SetupEpisodeMenu(void)
