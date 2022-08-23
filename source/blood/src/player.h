@@ -341,6 +341,8 @@ inline void playerResetWeaponState(PLAYER *pPlayer)
         pPlayer->weaponState = 7;
         break;
     case kWeaponRemoteTNT:
+        if ((pPlayer->weaponQav >= 37) && (pPlayer->weaponQav <= 39) && (pPlayer->weaponState == 11)) // if holding/throwing/dropping remote
+            return;
         pPlayer->weaponQav = 36;
         pPlayer->weaponState = 10;
         break;
