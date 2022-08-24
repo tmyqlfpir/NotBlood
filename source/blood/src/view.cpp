@@ -4223,17 +4223,18 @@ void viewDrawScreen(void)
             memcpy(bakMirrorGotpic, gotpic+510, 2);
             memcpy(gotpic+510, otherMirrorGotpic, 2);
             g_visibility = (int32_t)(ClipLow(gVisibility-32*pOther->visibility, 0) * (numplayers > 1 ? 1.f : r_ambientlightrecip));
-            int vc4, vc8;
+            int vc4, vc8, nHeightClamp = (1<<7) + (1<<6);
             getzsofslope(vcc, vd8, vd4, &vc8, &vc4);
-            if ((vd0 > vc4-(1<<7)) && (gUpperLink[vcc] == -1)) // clamp to floor
+            if ((vd0 > vc4-nHeightClamp) && (gUpperLink[vcc] == -1)) // clamp to floor
             {
-                vd0 = vc4-(1<<7);
+                vd0 = vc4-nHeightClamp;
             }
-            if ((vd0 < vc8+(1<<7)) && (gLowerLink[vcc] == -1)) // clamp to ceiling
+            if ((vd0 < vc8+nHeightClamp) && (gLowerLink[vcc] == -1)) // clamp to ceiling
             {
-                vd0 = vc8+(1<<7);
+                vd0 = vc8+nHeightClamp;
             }
             v54 = ClipRange(v54, -200, 200);
+            int nRORLimit = 32; // limit ROR rendering to 32 times
 RORHACKOTHER:
             int ror_status[16];
             for (int i = 0; i < 16; i++)
@@ -4242,14 +4243,14 @@ RORHACKOTHER:
             DrawMirrors(vd8, vd4, vd0, fix16_from_int(v50), fix16_from_int(v54 + defaultHoriz), gInterpolate, -1);
             drawrooms(vd8, vd4, vd0, v50, v54 + defaultHoriz, vcc);
             yax_drawrooms(viewProcessSprites, vcc, 0, gInterpolate);
-            bool do_ror_hack = false;
-            for (int i = 0; i < 16; i++)
-                if (ror_status[i] != TestBitString(gotpic, 4080 + i))
-                    do_ror_hack = true;
-            if (do_ror_hack)
+            for (int i = 0; nRORLimit && (i < 16); i++) // check if ror needs to be rendered
             {
-                spritesortcnt = 0;
-                goto RORHACKOTHER;
+                if (ror_status[i] != TestBitString(gotpic, 4080 + i))
+                {
+                    spritesortcnt = 0;
+                    nRORLimit--;
+                    goto RORHACKOTHER;
+                }
             }
             memcpy(otherMirrorGotpic, gotpic+510, 2);
             memcpy(gotpic+510, bakMirrorGotpic, 2);
@@ -4305,18 +4306,18 @@ RORHACKOTHER:
         {
             cA = (cA + interpolateangfix16(fix16_from_int(deliriumTurnO), fix16_from_int(deliriumTurn), gInterpolate)) & 0x7ffffff;
         }
-        int vfc, vf8;
+        int vfc, vf8, nHeightClamp = (1<<7) + (1<<6);
         getzsofslope(nSectnum, cX, cY, &vfc, &vf8);
-        if ((cZ > vf8-(1<<7)) && (gUpperLink[nSectnum] == -1)) // clamp to floor
+        if ((cZ > vf8-nHeightClamp) && (gUpperLink[nSectnum] == -1)) // clamp to floor
         {
-            cZ = vf8-(1<<7);
+            cZ = vf8-nHeightClamp;
         }
-        if ((cZ < vfc+(1<<7)) && (gLowerLink[nSectnum] == -1)) // clamp to ceiling
+        if ((cZ < vfc+nHeightClamp) && (gLowerLink[nSectnum] == -1)) // clamp to ceiling
         {
-            cZ = vfc+(1<<7);
+            cZ = vfc+nHeightClamp;
         }
         q16horiz = ClipRange(q16horiz, F16(-200), F16(200));
-        int nCountROR = 0;
+        int nRORLimit = 32; // limit ROR rendering to 32 times
 RORHACK:
         int ror_status[16];
         for (int i = 0; i < 16; i++)
@@ -4340,16 +4341,15 @@ RORHACK:
         renderDrawRoomsQ16(cX, cY, cZ, cA, q16horiz + fix16_from_int(defaultHoriz) + deliriumPitchI, nSectnum);
         yax_drawrooms(viewProcessSprites, nSectnum, 0, gInterpolate);
         viewProcessSprites(cX, cY, cZ, fix16_to_int(cA), gInterpolate);
-        bool do_ror_hack = false;
-        for (int i = 0; i < 16; i++)
-            if (ror_status[i] != TestBitString(gotpic, 4080+i))
-                do_ror_hack = true;
-        if (do_ror_hack && (nCountROR < 32))
+        for (int i = 0; nRORLimit && (i < 16); i++) // check if ror needs to be rendered
         {
-            gView->pSprite->cstat = bakCstat;
-            spritesortcnt = 0;
-            nCountROR++;
-            goto RORHACK;
+            if (ror_status[i] != TestBitString(gotpic, 4080+i))
+            {
+                gView->pSprite->cstat = bakCstat;
+                spritesortcnt = 0;
+                nRORLimit--;
+                goto RORHACK;
+            }
         }
         sub_5571C(1);
         int nSpriteSortCnt = spritesortcnt;
@@ -4438,9 +4438,10 @@ RORHACK:
         {
             if (gAimReticle)
             {
+                int nCrosshairY = defaultHoriz;
                 if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
-                    defaultHoriz += 19;
-                rotatesprite(160<<16, defaultHoriz<<16, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
+                    nCrosshairY += 19;
+                rotatesprite(160<<16, nCrosshairY<<16, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, RS_AUTO, gViewX0, gViewY0, gViewX1, gViewY1);
             }
             if (gProfile[gView->nPlayer].nWeaponHBobbing == 0) // disable weapon sway
                 v4c = 0;
@@ -4464,7 +4465,7 @@ RORHACK:
                     nPalette = pSector->floorpal;
             }
             if (gViewSize == 4) // with this view size, move up so it matches the same position as full hud
-                cY -= (int)((25.f/2.f)*65536.f);
+                cY -= fix16_from_float(25.f/2.f);
             
             #ifdef NOONE_EXTENSIONS
                 if (gView->sceneQav < 0) WeaponDraw(gView, nShade, cX, cY, nPalette);
