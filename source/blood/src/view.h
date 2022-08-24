@@ -143,7 +143,7 @@ void viewDrawText(int nFont, const char *pString, int x, int y, int nShade, int 
 void viewTileSprite(int nTile, int nShade, int nPalette, int x1, int y1, int x2, int y2, int nWidth = 0, int nHeight = 0, int nScale = 65536);
 void InitStatusBar(void);
 void DrawStatSprite(int nTile, int x, int y, int nShade = 0, int nPalette = 0, unsigned int nStat = 0, int nScale = 65536);
-void DrawStatMaskedSprite(int nTile, int x, int y, int nShade = 0, int nPalette = 0, unsigned int nStat = 0, int nScale = 65536, bool mirror = false);
+void DrawStatMaskedSprite(int nTile, int x, int y, int nShade = 0, int nPalette = 0, unsigned int nStat = 0, int nScale = 65536, char bMirror = 0);
 void DrawStatNumber(const char *pFormat, int nNumber, int nTile, int x, int y, int nShade, int nPalette, unsigned int nStat = 0, int nScale = 65536);
 void TileHGauge(int nTile, int x, int y, int nMult, int nDiv, int nStat = 0, int nScale = 65536);
 void viewDrawPack(PLAYER *pPlayer, int x, int y);

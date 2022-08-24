@@ -1162,10 +1162,10 @@ void DrawStatSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned 
 {
     rotatesprite(x<<16, y<<16, nScale, 0, nTile, nShade, nPalette, nStat | 74, 0, 0, xdim-1, ydim-1);
 }
-void DrawStatMaskedSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned int nStat, int nScale, bool mirror)
+void DrawStatMaskedSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned int nStat, int nScale, char bMirror)
 {
     int16_t ang = 0;
-    if (mirror)
+    if (bMirror)
     {
         nStat |= RS_YFLIP;
         ang = kAng180;
