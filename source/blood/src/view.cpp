@@ -1162,10 +1162,10 @@ void DrawStatSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned 
 {
     rotatesprite(x<<16, y<<16, nScale, 0, nTile, nShade, nPalette, nStat | 74, 0, 0, xdim-1, ydim-1);
 }
-void DrawStatMaskedSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned int nStat, int nScale, bool mirror)
+void DrawStatMaskedSprite(int nTile, int x, int y, int nShade, int nPalette, unsigned int nStat, int nScale, char bMirror)
 {
     int16_t ang = 0;
-    if (mirror)
+    if (bMirror)
     {
         nStat |= RS_YFLIP;
         ang = kAng180;
@@ -4234,6 +4234,7 @@ void viewDrawScreen(void)
                 vd0 = vc8+(1<<7);
             }
             v54 = ClipRange(v54, -200, 200);
+            int nRORLimit = 32; // limit ROR rendering to 32 times
 RORHACKOTHER:
             int ror_status[16];
             for (int i = 0; i < 16; i++)
@@ -4242,14 +4243,14 @@ RORHACKOTHER:
             DrawMirrors(vd8, vd4, vd0, fix16_from_int(v50), fix16_from_int(v54 + defaultHoriz), gInterpolate, -1);
             drawrooms(vd8, vd4, vd0, v50, v54 + defaultHoriz, vcc);
             yax_drawrooms(viewProcessSprites, vcc, 0, gInterpolate);
-            bool do_ror_hack = false;
-            for (int i = 0; i < 16; i++)
-                if (ror_status[i] != TestBitString(gotpic, 4080 + i))
-                    do_ror_hack = true;
-            if (do_ror_hack)
+            for (int i = 0; nRORLimit && (i < 16); i++) // check if ror needs to be rendered
             {
-                spritesortcnt = 0;
-                goto RORHACKOTHER;
+                if (ror_status[i] != TestBitString(gotpic, 4080 + i))
+                {
+                    spritesortcnt = 0;
+                    nRORLimit--;
+                    goto RORHACKOTHER;
+                }
             }
             memcpy(otherMirrorGotpic, gotpic+510, 2);
             memcpy(gotpic+510, bakMirrorGotpic, 2);
@@ -4316,7 +4317,7 @@ RORHACKOTHER:
             cZ = vfc+(1<<7);
         }
         q16horiz = ClipRange(q16horiz, F16(-200), F16(200));
-        int nCountROR = 0;
+        int nRORLimit = 32; // limit ROR rendering to 32 times
 RORHACK:
         int ror_status[16];
         for (int i = 0; i < 16; i++)
@@ -4340,16 +4341,15 @@ RORHACK:
         renderDrawRoomsQ16(cX, cY, cZ, cA, q16horiz + fix16_from_int(defaultHoriz) + deliriumPitchI, nSectnum);
         yax_drawrooms(viewProcessSprites, nSectnum, 0, gInterpolate);
         viewProcessSprites(cX, cY, cZ, fix16_to_int(cA), gInterpolate);
-        bool do_ror_hack = false;
-        for (int i = 0; i < 16; i++)
-            if (ror_status[i] != TestBitString(gotpic, 4080+i))
-                do_ror_hack = true;
-        if (do_ror_hack && (nCountROR < 32))
+        for (int i = 0; nRORLimit && (i < 16); i++) // check if ror needs to be rendered
         {
-            gView->pSprite->cstat = bakCstat;
-            spritesortcnt = 0;
-            nCountROR++;
-            goto RORHACK;
+            if (ror_status[i] != TestBitString(gotpic, 4080+i))
+            {
+                gView->pSprite->cstat = bakCstat;
+                spritesortcnt = 0;
+                nRORLimit--;
+                goto RORHACK;
+            }
         }
         sub_5571C(1);
         int nSpriteSortCnt = spritesortcnt;
@@ -4438,9 +4438,10 @@ RORHACK:
         {
             if (gAimReticle)
             {
+                int nCrosshairY = defaultHoriz;
                 if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
-                    defaultHoriz += 19;
-                rotatesprite(160<<16, defaultHoriz<<16, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, 2, gViewX0, gViewY0, gViewX1, gViewY1);
+                    nCrosshairY += 19;
+                rotatesprite(160<<16, nCrosshairY<<16, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, RS_AUTO, gViewX0, gViewY0, gViewX1, gViewY1);
             }
             if (gProfile[gView->nPlayer].nWeaponHBobbing == 0) // disable weapon sway
                 v4c = 0;
@@ -4464,7 +4465,7 @@ RORHACK:
                     nPalette = pSector->floorpal;
             }
             if (gViewSize == 4) // with this view size, move up so it matches the same position as full hud
-                cY -= (int)((25.f/2.f)*65536.f);
+                cY -= fix16_from_float(25.f/2.f);
             
             #ifdef NOONE_EXTENSIONS
                 if (gView->sceneQav < 0) WeaponDraw(gView, nShade, cX, cY, nPalette);
