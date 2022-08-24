@@ -148,6 +148,11 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST086.DEM", (int32_t)0x00002820, 0x3701B79E, 0x00000000, {(int32_t)0x000018C5, (int32_t)0xFFFFC8C1, (int32_t)0x000019A4}, 0},
     {"/validatedemos/TEST087.DEM", (int32_t)0x000068CF, 0x0112953A, 0x00000640, {(int32_t)0x00000913, (int32_t)0x00005B0A, (int32_t)0x0001C150}, 0},
     {"/validatedemos/TEST088.DEM", (int32_t)0x000023DF, 0x4F0E5AB3, 0x00000000, {(int32_t)0xFFFF99A5, (int32_t)0xFFFFE2E1, (int32_t)0x000021A4}, 0},
+    {"/validatedemos/TEST089.DEM", (int32_t)0x00005437, 0x5DEE1B13, 0x00000405, {(int32_t)0xFFFF65C1, (int32_t)0xFFFFA4A3, (int32_t)0xFFFEF550}, 1},
+    {"/validatedemos/TEST090.DEM", (int32_t)0x0000258B, 0xFD21283F, 0x00000AF9, {(int32_t)0x0000A0C1, (int32_t)0x0000A10A, (int32_t)0x00020DE4}, 1},
+    {"/validatedemos/TEST091.DEM", (int32_t)0x000034C5, 0x8893658D, 0x00000958, {(int32_t)0x0000AB42, (int32_t)0x00001360, (int32_t)0xFFFFFD50}, 1},
+    {"/validatedemos/TEST092.DEM", (int32_t)0x00000D99, 0xF75E793F, 0x00000000, {(int32_t)0x00003C9D, (int32_t)0x0000D7BB, (int32_t)0xFFFF99A4}, 1},
+    {"/validatedemos/TEST093.DEM", (int32_t)0x000075C7, 0xB1752688, 0x00000640, {(int32_t)0x00006693, (int32_t)0xFFFF226B, (int32_t)0xFFFD79E4}, 1},
 };
 
 int nBuild = 0;
@@ -481,6 +486,7 @@ void CDemo::ProcessKeys(void)
 
 void CDemo::Playback(void)
 {
+    DEMOVALIDATE *pValidateInfo;
     CONTROL_BindsEnabled = false;
     ready2send = 0;
     int v4 = 0;
@@ -492,6 +498,7 @@ void CDemo::Playback(void)
     gNetFifoClock = totalclock;
     gViewMode = 3;
 _DEMOPLAYBACK:
+    pValidateInfo = NULL;
     while (bPlaying && !gQuitGame)
     {
         while (totalclock >= gNetFifoClock && !gQuitGame)
@@ -516,13 +523,14 @@ _DEMOPLAYBACK:
                 for (int i = 0; i < kMaxPlayers; i++)
                     playerInit(i, 0);
                 StartLevel(&gGameOptions);
-                for (int index = 0; gDemoRunValidation && (index < ARRAY_SSIZE(gDemoValidate)); index++)
+                for (int index = 0; gDemoRunValidation && (index < ARRAY_SSIZE(gDemoValidate)); index++) // if we're executing validation test, search for current demo in list of known valid results
                 {
-                    if ((gDemoValidate[index].nInputTicks != nInputTicks) || !pCurrentDemo) // demo ticks not matching/demo name does not exist, skip
+                    if (nInputTicks != gDemoValidate[index].nInputTicks) // demo ticks not matching/demo name does not exist, skip
                         continue;
-                    if (Bstrcasecmp(gDemoValidate[index].zName, pCurrentDemo->zName)) // demo name does not match, skip
+                    if (!pCurrentDemo || Bstrcasecmp(pCurrentDemo->zName, gDemoValidate[index].zName)) // demo name does not match, skip
                         continue;
-                    nAutoAim = gDemoValidate[index].nAutoAim;
+                    pValidateInfo = &gDemoValidate[index]; // found demo's verified results, set as validate info
+                    nAutoAim = pValidateInfo->nAutoAim; // assign auto aim setting from validate info
                     break;
                 }
                 for (int i = 0; i < kMaxPlayers; i++)
@@ -554,26 +562,20 @@ _DEMOPLAYBACK:
                 if (v4 >= atf.nInputCount)
                 {
                     ready2send = 0;
-                    char bNewDemo = 1;
-                    for (int index = 0; gDemoRunValidation && (index < ARRAY_SSIZE(gDemoValidate)); index++)
+                    if (pValidateInfo) // if validate demo info are known, run checks
                     {
-                        if ((gDemoValidate[index].nInputTicks != nInputTicks) || !pCurrentDemo) // demo ticks not matching/demo name does not exist, skip
-                            continue;
-                        if (Bstrcasecmp(gDemoValidate[index].zName, pCurrentDemo->zName)) // demo name does not match, skip
-                            continue;
-                        bNewDemo = 0;
                         char bInvalid = 0;
-                        if (gDemoValidate[index].wrandomseed != wrandomseed)
+                        if (wrandomseed != pValidateInfo->wrandomseed)
                         {
                             bInvalid = 1;
                             OSD_Printf("Error: Random seed desync\n");
                         }
-                        if (gDemoValidate[index].xyz != gPlayer[0].pSprite->xyz)
+                        if (gPlayer[myconnectindex].pSprite->xyz != pValidateInfo->xyz)
                         {
                             bInvalid = 1;
                             OSD_Printf("Error: Player position desync\n");
                         }
-                        if (gDemoValidate[index].health != xsprite[gPlayer[0].pSprite->extra].health)
+                        if (xsprite[gPlayer[myconnectindex].pSprite->extra].health != pValidateInfo->health)
                         {
                             bInvalid = 1;
                             OSD_Printf("Error: Player health desync\n");
@@ -585,11 +587,14 @@ _DEMOPLAYBACK:
                             gQuitGame = true;
                         }
                         else
+                        {
                             OSD_Printf("Demo Synced\n");
-                        break;
+                        }
                     }
-                    if (gDemoRunValidation && bNewDemo && pCurrentDemo) // print validation result for new demo
-                        OSD_Printf("{\"%s\", (int32_t)0x%08X, 0x%08X, 0x%08X, {(int32_t)0x%08X, (int32_t)0x%08X, (int32_t)0x%08X}, 1},", pCurrentDemo->zName, nInputTicks, wrandomseed, (unsigned int)xsprite[gPlayer[0].pSprite->extra].health, (unsigned int)gPlayer[0].pSprite->x, (unsigned int)gPlayer[0].pSprite->y, (unsigned int)gPlayer[0].pSprite->z);
+                    else if (gDemoRunValidation && pCurrentDemo) // print validation result for new demo
+                    {
+                        OSD_Printf("{\"%s\", (int32_t)0x%08X, 0x%08X, 0x%08X, {(int32_t)0x%08X, (int32_t)0x%08X, (int32_t)0x%08X}, %d},", pCurrentDemo->zName, nInputTicks, wrandomseed, (unsigned int)xsprite[gPlayer[myconnectindex].pSprite->extra].health, (unsigned int)gPlayer[myconnectindex].pSprite->x, (unsigned int)gPlayer[myconnectindex].pSprite->y, (unsigned int)gPlayer[myconnectindex].pSprite->z, (int)gProfile[myconnectindex].nAutoAim);
+                    }
                     if (nDemosFound > 1)
                     {
                         v4 = 0;
@@ -598,9 +603,7 @@ _DEMOPLAYBACK:
                         {
                             uint32_t nTotalTicks = 0;
                             for (int index = 0; index < ARRAY_SSIZE(gDemoValidate); index++)
-                            {
                                 nTotalTicks += (uint32_t)gDemoValidate[index].nInputTicks;
-                            }
                             OSD_Printf("1.21 Validation Successful!\nTotal Demo Hours: %02d:%02d", nTotalTicks/(kTicsPerSec*60)/60, nTotalTicks/(kTicsPerSec*60)%60);
                             gQuitGame = true;
                             break;
