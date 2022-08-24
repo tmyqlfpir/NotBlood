@@ -4223,15 +4223,15 @@ void viewDrawScreen(void)
             memcpy(bakMirrorGotpic, gotpic+510, 2);
             memcpy(gotpic+510, otherMirrorGotpic, 2);
             g_visibility = (int32_t)(ClipLow(gVisibility-32*pOther->visibility, 0) * (numplayers > 1 ? 1.f : r_ambientlightrecip));
-            int vc4, vc8, nHeightClamp = (1<<7) + (1<<6);
+            int vc4, vc8;
             getzsofslope(vcc, vd8, vd4, &vc8, &vc4);
-            if ((vd0 > vc4-nHeightClamp) && (gUpperLink[vcc] == -1)) // clamp to floor
+            if ((vd0 > vc4-(1<<7)) && (gUpperLink[vcc] == -1)) // clamp to floor
             {
-                vd0 = vc4-nHeightClamp;
+                vd0 = vc4-(1<<7);
             }
-            if ((vd0 < vc8+nHeightClamp) && (gLowerLink[vcc] == -1)) // clamp to ceiling
+            if ((vd0 < vc8+(1<<7)) && (gLowerLink[vcc] == -1)) // clamp to ceiling
             {
-                vd0 = vc8+nHeightClamp;
+                vd0 = vc8+(1<<7);
             }
             v54 = ClipRange(v54, -200, 200);
             int nRORLimit = 32; // limit ROR rendering to 32 times
@@ -4306,15 +4306,15 @@ RORHACKOTHER:
         {
             cA = (cA + interpolateangfix16(fix16_from_int(deliriumTurnO), fix16_from_int(deliriumTurn), gInterpolate)) & 0x7ffffff;
         }
-        int vfc, vf8, nHeightClamp = (1<<7) + (1<<6);
+        int vfc, vf8;
         getzsofslope(nSectnum, cX, cY, &vfc, &vf8);
-        if ((cZ > vf8-nHeightClamp) && (gUpperLink[nSectnum] == -1)) // clamp to floor
+        if ((cZ > vf8-(1<<7)) && (gUpperLink[nSectnum] == -1)) // clamp to floor
         {
-            cZ = vf8-nHeightClamp;
+            cZ = vf8-(1<<7);
         }
-        if ((cZ < vfc+nHeightClamp) && (gLowerLink[nSectnum] == -1)) // clamp to ceiling
+        if ((cZ < vfc+(1<<7)) && (gLowerLink[nSectnum] == -1)) // clamp to ceiling
         {
-            cZ = vfc+nHeightClamp;
+            cZ = vfc+(1<<7);
         }
         q16horiz = ClipRange(q16horiz, F16(-200), F16(200));
         int nRORLimit = 32; // limit ROR rendering to 32 times
