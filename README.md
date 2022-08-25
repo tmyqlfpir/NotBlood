@@ -1,9 +1,17 @@
-[![Build](https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml/badge.svg)](https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml) [![Build](https://raw.githubusercontent.com/tmyqlfpir/NotBlood/master/.github/workflows/download.svg)](https://github.com/tmyqlfpir/NotBlood/releases)
+<p align="center"><a href="https://github.com/tmyqlfpir/NotBlood" target="_blank"><img width="100"src="https://raw.githubusercontent.com/tmyqlfpir/NotBlood/master/.github/workflows/logo.png"></a></p>
 
-# NotBlood
-A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-engineer port NBlood
+<p align="center">
+  <a href="https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml" target"_blank"><img src="https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml/badge.svg?style=flat-square" alt="Build Status"></a>
+  <a href="https://github.com/tmyqlfpir/NotBlood/releases" target"_blank"><img src="https://raw.githubusercontent.com/tmyqlfpir/NotBlood/master/.github/workflows/download.svg?style=flat-square" alt="Github Download"></a>
+</p>
 
-New features include:
+# About
+**NotBlood** is a gameplay modification of Blood, based upon the reverse-engineer port [NBlood](https://github.com/nukeykt/NBlood)
+
+### Downloads
+Download for Windows/Linux can be found on [https://github.com/tmyqlfpir/NotBlood/releases](https://github.com/tmyqlfpir/NotBlood/releases)
+
+### Features
 * Default midi uses a [SC55 soundfont by trevor0402](https://github.com/trevor0402/SC55Soundfont)
 * Difficulty based invulnerability timer for player damage ([before](https://web.archive.org/web/20220319193718if_/https://files.catbox.moe/ucs7gp.mp4)/[after](https://web.archive.org/web/20220514201922if_/https://files.catbox.moe/8hyaqm.mp4))
 * Smaller hitboxes for player projectiles ([before](https://web.archive.org/web/20220319193738if_/https://files.catbox.moe/3peiru.mp4)/[after](https://web.archive.org/web/20220514201943if_/https://files.catbox.moe/zso8g4.mp4))
@@ -71,8 +79,8 @@ If you have the GOG version of the game, do the following:
    * copy the `movie` folder from the mounted CD into NotBlood's folder
 5. Launch NotBlood (on Linux, to play Cryptic Passage, launch with the `-ini CRYPTIC.INI` parameter)
 
-## Building from source
+### Building from source
 See: https://wiki.eduke32.com/wiki/Main_Page
 
-## Acknowledgments
+### Acknowledgments
   See AUTHORS.md
