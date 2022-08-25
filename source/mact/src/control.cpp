@@ -724,18 +724,6 @@ bool CONTROL_Startup(controltype which, int32_t(*TimeFunction)(void), int32_t ti
 
     if (CONTROL_Started) return false;
 
-    ExtGetTime = TimeFunction ? TimeFunction : controlGetTime;
-
-    // what the fuck???
-    ticrate = ticspersecond;
-    CONTROL_DoubleClickSpeed = (ticspersecond * 57) / 100;
-
-    if (CONTROL_DoubleClickSpeed <= 0)
-        CONTROL_DoubleClickSpeed = 1;
-
-    if (initinput(CONTROL_ScanForControllers))
-        return true;
-
     static osdcvardata_t cvars_mact [] =
     {
         { "in_mousexsens", "horizontal mouse sensitivity multiplier", (void *)&CONTROL_MouseAxesSensitivity[0], CVAR_FLOAT, 0, 100 },
@@ -747,6 +735,18 @@ bool CONTROL_Startup(controltype which, int32_t(*TimeFunction)(void), int32_t ti
 
     for (auto& cv : cvars_mact)
         OSD_RegisterCvar(&cv, osdcmd_cvar_set);
+
+    ExtGetTime = TimeFunction ? TimeFunction : controlGetTime;
+
+    // what the fuck???
+    ticrate = ticspersecond;
+    CONTROL_DoubleClickSpeed = (ticspersecond * 57) / 100;
+
+    if (CONTROL_DoubleClickSpeed <= 0)
+        CONTROL_DoubleClickSpeed = 1;
+
+    if (initinput(CONTROL_ScanForControllers))
+        return true;
 
     KB_Startup();
 
