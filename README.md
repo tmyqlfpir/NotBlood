@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/tmyqlfpir/NotBlood" target="_blank"><img src="https://raw.githubusercontent.com/tmyqlfpir/NotBlood/master/.github/workflows/logo.png"><br><img src="https://raw.githubusercontent.com/tmyqlfpir/NotBlood/master/.github/workflows/notblood.png"></a>
+  <a href="https://github.com/tmyqlfpir/NotBlood" target="_blank"><img src="https://raw.githubusercontent.com/tmyqlfpir/NotBlood/master/.github/workflows/logo.png"></a>
   <br>
   <a href="https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml" target"_blank"><img src="https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml/badge.svg?style=flat-square" alt="Build Status"></a>
   <a href="https://github.com/tmyqlfpir/NotBlood/releases" target"_blank"><img src="https://raw.githubusercontent.com/tmyqlfpir/NotBlood/master/.github/workflows/download.svg?style=flat-square" alt="Github Download"></a>
