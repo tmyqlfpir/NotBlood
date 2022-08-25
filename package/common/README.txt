@@ -213,6 +213,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Sets scale for selected weapon weapon bar (default: 10, range: 5-20)
 * in_crouchmode
    - Toggles crouch button (0:hold, 1:toggle)
+* in_turnsensitivity
+   - Keyboard turning sensitivity multiplier (default: 92, range: 64-128)
 * notarget
    - Toggles AI player detection
 * r_drawinvisiblesprites
