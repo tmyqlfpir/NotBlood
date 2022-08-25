@@ -410,7 +410,9 @@ unsigned short dbInsertXSprite(int nSprite)
         ThrowError("Out of free XSprites");
     }
     memset(&xsprite[nXSprite], 0, sizeof(XSPRITE));
-    //if (!VanillaMode()) // this intentionally causes demos to desync like dos (eg: playing BLOOD002.DEM after finishing BLOOD001.DEM) - for notblood we'll disable it
+#if 0 // this intentionally causes demos to desync like dos (eg: playing BLOOD002.DEM after finishing BLOOD001.DEM) - for notblood we'll disable it
+    if (!VanillaMode())
+#endif
         memset(&gSpriteHit[nXSprite], 0, sizeof(SPRITEHIT));
     xsprite[nXSprite].reference = nSprite;
     sprite[nSprite].extra = nXSprite;
@@ -1430,7 +1432,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
     memset(xvel,0,sizeof(xvel));
     memset(yvel,0,sizeof(yvel));
     memset(zvel,0,sizeof(zvel));
-    memset(xsprite,0,sizeof(xsprite));
+    memset(xsprite,0,kMaxXSprites*sizeof(XSPRITE));
     memset(sprite,0,kMaxSprites*sizeof(spritetype));
 
     #ifdef NOONE_EXTENSIONS

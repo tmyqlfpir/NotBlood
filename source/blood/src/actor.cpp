@@ -5389,7 +5389,7 @@ int MoveMissile(spritetype *pSprite)
     int top, bottom;
     GetSpriteExtents(pSprite, &top, &bottom);
     int i = 1;
-    const bool isFlameSprite = (pSprite->type == kMissileFlameSpray || pSprite->type == kMissileFlameHound); // do not use eduke clipmove for flame based sprites (changes damage too much)
+    const char bIsFlameSprite = (pSprite->type == kMissileFlameSpray) || (pSprite->type == kMissileFlameHound); // do not use eduke clipmove for flame based sprites (changes damage too much)
     while (1)
     {
         int x = pSprite->x;
@@ -5399,14 +5399,14 @@ int MoveMissile(spritetype *pSprite)
         int nSector2 = pSprite->sectnum;
         clipmoveboxtracenum = 1;
         int vdx;
-        if (ProjectilesRaze() && pOwner && !isFlameSprite && !VanillaMode()) // improved clipmove accuracy (raze)
+        if (ProjectilesRaze() && pOwner && !bIsFlameSprite && !VanillaMode()) // improved clipmove accuracy (raze)
         {
             const short bakSpriteCstat = pSprite->cstat;
             pSprite->cstat &= ~257; // remove self collisions for accurate clipmove
             vdx = ClipMoveEDuke(&x, &y, &z, &nSector2, vx, vy, wd, (z-top)/4, (bottom-z)/4, CLIPMASK0);
             pSprite->cstat = bakSpriteCstat;
         }
-        else if (ProjectilesNotBlood() && pOwner && !isFlameSprite && !VanillaMode()) // improved clipmove accuracy and adjust hitboxes (notblood)
+        else if (ProjectilesNotBlood() && pOwner && !bIsFlameSprite && !VanillaMode()) // improved clipmove accuracy and adjust hitboxes (notblood)
         {
             const short bakSpriteCstat = pSprite->cstat;
             pSprite->cstat &= ~257; // remove self collisions for accurate clipmove
