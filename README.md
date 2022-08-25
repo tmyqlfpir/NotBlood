@@ -3,9 +3,9 @@
   <br>
   <a href="https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml" target"_blank"><img src="https://github.com/tmyqlfpir/NotBlood/actions/workflows/build.yml/badge.svg?style=flat-square" alt="Build Status"></a>
   <a href="https://github.com/tmyqlfpir/NotBlood/releases" target"_blank"><img src="https://raw.githubusercontent.com/tmyqlfpir/NotBlood/master/.github/workflows/download.svg?style=flat-square" alt="Github Download"></a>
-</p>
+</p><h1></h1>
 
-# About
+### About
 **NotBlood** is a gameplay modification of Blood, based upon the reverse-engineer port [NBlood](https://github.com/nukeykt/NBlood)
 
 ### Downloads
