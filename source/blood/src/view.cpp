@@ -2505,7 +2505,7 @@ template<typename T> tspritetype* viewInsertTSprite(int nSector, int nStatnum, T
 }
 
 int effectDetail[kViewEffectMax] = {
-    4, 4, 4, 4, 0, 0, 0, 0, 0, 1, 4, 4, 0, 0, 0, 1, 0, 0, 0, 0
+    4, 4, 4, 4, 0, 0, 0, 0, 0, 1, 4, 4, 0, 0, 0, 1, 0, 0, 0
 };
 
 tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
@@ -2947,33 +2947,6 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         }
         break;
     }
-    case kViewEffectTwoGuns:
-    {
-        dassert(pTSprite->type >= kDudePlayer1 && pTSprite->type <= kDudePlayer8);
-        PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
-        if (pPlayer->pXSprite->health == 0)
-            break;
-        const short int nTile = gGameOptions.bQuadDamagePowerup && !VanillaMode() ? 30463 : gPowerUpInfo[kPwUpTwoGuns].picnum; // if quad damage is enabled, use quad damage icon from notblood.pk3/TILES099.ART
-        auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
-        if (!pNSprite)
-            break;
-        pNSprite->x = pTSprite->x;
-        pNSprite->y = pTSprite->y;
-        int heightOffset = 36;
-        if (pPlayer->curWeapon > 1) // if player has a weapon icon, offset icon so guns akimbo/quad damage icon hovers above weapon
-            heightOffset += 12;
-        pNSprite->z = pTSprite->z-(heightOffset<<8);
-        if (pPlayer->posture == 2) // if player is crouching
-            pNSprite->z += pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture].zOffset<<5;
-        pNSprite->picnum = nTile;
-        pNSprite->shade = pTSprite->shade;
-        pNSprite->xrepeat = 32;
-        pNSprite->yrepeat = 32;
-        pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
-        if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite/voxel to transparent
-            pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
-        break;
-    }
     }
     return NULL;
 }
@@ -3392,11 +3365,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 
                 if (gShowWeapon && (gGameOptions.nGameType > 0) && gView) {
                     const char bDrawDudeWeap = (pPlayer == gView) || !powerupCheck(pPlayer, kPwUpShadowCloak) || bIsTeammateOrDoppleganger; // don't draw enemy weapon if they are cloaked
-                    if (bDrawDudeWeap || VanillaMode()) {
+                    if (bDrawDudeWeap || VanillaMode())
                         viewAddEffect(nTSprite, kViewEffectShowWeapon);
-                        if (powerupCheck(pPlayer, kPwUpTwoGuns) && !VanillaMode())
-                            viewAddEffect(nTSprite, kViewEffectTwoGuns); // if guns akimbo/quad damage is active
-                    }
                 }
 
                 if (pPlayer->flashEffect && (gView != pPlayer || gViewPos != VIEWPOS_0)) {

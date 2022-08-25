@@ -288,9 +288,9 @@ void WeaponDraw(PLAYER *pPlayer, int a2, int x, int y, int a5)
     }
     if (powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, tint weapon red
     {
-        const int warningTime = 5;
-        int remainingSeconds = pPlayer->pwUpTime[kPwUpTwoGuns] / 100;
-        if ((remainingSeconds > warningTime) || (((int)totalclock & 32) && (remainingSeconds > 2)) || (((int)totalclock & 16) && (remainingSeconds <= 2))) // flash weapon when nearing end
+        const int nWarningTime = 5;
+        int nRemainingSeconds = pPlayer->pwUpTime[kPwUpTwoGuns] / 100;
+        if ((nRemainingSeconds > nWarningTime) || (((int)totalclock & 32) && (nRemainingSeconds > 2)) || (((int)totalclock & 16) && (nRemainingSeconds <= 2))) // flash weapon when nearing end
         {
             a5 = kMediumGoo;
         }
