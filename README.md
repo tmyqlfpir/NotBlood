@@ -6,7 +6,7 @@
 </p>
 
 # About
-**NotBlood** is a gameplay modification of Blood, based upon the EDuke32 powered Blood reverse-engineer port [NBlood](https://github.com/nukeykt/NBlood)
+**NotBlood** is a gameplay modification of Blood, based upon the reverse-engineer port [NBlood](https://github.com/nukeykt/NBlood)
 
 ### Downloads
 Download for Windows/Linux can be found on [https://github.com/tmyqlfpir/NotBlood/releases](https://github.com/tmyqlfpir/NotBlood/releases)
