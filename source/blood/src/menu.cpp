@@ -872,7 +872,7 @@ CGameMenuItemSlider itemOptionsSoundSoundVolume("SOUND VOLUME:", 3, 66, 80, 180,
 CGameMenuItemSlider itemOptionsSoundMusicVolume("MUSIC VOLUME:", 3, 66, 90, 180, &MusicVolume, 0, 255, 17, UpdateMusicVolume, -1, -1, kMenuSliderPercent);
 CGameMenuItemZCycle itemOptionsSoundSampleRate("SAMPLE RATE:", 3, 66, 100, 180, 0, UpdateSoundRate, pzSoundRateStrings, ARRAY_SIZE(pzSoundRateStrings), 0);
 CGameMenuItemSlider itemOptionsSoundNumVoices("VOICES:", 3, 66, 110, 180, NumVoices, 16, 255, 16, UpdateNumVoices, -1, -1, kMenuSliderValue);
-CGameMenuItemSlider itemOptionsSoundSpeakerAngle("SPEAKER ANGLE:", 3, 66, 120, 180, gSoundEarAng, 15, 90, 5, UpdateSpeakerAngle, -1, -1, kMenuSliderValue);
+CGameMenuItemSlider itemOptionsSoundSpeakerAngle("SPEAKER ANGLE:", 3, 66, 120, 180, &gSoundEarAng, 15, 90, 5, UpdateSpeakerAngle, -1, -1, kMenuSliderValue);
 CGameMenuItemZCycle itemOptionsSoundCalebTalk("CALEB TALK:", 3, 66, 130, 180, 0, UpdateCalebTalk, pzCalebTalkStrings, ARRAY_SIZE(pzCalebTalkStrings), 0);
 CGameMenuItemZBool itemOptionsSoundCDToggle("REDBOOK AUDIO:", 3, 66, 140, 180, false, UpdateCDToggle, NULL, NULL);
 CGameMenuItemZCycle itemOptionsSoundMusicDevice("MIDI DRIVER:", 3, 66, 150, 180, 0, UpdateMusicDevice, pzMusicDeviceStrings, ARRAY_SIZE(pzMusicDeviceStrings), 0);
@@ -916,7 +916,7 @@ CGameMenuItemChain itemOptionsControlKeyboard("KEYBOARD SETUP", 1, 0, 60, 320, 1
 CGameMenuItemChain itemOptionsControlMouse("MOUSE SETUP", 1, 0, 80, 320, 1, &menuOptionsControlMouse, -1, SetupMouseMenu, 0);
 
 CGameMenuItemTitle itemOptionsControlKeyboardTitle("KEYBOARD SETUP", 1, 160, 20, 2038);
-CGameMenuItemSlider itemOptionsControlKeyboardSliderTurnSpeed("Key Turn Speed:", 1, 18, 50, 280, gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
+CGameMenuItemSlider itemOptionsControlKeyboardSliderTurnSpeed("Key Turn Speed:", 1, 18, 50, 280, &gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
 CGameMenuItemZBool itemOptionsControlKeyboardBoolCrouchToggle("Crouch Toggle:", 1, 18, 70, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
 CGameMenuItemZBool itemOptionsControlKeyboardBoolAutoRun("Always Run:", 1, 18, 90, 280, gAutoRun, SetAutoRun, NULL, NULL);
 CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 125, 320, 1, &menuKeys, -1, NULL, 0);
