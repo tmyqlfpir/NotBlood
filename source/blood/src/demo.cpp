@@ -524,15 +524,20 @@ _DEMOPLAYBACK:
                 for (int i = 0; i < kMaxPlayers; i++)
                     playerInit(i, 0);
                 StartLevel(&gGameOptions);
-                for (int index = 0; gDemoRunValidation && (index < ARRAY_SSIZE(gDemoValidate)); index++) // if we're executing validation test, search for current demo in list of known valid results
+                if (gDemoRunValidation) // if we're executing validation test
                 {
-                    if (nInputTicks != gDemoValidate[index].nInputTicks) // demo ticks not matching/demo name does not exist, skip
-                        continue;
-                    if (!pCurrentDemo || Bstrcasecmp(pCurrentDemo->zName, gDemoValidate[index].zName)) // demo name does not match, skip
-                        continue;
-                    pValidateInfo = &gDemoValidate[index]; // found demo's verified results, set as validate info
-                    nAutoAim = pValidateInfo->nAutoAim; // assign auto aim setting from validate info
-                    break;
+                    for (int index = 0; index < ARRAY_SSIZE(gDemoValidate); index++) // search for current demo in list of known valid results
+                    {
+                        if (nInputTicks != gDemoValidate[index].nInputTicks) // demo ticks not matching/demo name does not exist, skip
+                            continue;
+                        if (!pCurrentDemo || Bstrcasecmp(pCurrentDemo->zName, gDemoValidate[index].zName)) // demo name does not match, skip
+                            continue;
+                        pValidateInfo = &gDemoValidate[index]; // found demo's verified results, set as validate info
+                        nAutoAim = pValidateInfo->nAutoAim; // assign auto aim setting from validate info
+                        break;
+                    }
+                    if (!pValidateInfo) // run newly added verify demos at a slower speed for visual verification
+                        timerInit(CLOCKTICKSPERSECOND*5);
                 }
                 if (gDemoRunValidation && !pValidateInfo) // run newly added verify demos at a slower speed for visual verification
                     timerInit(CLOCKTICKSPERSECOND*5);
