@@ -132,7 +132,7 @@ void LoadSave::LoadGame(char *pzFile)
     viewInitializePrediction();
     PreloadCache();
     if (!VanillaMode()) // set reverb sound effect state
-        sfxSetReverb(gMe->packSlots[1].isActive || gMe->pwUpTime[kPwUpReflectShots]);
+        sfxSetReverb(packItemActive(gMe, kPackDivingSuit) || powerupCheck(gMe, kPwUpReflectShots));
     ambInit();
 #ifdef YAX_ENABLE
     yax_update(numyaxbunches > 0 ? 2 : 1);
@@ -592,7 +592,7 @@ bool LoadSavedInCurrentSession(int nSlot)
         return false;
     if (gSaveGameOptions[nSlot].nEnemyQuantity != gGameOptions.nEnemyQuantity)
         return false;
-    if (gSaveGameProfileSkill[nSlot] != (int)gProfile[myconnectindex].skill)
+    if (gSaveGameProfileSkill[nSlot] != gProfile[myconnectindex].skill)
         return false;
     if (gSaveGameOptions[nSlot].bPitchforkOnly != gGameOptions.bPitchforkOnly)
         return false;

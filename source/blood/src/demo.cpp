@@ -54,7 +54,7 @@ struct DEMOVALIDATE {
     uint32_t wrandomseed;
     uint32_t health;
     vec3_t xyz;
-    char nAutoAim;
+    int nAutoAim;
 };
 
 DEMOVALIDATE gDemoValidate[] = {
@@ -505,7 +505,7 @@ _DEMOPLAYBACK:
         {
             if (!v4)
             {
-                char nAutoAim = 1;
+                int nAutoAim = 1;
                 viewResizeView(gViewSize);
                 viewSetMessage("");
                 gNetPlayers = atf.nNetPlayers;
@@ -593,7 +593,7 @@ _DEMOPLAYBACK:
                     }
                     else if (gDemoRunValidation && pCurrentDemo) // print validation result for new demo
                     {
-                        OSD_Printf("{\"%s\", (int32_t)0x%08X, 0x%08X, 0x%08X, {(int32_t)0x%08X, (int32_t)0x%08X, (int32_t)0x%08X}, %d},", pCurrentDemo->zName, nInputTicks, wrandomseed, (unsigned int)xsprite[gPlayer[myconnectindex].pSprite->extra].health, (unsigned int)gPlayer[myconnectindex].pSprite->x, (unsigned int)gPlayer[myconnectindex].pSprite->y, (unsigned int)gPlayer[myconnectindex].pSprite->z, (int)gProfile[myconnectindex].nAutoAim);
+                        OSD_Printf("{\"%s\", (int32_t)0x%08X, 0x%08X, 0x%08X, {(int32_t)0x%08X, (int32_t)0x%08X, (int32_t)0x%08X}, %d},", pCurrentDemo->zName, nInputTicks, wrandomseed, (unsigned int)xsprite[gPlayer[myconnectindex].pSprite->extra].health, (unsigned int)gPlayer[myconnectindex].pSprite->x, (unsigned int)gPlayer[myconnectindex].pSprite->y, (unsigned int)gPlayer[myconnectindex].pSprite->z, gProfile[myconnectindex].nAutoAim);
                     }
                     if (nDemosFound > 1)
                     {

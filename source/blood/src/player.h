@@ -53,6 +53,17 @@ enum
     kPostureMax    = 3,
 };
 
+// inventory pack
+enum
+{
+    kPackMedKit      = 0,
+    kPackDivingSuit  = 1,
+    kPackCrystalBall = 2,
+    kPackBeastVision = 3,
+    kPackJumpBoots   = 4,
+    kPackMax         = 5,
+};
+
 struct PACKINFO
 {
     bool isActive;       // is active (0/1)
@@ -190,7 +201,7 @@ struct PLAYER
     bool                cantJump;
     int                 packItemTime;  // pack timer
     int                 packItemId;    // pack id 1: diving suit, 2: crystal ball, 3: beast vision 4: jump boots
-    PACKINFO            packSlots[5];  // at325 [1]: diving suit, [2]: crystal ball, [3]: beast vision [4]: jump boots
+    PACKINFO            packSlots[kPackMax];
     int                 armor[3];      // armor
     //int               at342;
     //int               at346;
@@ -219,11 +230,11 @@ struct PLAYER
 
 struct PROFILE
 {
-    char nAutoAim;
-    char nWeaponSwitch;
-    char bWeaponFastSwitch;
-    char skill;
-    char nWeaponHBobbing;
+    int nAutoAim;
+    int nWeaponSwitch;
+    int bWeaponFastSwitch;
+    int skill;
+    int nWeaponHBobbing;
     char name[MAXPLAYERNAME];
 };
 
@@ -367,7 +378,7 @@ inline void playerSetSkill(int nSkill)
 {
     nSkill = ClipRange(nSkill, 0, 4);
     for (int i = 0; i < kMaxPlayers; i++) // set all player's skill setting
-        gProfile[i].skill = (char)nSkill;
+        gProfile[i].skill = nSkill;
 }
 
 int         powerupCheck(PLAYER *pPlayer, int nPowerUp);
