@@ -219,11 +219,11 @@ struct PLAYER
 
 struct PROFILE
 {
-    char nAutoAim;
-    char nWeaponSwitch;
-    char bWeaponFastSwitch;
-    char skill;
-    char nWeaponHBobbing;
+    int nAutoAim;
+    int nWeaponSwitch;
+    int bWeaponFastSwitch;
+    int skill;
+    int nWeaponHBobbing;
     char name[MAXPLAYERNAME];
 };
 
@@ -367,7 +367,7 @@ inline void playerSetSkill(int nSkill)
 {
     nSkill = ClipRange(nSkill, 0, 4);
     for (int i = 0; i < kMaxPlayers; i++) // set all player's skill setting
-        gProfile[i].skill = (char)nSkill;
+        gProfile[i].skill = nSkill;
 }
 
 int         powerupCheck(PLAYER *pPlayer, int nPowerUp);

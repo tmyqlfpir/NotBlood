@@ -592,7 +592,7 @@ bool LoadSavedInCurrentSession(int nSlot)
         return false;
     if (gSaveGameOptions[nSlot].nEnemyQuantity != gGameOptions.nEnemyQuantity)
         return false;
-    if (gSaveGameProfileSkill[nSlot] != (int)gProfile[myconnectindex].skill)
+    if (gSaveGameProfileSkill[nSlot] != gProfile[myconnectindex].skill)
         return false;
     if (gSaveGameOptions[nSlot].bPitchforkOnly != gGameOptions.bPitchforkOnly)
         return false;
