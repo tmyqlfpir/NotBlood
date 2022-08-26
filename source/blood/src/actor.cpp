@@ -6715,13 +6715,13 @@ void actProcessSprites(void)
                     actDamageSprite(nSprite, pSprite, kDamageDrown, 12);
                 if (pPlayer->isUnderwater)
                 {
-                    char bActive = packItemActive(pPlayer, 1);
+                    char bActive = packItemActive(pPlayer, kPackDivingSuit);
                     if (bActive || pPlayer->godMode)
                         pPlayer->underwaterTime = 1200;
                     else
                         pPlayer->underwaterTime = ClipLow(pPlayer->underwaterTime-4, 0);
-                    if (pPlayer->underwaterTime < 1080 && packCheckItem(pPlayer, 1) && !bActive && ((pPlayer->pXSprite->health > 0) || VanillaMode())) // don't activate diving suit if player is dead
-                        packUseItem(pPlayer, 1);
+                    if (pPlayer->underwaterTime < 1080 && packCheckItem(pPlayer, kPackDivingSuit) && !bActive && ((pPlayer->pXSprite->health > 0) || VanillaMode())) // don't activate diving suit if player is dead
+                        packUseItem(pPlayer, kPackDivingSuit);
                     if (!pPlayer->underwaterTime)
                     {
                         pPlayer->chokeEffect += 4;

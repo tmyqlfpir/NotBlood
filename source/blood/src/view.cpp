@@ -459,7 +459,7 @@ void fakeProcessInput(PLAYER *pPlayer, GINPUT *pInput)
         break;
     default:
         if (!predict.at6f && predict.at71 && predict.at6a == 0) {
-            if (packItemActive(pPlayer, 4)) predict.at64 = pPosture->pwupJumpZ;//-0x175555;
+            if (packItemActive(pPlayer, kPackJumpBoots)) predict.at64 = pPosture->pwupJumpZ;//-0x175555;
             else predict.at64 = pPosture->normalJumpZ;//-0xbaaaa;
             predict.at6f = 1;
         }
@@ -1246,7 +1246,7 @@ void TileHGauge(int nTile, int x, int y, int nMult, int nDiv, int nStat, int nSc
     rotatesprite(x<<16, y<<16, nScale, 0, nTile, 0, 0, nStat|90, 0, 0, sbx, ydim-1);
 }
 
-int gPackIcons[5] = {
+int gPackIcons[kPackMax] = {
     2569, 2564, 2566, 2568, 2560
 };
 
@@ -1256,7 +1256,7 @@ struct PACKICON2 {
     int nYOffs;
 };
 
-PACKICON2 gPackIcons2[] = {
+PACKICON2 gPackIcons2[kPackMax] = {
     { 519, (int)(65536*0.5), 0 },
     { 830, (int)(65536*0.3), 0 },
     { 760, (int)(65536*0.6), 0 },
@@ -1643,12 +1643,12 @@ void viewDrawAimedPlayerName(void)
 
 void viewDrawPack(PLAYER *pPlayer, int x, int y)
 {
-    int packs[5];
+    int packs[kPackMax];
     if (pPlayer->packItemTime)
     {
         int nPacks = 0;
         int width = 0;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < kPackMax; i++)
         {
             if (pPlayer->packSlots[i].curAmount)
             {
@@ -2256,7 +2256,7 @@ void viewPrecacheTiles(void)
     {
         tilePrecacheTile(kSBarNegative + i, 0);
     }
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < kPackMax; i++)
     {
         tilePrecacheTile(gPackIcons[i], 0);
         tilePrecacheTile(gPackIcons2[i].nTile, 0);
@@ -4455,7 +4455,7 @@ RORHACK:
         {
             viewBurnTime(gView->pXSprite->burnTime);
         }
-        if (packItemActive(gView, 1))
+        if (packItemActive(gView, kPackDivingSuit))
         {
             rotatesprite(0, 0, 65536, 0, 2344, 0, 0, 256+18, gViewX0, gViewY0, gViewX1, gViewY1);
             rotatesprite(320<<16, 0, 65536, 1024, 2344, 0, 0, 512+22, gViewX0, gViewY0, gViewX1, gViewY1);

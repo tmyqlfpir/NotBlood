@@ -91,14 +91,14 @@ void SetTargetMode(bool notarget)
 
 void packStuff(PLAYER *pPlayer)
 {
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < kPackMax; i++)
         packAddItem(pPlayer, i);
 }
 
 void packClear(PLAYER *pPlayer)
 {
     pPlayer->packItemId = 0;
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < kPackMax; i++)
     {
         pPlayer->packSlots[i].isActive = 0;
         pPlayer->packSlots[i].curAmount = 0;
@@ -233,7 +233,7 @@ void ToggleBoots(void)
         if (!VanillaMode())
         {
             gMe->pwUpTime[kPwUpJumpBoots] = 0;
-            gMe->packSlots[4].curAmount = 0;
+            gMe->packSlots[kPackJumpBoots].curAmount = 0;
         }
         powerupDeactivate(gMe, kPwUpJumpBoots);
     }
@@ -868,10 +868,10 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         }
         break;
     case kCheatFrankenstein:
-        gMe->packSlots[0].curAmount = 100;
+        gMe->packSlots[kPackMedKit].curAmount = 100;
         break;
     case kCheatCheeseHead:
-        gMe->packSlots[1].curAmount = 100;
+        gMe->packSlots[kPackDivingSuit].curAmount = 100;
         if (!VanillaMode())
             gMe->pwUpTime[kPwUpDivingSuit] = gPowerUpInfo[kPwUpDivingSuit].bonusTime;
         break;
@@ -924,7 +924,7 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         break;
     case kCheatCousteau:
         actHealDude(gMe->pXSprite,200,200);
-        gMe->packSlots[1].curAmount = 100;
+        gMe->packSlots[kPackDivingSuit].curAmount = 100;
         if (!VanillaMode())
             gMe->pwUpTime[kPwUpDivingSuit] = gPowerUpInfo[kPwUpDivingSuit].bonusTime;
         break;
