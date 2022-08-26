@@ -153,6 +153,7 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST091.DEM", (int32_t)0x000034C5, 0x8893658D, 0x00000958, {(int32_t)0x0000AB42, (int32_t)0x00001360, (int32_t)0xFFFFFD50}, 1},
     {"/validatedemos/TEST092.DEM", (int32_t)0x00000D99, 0xF75E793F, 0x00000000, {(int32_t)0x00003C9D, (int32_t)0x0000D7BB, (int32_t)0xFFFF99A4}, 1},
     {"/validatedemos/TEST093.DEM", (int32_t)0x000075C7, 0xB1752688, 0x00000640, {(int32_t)0x00006693, (int32_t)0xFFFF226B, (int32_t)0xFFFD79E4}, 1},
+    {"/validatedemos/TEST094.DEM", (int32_t)0x00005264, 0x119CF6D1, 0x00000000, {(int32_t)0x0000AE5B, (int32_t)0x00005036, (int32_t)0x000025A4}, 1},
 };
 
 int nBuild = 0;
@@ -533,6 +534,8 @@ _DEMOPLAYBACK:
                     nAutoAim = pValidateInfo->nAutoAim; // assign auto aim setting from validate info
                     break;
                 }
+                if (gDemoRunValidation && !pValidateInfo) // run newly added verify demos at a slower speed for visual verification
+                    timerInit(CLOCKTICKSPERSECOND*5);
                 for (int i = 0; i < kMaxPlayers; i++)
                 {
                     gProfile[i].nAutoAim = nAutoAim;
