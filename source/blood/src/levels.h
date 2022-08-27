@@ -71,8 +71,8 @@ struct GAMEOPTIONS {
     bool bPitchforkOnly;
     bool bFriendlyFire;
     char nKeySettings;
+    char nSpawnProtection;
     char nSpawnWeapon;
-    bool bSpawnProtection;
     unsigned char uMonsterBannedType;
     char szUserMap[BMAX_PATH];
 };

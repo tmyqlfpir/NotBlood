@@ -182,6 +182,14 @@ const char *zKeyStrings[] =
     "SHARED",
 };
 
+const char *zSpawnProtectStrings[] =
+{
+    "OFF",
+    "ON (1 SEC)",
+    "ON (2 SEC)",
+    "ON (3 SEC)",
+};
+
 const char *zSpawnWeaponStrings[] =
 {
     "Pitchfork",
@@ -438,7 +446,7 @@ CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrin
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetStart9("KEYS SETTING:", 3, 66, 115, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemZBool itemNetStart10("SPAWN PROTECTION:", 3, 66, 125, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetStart10("SPAWN PROTECTION:", 3, 66, 125, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
 CGameMenuItemZCycle itemNetStart11("SPAWN WITH WEAPON:", 3, 66, 135, 180, 0, 0, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
 CGameMenuItemChain itemNetStart12("USER MAP", 3, 66, 150, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
 CGameMenuItemChain itemNetStart13("ENHANCEMENTS", 3, 66, 160, 320, 0, &menuNetworkGameEnhancements, -1, NULL, 0);
@@ -1293,6 +1301,7 @@ void SetupNetStartMenu(void)
     itemNetStart5.SetTextIndex(0);
     itemNetStart6.SetTextIndex(1);
     itemNetStart7.SetTextIndex(1);
+    itemNetStart10.SetTextIndex(1);
 
     ///////
     itemNetEnhancementBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
@@ -3178,8 +3187,8 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.respawnSettings = 0;
     gPacketStartGame.bFriendlyFire = itemNetStart8.at20;
     gPacketStartGame.keySettings = itemNetStart9.m_nFocus;
+    gPacketStartGame.nSpawnProtection = itemNetStart10.m_nFocus;
     gPacketStartGame.nSpawnWeapon = itemNetStart11.m_nFocus;
-    gPacketStartGame.bSpawnProtection = itemNetStart10.at20;
     ////
     SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
     gPacketStartGame.bQuadDamagePowerup = itemNetEnhancementBoolQuadDamagePowerup.at20;

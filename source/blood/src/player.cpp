@@ -693,11 +693,11 @@ void playerResetPowerUps(PLAYER* pPlayer)
     }
 }
 
-void playerSpawnProtection(PLAYER* pPlayer)
+void playerSpawnProtection(PLAYER* pPlayer, int nTicks)
 {
     for (int i = 0; i < kDamageMax; i++) // set invul state to damage types
         pPlayer->damageControl[i]++;
-    pPlayer->pwUpTime[kPwUpDeathMask] = kTicRate*2; // set spawn protection for 2 seconds
+    pPlayer->pwUpTime[kPwUpDeathMask] = nTicks; // set spawn protection duration
 }
 
 void playerSpawnWeapon(PLAYER* pPlayer, int nSpawnWeapon)
@@ -1017,8 +1017,8 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->hand = 0;
     pPlayer->nWaterPal = 0;
     playerResetPowerUps(pPlayer);
-    if ((gGameOptions.nGameType > 0) && gGameOptions.bSpawnProtection)
-        playerSpawnProtection(pPlayer);
+    if ((gGameOptions.nGameType > 0) && (gGameOptions.nSpawnProtection > 0))
+        playerSpawnProtection(pPlayer, gGameOptions.nSpawnProtection*kTicRate);
 
     if (pPlayer == gMe)
     {

@@ -85,8 +85,8 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bPitchforkOnly;
     0,     // bool bFriendlyFire;
     1,     // char nKeySettings;
+    0,     // char nSpawnProtection;
     0,     // char nSpawnWeapon;
-    0,     // bool bSpawnProtection;
     0,     // unsigned char uMonsterBannedType;
     "",    // char szUserMap[BMAX_PATH];
 };
