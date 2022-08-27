@@ -2920,7 +2920,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->y = pTSprite->y;
         pNSprite->z = pTSprite->z-(32<<8);
         pNSprite->z -= weaponIcon.zOffset<<8; // offset up
-        if (pPlayer->posture == 2) // if player is crouching
+        if (pPlayer->posture == kPostureCrouch) // if player is crouching
             pNSprite->z += pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture].zOffset<<5;
         pNSprite->picnum = nTile;
         pNSprite->shade = pTSprite->shade;
