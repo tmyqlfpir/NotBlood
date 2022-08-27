@@ -188,8 +188,8 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.bPitchforkOnly = false;
     gameOptions.bFriendlyFire = true;
     gameOptions.nKeySettings = 0;
+    gameOptions.nSpawnProtection = 0;
     gameOptions.nSpawnWeapon = 0;
-    gameOptions.bSpawnProtection = false;
     gameOptions.uMonsterBannedType = BANNED_NONE;
 }
 
