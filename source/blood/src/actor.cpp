@@ -5000,7 +5000,7 @@ void MoveDude(spritetype *pSprite)
         case kMarkerLowGoo:
             pXSprite->medium = kMediumNormal;
             if (pPlayer) {
-                pPlayer->posture = 0;
+                pPlayer->posture = kPostureStand;
                 pPlayer->bubbleTime = 0;
                 if (!pPlayer->cantJump && pPlayer->input.buttonFlags.jump) {
                     zvel[nSprite] = -0x6aaaa;
@@ -5052,7 +5052,7 @@ void MoveDude(spritetype *pSprite)
                 }
                 #endif
 
-                pPlayer->posture = 1;
+                pPlayer->posture = kPostureSwim;
                 pXSprite->burnTime = 0;
                 pPlayer->bubbleTime = klabs(zvel[nSprite]) >> 12;
                 evPost(nSprite, 3, 0, kCallbackPlayerBubble);
@@ -6715,12 +6715,12 @@ void actProcessSprites(void)
                     actDamageSprite(nSprite, pSprite, kDamageDrown, 12);
                 if (pPlayer->isUnderwater)
                 {
-                    char bActive = packItemActive(pPlayer, kPackDivingSuit);
-                    if (bActive || pPlayer->godMode)
+                    const char bDivingSuit = packItemActive(pPlayer, kPackDivingSuit);
+                    if (bDivingSuit || pPlayer->godMode)
                         pPlayer->underwaterTime = 1200;
                     else
                         pPlayer->underwaterTime = ClipLow(pPlayer->underwaterTime-4, 0);
-                    if (pPlayer->underwaterTime < 1080 && packCheckItem(pPlayer, kPackDivingSuit) && !bActive && ((pPlayer->pXSprite->health > 0) || VanillaMode())) // don't activate diving suit if player is dead
+                    if (pPlayer->underwaterTime < 1080 && packCheckItem(pPlayer, kPackDivingSuit) && !bDivingSuit && ((pPlayer->pXSprite->health > 0) || VanillaMode())) // don't activate diving suit if player is dead
                         packUseItem(pPlayer, kPackDivingSuit);
                     if (!pPlayer->underwaterTime)
                     {
