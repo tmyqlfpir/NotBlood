@@ -77,7 +77,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Replaces the guns akimbo powerup with Quake's quad damage (lasts 22 seconds)
 * Player damage invulnerability
    - Apply a short invulnerability state for the player for bullet hitscans/spirit/tesla damage
-   - Invulnerability duration changes depending on enemy difficulty/current player health (lower health = longer invulnerability state)
+   - Invulnerability duration changes depending on damage taken scale/current health (lower health = longer invulnerability state)
 * Explosions behavior
    - Replace the default vanilla explosion calculation with an new improved sector scanning system
    - Fixes rare cases where enemies appear to ignore explosive damage due to sector/span order
