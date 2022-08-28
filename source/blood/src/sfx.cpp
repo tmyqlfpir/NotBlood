@@ -159,9 +159,7 @@ void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
     if (!SoundToggle || soundId < 0) return;
 
     if ((soundId == 3017) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not play quote about having two guns
-    {
         soundId = 3016;
-    }
     DICTNODE *hRes = gSoundRes.Lookup(soundId, "SFX");
     if (!hRes)return;
 
@@ -207,7 +205,7 @@ void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
     }
 }
 
-void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, const char *pzSound)
+void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags)
 {
     if (!SoundToggle)
         return;
@@ -215,36 +213,14 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, co
         return;
     if (soundId < 0)
         return;
-    if (!VanillaMode())
-    {
-        if ((gGameOptions.nRandomizerCheat == 12) && (soundId > 1000) && IsDudeSprite(pSprite) && QRandom(2)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
-        {
-            const int type = pSprite->type;
-            if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))
-            {
-                if (!QRandom(2)) // replace cultist callout with fart
-                {
-                    soundId = 172+QRandom(2);
-                }
-                else
-                {
-                    const char *pzFarts[] = {"NOTBLOOD2", "NOTBLOOD3", "NOTBLOOD4", "NOTBLOOD5"};
-                    pzSound = pzFarts[QRandom(ARRAY_SSIZE(pzFarts))]; // use custom fart sfx
-                    soundId = 3016; // use sound that is 22050 Hz based
-                }
-            }
-        }
-        if ((soundId == 3017) && gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not play quote about having two guns
-            soundId = 3016;
-    }
+    if ((soundId == 3017) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not play quote about having two guns
+        soundId = 3016;
     DICTNODE *hRes = gSoundRes.Lookup(soundId, "SFX");
     if (!hRes)
         return;
 
     SFX *pEffect = (SFX*)gSoundRes.Load(hRes);
-    if (!pzSound) // if raw name override not provided, use slot's raw name
-        pzSound = pEffect->rawName;
-    hRes = gSoundRes.Lookup(pzSound, "RAW");
+    hRes = gSoundRes.Lookup(pEffect->rawName, "RAW");
     if (!hRes)
         return;
     int size = hRes->size;
@@ -347,28 +323,8 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, co
 void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, int pitch, int volume, const char *pzSound)
 {
     if (!SoundToggle || !pSprite || soundId < 0) return;
-    if (!VanillaMode())
-    {
-        if ((gGameOptions.nRandomizerCheat == 12) && (soundId > 1000) && IsDudeSprite(pSprite) && QRandom(2)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
-        {
-            const int type = pSprite->type;
-            if ((type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT))
-            {
-                if (!QRandom(2)) // replace cultist callout with fart
-                {
-                    soundId = 172+QRandom(2);
-                }
-                else
-                {
-                    const char *pzFarts[] = {"NOTBLOOD2", "NOTBLOOD3", "NOTBLOOD4", "NOTBLOOD5"};
-                    pzSound = pzFarts[QRandom(ARRAY_SSIZE(pzFarts))]; // use custom fart sfx
-                    soundId = 3016; // use sound that is 22050 Hz based
-                }
-            }
-        }
-        if ((soundId == 3017) && gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not play quote about having two guns
-            soundId = 3016;
-    }
+    if ((soundId == 3017) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not play quote about having two guns
+        soundId = 3016;
     DICTNODE* hRes = gSoundRes.Lookup(soundId, "SFX");
     if (!hRes) return;
 
