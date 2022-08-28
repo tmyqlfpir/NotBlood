@@ -49,7 +49,7 @@ extern BONKLE* BonkleCache[256];
 void sfxInit(void);
 void sfxTerm(void);
 void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector);
-void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId = -1, int nFlags = 0, const char *pzSound = NULL);
+void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId = -1, int nFlags = 0);
 void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId = -1, int nFlags = 0, int pitch = 0, int volume = 0, const char *pzSound = NULL);
 void sfxKill3DSound(spritetype *pSprite, int chanId = -1, int soundId = -1);
 void sfxKillAllSounds(void);

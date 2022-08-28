@@ -205,7 +205,7 @@ void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
     }
 }
 
-void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, const char *pzSound)
+void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags)
 {
     if (!SoundToggle)
         return;
@@ -220,9 +220,7 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, co
         return;
 
     SFX *pEffect = (SFX*)gSoundRes.Load(hRes);
-    if (!pzSound) // if raw name override not provided, use slot's raw name
-        pzSound = pEffect->rawName;
-    hRes = gSoundRes.Lookup(pzSound, "RAW");
+    hRes = gSoundRes.Lookup(pEffect->rawName, "RAW");
     if (!hRes)
         return;
     int size = hRes->size;
