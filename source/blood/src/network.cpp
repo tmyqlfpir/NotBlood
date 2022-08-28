@@ -492,16 +492,8 @@ void netGetPackets(void)
                 int nTaunt = GetPacketByte(pPacket);
                 if (gPlayer[nPlayer].pSprite && (nTaunt >= 10) && !VanillaMode()) // fart
                 {
-                    nTaunt = ClipRange(nTaunt-10, 0, 5);
-                    if (nTaunt < 2)
-                    {
-                        sfxPlay3DSoundCP(gPlayer[nPlayer].pSprite, 172+nTaunt, 1, 0, 0, 128);
-                    }
-                    else
-                    {
-                        const char *pzFarts[] = {"NOTBLOOD2", "NOTBLOOD3", "NOTBLOOD4", "NOTBLOOD5"};
-                        sfxPlay3DSoundCP(gPlayer[nPlayer].pSprite, 3016, 1, 0, 0, 192, pzFarts[(nTaunt-2)%ARRAY_SSIZE(pzFarts)]);
-                    }
+                    nTaunt = ClipRange(nTaunt-10, 0, 1);
+                    sfxPlay3DSoundCP(gPlayer[nPlayer].pSprite, 172+nTaunt, 1, 0, 0, 128);
                     break;
                 }
                 nTaunt = ClipRange(nTaunt, 0, 9);
@@ -640,7 +632,7 @@ void netBroadcastTaunt(int nPlayer, int nTaunt)
 void netBroadcastFart(int nPlayer)
 {
     UNREFERENCED_PARAMETER(nPlayer);
-    const int nFart = QRandom(6);
+    const int nFart = QRandom(2);
     if (numplayers > 1)
     {
         char *pPacket = packet;
@@ -648,15 +640,7 @@ void netBroadcastFart(int nPlayer)
         PutPacketByte(pPacket, 10+nFart);
         netSendPacketAll(packet, pPacket-packet);
     }
-    if (nFart < 2)
-    {
-        sndStartSample(172+nFart, 2, 1, 0);
-    }
-    else
-    {
-        const char *pzFarts[] = {"NOTBLOOD2", "NOTBLOOD3", "NOTBLOOD4", "NOTBLOOD5"};
-        sndStartSample(pzFarts[(nFart-2)%ARRAY_SSIZE(pzFarts)], 255, 1, 22050);
-    }
+    sndStartSample(172+nFart, 2, 1, 0);
 }
 
 void netBroadcastMessage(int nPlayer, const char *pzMessage)

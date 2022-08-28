@@ -3589,8 +3589,8 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
         if ((gGameOptions.nRandomizerCheat == 12) && IsPlayerSprite(pSprite) && !actSpriteOwnerIsPlayer(pSprite) && (damageType != kDamageExplode)) // "WEED420!" random seed cheat (cultists only but they're green and make you dizzy on damage)
         {
             const int type = sprite[nSource].type;
-            const bool weedType = (type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT);
-            if (weedType)
+            const char bWeedType = (type == kDudeCultistTommy) || (type == kDudeCultistShotgun) || (type == kDudeCultistTommyProne) || (type == kDudeCultistShotgunProne) || (type == kDudeCultistTesla) || (type == kDudeCultistTNT);
+            if (bWeedType)
                 gPlayer[pSprite->type - kDudePlayer1].pwUpTime[kPwUpDeliriumShroom] = gPowerUpInfo[kPwUpDeliriumShroom].bonusTime >> 1;
         }
         if (gGameOptions.bQuadDamagePowerup)
