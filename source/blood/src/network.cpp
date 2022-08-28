@@ -489,6 +489,8 @@ void netGetPackets(void)
             break;
         case 4:
             {
+                if (gPlayer[nPlayer].pXSprite && (gPlayer[nPlayer].pXSprite->health == 0) && !VanillaMode()) // if player is dead, don't play taunt
+                    break;
                 int nTaunt = GetPacketByte(pPacket);
                 if (gPlayer[nPlayer].pSprite && (nTaunt >= 10) && !VanillaMode()) // fart
                 {
@@ -618,7 +620,8 @@ void netBroadcastNewGame(void)
 
 void netBroadcastTaunt(int nPlayer, int nTaunt)
 {
-    UNREFERENCED_PARAMETER(nPlayer);
+    if (gPlayer[nPlayer].pXSprite && (gPlayer[nPlayer].pXSprite->health == 0) && !VanillaMode()) // if player is dead, don't send taunt message
+        return;
     if (numplayers > 1)
     {
         char *pPacket = packet;
@@ -631,7 +634,8 @@ void netBroadcastTaunt(int nPlayer, int nTaunt)
 
 void netBroadcastFart(int nPlayer)
 {
-    UNREFERENCED_PARAMETER(nPlayer);
+    if (gPlayer[nPlayer].pXSprite && (gPlayer[nPlayer].pXSprite->health == 0) && !VanillaMode()) // if player is dead, don't send fart message
+        return;
     const int nFart = QRandom(2);
     if (numplayers > 1)
     {
