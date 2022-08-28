@@ -75,9 +75,9 @@ int FX_Play(char *ptr, uint32_t ptrlength, int loopstart, int loopend, int pitch
 int FX_Play3D(char *ptr, uint32_t ptrlength, int loophow, int pitchoffset, int angle,
                   int distance, int priority, fix16_t volume, intptr_t callbackval);
 int FX_PlayRaw(char *ptr, uint32_t ptrlength, int rate, int pitchoffset, int vol,
-    int left, int right, int priority, fix16_t volume, intptr_t callbackval);
+    int left, int right, int priority, fix16_t volume, intptr_t callbackval, char bRaw16Bit = 0);
 int FX_PlayLoopedRaw(char *ptr, uint32_t ptrlength, char *loopstart, char *loopend, int rate,
-    int pitchoffset, int vol, int left, int right, int priority, fix16_t volume, intptr_t callbackval);
+    int pitchoffset, int vol, int left, int right, int priority, fix16_t volume, intptr_t callbackval, char bRaw16Bit = 0);
 
 int FX_StartDemandFeedPlayback(void (*function)(const char** ptr, uint32_t* length, void* userdata), int bitdepth, int channels, int rate, int pitchoffset,
     int vol, int left, int right, int priority, fix16_t volume, intptr_t callbackval, void* userdata);

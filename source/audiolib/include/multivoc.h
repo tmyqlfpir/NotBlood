@@ -126,6 +126,8 @@ decltype(MV_PlayVOC)   MV_PlayXMP;
 
 int MV_PlayRAW(char *ptr, uint32_t length, int rate, char *loopstart, char *loopend, int pitchoffset, int vol,
                int left, int right, int priority, fix16_t volume, intptr_t callbackval);
+int MV_PlayRAW16(char *ptr, uint32_t length, int rate, char *loopstart, char *loopend, int pitchoffset, int vol,
+               int left, int right, int priority, fix16_t volume, intptr_t callbackval);
 
 int  MV_IdentifyXMP(char const *ptr, uint32_t length);
 int  MV_GetPosition(int handle, int *position);

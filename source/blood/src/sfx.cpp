@@ -169,6 +169,14 @@ void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
     hRes = gSoundRes.Lookup(pEffect->rawName, "RAW");
     if (!hRes) return;
 
+    char bRaw16Bit = 0;
+    DICTNODE *pRAW16Node = gSoundRes.Lookup(pEffect->rawName, "RAW16"); // attempt to load RAW16 high quality file
+    if (pRAW16Node) // found 16-bit RAW audio, use this file instead
+    {
+        hRes = pRAW16Node;
+        bRaw16Bit = 1;
+    }
+
     int nPitch = mulscale16(pEffect->pitch, sndGetRate(pEffect->format));
     if (nBonkles >= 256)
         return;
@@ -193,16 +201,18 @@ void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
         priority = lVol;
     if (priority < rVol)
         priority = rVol;
+    if (bRaw16Bit) // adjust for 16-bit audio
+        lPhase <<= 1, rPhase <<= 1;
     if (gStereo)
     {
         // MV_Lock();
-        pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)&pBonkle->lChan);
-        pBonkle->rChan = FX_PlayRaw(pData + rPhase, size - rPhase, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)&pBonkle->rChan);
+        pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)&pBonkle->lChan, bRaw16Bit);
+        pBonkle->rChan = FX_PlayRaw(pData + rPhase, size - rPhase, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)&pBonkle->rChan, bRaw16Bit);
         // MV_Unlock();
     }
     else
     {
-        pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)&pBonkle->lChan);
+        pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)&pBonkle->lChan, bRaw16Bit);
         pBonkle->rChan = 0;
     }
 }
@@ -247,6 +257,15 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, co
     hRes = gSoundRes.Lookup(pzSound, "RAW");
     if (!hRes)
         return;
+
+    char bRaw16Bit = 0;
+    DICTNODE *pRAW16Node = gSoundRes.Lookup(pEffect->rawName, "RAW16"); // attempt to load RAW16 high quality file
+    if (pRAW16Node) // found 16-bit RAW audio, use this file instead
+    {
+        hRes = pRAW16Node;
+        bRaw16Bit = 1;
+    }
+
     int size = hRes->size;
     if (size <= 0)
         return;
@@ -307,6 +326,8 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, co
         priority = lVol;
     if (priority < rVol)
         priority = rVol;
+    if (bRaw16Bit) // adjust for 16-bit audio
+        lPhase <<= 1, rPhase <<= 1;
     int loopStart = pEffect->loopStart;
     int loopEnd = ClipLow(size - 1, 0);
     if (chanId < 0)
@@ -317,12 +338,12 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, co
     {
         if (gStereo)
         {
-            pBonkle->lChan = FX_PlayLoopedRaw(pData + lPhase, size - lPhase, pData + loopStart, pData + loopEnd, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)&pBonkle->lChan);
-            pBonkle->rChan = FX_PlayLoopedRaw(pData + rPhase, size - rPhase, pData + loopStart, pData + loopEnd, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)&pBonkle->rChan);
+            pBonkle->lChan = FX_PlayLoopedRaw(pData + lPhase, size - lPhase, pData + loopStart, pData + loopEnd, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)&pBonkle->lChan, bRaw16Bit);
+            pBonkle->rChan = FX_PlayLoopedRaw(pData + rPhase, size - rPhase, pData + loopStart, pData + loopEnd, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)&pBonkle->rChan, bRaw16Bit);
         }
         else
         {
-            pBonkle->lChan = FX_PlayLoopedRaw(pData + lPhase, size - lPhase, pData + loopStart, pData + loopEnd, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)&pBonkle->lChan);
+            pBonkle->lChan = FX_PlayLoopedRaw(pData + lPhase, size - lPhase, pData + loopStart, pData + loopEnd, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)&pBonkle->lChan, bRaw16Bit);
             pBonkle->rChan = 0;
         }
     }
@@ -331,12 +352,12 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags, co
         pData = (char*)gSoundRes.Lock(pBonkle->hSnd);
         if (gStereo)
         {
-            pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)&pBonkle->lChan);
-            pBonkle->rChan = FX_PlayRaw(pData + rPhase, size - rPhase, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)&pBonkle->rChan);
+            pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)&pBonkle->lChan, bRaw16Bit);
+            pBonkle->rChan = FX_PlayRaw(pData + rPhase, size - rPhase, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)&pBonkle->rChan, bRaw16Bit);
         }
         else
         {
-            pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)&pBonkle->lChan);
+            pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)&pBonkle->lChan, bRaw16Bit);
             pBonkle->rChan = 0;
         }
     }
@@ -377,6 +398,15 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
         pzSound = pEffect->rawName;
     hRes = gSoundRes.Lookup(pzSound, "RAW");
     if (!hRes) return;
+
+    char bRaw16Bit = 0;
+    DICTNODE *pRAW16Node = gSoundRes.Lookup(pEffect->rawName, "RAW16"); // attempt to load RAW16 high quality file
+    if (pRAW16Node) // found 16-bit RAW audio, use this file instead
+    {
+        hRes = pRAW16Node;
+        bRaw16Bit = 1;
+    }
+
     int size = hRes->size;
     if (size <= 0) return;
     
@@ -441,6 +471,8 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
         priority = lVol;
     if (priority < rVol)
         priority = rVol;
+    if (bRaw16Bit) // adjust for 16-bit audio
+        lPhase <<= 1, rPhase <<= 1;
     int loopStart = pEffect->loopStart;
     int loopEnd = ClipLow(size - 1, 0);
     if (chanId < 0)
@@ -451,12 +483,12 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
     {
         if (gStereo)
         {
-            pBonkle->lChan = FX_PlayLoopedRaw(pData + lPhase, size - lPhase, pData + loopStart, pData + loopEnd, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)& pBonkle->lChan);
-            pBonkle->rChan = FX_PlayLoopedRaw(pData + rPhase, size - rPhase, pData + loopStart, pData + loopEnd, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)& pBonkle->rChan);
+            pBonkle->lChan = FX_PlayLoopedRaw(pData + lPhase, size - lPhase, pData + loopStart, pData + loopEnd, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)& pBonkle->lChan, bRaw16Bit);
+            pBonkle->rChan = FX_PlayLoopedRaw(pData + rPhase, size - rPhase, pData + loopStart, pData + loopEnd, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)& pBonkle->rChan, bRaw16Bit);
         }
         else
         {
-            pBonkle->lChan = FX_PlayLoopedRaw(pData + lPhase, size - lPhase, pData + loopStart, pData + loopEnd, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)& pBonkle->lChan);
+            pBonkle->lChan = FX_PlayLoopedRaw(pData + lPhase, size - lPhase, pData + loopStart, pData + loopEnd, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)& pBonkle->lChan, bRaw16Bit);
             pBonkle->rChan = 0;
         }
     }
@@ -465,12 +497,12 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
         pData = (char*)gSoundRes.Lock(pBonkle->hSnd);
         if (gStereo)
         {
-            pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)& pBonkle->lChan);
-            pBonkle->rChan = FX_PlayRaw(pData + rPhase, size - rPhase, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)& pBonkle->rChan);
+            pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, lPitch, 0, lVol, lVol, 0, priority, fix16_one, (intptr_t)& pBonkle->lChan, bRaw16Bit);
+            pBonkle->rChan = FX_PlayRaw(pData + rPhase, size - rPhase, rPitch, 0, rVol, 0, rVol, priority, fix16_one, (intptr_t)& pBonkle->rChan, bRaw16Bit);
         }
         else
         {
-            pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)& pBonkle->lChan);
+            pBonkle->lChan = FX_PlayRaw(pData + lPhase, size - lPhase, nPitch, 0, lVol, lVol, rVol, priority, fix16_one, (intptr_t)& pBonkle->lChan, bRaw16Bit);
             pBonkle->rChan = 0;
         }
     }

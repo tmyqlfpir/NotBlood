@@ -282,9 +282,13 @@ int FX_Play3D(char *ptr, uint32_t ptrlength, int loophow, int pitchoffset, int a
 }
 
 int FX_PlayRaw(char *ptr, uint32_t ptrlength, int rate, int pitchoffset, int vol,
-    int left, int right, int priority, fix16_t volume, intptr_t callbackval)
+    int left, int right, int priority, fix16_t volume, intptr_t callbackval, char bRaw16Bit)
 {
-    int handle = MV_PlayRAW(ptr, ptrlength, rate, NULL, NULL, pitchoffset, vol, left, right, priority, volume, callbackval);
+    int handle;
+    if (!bRaw16Bit)
+        handle = MV_PlayRAW(ptr, ptrlength, rate, NULL, NULL, pitchoffset, vol, left, right, priority, volume, callbackval);
+    else
+        handle = MV_PlayRAW16(ptr, ptrlength, rate, NULL, NULL, pitchoffset, vol, left, right, priority, volume, callbackval);
 
     if (EDUKE32_PREDICT_FALSE(handle <= MV_Ok))
     {
@@ -296,9 +300,13 @@ int FX_PlayRaw(char *ptr, uint32_t ptrlength, int rate, int pitchoffset, int vol
 }
 
 int FX_PlayLoopedRaw(char *ptr, uint32_t ptrlength, char *loopstart, char *loopend, int rate,
-    int pitchoffset, int vol, int left, int right, int priority, fix16_t volume, intptr_t callbackval)
+    int pitchoffset, int vol, int left, int right, int priority, fix16_t volume, intptr_t callbackval, char bRaw16Bit)
 {
-    int handle = MV_PlayRAW(ptr, ptrlength, rate, loopstart, loopend, pitchoffset, vol, left, right, priority, volume, callbackval);
+    int handle;
+    if (!bRaw16Bit)
+        handle = MV_PlayRAW(ptr, ptrlength, rate, loopstart, loopend, pitchoffset, vol, left, right, priority, volume, callbackval);
+    else
+        handle = MV_PlayRAW16(ptr, ptrlength, rate, loopstart, loopend, pitchoffset, vol, left, right, priority, volume, callbackval);
 
     if (EDUKE32_PREDICT_FALSE(handle <= MV_Ok))
     {

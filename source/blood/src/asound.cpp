@@ -42,6 +42,7 @@ struct AMB_CHANNEL
     char *at10;
     int at14;
     int at18;
+    char bRaw16Bit;
 };
 
 AMB_CHANNEL ambChannels[kMaxAmbChannel];
@@ -77,7 +78,7 @@ void ambProcess(void)
         {
             int end = ClipLow(pChannel->at14-1, 0);
             pChannel->at0 = FX_PlayLoopedRaw(pChannel->at10, pChannel->at14, pChannel->at10, pChannel->at10+end, sndGetRate(pChannel->at18), 0,
-                pChannel->at4, pChannel->at4, pChannel->at4, pChannel->at4, fix16_one, (intptr_t)&pChannel->at0);
+                pChannel->at4, pChannel->at4, pChannel->at4, pChannel->at4, fix16_one, (intptr_t)&pChannel->at0, pChannel->bRaw16Bit);
         }
         pChannel->at4 = 0;
     }
@@ -140,7 +141,14 @@ void ambInit(void)
                 actPostSprite(nSprite, kStatDecoration);
                 continue;
             }
-            
+
+            DICTNODE *pRAW16Node = gSoundRes.Lookup(pSFX->rawName, "RAW16"); // attempt to load RAW16 high quality file
+            if (pRAW16Node) { // found 16-bit RAW audio, use this file instead
+                pRAWNode = pRAW16Node;
+                pChannel->bRaw16Bit = 1;
+            }
+            else pChannel->bRaw16Bit = 0;
+
             if (pRAWNode->size > 0) {
                 pChannel->at14 = pRAWNode->size;
                 pChannel->at8 = nSFX;

@@ -324,6 +324,29 @@ static playbackstatus MV_GetNextRAWBlock(VoiceNode *voice)
     return KeepPlaying;
 }
 
+static playbackstatus MV_GetNextRAW16Block(VoiceNode *voice)
+{
+    if (voice->BlockLength == 0)
+    {
+        if (voice->Loop.Start == NULL)
+            return NoMoreData;
+
+        voice->BlockLength = voice->Loop.Size;
+        voice->NextBlock   = voice->Loop.Start;
+        voice->length      = 0;
+        voice->position    = 0;
+    }
+
+    voice->sound        = voice->NextBlock;
+    voice->position    -= voice->length;
+    voice->length       = min(voice->BlockLength, 0x8000u);
+    voice->NextBlock   += voice->length * ((voice->channels * voice->bits) >> 3);
+    voice->BlockLength -= voice->length;
+    voice->length     <<= 16;
+
+    return KeepPlaying;
+}
+
 int MV_PlayWAV3D(char *ptr, uint32_t length, int loophow, int pitchoffset, int angle, int distance,
                      int priority, fix16_t volume, intptr_t callbackval)
 {
@@ -502,6 +525,40 @@ int MV_PlayRAW(char *ptr, uint32_t length, int rate, char *loopstart, char *loop
     voice->priority    = priority;
     voice->callbackval = callbackval;
     voice->Loop        = { loopstart, loopend, 0, (uint32_t)(loopend - loopstart + 1) };
+    voice->volume      = volume;
+
+    MV_SetVoicePitch(voice, rate, pitchoffset);
+    MV_SetVoiceVolume(voice, vol, left, right, volume);
+    MV_PlayVoice(voice);
+
+    return voice->handle;
+}
+
+int MV_PlayRAW16(char *ptr, uint32_t length, int rate, char *loopstart, char *loopend, int pitchoffset, int vol,
+                   int left, int right, int priority, fix16_t volume, intptr_t callbackval)
+{
+    if (!MV_Installed)
+        return MV_Error;
+
+    // Request a voice from the voice pool
+    auto voice = MV_AllocVoice(priority);
+
+    if (voice == nullptr)
+        return MV_SetErrorCode(MV_NoVoices);
+
+    voice->rawdataptr  = (uint8_t *)ptr;
+    voice->rawdatasiz  = length>>1;
+    voice->wavetype    = FMT_RAW;
+    voice->bits        = 16;
+    voice->channels    = 1;
+    voice->GetSound    = MV_GetNextRAW16Block;
+    voice->NextBlock   = ptr;
+    voice->position    = 0;
+    voice->BlockLength = length>>1;
+    voice->PitchScale  = PITCH_GetScale(pitchoffset);
+    voice->priority    = priority;
+    voice->callbackval = callbackval;
+    voice->Loop        = { loopstart, loopend, 0, (uint32_t)(loopend - loopstart + 1)>>1 };
     voice->volume      = volume;
 
     MV_SetVoicePitch(voice, rate, pitchoffset);
