@@ -3642,6 +3642,46 @@ void viewBurnTime(int gScale)
     }
 }
 
+void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopehoriz)
+{
+    const int32_t nStat = r_usenewaspect ? RS_AUTO : RS_AUTO | RS_STRETCH;
+    const char bShowAutoAimTarget = (gAimReticle == 2) && (gProfile[pPlayer->nPlayer].nAutoAim) && pPlayer->aimTargetsCount;
+    int q16SlopeTilt = fix16_from_float(0.82f);
+    int cX = 160;
+    int cY = defaultHoriz;
+    if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
+        cY += 19;
+    cX <<= 16;
+    cY <<= 16;
+
+    if (bShowAutoAimTarget) // move crosshair depending on autoaim target
+    {
+        const int q16hfov = divscale16(90, gFov);
+        const int q16vfov = Blrintf(float(fix16_one) * tanf(gFov * (PI/360.f)));
+        int cZ = pPlayer->relAim.dy * 160 / pPlayer->relAim.dx; // calculate aiming target offset from center
+        if (r_mirrormode & 1) // mirror mode flip
+            cZ = -cZ;
+        cX += mulscale16(cZ<<16, q16hfov); // scale to current fov
+        cZ = mulscale16((1<<7)<<16, q16vfov)>>16; // calculate vertical fov scale
+        cZ = (pPlayer->relAim.dz / cZ)<<16; // convert target z to on screen units
+        if (r_mirrormode & 2) // mirror mode flip
+            cZ = -cZ;
+        cY += cZ;
+        if (gSlopeTilting) // scale tilt with fov
+            q16SlopeTilt = mulscale16(q16SlopeTilt, q16hfov);
+    }
+
+    if (gSlopeTilting && (gSlopeReticle || bShowAutoAimTarget)) // adjust crosshair for slope tilting/auto aim
+    {
+        q16SlopeTilt = mulscale16(q16slopehoriz, q16SlopeTilt);
+        if (r_mirrormode & 2) // mirror mode flip
+            q16SlopeTilt = -q16SlopeTilt;
+        cY += q16SlopeTilt;
+    }
+
+    rotatesprite(cX, cY, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, nStat, gViewX0, gViewY0, gViewX1, gViewY1);
+}
+
 // by NoOne: show warning msgs in game instead of throwing errors (in some cases)
 void viewSetSystemMessage(const char* pMessage, ...) {
     char buffer[1024]; va_list args; va_start(args, pMessage);
@@ -4407,35 +4447,7 @@ RORHACK:
         if (gViewPos == 0)
         {
             if (gAimReticle)
-            {
-                const char bShowAutoAimTarget = (gAimReticle == 2) && (gProfile[gView->nPlayer].nAutoAim) && gView->aimTargetsCount;
-                cX = 160;
-                cY = defaultHoriz;
-                if (bShowAutoAimTarget) // move crosshair depending on autoaim target
-                {
-                    if (!(r_mirrormode & 1))
-                        cX += gView->relAim.dy * 160 / gView->relAim.dx;
-                    else
-                        cX -= gView->relAim.dy * 160 / gView->relAim.dx;
-                    cZ = mulscale16((1<<7)<<16, viewingRange_fov)>>16;
-                    if (!(r_mirrormode & 2))
-                        cY += gView->relAim.dz / cZ;
-                    else
-                        cY -= gView->relAim.dz / cZ;
-                }
-                if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
-                    cY += 19;
-                cX <<= 16;
-                cY <<= 16;
-                if (gSlopeTilting && (gSlopeReticle || bShowAutoAimTarget)) // adjust crosshair for slope tilting/auto aim
-                {
-                    if (!(r_mirrormode & 2))
-                        cY += mulscale16(q16slopehoriz, fix16_from_float(0.965f));
-                    else
-                        cY -= mulscale16(q16slopehoriz, fix16_from_float(0.965f));
-                }
-                rotatesprite(cX, cY, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, RS_AUTO, gViewX0, gViewY0, gViewX1, gViewY1);
-            }
+                viewAimReticle(gView, defaultHoriz, q16slopehoriz);
             if (gProfile[gView->nPlayer].nWeaponHBobbing == 0) // disable weapon sway
                 v4c = 0;
             if (!gWeaponInterpolate) // if position interpolate weapon is off, quantize the weapon positions
