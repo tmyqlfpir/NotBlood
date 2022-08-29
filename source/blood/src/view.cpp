@@ -4417,10 +4417,11 @@ RORHACK:
                         cX += gView->relAim.dy * 160 / gView->relAim.dx;
                     else
                         cX -= gView->relAim.dy * 160 / gView->relAim.dx;
+                    cZ = mulscale16((240>>1)<<16, viewingRange_fov)>>16;
                     if (!(r_mirrormode & 2))
-                        cY += (gView->relAim.dz>>7);
+                        cY += (gView->relAim.dz / cZ);
                     else
-                        cY -= (gView->relAim.dz>>7);
+                        cY -= (gView->relAim.dz / cZ);
                 }
                 if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
                     cY += 19;
