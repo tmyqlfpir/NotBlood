@@ -4408,10 +4408,20 @@ RORHACK:
         {
             if (gAimReticle)
             {
-                int nCrosshairY = defaultHoriz;
+                cX = 160;
+                cY = defaultHoriz;
                 if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
-                    nCrosshairY += 19;
-                rotatesprite(160<<16, nCrosshairY<<16, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, RS_AUTO, gViewX0, gViewY0, gViewX1, gViewY1);
+                    cY += 19;
+                cX <<= 16;
+                cY <<= 16;
+                if (gSlopeTilting && !VanillaMode()) // adjust crosshair for slope tilting
+                {
+                    if (!(r_mirrormode & 2))
+                        cY += mulscale16(q16slopehoriz, fix16_from_float(0.965f));
+                    else
+                        cY -= mulscale16(q16slopehoriz, fix16_from_float(0.965f));
+                }
+                rotatesprite(cX, cY, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, RS_AUTO, gViewX0, gViewY0, gViewX1, gViewY1);
             }
             if (gProfile[gView->nPlayer].nWeaponHBobbing == 0) // disable weapon sway
                 v4c = 0;
