@@ -4408,7 +4408,7 @@ RORHACK:
         {
             if (gAimReticle)
             {
-                const char bShowAutoAimTarget = (gAimReticle == 2) && gView->aimTargetsCount;
+                const char bShowAutoAimTarget = (gAimReticle == 2) && (gProfile[gView->nPlayer].nAutoAim) && gView->aimTargetsCount;
                 cX = 160;
                 cY = defaultHoriz;
                 if (bShowAutoAimTarget) // move crosshair depending on autoaim target
@@ -4417,10 +4417,11 @@ RORHACK:
                         cX += gView->relAim.dy * 160 / gView->relAim.dx;
                     else
                         cX -= gView->relAim.dy * 160 / gView->relAim.dx;
+                    cZ = mulscale16((1<<7)<<16, viewingRange_fov)>>16;
                     if (!(r_mirrormode & 2))
-                        cY += (gView->relAim.dz>>7);
+                        cY += gView->relAim.dz / cZ;
                     else
-                        cY -= (gView->relAim.dz>>7);
+                        cY -= gView->relAim.dz / cZ;
                 }
                 if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
                     cY += 19;
