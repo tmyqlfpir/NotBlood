@@ -191,6 +191,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable item slot switching to activated item (always enabled in multiplayer)
 * cl_quickstart
    - Enable/disable quick start mode (start to menu on launch/disable demo playback)
+* crosshair
+   - Enable/disable crosshair (0: off, 1: on, 2: on [autoaim])
 * hud_bgscale
    - Enable/disable hud background image scaling for resolution
 * hud_stats
