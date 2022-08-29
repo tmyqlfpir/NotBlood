@@ -965,7 +965,7 @@ int32_t registerosdcommands(void)
     char buffer[256];
     static osdcvardata_t cvars_game[] =
     {
-        { "crosshair", "enable/disable crosshair", (void *)&gAimReticle, CVAR_BOOL, 0, 1 },
+        { "crosshair", "enable/disable crosshair (0: off, 1: on, 2: on [autoaim])", (void *)&gAimReticle, CVAR_INT, 0, 2 },
 
         { "cl_autoaim", "enable/disable weapon autoaim", (void *)&gAutoAim, CVAR_INT|CVAR_MULTI, 0, 2 },
 //        { "cl_automsg", "enable/disable automatically sending messages to all players", (void *)&ud.automsg, CVAR_BOOL, 0, 1 },

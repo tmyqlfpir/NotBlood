@@ -52,7 +52,7 @@ void SetMusicVol(CGameMenuItemSlider *);
 void SetSoundVol(CGameMenuItemSlider *);
 void SetCDVol(CGameMenuItemSlider *);
 void SetMonoStereo(CGameMenuItemZBool *);
-void SetCrosshair(CGameMenuItemZBool *);
+void SetCrosshair(CGameMenuItemZCycle *);
 void SetCenterHoriz(CGameMenuItemZBool *);
 void SetShowPlayerNames(CGameMenuItemZBool *);
 void SetShowWeapons(CGameMenuItemZCycle *);
@@ -225,6 +225,12 @@ const char *zDiffStrings[] =
     "CUSTOM",
 };
 
+const char *pzCrosshairStrings[] = {
+    "OFF",
+    "ON",
+    "ON (AUTO AIM)"
+};
+
 const char *pzShowWeaponStrings[] = {
     "OFF",
     "SPRITE",
@@ -374,7 +380,7 @@ CGameMenuItemSlider sliderMusic("MUSIC:", 3, 66, 70, 180, MusicVolume, 0, 255, 1
 CGameMenuItemSlider sliderSound("SOUND:", 3, 66, 80, 180, FXVolume, 0, 255, 17, SetSoundVol, -1, -1);
 CGameMenuItemSlider sliderCDAudio("CD AUDIO:", 3, 66, 90, 180, CDVolume, 0, 255, 17, SetCDVol, -1, -1);
 CGameMenuItemZBool bool3DAudio("3D AUDIO:", 3, 66, 100, 180, gStereo, SetMonoStereo, NULL, NULL);
-CGameMenuItemZBool boolCrosshair("CROSSHAIR:", 3, 66, 110, 180, gAimReticle, SetCrosshair, NULL, NULL);
+CGameMenuItemZCycle itemCycleCrosshair("CROSSHAIR:", 3, 66, 110, 180, 0, SetCrosshair, pzCrosshairStrings, ARRAY_SSIZE(pzCrosshairStrings), 0);
 CGameMenuItemZCycle itemCycleShowWeapons("SHOW WEAPONS:", 3, 66, 120, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
 CGameMenuItemZBool boolSlopeTilting("SLOPE TILTING:", 3, 66, 130, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
 CGameMenuItemZBool boolViewBobbing("VIEW BOBBING:", 3, 66, 140, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
@@ -663,7 +669,7 @@ CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 157, 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
 CGameMenuItemChain itemOptionsDisplayMode("VIDEO MODE", 3, 66, 50, 180, 0, &menuOptionsDisplayMode, -1, SetupVideoModeMenu, 0);
-CGameMenuItemZBool itemOptionsDisplayBoolCrosshair("CROSSHAIR:", 3, 66, 60, 180, gAimReticle, SetCrosshair, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayCrosshair("CROSSHAIR:", 3, 66, 60, 180, 0, SetCrosshair, pzCrosshairStrings, ARRAY_SSIZE(pzCrosshairStrings), 0);
 CGameMenuItemZBool itemOptionsDisplayBoolCenterHoriz("CENTER HORIZON LINE:", 3, 66, 70, 180, gCenterHoriz, SetCenterHoriz, NULL, NULL);
 CGameMenuItemZCycle itemOptionsDisplayLevelStats("LEVEL STATS:", 3, 66, 80, 180, 0, SetLevelStats, pzStatsPowerupRatioStrings, ARRAY_SSIZE(pzStatsPowerupRatioStrings), 0);
 CGameMenuItemZCycle itemOptionsDisplayPowerupDuration("POWERUP DURATION:", 3, 66, 90, 180, 0, SetPowerupDuration, pzStatsPowerupRatioStrings, ARRAY_SSIZE(pzStatsPowerupRatioStrings), 0);
@@ -1063,7 +1069,7 @@ void SetupOptionsOldMenu(void)
     sliderMusic.nValue = ClipRange(MusicVolume, sliderMusic.nRangeLow, sliderMusic.nRangeHigh);
     sliderSound.nValue = ClipRange(FXVolume, sliderSound.nRangeLow, sliderSound.nRangeHigh);
     bool3DAudio.at20 = gStereo;
-    boolCrosshair.at20 = gAimReticle;
+    itemCycleCrosshair.m_nFocus = gAimReticle;
     itemCycleShowWeapons.m_nFocus = gShowWeapon;
     boolSlopeTilting.at20 = gSlopeTilting;
     boolViewBobbing.at20 = gViewVBobbing;
@@ -1077,7 +1083,7 @@ void SetupOptionsOldMenu(void)
     menuOptionsOld.Add(&sliderSound, false);
     menuOptionsOld.Add(&sliderCDAudio, false);
     menuOptionsOld.Add(&bool3DAudio, false);
-    menuOptionsOld.Add(&boolCrosshair, false);
+    menuOptionsOld.Add(&itemCycleCrosshair, false);
     menuOptionsOld.Add(&itemCycleShowWeapons, false);
     menuOptionsOld.Add(&boolSlopeTilting, false);
     menuOptionsOld.Add(&boolViewBobbing, false);
@@ -1627,7 +1633,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayTitle, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayColor, true);
     menuOptionsDisplay.Add(&itemOptionsDisplayMode, false);
-    menuOptionsDisplay.Add(&itemOptionsDisplayBoolCrosshair, false);
+    menuOptionsDisplay.Add(&itemOptionsDisplayCrosshair, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolCenterHoriz, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayLevelStats, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayPowerupDuration, false);
@@ -1643,7 +1649,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayPolymost, false);
 #endif
     menuOptionsDisplay.Add(&itemBloodQAV, false);
-    itemOptionsDisplayBoolCrosshair.at20 = gAimReticle;
+    itemOptionsDisplayCrosshair.m_nFocus = gAimReticle % ARRAY_SSIZE(pzCrosshairStrings);
     itemOptionsDisplayBoolCenterHoriz.at20 = gCenterHoriz;
     itemOptionsDisplayLevelStats.m_nFocus = gLevelStats % ARRAY_SSIZE(pzStatsPowerupRatioStrings);
     itemOptionsDisplayPowerupDuration.m_nFocus = gPowerupDuration % ARRAY_SSIZE(pzStatsPowerupRatioStrings);
@@ -1907,9 +1913,9 @@ void SetMonoStereo(CGameMenuItemZBool *pItem)
     itemOptionsSoundDoppler.bEnable = gStereo;
 }
 
-void SetCrosshair(CGameMenuItemZBool *pItem)
+void SetCrosshair(CGameMenuItemZCycle *pItem)
 {
-    gAimReticle = pItem->at20;
+    gAimReticle = pItem->m_nFocus % ARRAY_SSIZE(pzCrosshairStrings);
 }
 
 void SetCenterHoriz(CGameMenuItemZBool *pItem)

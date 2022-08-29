@@ -4410,6 +4410,17 @@ RORHACK:
             {
                 cX = 160;
                 cY = defaultHoriz;
+                if (gAimReticle == 2) // move crosshair depending on autoaim target
+                {
+                    if (!(r_mirrormode & 1))
+                        cX += gView->relAim.dy * 160 / gView->relAim.dx;
+                    else
+                        cX -= gView->relAim.dy * 160 / gView->relAim.dx;
+                    if (!(r_mirrormode & 2))
+                        cY += (gView->relAim.dz>>7);
+                    else
+                        cY -= (gView->relAim.dz>>7);
+                }
                 if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
                     cY += 19;
                 cX <<= 16;
