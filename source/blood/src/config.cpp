@@ -458,7 +458,7 @@ void CONFIG_SetDefaults(void)
     gRotateMap = 0;
     gAimReticle = 1;
     gSlopeTilting = 0;
-    gSlopeReticle = 1;
+    gSlopeReticle = 0;
     gMessageState = 1;
     gMessageCount = 4;
     gMessageTime = 5;
