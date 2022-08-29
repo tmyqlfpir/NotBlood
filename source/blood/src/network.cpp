@@ -1372,7 +1372,7 @@ void faketimerhandler(void)
 #if 0
     if (gGameClock >= gNetFifoClock && ready2send)
     {
-        gNetFifoClock += 4;
+        gNetFifoClock += kTicsPerFrame;
         netGetInput();
     }
 #endif

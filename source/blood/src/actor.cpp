@@ -6724,7 +6724,7 @@ void actProcessSprites(void)
                         packUseItem(pPlayer, kPackDivingSuit);
                     if (!pPlayer->underwaterTime)
                     {
-                        pPlayer->chokeEffect += 4;
+                        pPlayer->chokeEffect += kTicsPerFrame;
                         if (Chance(pPlayer->chokeEffect))
                             actDamageSprite(nSprite, pSprite, kDamageDrown, 3<<4);
                     }
