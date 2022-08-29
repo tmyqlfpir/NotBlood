@@ -1262,7 +1262,7 @@ void ProcessFrame(void)
     }
     gLevelTime++;
     gFrame++;
-    gFrameClock += 4;
+    gFrameClock += kTicsPerFrame;
     if ((gGameOptions.uGameFlags&1) != 0 && !gStartNewGame)
     {
         ready2send = 0;
@@ -2067,7 +2067,7 @@ RESTART:
                     do
                     {
                         netGetInput();
-                        gNetFifoClock += 4;
+                        gNetFifoClock += kTicsPerFrame;
                         while (gNetFifoHead[myconnectindex]-gNetFifoTail > gBufferJitter && !gStartNewGame && !gQuitGame)
                         {
                             int i;

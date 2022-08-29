@@ -3642,7 +3642,7 @@ void viewBurnTime(int gScale)
     }
 }
 
-void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopehoriz)
+inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopehoriz, float fFov)
 {
     const int32_t nStat = r_usenewaspect ? RS_AUTO : RS_AUTO | RS_STRETCH;
     const char bBannedWeapon = (pPlayer->curWeapon == kWeaponNone) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT);
@@ -3655,10 +3655,11 @@ void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopehoriz)
     cX <<= 16;
     cY <<= 16;
 
+    static int cXOld = cX, cYOld = cY;
     if (bShowAutoAimTarget) // move crosshair depending on autoaim target
     {
         const int q16hfov = divscale16(90, gFov);
-        const int q16vfov = Blrintf(float(fix16_one) * tanf(gFov * (PI/360.f)));
+        const int q16vfov = Blrintf(float(fix16_one) * fFov);
         int cZ = pPlayer->relAim.dy * 160 / pPlayer->relAim.dx; // calculate aiming target offset from center
         if (r_mirrormode & 1) // mirror mode flip
             cZ = -cZ;
@@ -3668,9 +3669,22 @@ void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopehoriz)
         if (r_mirrormode & 2) // mirror mode flip
             cZ = -cZ;
         cY += cZ;
+
         if (gSlopeTilting) // scale tilt with fov
             q16SlopeTilt = mulscale16(q16SlopeTilt, q16hfov);
     }
+
+    if (gViewInterpolate && ((cXOld != cX) || (cY != cYOld)))
+    {
+        int nSteps = gFrameRate / kTicsPerSec; // get number of steps to interpolate using current fps
+        if (nSteps >= 2) // if fps is double the game tickrate (60 and above), interpolate position
+        {
+            nSteps /= 2; // reduce the interpolation speed by half so crosshair doesn't behave too snappy
+            cX = interpolate(cXOld, cX, gInterpolate / nSteps);
+            cY = interpolate(cYOld, cY, gInterpolate / nSteps);
+        }
+    }
+    cXOld = cX, cYOld = cY;
 
     if (gSlopeTilting && (gSlopeReticle || bShowAutoAimTarget)) // adjust crosshair for slope tilting/auto aim
     {
@@ -4014,7 +4028,8 @@ void viewDrawScreen(void)
             newaspect_enable = 1;
             videoSetCorrectedAspect();
         }
-        const int viewingRange_fov = Blrintf(float(viewingrange) * tanf(gFov * (PI/360.f)));
+        const float fFov = tanf(gFov * (PI/360.f));
+        const int viewingRange_fov = Blrintf(float(viewingrange) * fFov);
         renderSetAspect(viewingRange_fov, yxaspect);
         int cX = gView->pSprite->x;
         int cY = gView->pSprite->y;
@@ -4448,7 +4463,7 @@ RORHACK:
         if (gViewPos == 0)
         {
             if (gAimReticle)
-                viewAimReticle(gView, defaultHoriz, q16slopehoriz);
+                viewAimReticle(gView, defaultHoriz, q16slopehoriz, fFov);
             if (gProfile[gView->nPlayer].nWeaponHBobbing == 0) // disable weapon sway
                 v4c = 0;
             if (!gWeaponInterpolate) // if position interpolate weapon is off, quantize the weapon positions
