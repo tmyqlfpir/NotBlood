@@ -3680,8 +3680,9 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
         if (nSteps >= 2) // if fps is double the game tickrate (60 and above), interpolate position
         {
             nSteps /= 2; // reduce the interpolation speed by half so crosshair doesn't behave too snappy
-            cX = interpolate(cXOld, cX, gInterpolate / nSteps);
-            cY = interpolate(cYOld, cY, gInterpolate / nSteps);
+            const int nInterpolate = ClipLow(gInterpolate, 1) / nSteps;
+            cX = interpolate(cXOld, cX, nInterpolate);
+            cY = interpolate(cYOld, cY, nInterpolate);
         }
     }
     cXOld = cX, cYOld = cY;
