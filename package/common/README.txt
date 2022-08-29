@@ -177,6 +177,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable multi kill messages (0: disable, 1: enable, 2: enable + audio alert)
 * cl_weaponhbob
    - Enable/disable view horizontal bobbing
+* cl_slopecrosshair
+   - Enable/disable adjusting crosshair position for slope tilting
 * cl_slowroomflicker
    - Enable/disable slowed flickering speed for sectors (such as E1M4's snake pit room)
 * cl_shadowsfake3d
