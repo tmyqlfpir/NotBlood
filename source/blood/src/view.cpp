@@ -3644,10 +3644,9 @@ void viewBurnTime(int gScale)
 
 void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopehoriz)
 {
-    if (!pPlayer) return;
-
     const int32_t nStat = r_usenewaspect ? RS_AUTO : RS_AUTO | RS_STRETCH;
-    const char bShowAutoAimTarget = (gAimReticle == 2) && (gProfile[pPlayer->nPlayer].nAutoAim) && pPlayer->aimTargetsCount && (pPlayer->curWeapon != kWeaponTNT) && (pPlayer->curWeapon != kWeaponProxyTNT) && (pPlayer->curWeapon != kWeaponRemoteTNT);
+    const char bBannedWeapon = (pPlayer->curWeapon == kWeaponNone) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT);
+    const char bShowAutoAimTarget = (gAimReticle == 2) && (gProfile[pPlayer->nPlayer].nAutoAim) && pPlayer->aimTargetsCount && !bBannedWeapon;
     int q16SlopeTilt = fix16_from_float(0.82f);
     int cX = 160;
     int cY = defaultHoriz;
