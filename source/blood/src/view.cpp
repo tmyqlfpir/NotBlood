@@ -4408,9 +4408,10 @@ RORHACK:
         {
             if (gAimReticle)
             {
+                const char bShowAutoAimTarget = (gAimReticle == 2) && gView->aimTargetsCount;
                 cX = 160;
                 cY = defaultHoriz;
-                if (gAimReticle == 2) // move crosshair depending on autoaim target
+                if (bShowAutoAimTarget) // move crosshair depending on autoaim target
                 {
                     if (!(r_mirrormode & 1))
                         cX += gView->relAim.dy * 160 / gView->relAim.dx;
@@ -4425,7 +4426,7 @@ RORHACK:
                     cY += 19;
                 cX <<= 16;
                 cY <<= 16;
-                if (gSlopeTilting && gSlopeReticle) // adjust crosshair for slope tilting
+                if (gSlopeTilting && (gSlopeReticle || bShowAutoAimTarget)) // adjust crosshair for slope tilting/auto aim
                 {
                     if (!(r_mirrormode & 2))
                         cY += mulscale16(q16slopehoriz, fix16_from_float(0.965f));
@@ -4440,8 +4441,8 @@ RORHACK:
             {
                 cX = (v4c>>8)+160;
                 cY = (v48>>8)+220+(zDelta>>7);
-                cY <<= 16;
                 cX <<= 16;
+                cY <<= 16;
             }
             else // default
             {
