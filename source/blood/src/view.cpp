@@ -3655,6 +3655,7 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
     cX <<= 16;
     cY <<= 16;
 
+    static int cXOld = cX, cYOld = cY;
     if (bShowAutoAimTarget) // move crosshair depending on autoaim target
     {
         const int q16hfov = divscale16(90, gFov);
@@ -3668,9 +3669,23 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
         if (r_mirrormode & 2) // mirror mode flip
             cZ = -cZ;
         cY += cZ;
+
         if (gSlopeTilting) // scale tilt with fov
             q16SlopeTilt = mulscale16(q16SlopeTilt, q16hfov);
     }
+
+    if (gViewInterpolate && ((cXOld != cX) || (cY != cYOld)))
+    {
+        int nSteps = gFrameRate / kTicsPerSec; // get number of steps to interpolate using current fps
+        if (nSteps >= 2) // if fps is double the game tickrate (60 and above), interpolate position
+        {
+            nSteps /= 2; // reduce the interpolation speed by half so crosshair doesn't behave too snappy
+            const int nInterpolate = ClipLow(gInterpolate, 1) / nSteps;
+            cX = interpolate(cXOld, cX, nInterpolate);
+            cY = interpolate(cYOld, cY, nInterpolate);
+        }
+    }
+    cXOld = cX, cYOld = cY;
 
     if (gSlopeTilting && (gSlopeReticle || bShowAutoAimTarget)) // adjust crosshair for slope tilting/auto aim
     {
