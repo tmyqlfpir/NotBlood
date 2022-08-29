@@ -98,6 +98,7 @@ int32_t gOverlayMap;
 int32_t gRotateMap;
 int32_t gAimReticle;
 int32_t gSlopeTilting;
+int32_t gSlopeReticle;
 int32_t gMessageState;
 int32_t gMessageCount;
 int32_t gMessageTime;
@@ -457,6 +458,7 @@ void CONFIG_SetDefaults(void)
     gRotateMap = 0;
     gAimReticle = 1;
     gSlopeTilting = 0;
+    gSlopeReticle = 1;
     gMessageState = 1;
     gMessageCount = 4;
     gMessageTime = 5;

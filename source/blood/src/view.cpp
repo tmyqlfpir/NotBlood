@@ -4425,7 +4425,7 @@ RORHACK:
                     cY += 19;
                 cX <<= 16;
                 cY <<= 16;
-                if (gSlopeTilting && !VanillaMode()) // adjust crosshair for slope tilting
+                if (gSlopeTilting && gSlopeReticle) // adjust crosshair for slope tilting
                 {
                     if (!(r_mirrormode & 2))
                         cY += mulscale16(q16slopehoriz, fix16_from_float(0.965f));

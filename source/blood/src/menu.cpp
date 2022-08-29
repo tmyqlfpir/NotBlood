@@ -1069,7 +1069,7 @@ void SetupOptionsOldMenu(void)
     sliderMusic.nValue = ClipRange(MusicVolume, sliderMusic.nRangeLow, sliderMusic.nRangeHigh);
     sliderSound.nValue = ClipRange(FXVolume, sliderSound.nRangeLow, sliderSound.nRangeHigh);
     bool3DAudio.at20 = gStereo;
-    itemCycleCrosshair.m_nFocus = gAimReticle;
+    itemCycleCrosshair.m_nFocus = gAimReticle % ARRAY_SSIZE(pzCrosshairStrings);
     itemCycleShowWeapons.m_nFocus = gShowWeapon;
     boolSlopeTilting.at20 = gSlopeTilting;
     boolViewBobbing.at20 = gViewVBobbing;
