@@ -4408,29 +4408,31 @@ RORHACK:
         {
             if (gAimReticle)
             {
+                const char bShowAutoAimTarget = (gAimReticle == 2) && gView->aimTargetsCount;
                 cX = 160;
                 cY = defaultHoriz;
-                if (gAimReticle == 2) // move crosshair depending on autoaim target
+                if (bShowAutoAimTarget) // move crosshair depending on autoaim target
                 {
                     if (!(r_mirrormode & 1))
                         cX += gView->relAim.dy * 160 / gView->relAim.dx;
                     else
                         cX -= gView->relAim.dy * 160 / gView->relAim.dx;
+                    cZ = mulscale16((240>>1)<<16, viewingRange_fov)>>16;
                     if (!(r_mirrormode & 2))
-                        cY += (gView->relAim.dz>>7);
+                        cY += (gView->relAim.dz / cZ);
                     else
-                        cY -= (gView->relAim.dz>>7);
+                        cY -= (gView->relAim.dz / cZ);
                 }
                 if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
                     cY += 19;
                 cX <<= 16;
                 cY <<= 16;
-                if (gSlopeTilting && gSlopeReticle) // adjust crosshair for slope tilting
+                if (gSlopeTilting && (gSlopeReticle || bShowAutoAimTarget)) // adjust crosshair for slope tilting/auto aim
                 {
                     if (!(r_mirrormode & 2))
-                        cY += mulscale16(q16slopehoriz, fix16_from_float(0.7675f));
+                        cY += mulscale16(q16slopehoriz, fix16_from_float(0.965f));
                     else
-                        cY -= mulscale16(q16slopehoriz, fix16_from_float(0.7675f));
+                        cY -= mulscale16(q16slopehoriz, fix16_from_float(0.965f));
                 }
                 rotatesprite(cX, cY, 65536, 0, kCrosshairTile, 0, g_isAlterDefaultCrosshair ? CROSSHAIR_PAL : 0, RS_AUTO, gViewX0, gViewY0, gViewX1, gViewY1);
             }
@@ -4440,8 +4442,8 @@ RORHACK:
             {
                 cX = (v4c>>8)+160;
                 cY = (v48>>8)+220+(zDelta>>7);
-                cY <<= 16;
                 cX <<= 16;
+                cY <<= 16;
             }
             else // default
             {
