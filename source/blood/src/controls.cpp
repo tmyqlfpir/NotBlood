@@ -491,7 +491,7 @@ void ctrlGetInput(void)
         turnLeft = !turnLeft;
         turnRight = !turnRight;
     }
-    if ((r_mirrormode > 1) && gMouseAim) // mirror mode (vert), invert y axis for mouse aiming
+    if ((r_mirrormode & 2) && gMouseAim) // mirror mode (vert), invert y axis for mouse aiming
     {
         info.mousey = -info.mousey;
     }
