@@ -1251,13 +1251,11 @@ void ProcessFrame(void)
     sfxUpdate3DSounds();
     if (gMe->hand == 1)
     {
-#define CHOKERATE 8
-#define TICRATE 30
-        gChokeCounter += CHOKERATE;
-        while (gChokeCounter >= TICRATE)
+        gChokeCounter += (kTicsPerFrame<<1);
+        while (gChokeCounter >= kTicsPerSec)
         {
             gChoke.at1c(gMe);
-            gChokeCounter -= TICRATE;
+            gChokeCounter -= kTicsPerSec;
         }
     }
     gLevelTime++;
