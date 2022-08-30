@@ -3650,7 +3650,7 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
     int q16SlopeTilt = fix16_from_float(0.82f);
     int cX = 160;
     int cY = defaultHoriz;
-    if (!gCenterHoriz && (r_mirrormode > 1)) // offset crosshair if mirror mode is set to vertical mode
+    if (!gCenterHoriz && (r_mirrormode & 1)) // offset crosshair if mirror mode is set to vertical mode
         cY += 19;
     cX <<= 16;
     cY <<= 16;

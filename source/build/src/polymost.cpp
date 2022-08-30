@@ -1490,7 +1490,7 @@ static void resizeglcheck(void)
         m[1][0] = -m[1][0];
         m[2][0] = -m[2][0];
     }
-    if (r_mirrormode > 1) // mirror mode (vert), invert eye matrix
+    if (r_mirrormode & 2) // mirror mode (vert), invert eye matrix
     {
         m[0][1] = -m[0][1];
         m[1][1] = -m[1][1];
