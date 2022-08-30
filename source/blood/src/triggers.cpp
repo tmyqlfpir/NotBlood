@@ -890,6 +890,7 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
     int vbp = interpolate(a8, a11, a3);
     int v14 = vbp - v44;
     int nWall = sector[nSector].wallptr;
+    char bIsolatedSector = 1; // used to check if sector translation is likely for a moving shadow sector
     
     #ifdef NOONE_EXTENSIONS
     // fix Y arg in RotatePoint for reverse (green) moving sprites?
@@ -907,6 +908,9 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
             if (vbp)
                 RotatePoint((int*)&x, (int*)&y, vbp, a4, a5);
             DragPoint(nWall, x+vc-a4, y+v8-a5);
+
+            if (bIsolatedSector && sectRangeIsFine(wall[nWall].nextsector) && (sector[nSector].floorpicnum == sector[wall[nWall].nextsector].floorpicnum))
+                bIsolatedSector = 0;
         }
     }
     else
@@ -1007,14 +1011,14 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
         {
             int floorZ;
             const int16_t nType = pSprite->type;
-            if (nType == FX_51) // bullet casing
+            if ((nType == FX_51) && bIsolatedSector) // bullet casing
             {
                 int top, bottom;
                 GetSpriteExtents(pSprite, &top, &bottom);
                 floorZ = getflorzofslope(nSector, pSprite->x, pSprite->y);
                 bSpriteMoved = !(pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_MASK) && (floorZ <= bottom);
             }
-            else if (nType == FX_36) // floor blood splat
+            else if ((nType == FX_36) && bIsolatedSector) // floor blood splat
             {
                 floorZ = getflorzofslope(nSector, pSprite->x, pSprite->y);
                 bSpriteMoved = ((pSprite->cstat&CSTAT_SPRITE_ALIGNMENT_FLOOR) != 0) && (pSprite->z == floorZ);
@@ -1026,7 +1030,7 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
                 {
                     const int nStartWall = sector[nSector].wallptr, nEndWall = nStartWall + sector[nSector].wallnum;
                     int nFoundWall = nStartWall, nDist = INT_MAX;
-                    for (int nWall = nStartWall; nWall < nEndWall; nWall++) // check each wall distance of sector to sprite
+                    for (nWall = nStartWall; nWall < nEndWall; nWall++) // check each wall distance of sector to sprite
                     {
                         const int nDistCurWall = GetDistToWall(pSprite->x, pSprite->y, &wall[nWall]); // find closest wall to sprite
                         if (nDistCurWall < nDist)
