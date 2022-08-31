@@ -909,8 +909,15 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
                 RotatePoint((int*)&x, (int*)&y, vbp, a4, a5);
             DragPoint(nWall, x+vc-a4, y+v8-a5);
 
-            if (bIsolatedSector && sectRangeIsFine(wall[nWall].nextsector) && (sector[nSector].floorpicnum == sector[wall[nWall].nextsector].floorpicnum))
-                bIsolatedSector = 0;
+            if (bIsolatedSector && sectRangeIsFine(wall[nWall].nextsector))
+            {
+                const int nNextSector = wall[nWall].nextsector;
+                if (sector[nSector].floorpicnum == sector[nNextSector].floorpicnum)
+                {
+                    if (sector[nSector].floorz == sector[nNextSector].floorz) // if floor height is the same for both sectors, and share the same picnum
+                        bIsolatedSector = 0;
+                }
+            }
         }
     }
     else
