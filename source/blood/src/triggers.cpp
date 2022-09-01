@@ -911,9 +911,10 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
 
             if (bIsolatedSector && sectRangeIsFine(wall[nWall].nextsector))
             {
-                if (sector[nSector].floorpicnum == sector[wall[nWall].nextsector].floorpicnum)
+                const int nNextSector = wall[nWall].nextsector;
+                if (sector[nSector].floorpicnum == sector[nNextSector].floorpicnum)
                 {
-                    if (sector[nSector].floorz == sector[wall[nWall].nextsector].floorz) // if floor height is the same for both sectors, and share the same picnum
+                    if (sector[nSector].floorz == sector[nNextSector].floorz) // if floor height is the same for both sectors, and share the same picnum
                         bIsolatedSector = 0;
                 }
             }
