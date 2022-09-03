@@ -181,12 +181,11 @@ void AddBusy(int a1, BUSYID a2, int nDelta)
 
     if (i == gBusyCount)
     {
-#ifdef NOONE_EXTENSIONS
-        const int nMaxBusyCount = gModernMap ? kMaxBusyCount : kMaxBusyCountVanilla;
-#else
-        const int nMaxBusyCount = kMaxBusyCountVanilla;
-#endif
-        if (gBusyCount >= nMaxBusyCount)
+    #ifdef NOONE_EXTENSIONS
+        if ((!gModernMap && gBusyCount >= kMaxBusyCountVanilla) || gBusyCount >= kMaxBusyCount)
+    #else
+        if (gBusyCount >= kMaxBusyCountVanilla)
+    #endif
         {
             consoleSysMsg("Failed to AddBusy for #%d! Max busy reached (%d)", a1, gBusyCount);
             return;

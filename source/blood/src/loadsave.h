@@ -73,6 +73,7 @@ public:
 
 extern unsigned int gSavedOffset;
 extern GAMEOPTIONS gSaveGameOptions[kMaxLoadSaveSlot];
+extern int gSaveGameProfileSkill[kMaxLoadSaveSlot];
 extern char *gSaveGamePic[kMaxLoadSaveSlot];
 bool LoadSavedInCurrentSession(int nSlot);
 void LoadUpdateSaveGame(int nSlot, int nSkill);
