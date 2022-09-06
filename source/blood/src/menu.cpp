@@ -3104,7 +3104,7 @@ void AutosaveGame(bool bLevelStartSave)
     const PLAYER playerTemp = *gMe; // temp player struct while we make autosaving a little more easier (blood is stressful enough already)
     if (!bLevelStartSave) // if key save, reset problematic weapon states
     {
-        playerResetWeaponState(gMe);
+        playerResetWeaponState(gMe, true);
         gMe->invulTime = (int)gFrameClock; // in case they get hitscanned right after loading
     }
     LoadSave::SaveGame(strSaveGameName);
