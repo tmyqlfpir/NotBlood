@@ -301,7 +301,7 @@ inline bool IsTargetTeammate(spritetype *pSourceSprite, spritetype *pTargetSprit
     return IsTargetTeammate(pSourcePlayer, pTargetSprite);
 }
 
-inline void playerResetWeaponState(PLAYER *pPlayer)
+inline void playerResetWeaponState(PLAYER *pPlayer, bool bNewLevel)
 {
     if (!(pPlayer->throwTime || pPlayer->throwPower || pPlayer->fuseTime || pPlayer->qavCallback != -1))
         return;
@@ -352,7 +352,7 @@ inline void playerResetWeaponState(PLAYER *pPlayer)
         pPlayer->weaponState = 7;
         break;
     case kWeaponRemoteTNT:
-        if ((pPlayer->weaponQav >= 37) && (pPlayer->weaponQav <= 39) && (pPlayer->weaponState == 11)) // if holding/throwing/dropping remote
+        if (bNewLevel && ((pPlayer->weaponQav >= 37) && (pPlayer->weaponQav <= 39) && (pPlayer->weaponState == 11))) // if holding/throwing/dropping remote and new level
             return;
         pPlayer->weaponQav = 36;
         pPlayer->weaponState = 10;
