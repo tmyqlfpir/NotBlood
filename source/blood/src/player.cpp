@@ -70,7 +70,7 @@ ClockTicks gPlayerScoreTicks[kMaxPlayers];
 int gMultiKillsFrags[kMaxPlayers];
 ClockTicks gMultiKillsTicks[kMaxPlayers];
 
-int gAnnounceKillingSpreePlayer = kMaxPlayers;
+int gAnnounceKillingSpreePlayer;
 ClockTicks gAnnounceKillingSpreeTicks;
 
 // V = has effect in game, X = no effect in game
