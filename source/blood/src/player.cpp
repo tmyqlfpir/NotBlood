@@ -67,10 +67,14 @@ bool gRedFlagDropped = false;
 int gPlayerScores[kMaxPlayers];
 ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
+int gPlayerLastKiller;
+int gPlayerLastVictim;
+ClockTicks gPlayerKillMsgTicks;
+
 int gMultiKillsFrags[kMaxPlayers];
 ClockTicks gMultiKillsTicks[kMaxPlayers];
 
-int gAnnounceKillingSpreePlayer = kMaxPlayers;
+int gAnnounceKillingSpreePlayer;
 ClockTicks gAnnounceKillingSpreeTicks;
 
 // V = has effect in game, X = no effect in game
@@ -548,7 +552,7 @@ char packItemActive(PLAYER *pPlayer, int nPack)
 
 void packUseItem(PLAYER *pPlayer, int nPack)
 {
-    char v4 = 0;
+    char bActivate = 0;
     int nPowerUp = -1;
     if (pPlayer->packSlots[nPack].curAmount > 0)
     {
@@ -567,19 +571,19 @@ void packUseItem(PLAYER *pPlayer, int nPack)
             break;
         }
         case kPackDivingSuit:
-            v4 = 1;
+            bActivate = 1;
             nPowerUp = kPwUpDivingSuit;
             break;
         case kPackCrystalBall:
-            v4 = 1;
+            bActivate = 1;
             nPowerUp = kPwUpCrystalBall;
             break;
         case kPackBeastVision:
-            v4 = 1;
+            bActivate = 1;
             nPowerUp = kPwUpBeastVision;
             break;
         case kPackJumpBoots:
-            v4 = 1;
+            bActivate = 1;
             nPowerUp = kPwUpJumpBoots;
             break;
         default:
@@ -590,7 +594,7 @@ void packUseItem(PLAYER *pPlayer, int nPack)
             pPlayer->packItemId = nPack;
     }
     pPlayer->packItemTime = 0;
-    if (v4)
+    if (bActivate)
         powerupSetState(pPlayer, nPowerUp, pPlayer->packSlots[nPack].isActive);
 }
 
@@ -1041,6 +1045,8 @@ void playerStart(int nPlayer, int bNewLevel)
     }
     gMultiKillsFrags[nPlayer] = 0;
     gMultiKillsTicks[nPlayer] = 0;
+    if (bNewLevel || (nPlayer == gPlayerLastVictim) && (pPlayer == gMe))
+        playerResetKillMsg();
     if (bNewLevel || (nPlayer == gAnnounceKillingSpreePlayer))
         playerResetAnnounceKillingSpree();
 }
@@ -2176,6 +2182,22 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
             pKiller->fragCount++;
             pKiller->fragInfo[nKiller]++;
             gMultiKillsFrags[nVictim] = 0;
+            if (gKillMsg) // calculate kill message notification
+            {
+                if (pVictim == gMe) // if other player killed current player
+                {
+                    playerResetKillMsg();
+                    gPlayerLastKiller = nKiller;
+                    gPlayerLastVictim = nVictim;
+                    gPlayerKillMsgTicks = kTicRate * 5.5;
+                }
+                else if (pKiller == gMe) // if current player killed other player
+                {
+                    playerResetKillMsg();
+                    gPlayerLastVictim = nVictim;
+                    gPlayerKillMsgTicks = kTicRate * 2.5;
+                }
+            }
         }
         if (gGameOptions.nGameType == 3)
         {
