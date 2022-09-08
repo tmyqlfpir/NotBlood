@@ -548,7 +548,7 @@ char packItemActive(PLAYER *pPlayer, int nPack)
 
 void packUseItem(PLAYER *pPlayer, int nPack)
 {
-    char v4 = 0;
+    char bActivate = 0;
     int nPowerUp = -1;
     if (pPlayer->packSlots[nPack].curAmount > 0)
     {
@@ -567,19 +567,19 @@ void packUseItem(PLAYER *pPlayer, int nPack)
             break;
         }
         case kPackDivingSuit:
-            v4 = 1;
+            bActivate = 1;
             nPowerUp = kPwUpDivingSuit;
             break;
         case kPackCrystalBall:
-            v4 = 1;
+            bActivate = 1;
             nPowerUp = kPwUpCrystalBall;
             break;
         case kPackBeastVision:
-            v4 = 1;
+            bActivate = 1;
             nPowerUp = kPwUpBeastVision;
             break;
         case kPackJumpBoots:
-            v4 = 1;
+            bActivate = 1;
             nPowerUp = kPwUpJumpBoots;
             break;
         default:
@@ -590,7 +590,7 @@ void packUseItem(PLAYER *pPlayer, int nPack)
             pPlayer->packItemId = nPack;
     }
     pPlayer->packItemTime = 0;
-    if (v4)
+    if (bActivate)
         powerupSetState(pPlayer, nPowerUp, pPlayer->packSlots[nPack].isActive);
 }
 
