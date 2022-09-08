@@ -1935,7 +1935,7 @@ void viewDrawMultiKill(ClockTicks arg)
         }
         viewDrawText(0, buffer, 160, nY, -128, nPalette, 1, 1, 0, nAlpha);
         gAnnounceKillingSpreeTicks = gAnnounceKillingSpreeTicks - arg;
-        if (gAnnounceKillingSpreeTicks < 0) // reset currently announced kill streak
+        if (gAnnounceKillingSpreeTicks <= 0) // reset currently announced kill streak
             playerResetAnnounceKillingSpree();
     }
 }
