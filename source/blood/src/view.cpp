@@ -2381,7 +2381,7 @@ void viewUpdateHudRatio(void)
        xscalestats = viewCalculateOffetRatio(gLevelStats-2);
     if (gPowerupDuration > 1)
        xscalepowerups = viewCalculateOffetRatio(gPowerupDuration-2);
-    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = xscalehud;
+    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = (gViewSize < 6) ? xscalehud : 0;
 
     if (gPowerupDuration)
         xscalectfhud = xscalepowerups;
