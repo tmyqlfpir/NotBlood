@@ -1843,6 +1843,39 @@ void viewDrawCtfHud(ClockTicks arg)
     flashTeamScore(arg, 1, true);
 }
 
+void viewDrawKillMsg(ClockTicks arg)
+{
+    if ((gViewSize == 0) || (gKillMsg == 0))
+        return;
+
+    const char bShowKillerMsg = (gPlayerKillMsgTicks > 0) && (gPlayerLastVictim >= 0) && (gPlayerLastVictim < kMaxPlayers);
+    const char bShowVictimMsg = (gPlayerKillMsgTicks > 0) && (gPlayerLastKiller >= 0) && (gPlayerLastKiller < kMaxPlayers);
+    if (!bShowKillerMsg && !bShowVictimMsg)
+        return;
+
+    int nPal = 10; // 10: dark blue
+    char buffer[128] = "";
+    if (bShowVictimMsg)
+    {
+        if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+            nPal = (gPlayer[gPlayerLastKiller].teamId&1) ? 7 : 10;
+        sprintf(buffer, "Killed by %s", gProfile[gPlayerLastKiller].name);
+        COLORSTR colorStr = {nPal, 10, {10, 127}, {-1, -1}};
+        viewDrawText(0, buffer, 160, 137, -128, 0, 1, 1, 0, 0, &colorStr);
+    }
+    else if (bShowKillerMsg)
+    {
+        if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
+            nPal = (gPlayer[gPlayerLastVictim].teamId&1) ? 7 : 10;
+        sprintf(buffer, "Killed %s", gProfile[gPlayerLastVictim].name);
+        COLORSTR colorStr = {nPal, 10, {7, 127}, {-1, -1}};
+        viewDrawText(0, buffer, 160, 137, -128, 0, 1, 1, 0, 0, &colorStr);
+    }
+    gPlayerKillMsgTicks = gPlayerKillMsgTicks - arg;
+    if (gPlayerKillMsgTicks <= 0)
+        playerResetKillMsg();
+}
+
 void viewDrawMultiKill(ClockTicks arg)
 {
     if ((gViewSize == 0) || (gMultiKill == 0))
@@ -2203,7 +2236,11 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gGameOptions.nGameType < 1) return;
 
-    if (gGameOptions.nGameType >= 2) viewDrawMultiKill(arg);
+    if (gGameOptions.nGameType >= 2)
+    {
+        viewDrawKillMsg(arg);
+        viewDrawMultiKill(arg);
+    }
 
     if (gGameOptions.nGameType == 3)
     {

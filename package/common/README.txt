@@ -173,6 +173,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable sector texture panning interpolation (cl_interpolate must be set on)
 * cl_interpolateweapon
    - Enable/disable view interpolation for drawn weapon (0: disable, 1: position, 2: position/qav animation)
+* cl_killmsg
+   - Enable/disable kill messages
 * cl_multikill
    - Enable/disable multi kill messages (0: disable, 1: enable, 2: enable + audio alert)
 * cl_weaponhbob

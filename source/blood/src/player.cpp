@@ -67,6 +67,10 @@ bool gRedFlagDropped = false;
 int gPlayerScores[kMaxPlayers];
 ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
+int gPlayerLastKiller;
+int gPlayerLastVictim;
+ClockTicks gPlayerKillMsgTicks;
+
 int gMultiKillsFrags[kMaxPlayers];
 ClockTicks gMultiKillsTicks[kMaxPlayers];
 
@@ -1041,6 +1045,8 @@ void playerStart(int nPlayer, int bNewLevel)
     }
     gMultiKillsFrags[nPlayer] = 0;
     gMultiKillsTicks[nPlayer] = 0;
+    if (bNewLevel || (nPlayer == gPlayerLastVictim) && (pPlayer == gMe))
+        playerResetKillMsg();
     if (bNewLevel || (nPlayer == gAnnounceKillingSpreePlayer))
         playerResetAnnounceKillingSpree();
 }
@@ -2176,6 +2182,22 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
             pKiller->fragCount++;
             pKiller->fragInfo[nKiller]++;
             gMultiKillsFrags[nVictim] = 0;
+            if (gKillMsg) // calculate kill message notification
+            {
+                if (pVictim == gMe) // if other player killed current player
+                {
+                    playerResetKillMsg();
+                    gPlayerLastKiller = nKiller;
+                    gPlayerLastVictim = nVictim;
+                    gPlayerKillMsgTicks = kTicRate * 5.5;
+                }
+                else if (pKiller == gMe) // if current player killed other player
+                {
+                    playerResetKillMsg();
+                    gPlayerLastVictim = nVictim;
+                    gPlayerKillMsgTicks = kTicRate * 2.5;
+                }
+            }
         }
         if (gGameOptions.nGameType == 3)
         {
