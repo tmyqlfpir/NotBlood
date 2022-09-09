@@ -1045,7 +1045,7 @@ void playerStart(int nPlayer, int bNewLevel)
     }
     gMultiKillsFrags[nPlayer] = 0;
     gMultiKillsTicks[nPlayer] = 0;
-    if (bNewLevel || (nPlayer == gPlayerLastVictim) && (pPlayer == gMe))
+    if (bNewLevel || ((nPlayer == gPlayerLastVictim) && (pPlayer == gMe)))
         playerResetKillMsg();
     if (bNewLevel || (nPlayer == gAnnounceKillingSpreePlayer))
         playerResetAnnounceKillingSpree();

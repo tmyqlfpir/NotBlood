@@ -239,11 +239,15 @@ inline void viewBackupSpriteLoc(int nSprite, spritetype *pSprite)
     }
 }
 
-inline void viewCorrectSpriteInterpolateOffsets(spritetype *pSprite, vec3_t *offsetPos)
+inline void viewCorrectSpriteInterpolateOffsets(int nSprite, spritetype *pSprite, vec3_t *offsetPos)
 {
-    const int nSprite = pSprite->index;
-    LOCATION *pPrevLoc = &gPrevSpriteLoc[nSprite];
-    pPrevLoc->x = pSprite->x+(pPrevLoc->x-offsetPos->x);
-    pPrevLoc->y = pSprite->y+(pPrevLoc->y-offsetPos->y);
-    pPrevLoc->z = pSprite->z+(pPrevLoc->z-offsetPos->z);
+    if (TestBitString(gInterpolateSprite, nSprite))
+    {
+        if (!gViewInterpolate) // view interpolation is off, clear interpolation sprite flag from array
+            return ClearBitString(gInterpolateSprite, nSprite);
+        LOCATION *pPrevLoc = &gPrevSpriteLoc[nSprite];
+        pPrevLoc->x = pSprite->x+(pPrevLoc->x-offsetPos->x);
+        pPrevLoc->y = pSprite->y+(pPrevLoc->y-offsetPos->y);
+        pPrevLoc->z = pSprite->z+(pPrevLoc->z-offsetPos->z);
+    }
 }
