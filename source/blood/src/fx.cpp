@@ -294,10 +294,7 @@ void CFX::fxProcess(void)
                         if (CheckLink(&pSprite->x, &pSprite->y, &pSprite->z, &nSectnum)) // if found ror floor underneath
                         {
                             ChangeSpriteSect(nSprite, nSectnum);
-                            if (gViewInterpolate && TestBitString(gInterpolateSprite, nSprite)) // if sprite is set to be interpolated, update previous position
-                                viewCorrectSpriteInterpolateOffsets(pSprite, &oldPos);
-                            else
-                                ClearBitString(gInterpolateSprite, pSprite->index);
+                            viewCorrectSpriteInterpolateOffsets(nSprite, pSprite, &oldPos); // if sprite is set to be interpolated, update previous position
                             sfxUpdateSpritePos(pSprite, &oldPos); // update any assigned sfx to new sprite position
                             continue;
                         }
