@@ -2339,7 +2339,7 @@ spritetype *playerDropFlag(PLAYER *pPlayer, int a2)
 
 #define kInvulSteps 8
 
-int invulTimers[kInvulSteps] =
+const int invulTimers[kInvulSteps] =
 {
     int(kTicRate/6*6.0), // no health (1 full second)
     int(kTicRate/6*6.0),
