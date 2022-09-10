@@ -2337,18 +2337,18 @@ spritetype *playerDropFlag(PLAYER *pPlayer, int a2)
     return pSprite;
 }
 
-#define INVUL_LEVELS 8
+#define kInvulSteps 8
 
-int invulTimers[INVUL_LEVELS] =
+const int invulTimers[kInvulSteps] =
 {
-    {120}, // no health (1 full second)
-    {120},
-    {100},
-    {80},
-    {70},
-    {60},
-    {60},
-    {60}, // full health (half a second)
+    int(kTicRate/6*6.0), // no health (1 full second)
+    int(kTicRate/6*6.0),
+    int(kTicRate/6*5.0),
+    int(kTicRate/6*4.0),
+    int(kTicRate/6*3.5),
+    int(kTicRate/6*3.0), // full health (half a second)
+    int(kTicRate/6*3.0),
+    int(kTicRate/6*3.0)
 };
 
 int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, int nDamage)
@@ -2363,10 +2363,10 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         {
             const DUDEINFO *pDudeInfo = getDudeInfo(pPlayer->pSprite->type);
             const XSPRITE *pXSprite = pPlayer->pXSprite;
-            const int nHealth = clamp(pXSprite->health / ((pDudeInfo->startHealth<<4)>>3), 0, INVUL_LEVELS-1); // divide health into invul array range (0-7)
+            const int nHealth = clamp(pXSprite->health / ((pDudeInfo->startHealth<<4)>>3), 0, kInvulSteps-1); // divide health into invul array range (0-7)
             const int nInvulTicks = ((invulTimers[nHealth]/4) * (4-gProfile[pPlayer->nPlayer].skill+1))>>1; // scale invul ticks depending on current difficulty
-            const bool invulState = pPlayer->invulTime > gFrameClock - nInvulTicks;
-            if ((pPlayer->invulTime != gFrameClock) && invulState) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
+            const char bInvulState = pPlayer->invulTime > (gFrameClock - nInvulTicks);
+            if ((pPlayer->invulTime != gFrameClock) && bInvulState) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
                 return 0;
         }
         if ((nDamageType != kDamageBurn) && (nDamageType != kDamageDrown)) // do not update the invul timer on burn or drown damage
