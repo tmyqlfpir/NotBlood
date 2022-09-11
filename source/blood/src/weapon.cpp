@@ -1598,7 +1598,7 @@ void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
 
         // by NoOne: trying to simulate v1.0x voodoo here.
         // dunno how exactly it works, but at least it not spend all the ammo on alt fire
-        if (WeaponsV10x() && !VanillaMode()) {
+        if ((WeaponsV10x() || WeaponsNotBlood()) && !VanillaMode()) {
             int nCount = ClipHigh(pPlayer->ammoCount[9], pPlayer->aimTargetsCount);
             if (nCount > 0)
             {
@@ -2023,7 +2023,7 @@ inline char processSprayCanNotBlood(PLAYER *pPlayer)
         if (!pPlayer->input.buttonFlags.shoot && !pPlayer->input.buttonFlags.shoot2)
         {
             const char bThrowTimeThreshold = (int)gFrameClock-pPlayer->throwTime > (kTicsPerFrame*6);
-            if (!bThrowTimeThreshold) // if didn't hold spray can long enough, drop to floor
+            if (!bThrowTimeThreshold && (pPlayer->weaponState == 3)) // if didn't hold spray can long enough, drop to floor
             {
                 pPlayer->weaponState = 3;
                 pPlayer->fuseTime = pPlayer->weaponTimer;
@@ -2123,7 +2123,7 @@ inline char processTNTNotBlood(PLAYER *pPlayer)
         if (!pPlayer->input.buttonFlags.shoot && !pPlayer->input.buttonFlags.shoot2)
         {
             const char bThrowTimeThreshold = (int)gFrameClock-pPlayer->throwTime > (kTicsPerFrame*4);
-            if (!bThrowTimeThreshold) // if didn't hold tnt bundle long enough, drop to floor
+            if (!bThrowTimeThreshold && (pPlayer->weaponState == 1)) // if didn't hold tnt bundle long enough, drop to floor
             {
                 pPlayer->weaponState = 1;
                 pPlayer->fuseTime = pPlayer->weaponTimer;

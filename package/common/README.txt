@@ -111,7 +111,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Do double melee damage if attacking enemies from 45 degrees behind
    - Allows tesla projectiles to be reflected back with reflective shots powerup
    - Adds a special alt fire missile attack for pitchfork's charge up while quad damage is active
-   - Allow TNT/spray can to be thrown while holding down alt-fire, or dropped by pressing alt-fire once
+   - Allow TNT/spray can to be thrown while holding down alt fire, or dropped by pressing alt fire once
+   - Voodoo doll alt fire attacks all targets visible on screen (like V1.X behavior)
 * Sector behavior
    - Fixes room over room sector handling with hitscan calculations
    - Allow hitscan weapons to be fired when floating above water
