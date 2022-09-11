@@ -1089,7 +1089,7 @@ void LocalKeys(void)
         case sc_F1:
             keyFlushScans();
             if (gGameOptions.nGameType == 0)
-                gGameMenuMgr.Push(&menuOrder,-1);
+                gGameMenuMgr.Push(&menuHelp,-1);
             break;
         case sc_F2:
             keyFlushScans();

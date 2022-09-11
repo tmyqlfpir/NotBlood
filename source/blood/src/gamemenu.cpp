@@ -40,7 +40,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 CMenuTextMgr gMenuTextMgr;
 CGameMenuMgr gGameMenuMgr;
 
-extern CGameMenuItemPicCycle itemSorryPicCycle;
 extern CGameMenuItemQAV itemBloodQAV;
 
 CMenuTextMgr::CMenuTextMgr()
@@ -322,7 +321,7 @@ CGameMenu::~CGameMenu()
         return;
     for (int i = 0; i < m_nItems; i++)
     {
-        if (pItemList[i] != &itemBloodQAV && pItemList[i] != &itemSorryPicCycle)
+        if (pItemList[i] != &itemBloodQAV)
             delete pItemList[i];
     }
 }
@@ -824,7 +823,6 @@ void CGameMenuItem7EA1C::Setup(void)
         return;
     const char *title = at34->GetKeyString(at48, "Title", at48);
     at24->Add(new CGameMenuItemTitle(title, 1, 160, 20, 2038), false);
-    at24->Add(&itemSorryPicCycle, true);
     int y = 40;
     for (int i = 0; i < 21; i++)
     {
@@ -931,7 +929,7 @@ void CGameMenuItem7EE34::Draw(void)
     gMenuTextMgr.DrawText(m_pzText, m_nFont, x, m_nY, shade, pal, true);
 }
 
-extern void SetVideoModeOld(CGameMenuItemChain *pItem);
+extern void SetVideoMode(CGameMenuItemChain *pItem);
 
 void CGameMenuItem7EE34::Setup(void)
 {
@@ -942,7 +940,6 @@ void CGameMenuItem7EE34::Setup(void)
     {
         at2c = new CGameMenu(1);
         at2c->Add(new CGameMenuItemTitle(" Mode Change ", 1, 160, 20, 2038), false);
-        at2c->Add(&itemSorryPicCycle, true);
         CGameMenuItem *pItem1 = new CGameMenuItemText("VIDEO MODE WAS SET", 1, 160, 90, 1);
         CGameMenuItem *pItem2 = new CGameMenuItemText("NOT ALL MODES Work correctly", 1, 160, 110, 1);
         CGameMenuItem *pItem3 = new CGameMenuItemText("Press ESC to exit", 3, 160, 140, 1);
@@ -956,12 +953,12 @@ void CGameMenuItem7EE34::Setup(void)
     }
     sprintf(buffer[0], "640 x 480 (default)");
     int y = 40;
-    at28->Add(new CGameMenuItemChain(buffer[0], 3, 0, y, 320, 1, at2c, -1, SetVideoModeOld, validmodecnt), true);
+    at28->Add(new CGameMenuItemChain(buffer[0], 3, 0, y, 320, 1, at2c, -1, SetVideoMode, validmodecnt), true);
     y += 20;
     for (int i = 0; i < validmodecnt && i < 20; i++)
     {
         sprintf(buffer[i+1], "%d x %d", validmode[i].xdim, validmode[i].ydim);
-        at28->Add(new CGameMenuItemChain(buffer[i+1], 3, 0, y, 320, 1, at2c, -1, SetVideoModeOld, i), false);
+        at28->Add(new CGameMenuItemChain(buffer[i+1], 3, 0, y, 320, 1, at2c, -1, SetVideoMode, i), false);
         if (validmodecnt > 10)
             y += 7;
         else
