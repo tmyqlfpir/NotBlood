@@ -1831,11 +1831,7 @@ void AltFireLifeLeech(int nTrigger, PLAYER *pPlayer)
         pMissile->cstat |= 4096;
         XSPRITE *pXSprite = &xsprite[pMissile->extra];
         if (WeaponsNotBlood() && !VanillaMode()) // lower overall lifeleech health from 150: 75 + (player's hp / 2)
-        {
-            pXSprite->health = (75 + (pPlayer->pXSprite->health >> 5)) << 4;
-            if (pXSprite->health > (150 << 4)) // don't go above original health value (possible with life seed)
-                pXSprite->health = (150 << 4);
-        }
+            pXSprite->health = ClipHigh((75 + (pPlayer->pXSprite->health >> 5)) << 4, pXSprite->health); // don't go above original health value (possible with life seed)
         pXSprite->Push = 1;
         pXSprite->Proximity = 1;
         pXSprite->DudeLockout = 1;
