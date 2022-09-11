@@ -1598,7 +1598,7 @@ void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
 
         // by NoOne: trying to simulate v1.0x voodoo here.
         // dunno how exactly it works, but at least it not spend all the ammo on alt fire
-        if (WeaponsV10x() && !VanillaMode()) {
+        if ((WeaponsV10x() || WeaponsNotBlood()) && !VanillaMode()) {
             int nCount = ClipHigh(pPlayer->ammoCount[9], pPlayer->aimTargetsCount);
             if (nCount > 0)
             {
@@ -1628,6 +1628,13 @@ void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
                 }
             }
 
+            if (WeaponsNotBlood()) // use all ammo on alt fire
+            {
+                UseAmmo(pPlayer, 9, pPlayer->ammoCount[9]);
+                pPlayer->hasWeapon[kWeaponVoodoo] = 0;
+                pPlayer->weaponState = -1;
+                return;
+            }
             UseAmmo(pPlayer, 9, 20);
             pPlayer->weaponState = 0;
             return;
