@@ -2374,7 +2374,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         }
         else
         {
-            viewSetMessage("Last weapon button disabled for vanilla mode...");
+            viewSetMessage("Last weapon button disabled for vanilla mode...", 0, MESSAGE_PRIORITY_PICKUP);
         }
     }
     if (pPlayer->input.keyFlags.nextWeapon)
