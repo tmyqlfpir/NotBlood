@@ -1993,76 +1993,17 @@ char WeaponFindLoaded(PLAYER *pPlayer, int *a2)
     return weapon;
 }
 
-inline char processSprayCanNotBlood(PLAYER *pPlayer)
-{
-    switch (pPlayer->weaponState)
-    {
-    case 5:
-        if (pPlayer->input.buttonFlags.shoot2)
-        {
-            pPlayer->weaponState = 6;
-        }
-        else
-        {
-            pPlayer->weaponState = 3;
-            pPlayer->fuseTime = pPlayer->weaponTimer;
-            StartQAV(pPlayer, 13, nClientDropCan, 0);
-        }
-        return 1;
-    case 6:
-        if (pPlayer->input.buttonFlags.shoot || pPlayer->input.buttonFlags.shoot2)
-        {
-            pPlayer->weaponState = 7;
-            pPlayer->fuseTime = 0;
-            pPlayer->throwTime = (int)gFrameClock;
-        }
-        else
-        {
-            pPlayer->weaponState = 3;
-            pPlayer->fuseTime = pPlayer->weaponTimer;
-            StartQAV(pPlayer, 13, nClientDropCan, 0);
-        }
-        return 1;
-    case 7:
-    {
-        pPlayer->throwPowerOld = pPlayer->throwPower;
-        pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
-        if (!pPlayer->input.buttonFlags.shoot && !pPlayer->input.buttonFlags.shoot2)
-        {
-            const char bThrowTimeThreshold = (int)gFrameClock-pPlayer->throwTime > (kTicsPerFrame*6);
-            if (!bThrowTimeThreshold && !pPlayer->fuseTime) // if didn't hold spray can long enough, drop to floor
-            {
-                pPlayer->weaponState = 3;
-                pPlayer->fuseTime = pPlayer->weaponTimer;
-                StartQAV(pPlayer, 13, nClientDropCan, 0);
-                pPlayer->throwPowerOld = pPlayer->throwPower = 0;
-                return 1;
-            }
-            if (!pPlayer->fuseTime)
-                pPlayer->fuseTime = pPlayer->weaponTimer;
-            pPlayer->weaponState = 1;
-            StartQAV(pPlayer, 14, nClientThrowCan, 0);
-            pPlayer->throwPowerOld = pPlayer->throwPower;
-        }
-        return 1;
-    }
-    }
-    return 0;
-}
-
 char processSprayCan(PLAYER *pPlayer)
 {
-    if (WeaponsNotBlood() && !VanillaMode())
-        return processSprayCanNotBlood(pPlayer);
-
+    const char bUseShootAsThrow = !VanillaMode() && pPlayer->input.buttonFlags.shoot;
     switch (pPlayer->weaponState)
     {
     case 5:
-        if (!pPlayer->input.buttonFlags.shoot2)
+        if (!pPlayer->input.buttonFlags.shoot2 || bUseShootAsThrow)
             pPlayer->weaponState = 6;
         return 1;
     case 6:
-        if (pPlayer->input.buttonFlags.shoot2)
+        if (pPlayer->input.buttonFlags.shoot2 && !bUseShootAsThrow)
         {
             pPlayer->weaponState = 3;
             pPlayer->fuseTime = pPlayer->weaponTimer;
@@ -2093,76 +2034,17 @@ char processSprayCan(PLAYER *pPlayer)
     return 0;
 }
 
-inline char processTNTNotBlood(PLAYER *pPlayer)
-{
-    switch (pPlayer->weaponState)
-    {
-    case 4:
-        if (pPlayer->input.buttonFlags.shoot2)
-        {
-            pPlayer->weaponState = 5;
-        }
-        else
-        {
-            pPlayer->weaponState = 1;
-            pPlayer->fuseTime = pPlayer->weaponTimer;
-            StartQAV(pPlayer, 22, nClientDropBundle, 0);
-        }
-        return 1;
-    case 5:
-        if (pPlayer->input.buttonFlags.shoot || pPlayer->input.buttonFlags.shoot2)
-        {
-            pPlayer->weaponState = 6;
-            pPlayer->fuseTime = 0;
-            pPlayer->throwTime = (int)gFrameClock;
-        }
-        else
-        {
-            pPlayer->weaponState = 1;
-            pPlayer->fuseTime = pPlayer->weaponTimer;
-            StartQAV(pPlayer, 22, nClientDropBundle, 0);
-        }
-        return 1;
-    case 6:
-    {
-        pPlayer->throwPowerOld = pPlayer->throwPower;
-        pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
-        if (!pPlayer->input.buttonFlags.shoot && !pPlayer->input.buttonFlags.shoot2)
-        {
-            const char bThrowTimeThreshold = (int)gFrameClock-pPlayer->throwTime > (kTicsPerFrame*4);
-            if (!bThrowTimeThreshold && !pPlayer->fuseTime) // if didn't hold tnt bundle long enough, drop to floor
-            {
-                pPlayer->weaponState = 1;
-                pPlayer->fuseTime = pPlayer->weaponTimer;
-                StartQAV(pPlayer, 22, nClientDropBundle, 0);
-                pPlayer->throwPowerOld = pPlayer->throwPower = 0;
-                return 1;
-            }
-            if (!pPlayer->fuseTime)
-                pPlayer->fuseTime = pPlayer->weaponTimer;
-            pPlayer->weaponState = 1;
-            StartQAV(pPlayer, 23, nClientThrowBundle, 0);
-            pPlayer->throwPowerOld = pPlayer->throwPower;
-        }
-        return 1;
-    }
-    }
-    return 0;
-}
-
 char processTNT(PLAYER *pPlayer)
 {
-    if (WeaponsNotBlood() && !VanillaMode())
-        return processTNTNotBlood(pPlayer);
-
+    const char bUseShootAsThrow = !VanillaMode() && pPlayer->input.buttonFlags.shoot;
     switch (pPlayer->weaponState)
     {
     case 4:
-        if (!pPlayer->input.buttonFlags.shoot2)
+        if (!pPlayer->input.buttonFlags.shoot2 || bUseShootAsThrow)
             pPlayer->weaponState = 5;
         return 1;
     case 5:
-        if (pPlayer->input.buttonFlags.shoot2)
+        if (pPlayer->input.buttonFlags.shoot2 && !bUseShootAsThrow)
         {
             pPlayer->weaponState = 1;
             pPlayer->fuseTime = pPlayer->weaponTimer;
