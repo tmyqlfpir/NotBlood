@@ -1831,11 +1831,7 @@ void AltFireLifeLeech(int nTrigger, PLAYER *pPlayer)
         pMissile->cstat |= 4096;
         XSPRITE *pXSprite = &xsprite[pMissile->extra];
         if (WeaponsNotBlood() && !VanillaMode()) // lower overall lifeleech health from 150: 75 + (player's hp / 2)
-        {
-            pXSprite->health = (75 + (pPlayer->pXSprite->health >> 5)) << 4;
-            if (pXSprite->health > (150 << 4)) // don't go above original health value (possible with life seed)
-                pXSprite->health = (150 << 4);
-        }
+            pXSprite->health = ClipHigh((75 + (pPlayer->pXSprite->health >> 5)) << 4, pXSprite->health); // don't go above original health value (possible with life seed)
         pXSprite->Push = 1;
         pXSprite->Proximity = 1;
         pXSprite->DudeLockout = 1;
@@ -1990,8 +1986,68 @@ char WeaponFindLoaded(PLAYER *pPlayer, int *a2)
     return weapon;
 }
 
+inline char processSprayCanNotBlood(PLAYER *pPlayer)
+{
+    switch (pPlayer->weaponState)
+    {
+    case 5:
+        if (pPlayer->input.buttonFlags.shoot2)
+        {
+            pPlayer->weaponState = 6;
+        }
+        else
+        {
+            pPlayer->weaponState = 3;
+            pPlayer->fuseTime = pPlayer->weaponTimer;
+            StartQAV(pPlayer, 13, nClientDropCan, 0);
+        }
+        return 1;
+    case 6:
+        if (pPlayer->input.buttonFlags.shoot || pPlayer->input.buttonFlags.shoot2)
+        {
+            pPlayer->weaponState = 7;
+            pPlayer->fuseTime = 0;
+            pPlayer->throwTime = (int)gFrameClock;
+        }
+        else
+        {
+            pPlayer->weaponState = 3;
+            pPlayer->fuseTime = pPlayer->weaponTimer;
+            StartQAV(pPlayer, 13, nClientDropCan, 0);
+        }
+        return 1;
+    case 7:
+    {
+        pPlayer->throwPowerOld = pPlayer->throwPower;
+        pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
+        if (!pPlayer->input.buttonFlags.shoot && !pPlayer->input.buttonFlags.shoot2)
+        {
+            const char bThrowTimeThreshold = (int)gFrameClock-pPlayer->throwTime > (kTicsPerFrame*6);
+            if (!bThrowTimeThreshold) // if didn't hold spray can long enough, drop to floor
+            {
+                pPlayer->weaponState = 3;
+                pPlayer->fuseTime = pPlayer->weaponTimer;
+                StartQAV(pPlayer, 13, nClientDropCan, 0);
+                pPlayer->throwPowerOld = pPlayer->throwPower = 0;
+                return 1;
+            }
+            if (!pPlayer->fuseTime)
+                pPlayer->fuseTime = pPlayer->weaponTimer;
+            pPlayer->weaponState = 1;
+            StartQAV(pPlayer, 14, nClientThrowCan, 0);
+            pPlayer->throwPowerOld = pPlayer->throwPower;
+        }
+        return 1;
+    }
+    }
+    return 0;
+}
+
 char processSprayCan(PLAYER *pPlayer)
 {
+    if (WeaponsNotBlood() && !VanillaMode())
+        return processSprayCanNotBlood(pPlayer);
+
     switch (pPlayer->weaponState)
     {
     case 5:
@@ -2030,8 +2086,68 @@ char processSprayCan(PLAYER *pPlayer)
     return 0;
 }
 
+inline char processTNTNotBlood(PLAYER *pPlayer)
+{
+    switch (pPlayer->weaponState)
+    {
+    case 4:
+        if (pPlayer->input.buttonFlags.shoot2)
+        {
+            pPlayer->weaponState = 5;
+        }
+        else
+        {
+            pPlayer->weaponState = 1;
+            pPlayer->fuseTime = pPlayer->weaponTimer;
+            StartQAV(pPlayer, 22, nClientDropBundle, 0);
+        }
+        return 1;
+    case 5:
+        if (pPlayer->input.buttonFlags.shoot || pPlayer->input.buttonFlags.shoot2)
+        {
+            pPlayer->weaponState = 6;
+            pPlayer->fuseTime = 0;
+            pPlayer->throwTime = (int)gFrameClock;
+        }
+        else
+        {
+            pPlayer->weaponState = 1;
+            pPlayer->fuseTime = pPlayer->weaponTimer;
+            StartQAV(pPlayer, 22, nClientDropBundle, 0);
+        }
+        return 1;
+    case 6:
+    {
+        pPlayer->throwPowerOld = pPlayer->throwPower;
+        pPlayer->throwPower = ClipHigh(divscale16((int)gFrameClock-pPlayer->throwTime,240), 65536);
+        if (!pPlayer->input.buttonFlags.shoot && !pPlayer->input.buttonFlags.shoot2)
+        {
+            const char bThrowTimeThreshold = (int)gFrameClock-pPlayer->throwTime > (kTicsPerFrame*4);
+            if (!bThrowTimeThreshold) // if didn't hold tnt bundle long enough, drop to floor
+            {
+                pPlayer->weaponState = 1;
+                pPlayer->fuseTime = pPlayer->weaponTimer;
+                StartQAV(pPlayer, 22, nClientDropBundle, 0);
+                pPlayer->throwPowerOld = pPlayer->throwPower = 0;
+                return 1;
+            }
+            if (!pPlayer->fuseTime)
+                pPlayer->fuseTime = pPlayer->weaponTimer;
+            pPlayer->weaponState = 1;
+            StartQAV(pPlayer, 23, nClientThrowBundle, 0);
+            pPlayer->throwPowerOld = pPlayer->throwPower;
+        }
+        return 1;
+    }
+    }
+    return 0;
+}
+
 char processTNT(PLAYER *pPlayer)
 {
+    if (WeaponsNotBlood() && !VanillaMode())
+        return processTNTNotBlood(pPlayer);
+
     switch (pPlayer->weaponState)
     {
     case 4:
@@ -2374,7 +2490,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         }
         else
         {
-            viewSetMessage("Last weapon button disabled for vanilla mode...");
+            viewSetMessage("Last weapon button disabled for vanilla mode...", 0, MESSAGE_PRIORITY_PICKUP);
         }
     }
     if (pPlayer->input.keyFlags.nextWeapon)
@@ -2713,6 +2829,8 @@ void WeaponProcess(PLAYER *pPlayer) {
                 StartQAV(pPlayer, 91, nClientFireNapalm, 0);
             return;
         case kWeaponLifeLeech:
+            if (WeaponsNotBlood() && !VanillaMode() && (pPlayer->throwPower > 0)) // if currently throwing lifeleech, don't allow lifeleech to be fired
+                break;
             sfxPlay3DSound(pPlayer->pSprite, 494, 2, 0);
             StartQAV(pPlayer, 116, nClientFireLifeLeech, 0);
             return;
