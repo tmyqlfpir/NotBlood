@@ -2030,7 +2030,7 @@ inline char processSprayCanNotBlood(PLAYER *pPlayer)
         if (!pPlayer->input.buttonFlags.shoot && !pPlayer->input.buttonFlags.shoot2)
         {
             const char bThrowTimeThreshold = (int)gFrameClock-pPlayer->throwTime > (kTicsPerFrame*6);
-            if (!bThrowTimeThreshold && (pPlayer->weaponState == 3)) // if didn't hold spray can long enough, drop to floor
+            if (!bThrowTimeThreshold && !pPlayer->fuseTime) // if didn't hold spray can long enough, drop to floor
             {
                 pPlayer->weaponState = 3;
                 pPlayer->fuseTime = pPlayer->weaponTimer;
@@ -2130,7 +2130,7 @@ inline char processTNTNotBlood(PLAYER *pPlayer)
         if (!pPlayer->input.buttonFlags.shoot && !pPlayer->input.buttonFlags.shoot2)
         {
             const char bThrowTimeThreshold = (int)gFrameClock-pPlayer->throwTime > (kTicsPerFrame*4);
-            if (!bThrowTimeThreshold && (pPlayer->weaponState == 1)) // if didn't hold tnt bundle long enough, drop to floor
+            if (!bThrowTimeThreshold && !pPlayer->fuseTime) // if didn't hold tnt bundle long enough, drop to floor
             {
                 pPlayer->weaponState = 1;
                 pPlayer->fuseTime = pPlayer->weaponTimer;
