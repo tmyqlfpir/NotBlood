@@ -2713,6 +2713,8 @@ void WeaponProcess(PLAYER *pPlayer) {
                 StartQAV(pPlayer, 91, nClientFireNapalm, 0);
             return;
         case kWeaponLifeLeech:
+            if (WeaponsNotBlood() && !VanillaMode() && (pPlayer->throwPower > 0)) // if currently throwing lifeleech, don't allow lifeleech to be fired
+                break;
             sfxPlay3DSound(pPlayer->pSprite, 494, 2, 0);
             StartQAV(pPlayer, 116, nClientFireLifeLeech, 0);
             return;
