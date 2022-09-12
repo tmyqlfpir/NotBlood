@@ -4418,6 +4418,7 @@ RORHACK:
         sub_557C4(cX, cY, gInterpolate);
         renderDrawMasks();
         gView->pSprite->cstat = bakCstat;
+        char bMirrorScreen = (videoGetRenderMode() == REND_CLASSIC) && r_mirrormode; // mirror framebuffer for classic renderer
 
         if (v78 || bDelirium)
         {
@@ -4436,10 +4437,12 @@ RORHACK:
                     nAng = kAng90 - nAng;
                 }
                 int nScale = dmulscale32(Cos(nAng), 262144, Sin(nAng), 163840)>>tiltcs;
-                if (!(r_mirrormode & 1))
-                    rotatesprite(160<<16, 100<<16, nScale, v78+kAng90, TILTBUFFER, 0, 0, vrc, gViewX0, gViewY0, gViewX1, gViewY1);
-                else // mirror mode, invert blur effect x coords
-                    rotatesprite(160<<16, 100<<16, nScale, v78+kAng90, TILTBUFFER, 0, 0, vrc, -gViewX0, gViewY0, -gViewX1, gViewY1);
+                if (bMirrorScreen) // mirror tilt buffer
+                {
+                    videoMirrorTile((uint8_t *)waloff[TILTBUFFER], tilesiz[TILTBUFFER].x, tilesiz[TILTBUFFER].y);
+                    bMirrorScreen = 0;
+                }
+                rotatesprite(160<<16, 100<<16, nScale, v78+kAng90, TILTBUFFER, 0, 0, vrc, gViewX0, gViewY0, gViewX1, gViewY1);
             }
 #ifdef USE_OPENGL
             else
@@ -4462,7 +4465,7 @@ RORHACK:
 #endif
         }
 
-        if (videoGetRenderMode() == REND_CLASSIC && r_mirrormode) // mirror framebuffer for classic renderer
+        if (bMirrorScreen)
             videoMirrorDrawing();
 
         bDeliriumOld = bDelirium && gDeliriumBlur;
