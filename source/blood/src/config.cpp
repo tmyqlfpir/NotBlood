@@ -466,10 +466,10 @@ void CONFIG_SetDefaults(void)
     gMessageTime = 5;
     gMessageFont = 0;
     gbAdultContent = 0;
+    gzAdultPassword[0] = '\0';
     gStereo = 1;
     gShowPlayerNames = 0;
     gShowWeapon = 2;
-    gzAdultPassword[0] = 0;
 
     gMouseAimingFlipped = 0;
     gMouseAim = 1;
