@@ -1993,7 +1993,7 @@ void videoBeginDrawing(void)
 }
 
 //
-// videoMirrorTile() -- mirror input tile buffer
+// mirrorTile() -- mirror input tile buffer
 //
 static uint8_t mirroredFrame[1920*1080*4] = {0};
 
