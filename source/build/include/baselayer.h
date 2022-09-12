@@ -82,6 +82,7 @@ int32_t videoCheckMode(int32_t *x, int32_t *y, int32_t c, int32_t fs, int32_t fo
 int32_t videoSetMode(int32_t x, int32_t y, int32_t c, int32_t fs);
 void    videoGetModes(int display = -1);
 void    videoResetMode(void);
+void    videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight);
 void    videoMirrorDrawing(void);
 void    videoEndDrawing(void);
 void    videoShowFrame(int32_t);

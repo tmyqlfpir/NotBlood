@@ -4169,7 +4169,7 @@ void viewDrawScreen(void)
         char v10 = 0;
         bool bDelirium = powerupCheck(gView, kPwUpDeliriumShroom) > 0;
         static bool bDeliriumOld = false;
-        int tiltcs, tiltdim;
+        int tiltcs = 0, tiltdim = 320;
         const char bCrystalBall = (powerupCheck(gView, kPwUpCrystalBall) > 0) && (gNetPlayers > 1);
 #ifdef USE_OPENGL
         renderSetRollAngle(0);
@@ -4189,16 +4189,11 @@ void viewDrawScreen(void)
                     tiltcs = 1;
                     tiltdim = 640;
                 }
-                else
-                {
-                    tiltcs = 0;
-                    tiltdim = 320;
-                }
                 renderSetTarget(TILTBUFFER, tiltdim, tiltdim);
-                int nAng = v78&511;
-                if (nAng > 256)
+                int nAng = v78&(kAng90-1);
+                if (nAng > kAng45)
                 {
-                    nAng = 512-nAng;
+                    nAng = kAng90-nAng;
                 }
                 renderSetAspect(mulscale16(vr, dmulscale32(Cos(nAng), 262144, Sin(nAng), 163840)), yxaspect);
             }
@@ -4423,6 +4418,7 @@ RORHACK:
         sub_557C4(cX, cY, gInterpolate);
         renderDrawMasks();
         gView->pSprite->cstat = bakCstat;
+        char bMirrorScreen = 0;
 
         if (v78 || bDelirium)
         {
@@ -4435,16 +4431,18 @@ RORHACK:
                 {
                     vrc = 64+32+4+2+1+1024;
                 }
-                int nAng = v78 & 511;
-                if (nAng > 256)
+                int nAng = v78 & (kAng90-1);
+                if (nAng > kAng45)
                 {
-                    nAng = 512 - nAng;
+                    nAng = kAng90 - nAng;
                 }
                 int nScale = dmulscale32(Cos(nAng), 262144, Sin(nAng), 163840)>>tiltcs;
-                if (!(r_mirrormode & 1))
-                    rotatesprite(160<<16, 100<<16, nScale, v78+512, TILTBUFFER, 0, 0, vrc, gViewX0, gViewY0, gViewX1, gViewY1);
-                else // mirror mode, invert blur effect x coords
-                    rotatesprite(160<<16, 100<<16, nScale, v78+512, TILTBUFFER, 0, 0, vrc, -gViewX0, gViewY0, -gViewX1, gViewY1);
+                if (r_mirrormode) // mirror tilt buffer
+                {
+                    videoMirrorTile((uint8_t *)waloff[TILTBUFFER], tilesiz[TILTBUFFER].x, tilesiz[TILTBUFFER].y);
+                    bMirrorScreen = 1;
+                }
+                rotatesprite(160<<16, 100<<16, nScale, v78+kAng90, TILTBUFFER, 0, 0, vrc, gViewX0, gViewY0, gViewX1, gViewY1);
             }
 #ifdef USE_OPENGL
             else
@@ -4467,7 +4465,7 @@ RORHACK:
 #endif
         }
 
-        if (videoGetRenderMode() == REND_CLASSIC && r_mirrormode) // mirror framebuffer for classic renderer
+        if ((videoGetRenderMode() == REND_CLASSIC) && r_mirrormode && !bMirrorScreen) // mirror framebuffer for classic renderer
             videoMirrorDrawing();
 
         bDeliriumOld = bDelirium && gDeliriumBlur;

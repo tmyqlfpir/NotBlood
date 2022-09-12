@@ -463,7 +463,7 @@ static double srcDeltaE2000(double *lab1, double *lab2)
     // mean hue to the sum which is equivalent to other value
     if (Cpprod==0.0) hp= hpsample+hpstd;
 
-    double Lpm502= (Lp-50.0)*(Lp-50.0);;
+    double Lpm502= (Lp-50.0)*(Lp-50.0);
     double Sl= 1.0+0.015*Lpm502/sqrt(20.0+Lpm502);
     double Sc= 1.0+0.045*Cp;
     double T= 1.0 - 0.17*cos(hp - pi/6.0) + 0.24*cos(2.0*hp) + 0.32*cos(3.0*hp+pi/30.0) - 0.20*cos(4.0*hp-63.0*pi/180.0);
