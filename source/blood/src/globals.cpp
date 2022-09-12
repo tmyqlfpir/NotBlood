@@ -36,7 +36,7 @@ ClockTicks gFrameTicks;
 int gFrame;
 //int volatile gGameClock;
 int gFrameRate;
-int gGamma;
+int gGamma = 0;
 int gSlowRoomFlicker;
 
 char *gVersionString;
