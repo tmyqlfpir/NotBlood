@@ -2108,7 +2108,7 @@ RESTART:
             if (bDraw)
             {
                 videoClearScreen(0);
-                if (gGameMenuMgr.m_bActive && (nGammaMenu < 60))
+                if (gGameMenuMgr.m_bActive && (nGammaMenu < 40))
                     nGammaMenu += 2;
                 else if (!gGameMenuMgr.m_bActive && (nGammaMenu > 0))
                     nGammaMenu -= 1;
