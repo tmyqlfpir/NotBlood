@@ -288,7 +288,6 @@ CGameMenu menuDifficulty;
 CGameMenu menuCustomDifficulty;
 CGameMenu menuControls;
 CGameMenu menuMessages;
-CGameMenu menuKeys;
 CGameMenu menuSaveGame;
 CGameMenu menuLoadGame;
 CGameMenu menuLoading;
@@ -359,14 +358,6 @@ CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75
 CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 149, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 161, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
-CGameMenuItemTitle itemControlsTitle("CONTROLS", 1, 160, 20, 2038);
-CGameMenuItemSliderFloat sliderMouseSpeed("Mouse Sensitivity:", 1, 10, 70, 300, CONTROL_MouseSensitivity, 1.f, 100.f, 1.f, SetMouseSensitivity, -1,-1);
-CGameMenuItemZBool boolMouseFlipped("Invert Mouse Aim:", 1, 10, 90, 300, gMouseAimingFlipped, SetMouseAimFlipped, NULL, NULL);
-CGameMenuItemSlider sliderTurnSpeed("Key Turn Speed:", 1, 10, 110, 300, gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
-CGameMenuItemChain itemChainKeyList("Configure Keys...", 1, 0, 130, 320, 1, &menuKeys, -1, NULL, 0);
-CGameMenuItemChain itemChainKeyReset("Reset Keys (default)...", 1, 0, 150, 320, 1, &menuKeys, -1, ResetKeys, 0);
-CGameMenuItemChain itemChainKeyResetClassic("Reset Keys (classic)...", 1, 0, 170, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
-
 CGameMenuItemTitle itemMessagesTitle("MESSAGES", 1, 160, 20, 2038);
 CGameMenuItemZBool boolMessages("MESSAGES:", 3, 66, 70, 180, 0, SetMessages, NULL, NULL);
 CGameMenuItemSlider sliderMsgCount("MESSAGE COUNT:", 3, 66, 80, 180, gMessageCount, 1, 16, 1, NULL, -1, -1);
@@ -376,9 +367,6 @@ CGameMenuItemZBool boolMsgIncoming("INCOMING:", 3, 66, 110, 180, 0, 0, NULL, NUL
 CGameMenuItemZBool boolMsgSelf("SELF PICKUP:", 3, 66, 120, 180, 0, 0, NULL, NULL);
 CGameMenuItemZBool boolMsgOther("OTHER PICKUP:", 3, 66, 130, 180, 0, 0, NULL, NULL);
 CGameMenuItemZBool boolMsgRespawn("RESPAWN:", 3, 66, 140, 180, 0, 0, NULL, NULL);
-
-CGameMenuItemTitle itemKeysTitle("KEY SETUP", 1, 160, 20, 2038);
-CGameMenuItemKeyList itemKeyList("", 3, 56, 40, 200, 16, NUMGAMEFUNCTIONS, 0);
 
 CGameMenuItemTitle itemSaveTitle("Save Game", 1, 160, 20, 2038);
 CGameMenuItemZEditBitmap itemSaveGame0(NULL, 3, 20, 60, 320, strRestoreGameStrings[kLoadSaveSlot0], 16, 1, SaveGame, kLoadSaveSlot0);
@@ -861,6 +849,7 @@ CGameMenuItemZBool itemOptionsPlayerKillMsg("KILL MESSAGES:", 3, 66, 100, 180, t
 CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 110, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
 
 CGameMenu menuOptionsControlKeyboard;
+CGameMenu menuKeys;
 CGameMenu menuOptionsControlMouse;
 CGameMenu menuOptionsControlMouseButtonAssignment;
 
@@ -878,12 +867,16 @@ CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 125
 CGameMenuItemChain itemOptionsControlKeyboardReset("Reset Keys (default)...", 1, 0, 145, 320, 1, &menuKeys, -1, ResetKeys, 0);
 CGameMenuItemChain itemOptionsControlKeyboardResetClassic("Reset Keys (classic)...", 1, 0, 165, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
 
+CGameMenuItemTitle itemKeysTitle("KEY SETUP", 1, 160, 20, 2038);
+CGameMenuItemKeyList itemKeyList("", 3, 56, 40, 200, 16, NUMGAMEFUNCTIONS, 0);
+
 void SetMouseAimMode(CGameMenuItemZBool *pItem);
 void SetMouseVerticalAim(CGameMenuItemZBool *pItem);
 void SetMouseXSensitivity(CGameMenuItemSliderFloat *pItem);
 void SetMouseYSensitivity(CGameMenuItemSliderFloat*pItem);
 
 void PreDrawControlMouse(CGameMenuItem *pItem);
+void SetMouseButton(CGameMenuItemZCycle *pItem);
 
 void SetupMouseButtonMenu(CGameMenuItemChain *pItem);
 
@@ -958,20 +951,11 @@ static int32_t MenuMouseDataIndex[MENUMOUSEFUNCTIONS][2] = {
     { 6, 1, },
 };
 
-void SetMouseButton(CGameMenuItemZCycle *pItem);
-
 CGameMenuItemZCycle *pItemOptionsControlMouseButton[MENUMOUSEFUNCTIONS];
 
 void SetupLoadingScreen(void)
 {
     menuLoading.Add(&itemLoadingText, true);
-}
-
-void SetupKeyListMenu(void)
-{
-    menuKeys.Add(&itemKeysTitle, false);
-    menuKeys.Add(&itemKeyList, true);
-    menuKeys.Add(&itemBloodQAV, false);
 }
 
 void SetupMessagesMenu(void)
@@ -986,21 +970,6 @@ void SetupMessagesMenu(void)
     menuMessages.Add(&boolMsgOther, false);
     menuMessages.Add(&boolMsgRespawn, false);
     menuMessages.Add(&itemBloodQAV, false);
-}
-
-void SetupControlsMenu(void)
-{
-    sliderMouseSpeed.fValue = ClipRangeF(CONTROL_MouseSensitivity, sliderMouseSpeed.fRangeLow, sliderMouseSpeed.fRangeHigh);
-    sliderTurnSpeed.nValue = ClipRange(gTurnSpeed, sliderTurnSpeed.nRangeLow, sliderTurnSpeed.nRangeHigh);
-    boolMouseFlipped.at20 = gMouseAimingFlipped;
-    menuControls.Add(&itemControlsTitle, false);
-    menuControls.Add(&sliderMouseSpeed, true);
-    menuControls.Add(&boolMouseFlipped, false);
-    menuControls.Add(&sliderTurnSpeed, false);
-    menuControls.Add(&itemChainKeyList, false);
-    menuControls.Add(&itemChainKeyReset, false);
-    menuControls.Add(&itemChainKeyResetClassic, false);
-    menuControls.Add(&itemBloodQAV, false);
 }
 
 void SetupDifficultyMenu(void)
@@ -1653,7 +1622,10 @@ void SetupOptionsMenu(void)
     itemOptionsPlayerChatSound.at20 = gChatSnd;
     itemOptionsPlayerKillMsg.at20 = gKillMsg;
     itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
+}
 
+void SetupControlsMenu(void)
+{
     menuOptionsControl.Add(&itemOptionsControlTitle, false);
     menuOptionsControl.Add(&itemOptionsControlKeyboard, true);
     menuOptionsControl.Add(&itemOptionsControlMouse, false);
@@ -1671,6 +1643,10 @@ void SetupOptionsMenu(void)
     itemOptionsControlKeyboardSliderTurnSpeed.nValue = gTurnSpeed;
     itemOptionsControlKeyboardBoolCrouchToggle.at20 = gCrouchToggle;
     itemOptionsControlKeyboardBoolAutoRun.at20 = gAutoRun;
+
+    menuKeys.Add(&itemKeysTitle, false);
+    menuKeys.Add(&itemKeyList, true);
+    menuKeys.Add(&itemBloodQAV, false);
 
     menuOptionsControlMouse.Add(&itemOptionsControlMouseTitle, false);
     menuOptionsControlMouse.Add(&itemOptionsControlMouseButton, true);
@@ -1721,9 +1697,7 @@ void SetupMenus(void)
     nGamefuncsNum = k;
 
     SetupLoadingScreen();
-    SetupKeyListMenu();
     SetupMessagesMenu();
-    SetupControlsMenu();
     SetupSaveGameMenu();
     SetupLoadGameMenu();
     SetupCreditsMenu();
@@ -1736,6 +1710,7 @@ void SetupMenus(void)
     SetupQuitMenu();
 
     SetupOptionsMenu();
+    SetupControlsMenu();
     SetupNetworkMenu();
 }
 
