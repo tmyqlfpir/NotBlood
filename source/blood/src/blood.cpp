@@ -2040,7 +2040,7 @@ RESTART:
     }
     ready2send = 1;
     static bool frameJustDrawn;
-    int nGammaMenu = !gQuickStart ? 0 : 40;
+    static int nGammaMenu = !gQuickStart ? 0 : 40;
     while (!gQuitGame)
     {
         bool bDraw;
