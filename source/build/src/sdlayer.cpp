@@ -1993,14 +1993,82 @@ void videoBeginDrawing(void)
 }
 
 //
-// mirrorDrawing() -- mirrors the current framebuffer
+// videoMirrorTile() -- mirror input tile buffer
 //
 static uint8_t mirroredFrame[1920*1080*4] = {0};
 
+void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
+{
+    const size_t nSize = nWidth * nHeight;
+    uint8_t *pBuff = mirroredFrame;
+    const char bAllocBuff = nSize > sizeof(mirroredFrame); // if bigger than static 4k mirrored frame, allocate from memory (very slow!)
+    int x, y;
+
+    if (!r_mirrormode || !pTile || !nSize)
+        return;
+    if (bAllocBuff)
+    {
+        pBuff = (uint8_t *)Xmalloc(nSize);
+        if (!pBuff)
+            return;
+    }
+    Bmemcpy(pBuff, (void *)pTile, nSize);
+
+    switch (r_mirrormode)
+    {
+        case 1: // mirror mode (horiz)
+        {
+            for (y = 0; y < nHeight; y++)
+            {
+                const int curLine = y*nWidth;
+                for (x = 0; x < nWidth; x++)
+                {
+                    pTile[curLine+x] = pBuff[curLine+((nWidth-1)-x)];
+                }
+            }
+            break;
+        }
+        case 2: // mirror mode (vert)
+        {
+            for (y = 0; y < nHeight; y++)
+            {
+                const int curLine = y*nWidth, inveredLine = (nHeight-y-1)*nWidth;
+                for (x = 0; x < nWidth; x++)
+                {
+                    pTile[curLine+x] = pBuff[inveredLine+x];
+                }
+            }
+            break;
+        }
+        case 3: // mirror mode (horiz+vert)
+        {
+            for (y = 0; y < nHeight; y++)
+            {
+                const int curLine = y*nWidth, inveredLine = (nHeight-y-1)*nWidth;
+                for (x = 0; x < nWidth; x++)
+                {
+                    pTile[curLine+x] = pBuff[inveredLine+((nWidth-1)-x)];
+                }
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    if (bAllocBuff)
+        Bfree(pBuff);
+}
+
+//
+// mirrorDrawing() -- mirrors the current framebuffer
+//
 void videoMirrorDrawing(void)
 {
     uint8_t *curFrame;
     vec2_t screenxy;
+
+    if (!r_mirrormode)
+        return;
 #ifdef USE_OPENGL
     if (!nogl)
     {
@@ -2016,60 +2084,7 @@ void videoMirrorDrawing(void)
     if (!curFrame)
         return;
 
-    const size_t bufferSize = screenxy.x * screenxy.y;
-    uint8_t *tempFrame = mirroredFrame;
-    const bool allocateFrame = bufferSize > sizeof(mirroredFrame); // if bigger than static 4k mirrored frame, allocate from memory (very slow!)
-    if (allocateFrame)
-    {
-        tempFrame = (uint8_t *)Xmalloc(bufferSize);
-        if (!tempFrame)
-            return;
-    }
-    Bmemcpy(tempFrame, (void *)curFrame, bufferSize);
-
-    switch (r_mirrormode)
-    {
-        case 1: // mirror mode (horiz)
-        {
-            for (int y = 0; y < screenxy.y; y++)
-            {
-                const int curLine = y*screenxy.x;
-                for (int x = 0; x < screenxy.x; x++)
-                {
-                    curFrame[curLine+x] = tempFrame[curLine+((screenxy.x-1)-x)];
-                }
-            }
-            break;
-        }
-        case 2: // mirror mode (vert)
-        {
-            for (int y = 0; y < screenxy.y; y++)
-            {
-                const int curLine = y*screenxy.x, inveredLine = (screenxy.y-y-1)*screenxy.x;
-                for (int x = 0; x < screenxy.x; x++)
-                {
-                    curFrame[curLine+x] = tempFrame[inveredLine+x];
-                }
-            }
-            break;
-        }
-        case 3: // mirror mode (horiz+vert)
-        {
-            for (int y = 0; y < screenxy.y; y++)
-            {
-                const int curLine = y*screenxy.x, inveredLine = (screenxy.y-y-1)*screenxy.x;
-                for (int x = 0; x < screenxy.x; x++)
-                {
-                    curFrame[curLine+x] = tempFrame[inveredLine+((screenxy.x-1)-x)];
-                }
-            }
-            break;
-        }
-        default:
-            break;
-    }
-    if (allocateFrame)
-        Bfree(tempFrame);
+    videoMirrorTile(curFrame, screenxy.x, screenxy.y);
 }
 
 //
