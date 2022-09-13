@@ -47,8 +47,6 @@ CMenuTextMgr::CMenuTextMgr()
     at0 = -1;
 }
 
-static char buffer[21][45];
-
 void CMenuTextMgr::DrawText(const char *pString, int nFont, int x, int y, int nShade, int nPalette, bool shadow )
 {
     viewDrawText(nFont, pString, x, y, nShade, nPalette, 0, shadow);
@@ -762,6 +760,9 @@ bool CGameMenuItemChain::Event(CGameMenuEvent &event)
     return CGameMenuItem::Event(event);
 }
 
+#if 0
+static char buffer[21][45];
+
 CGameMenuItem7EA1C::CGameMenuItem7EA1C()
 {
     m_pzText = NULL;
@@ -989,6 +990,7 @@ bool CGameMenuItem7EE34::Event(CGameMenuEvent &event)
     }
     return CGameMenuItem::Event(event);
 }
+#endif
 
 CGameMenuItemChain7F2F0::CGameMenuItemChain7F2F0()
 {
@@ -2876,6 +2878,7 @@ void CGameMenuItemPicCycle::SetPicIndex(int nIndex)
     at24 = ClipRange(nIndex, 0, m_nItems);
 }
 
+#if 0
 CGameMenuItemPassword::CGameMenuItemPassword()
 {
     at37 = 0;
@@ -3049,6 +3052,7 @@ bool CGameMenuItemPassword::Event(CGameMenuEvent &event)
     }
     return CGameMenuItem::Event(event);
 }
+#endif
 
 CGameMenuFileSelect::CGameMenuFileSelect(const char* _pzText, int _nFont, int _x, int _y, int _nWidth, const char* _startdir, const char* _pattern, char* _destination, void(*_onFileSelectedEventHandler)(), const char _doPop)
 {
