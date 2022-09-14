@@ -321,7 +321,7 @@ void ctrlGetInput(void)
     if (BUTTON(gamefunc_Crouch))
     {
         gInput.buttonFlags.crouch = 1;
-        if (gCrouchToggle && !gMe->isUnderwater)
+        if (gCrouchToggle && gMe && !gMe->isUnderwater)
         {
             if (gCrouchToggleState == 0)
                 gCrouchToggleState = 1;
@@ -329,7 +329,7 @@ void ctrlGetInput(void)
                 gCrouchToggleState = 3;
         }
     }
-    else if (gCrouchToggle && (gCrouchToggleState > 0) && (gCrouchToggleState < 3) && !gMe->isUnderwater)
+    else if (gCrouchToggle && (gCrouchToggleState > 0) && (gCrouchToggleState < 3) && gMe && !gMe->isUnderwater)
     {
         gInput.buttonFlags.crouch = 1;
         gCrouchToggleState = 2;
