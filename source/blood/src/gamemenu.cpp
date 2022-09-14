@@ -280,6 +280,7 @@ void CGameMenuMgr::Process(void)
     {
         static int32_t joyold = 0;
         int32_t joy = JOYSTICK_GetControllerButtons();
+        JOYSTICK_ClearAllButtons();
         if (joy != joyold)
         {
             if (joy & (1 << CONTROLLER_BUTTON_DPAD_UP))
