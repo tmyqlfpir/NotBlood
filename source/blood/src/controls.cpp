@@ -490,10 +490,13 @@ void ctrlGetInput(void)
         info.mousex = -info.mousex;
         turnLeft = !turnLeft;
         turnRight = !turnRight;
+        info.dx = -info.dx;
+        info.dyaw = -info.dyaw;
     }
     if ((r_mirrormode & 2) && gMouseAim) // mirror mode (vert), invert y axis for mouse aiming
     {
         info.mousey = -info.mousey;
+        info.dpitch = -info.dpitch;
     }
 
     static int32_t turnHeldTime;
@@ -520,18 +523,25 @@ void ctrlGetInput(void)
     else
         input.q16turn = fix16_sadd(input.q16turn, fix16_sdiv(fix16_from_int(info.mousex), F16(32)));
 
-    input.strafe -= -(info.dx<<5);
-
-#if 0
-    if (info.dz < 0)
-        gInput.mlook = ClipRange((info.dz+127)>>7, -127, 127);
-    else
-        gInput.mlook = ClipRange(info.dz>>7, -127, 127);
-#endif
     if (gMouseAim)
         input.q16mlook = fix16_sadd(input.q16mlook, fix16_sdiv(fix16_from_int(info.mousey), F16(128)));
     else
         input.forward -= info.mousey;
+
+    if (CONTROL_JoystickEnabled) // controller input
+    {
+        input.strafe -= info.dx>>1;
+        input.forward -= info.dz>>1;
+        if (info.mousey == 0)
+        {
+            if (gMouseAim)
+                input.q16mlook = fix16_sadd(input.q16mlook, fix16_sdiv(fix16_from_int(info.dpitch>>4), F16(128)));
+            else
+                input.forward -= info.dpitch>>1;
+        }
+        if (input.q16turn == 0)
+            input.q16turn = fix16_sadd(input.q16mlook, fix16_sdiv(fix16_from_int(info.dyaw>>4), F16(32)));
+    }
     if (!gMouseAimingFlipped)
         input.q16mlook = -input.q16mlook;
 
