@@ -1014,29 +1014,20 @@ void CONFIG_WriteSetup(uint32_t flags)
     {
         for (int i=0; i<MAXMOUSEBUTTONS; i++)
         {
-            if (CONFIG_FunctionNumToName(MouseFunctions[i][0]))
-            {
-                Bsprintf(buf, "MouseButton%d", i);
-                SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(MouseFunctions[i][0]));
-            }
+            Bsprintf(buf, "MouseButton%d", i);
+            SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(MouseFunctions[i][0]));
 
-            if (i >= (MAXMOUSEBUTTONS-2)) continue;
+            if (i >= (MAXMOUSEBUTTONS-2)) continue; // scroll wheel
 
-            if (CONFIG_FunctionNumToName(MouseFunctions[i][1]))
-            {
-                Bsprintf(buf, "MouseButtonClicked%d", i);
-                SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(MouseFunctions[i][1]));
-            }
+            Bsprintf(buf, "MouseButtonClicked%d", i);
+            SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(MouseFunctions[i][1]));
         }
 
 #if 0
         for (int i=0; i<MAXMOUSEAXES; i++)
         {
-            if (CONFIG_AnalogNumToName(MouseAnalogueAxes[i]))
-            {
-                Bsprintf(buf, "MouseAnalogAxes%d", i);
-                SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_AnalogNumToName(MouseAnalogueAxes[i]));
-            }
+            Bsprintf(buf, "MouseAnalogAxes%d", i);
+            SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_AnalogNumToName(MouseAnalogueAxes[i]));
         }
 #endif
     }
@@ -1045,55 +1036,31 @@ void CONFIG_WriteSetup(uint32_t flags)
     {
         for (int dummy=0; dummy<MAXJOYBUTTONSANDHATS; dummy++)
         {
-            if (CONFIG_FunctionNumToName(JoystickFunctions[dummy][0]))
-            {
-                Bsprintf(buf, "JoystickButton%d", dummy);
-                SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(JoystickFunctions[dummy][0]));
-            }
+            Bsprintf(buf, "JoystickButton%d", dummy);
+            SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(JoystickFunctions[dummy][0]));
 
-            if (CONFIG_FunctionNumToName(JoystickFunctions[dummy][1]))
-            {
-                Bsprintf(buf, "JoystickButtonClicked%d", dummy);
-                SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(JoystickFunctions[dummy][1]));
-            }
+            Bsprintf(buf, "JoystickButtonClicked%d", dummy);
+            SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(JoystickFunctions[dummy][1]));
         }
         for (int dummy=0; dummy<MAXJOYAXES; dummy++)
         {
-            if (CONFIG_AnalogNumToName(JoystickAnalogueAxes[dummy]))
-            {
-                Bsprintf(buf, "JoystickAnalogAxes%d", dummy);
-                SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_AnalogNumToName(JoystickAnalogueAxes[dummy]));
-            }
+            Bsprintf(buf, "JoystickAnalogAxes%d", dummy);
+            SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_AnalogNumToName(JoystickAnalogueAxes[dummy]));
 
-            if (CONFIG_FunctionNumToName(JoystickDigitalFunctions[dummy][0]))
-            {
-                Bsprintf(buf, "JoystickDigitalAxes%d_0", dummy);
-                SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(JoystickDigitalFunctions[dummy][0]));
-            }
+            Bsprintf(buf, "JoystickDigitalAxes%d_0", dummy);
+            SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(JoystickDigitalFunctions[dummy][0]));
 
-            if (CONFIG_FunctionNumToName(JoystickDigitalFunctions[dummy][1]))
-            {
-                Bsprintf(buf, "JoystickDigitalAxes%d_1", dummy);
-                SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(JoystickDigitalFunctions[dummy][1]));
-            }
+            Bsprintf(buf, "JoystickDigitalAxes%d_1", dummy);
+            SCRIPT_PutString(scripthandle, "Controls", buf, CONFIG_FunctionNumToName(JoystickDigitalFunctions[dummy][1]));
 
-            if (JoystickAnalogueScale[dummy] != DEFAULTJOYSTICKANALOGUESCALE)
-            {
-                Bsprintf(buf, "JoystickAnalogScale%d", dummy);
-                SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueScale[dummy], FALSE, FALSE);
-            }
+            Bsprintf(buf, "JoystickAnalogScale%d", dummy);
+            SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueScale[dummy], FALSE, FALSE);
 
-            if (JoystickAnalogueDead[dummy] != DEFAULTJOYSTICKANALOGUEDEAD)
-            {
-                Bsprintf(buf, "JoystickAnalogDead%d", dummy);
-                SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueDead[dummy], FALSE, FALSE);
-            }
+            Bsprintf(buf, "JoystickAnalogDead%d", dummy);
+            SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueDead[dummy], FALSE, FALSE);
 
-            if (JoystickAnalogueSaturate[dummy] != DEFAULTJOYSTICKANALOGUESATURATE)
-            {
-                Bsprintf(buf, "JoystickAnalogSaturate%d", dummy);
-                SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueSaturate[dummy], FALSE, FALSE);
-            }
+            Bsprintf(buf, "JoystickAnalogSaturate%d", dummy);
+            SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueSaturate[dummy], FALSE, FALSE);
         }
     }
 
