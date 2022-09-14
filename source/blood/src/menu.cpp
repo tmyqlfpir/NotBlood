@@ -1776,7 +1776,7 @@ void SetupControlsMenu(void)
     }
     const int nMaxJoyAxes = i;
 
-    if (nMaxJoyButtons <= 0) // joystick has no buttons, disable axis menu
+    if (nMaxJoyButtons <= 0) // joystick has no buttons, disable button menu
     {
         itemOptionsControlJoystickButtons.bEnable = 0;
     }
