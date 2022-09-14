@@ -339,7 +339,7 @@ void ctrlGetInput(void)
         gCrouchToggleState = 0;
     }
 
-    if (gCrouchToggle && gInput.buttonFlags.jump && gMe && !gMe->isUnderwater) // reset crouch toggle state on jump
+    if (gCrouchToggle && gInput.buttonFlags.jump) // reset crouch toggle state on jump
         gCrouchToggleState = 0;
 
     if (BUTTON(gamefunc_Weapon_Fire))
