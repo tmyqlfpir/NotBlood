@@ -46,8 +46,6 @@ void SaveGameProcess(CGameMenuItemChain *);
 void ShowDifficulties();
 void SetDifficultyAndStart(CGameMenuItemChain *);
 void SetCustomDifficultyAndStart(CGameMenuItemChain *);
-void SetDetail(CGameMenuItemSlider *);
-void SetGamma(CGameMenuItemSlider *);
 void SetMusicVol(CGameMenuItemSlider *);
 void SetSoundVol(CGameMenuItemSlider *);
 void SetCDVol(CGameMenuItemSlider *);
@@ -78,6 +76,7 @@ void SetWeaponInterpolate(CGameMenuItemZCycle *);
 void SetMouseSensitivity(CGameMenuItemSliderFloat *);
 void SetMouseAimFlipped(CGameMenuItemZBool *);
 void SetTurnSpeed(CGameMenuItemSlider *);
+void SetCenterView(CGameMenuItemZBool *);
 void SetCrouchToggle(CGameMenuItemZBool *);
 void SetAutoRun(CGameMenuItemZBool *);
 void ResetKeys(CGameMenuItemChain *);
@@ -87,8 +86,6 @@ void LoadGame(CGameMenuItemZEditBitmap *, CGameMenuEvent *);
 void SetupNetLevels(CGameMenuItemZCycle *);
 void NetClearUserMap(CGameMenuItemZCycle *);
 void StartNetGame(CGameMenuItemChain *);
-void SetParentalLock(CGameMenuItemZBool *);
-void TenProcess(CGameMenuItem7EA1C *);
 void SetupLevelMenuItem(int);
 void SetupVideoModeMenu(CGameMenuItemChain *);
 void SetVideoMode(CGameMenuItemChain *);
@@ -290,22 +287,15 @@ CGameMenu menuNetStart;
 CGameMenu menuEpisode;
 CGameMenu menuDifficulty;
 CGameMenu menuCustomDifficulty;
-CGameMenu menuOptionsOld;
 CGameMenu menuControls;
 CGameMenu menuMessages;
-CGameMenu menuKeys;
 CGameMenu menuSaveGame;
 CGameMenu menuLoadGame;
 CGameMenu menuLoading;
-CGameMenu menuSounds;
 CGameMenu menuQuit;
 CGameMenu menuRestart;
 CGameMenu menuCredits;
-CGameMenu menuOrder;
-CGameMenu menuPlayOnline;
-CGameMenu menuParentalLock;
-CGameMenu menuSorry;
-CGameMenu menuSorry2;
+CGameMenu menuHelp;
 CGameMenu menuNetwork;
 CGameMenu menuNetworkHost;
 CGameMenu menuNetworkJoin;
@@ -320,21 +310,19 @@ CGameMenuItemQAV itemHelp5QAV("", 3, 160, 100, "HELP5", false, true);
 
 CGameMenuItemTitle itemMainTitle("BLOOD", 1, 160, 20, 2038);
 CGameMenuItemChain itemMain1("NEW GAME", 1, 0, 45, 320, 1, &menuEpisode, -1, NULL, 0);
-//CGameMenuItemChain itemMain2("PLAY ONLINE", 1, 0, 65, 320, 1, &menuPlayOnline, -1, NULL, 0);
 CGameMenuItemChain itemMain2("MULTIPLAYER", 1, 0, 65, 320, 1, &menuNetwork, -1, NULL, 0);
 CGameMenuItemChain itemMain3("OPTIONS", 1, 0, 85, 320, 1, &menuOptions, -1, NULL, 0);
 CGameMenuItemChain itemMain4("LOAD GAME", 1, 0, 105, 320, 1, &menuLoadGame, -1, NULL, 0);
-CGameMenuItemChain itemMain5("HELP", 1, 0, 125, 320, 1, &menuOrder, -1, NULL, 0);
+CGameMenuItemChain itemMain5("HELP", 1, 0, 125, 320, 1, &menuHelp, -1, NULL, 0);
 CGameMenuItemChain itemMain6("CREDITS", 1, 0, 145, 320, 1, &menuCredits, -1, NULL, 0);
 CGameMenuItemChain itemMain7("QUIT", 1, 0, 165, 320, 1, &menuQuit, -1, NULL, 0);
 
 CGameMenuItemTitle itemMainSaveTitle("BLOOD", 1, 160, 20, 2038);
 CGameMenuItemChain itemMainSave1("NEW GAME", 1, 0, 45, 320, 1, &menuEpisode, -1, NULL, 0);
-//CGameMenuItemChain itemMainSave2("PLAY ONLINE", 1, 0, 60, 320, 1, &menuPlayOnline, -1, NULL, 0);
 CGameMenuItemChain itemMainSave2("OPTIONS", 1, 0, 60, 320, 1, &menuOptions, -1, NULL, 0);
 CGameMenuItemChain itemMainSave3("SAVE GAME", 1, 0, 75, 320, 1, &menuSaveGame, -1, SaveGameProcess, 0);
 CGameMenuItemChain itemMainSave4("LOAD GAME", 1, 0, 90, 320, 1, &menuLoadGame, -1, NULL, 0);
-CGameMenuItemChain itemMainSave5("HELP", 1, 0, 105, 320, 1, &menuOrder, -1, NULL, 0);
+CGameMenuItemChain itemMainSave5("HELP", 1, 0, 105, 320, 1, &menuHelp, -1, NULL, 0);
 CGameMenuItemChain itemMainSave6("CREDITS", 1, 0, 120, 320, 1, &menuCredits, -1, NULL, 0);
 CGameMenuItemChain itemMainSave7("END GAME", 1, 0, 135, 320, 1, &menuRestart, -1, NULL, 0);
 CGameMenuItemChain itemMainSave8("QUIT", 1, 0, 150, 320, 1, &menuQuit, -1, NULL, 0);
@@ -371,30 +359,6 @@ CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75
 CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 149, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 161, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
-CGameMenuItemTitle itemOptionsOldTitle("OPTIONS", 1, 160, 20, 2038);
-CGameMenuItemChain itemOption1("CONTROLS...", 3, 0, 40, 320, 1, &menuControls, -1, NULL, 0);
-CGameMenuItemSlider sliderDetail("DETAIL:", 3, 66, 50, 180, gDetail, 0, 4, 1, SetDetail, -1, -1);
-CGameMenuItemSlider sliderGamma("GAMMA:", 3, 66, 60, 180, gGamma, 0, 15, 2, SetGamma, -1, -1);
-CGameMenuItemSlider sliderMusic("MUSIC:", 3, 66, 70, 180, MusicVolume, 0, 255, 17, SetMusicVol, -1, -1);
-CGameMenuItemSlider sliderSound("SOUND:", 3, 66, 80, 180, FXVolume, 0, 255, 17, SetSoundVol, -1, -1);
-CGameMenuItemSlider sliderCDAudio("CD AUDIO:", 3, 66, 90, 180, CDVolume, 0, 255, 17, SetCDVol, -1, -1);
-CGameMenuItemZBool bool3DAudio("3D AUDIO:", 3, 66, 100, 180, gStereo, SetMonoStereo, NULL, NULL);
-CGameMenuItemZCycle itemCycleCrosshair("CROSSHAIR:", 3, 66, 110, 180, 0, SetCrosshair, pzCrosshairStrings, ARRAY_SSIZE(pzCrosshairStrings), 0);
-CGameMenuItemZCycle itemCycleShowWeapons("SHOW WEAPONS:", 3, 66, 120, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
-CGameMenuItemZBool boolSlopeTilting("SLOPE TILTING:", 3, 66, 130, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
-CGameMenuItemZBool boolViewBobbing("VIEW BOBBING:", 3, 66, 140, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
-CGameMenuItemZBool boolViewSwaying("VIEW SWAYING:", 3, 66, 150, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
-CGameMenuItem7EE34 itemOption2("VIDEO MODE...", 3, 0, 160, 320, 1);
-CGameMenuItemChain itemChainParentalLock("PARENTAL LOCK", 3, 0, 170, 320, 1, &menuParentalLock, -1, NULL, 0);
-
-CGameMenuItemTitle itemControlsTitle("CONTROLS", 1, 160, 20, 2038);
-CGameMenuItemSliderFloat sliderMouseSpeed("Mouse Sensitivity:", 1, 10, 70, 300, CONTROL_MouseSensitivity, 1.f, 100.f, 1.f, SetMouseSensitivity, -1,-1);
-CGameMenuItemZBool boolMouseFlipped("Invert Mouse Aim:", 1, 10, 90, 300, gMouseAimingFlipped, SetMouseAimFlipped, NULL, NULL);
-CGameMenuItemSlider sliderTurnSpeed("Key Turn Speed:", 1, 10, 110, 300, gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
-CGameMenuItemChain itemChainKeyList("Configure Keys...", 1, 0, 130, 320, 1, &menuKeys, -1, NULL, 0);
-CGameMenuItemChain itemChainKeyReset("Reset Keys (default)...", 1, 0, 150, 320, 1, &menuKeys, -1, ResetKeys, 0);
-CGameMenuItemChain itemChainKeyResetClassic("Reset Keys (classic)...", 1, 0, 170, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
-
 CGameMenuItemTitle itemMessagesTitle("MESSAGES", 1, 160, 20, 2038);
 CGameMenuItemZBool boolMessages("MESSAGES:", 3, 66, 70, 180, 0, SetMessages, NULL, NULL);
 CGameMenuItemSlider sliderMsgCount("MESSAGE COUNT:", 3, 66, 80, 180, gMessageCount, 1, 16, 1, NULL, -1, -1);
@@ -404,9 +368,6 @@ CGameMenuItemZBool boolMsgIncoming("INCOMING:", 3, 66, 110, 180, 0, 0, NULL, NUL
 CGameMenuItemZBool boolMsgSelf("SELF PICKUP:", 3, 66, 120, 180, 0, 0, NULL, NULL);
 CGameMenuItemZBool boolMsgOther("OTHER PICKUP:", 3, 66, 130, 180, 0, 0, NULL, NULL);
 CGameMenuItemZBool boolMsgRespawn("RESPAWN:", 3, 66, 140, 180, 0, 0, NULL, NULL);
-
-CGameMenuItemTitle itemKeysTitle("KEY SETUP", 1, 160, 20, 2038);
-CGameMenuItemKeyList itemKeyList("", 3, 56, 40, 200, 16, NUMGAMEFUNCTIONS, 0);
 
 CGameMenuItemTitle itemSaveTitle("Save Game", 1, 160, 20, 2038);
 CGameMenuItemZEditBitmap itemSaveGame0(NULL, 3, 20, 60, 320, strRestoreGameStrings[kLoadSaveSlot0], 16, 1, SaveGame, kLoadSaveSlot0);
@@ -473,12 +434,6 @@ CGameMenuItemZEdit itemNetEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 1
 
 CGameMenuItemText itemLoadingText("LOADING...", 1, 160, 100, 1);
 
-CGameMenuItemTitle itemSoundsTitle("SOUNDS", 1, 160, 20, 2038);
-CGameMenuItemSlider itemSoundsMusic("MUSIC:", 3, 40, 60, 180, MusicVolume, 0, 255, 17, SetMusicVol, -1, -1);
-CGameMenuItemSlider itemSoundsSound("SOUND:", 3, 40, 70, 180, FXVolume, 0, 255, 17, SetSoundVol, -1, -1);
-CGameMenuItemSlider itemSoundsCDAudio("CD AUDIO:", 3, 40, 80, 180, CDVolume, 0, 255, 17, SetCDVol, -1, -1);
-CGameMenuItemZBool itemSounds3DAudio("3D SOUND:", 3, 40, 90, 180, gStereo, SetMonoStereo, NULL, NULL);
-
 CGameMenuItemTitle itemQuitTitle("QUIT", 1, 160, 20, 2038);
 CGameMenuItemText itemQuitText1("Do you really want to quit?", 0, 160, 100, 1);
 CGameMenuItemYesNoQuit itemQuitYesNo("[Y/N]", 0, 20, 110, 280, 1, 0);
@@ -489,30 +444,6 @@ CGameMenuItemYesNoQuit itemRestartYesNo("[Y/N]", 0, 20, 110, 280, 1, 1);
 
 CGameMenuItemPicCycle itemCreditsPicCycle(0, 0, NULL, NULL, 0, 0);
 CGameMenuItemPicCycle itemOrderPicCycle(0, 0, NULL, NULL, 0, 0);
-
-CGameMenuItemTitle itemParentalLockTitle("PARENTAL LOCK", 1, 160, 20, 2038);
-CGameMenuItemZBool itemParentalLockToggle("LOCK:", 3, 66, 70, 180, 0, SetParentalLock, NULL, NULL);
-CGameMenuItemPassword itemParentalLockPassword("SET PASSWORD:", 3, 160, 80);
-
-CGameMenuItemPicCycle itemSorryPicCycle(0, 0, NULL, NULL, 0, 0);
-CGameMenuItemText itemSorryText1("Loading and saving games", 0, 160, 90, 1);
-CGameMenuItemText itemSorryText2("not supported", 0, 160, 100, 1);
-CGameMenuItemText itemSorryText3("in this demo version of Blood.", 0, 160, 110, 1);
-
-CGameMenuItemText itemSorry2Text1("Buy the complete version of", 0, 160, 90, 1);
-CGameMenuItemText itemSorry2Text2("Blood for three new episodes", 0, 160, 100, 1);
-CGameMenuItemText itemSorry2Text3("plus eight BloodBath-only levels!", 0, 160, 110, 1);
-
-CGameMenuItemTitle unk_26E06C(" ONLINE ", 1, 160, 20, 2038);
-CGameMenuItem7EA1C unk_26E090("DWANGO", 1, 0, 45, 320, "matt", "DWANGO", 1, -1, NULL, 0);
-CGameMenuItem7EA1C unk_26E0E8("RTIME", 1, 0, 65, 320, "matt", "RTIME", 1, -1, NULL, 0);
-CGameMenuItem7EA1C unk_26E140("HEAT", 1, 0, 85, 320, "matt", "HEAT", 1, -1, NULL, 0);
-CGameMenuItem7EA1C unk_26E198("KALI", 1, 0, 105, 320, "matt", "KALI", 1, -1, NULL, 0);
-CGameMenuItem7EA1C unk_26E1F0("MPATH", 1, 0, 125, 320, "matt", "MPATH", 1, -1, NULL, 0);
-CGameMenuItem7EA1C unk_26E248("TEN", 1, 0, 145, 320, "matt", "TEN", 1, -1, TenProcess, 0);
-
-
-// static int32_t newresolution, newrendermode, newfullscreen, newvsync;
 
 enum resflags_t {
     RES_FS = 0x1,
@@ -554,7 +485,6 @@ CGameMenuItemChain itemOptionsChainSound("SOUND SETUP", 1, 0, 90, 320, 1, &menuO
 CGameMenuItemChain itemOptionsChainPlayer("PLAYER SETUP", 1, 0, 110, 320, 1, &menuOptionsPlayer, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainControl("CONTROL SETUP", 1, 0, 130, 320, 1, &menuOptionsControl, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainEnhancements("ENHANCEMENTS", 1, 0, 150, 320, 1, &menuOptionsGameEnhancements, -1, NULL, 0);
-//CGameMenuItemChain itemOptionsChainOld("OLD MENU", 1, 0, 170, 320, 1, &menuOptionsOld, -1, NULL, 0);
 
 const char *pzAutoAimStrings[] = {
     "NEVER",
@@ -663,7 +593,6 @@ CGameMenuItemZBool itemOptionsGameWeaponFastSwitch("FAST WEAPON SWITCH:", 3, 66,
 CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 137, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
 CGameMenuItemZBool itemOptionsGameLockSaving("LOCK MANUAL SAVING:", 3, 66, 147, 180, 0, SetLockSaving, "AUTOSAVES ONLY", "NEVER");
 CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 157, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
-//CGameMenuItemChain itemOptionsGameChainParentalLock("PARENTAL LOCK", 3, 0, 167, 320, 1, &menuParentalLock, -1, NULL, 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
@@ -753,12 +682,12 @@ CGameMenuItemSliderFloat itemOptionsDisplayColorBrightness("BRIGHTNESS:", 3, 66,
 CGameMenuItemSliderFloat itemOptionsDisplayColorVisibility("VISIBILITY:", 3, 66, 170, 180, &r_ambientlight, 0.125f, 4.f, 0.125f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
 CGameMenuItemChain itemOptionsDisplayColorReset("RESET TO DEFAULTS", 3, 66, 180, 180, 0, NULL, 0, ResetVideoColor, 0);
 
+#ifdef USE_OPENGL
 const char *pzTextureModeStrings[] = {
     "CLASSIC",
     "FILTERED"
 };
 
-#ifdef USE_OPENGL
 int nTextureModeValues[] = {
     TEXFILTER_OFF,
     TEXFILTER_ON
@@ -920,15 +849,35 @@ CGameMenuItemZBool itemOptionsPlayerChatSound("CHAT BEEP:", 3, 66, 90, 180, true
 CGameMenuItemZBool itemOptionsPlayerKillMsg("KILL MESSAGES:", 3, 66, 100, 180, true, UpdatePlayerKillMessage, NULL, NULL);
 CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 110, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
 
+#define JOYSTICKITEMSPERPAGE 16 // this must be an even value, as double tap inputs rely on odd index position
+#define MAXJOYSTICKBUTTONPAGES (max(1, (MAXJOYBUTTONSANDHATS*2 / JOYSTICKITEMSPERPAGE))) // we double all buttons/hats so each input can be bind for double tap
+
 CGameMenu menuOptionsControlKeyboard;
+CGameMenu menuKeys;
 CGameMenu menuOptionsControlMouse;
 CGameMenu menuOptionsControlMouseButtonAssignment;
+CGameMenu menuOptionsControlJoystickButtonAssignment[MAXJOYSTICKBUTTONPAGES];
+CGameMenu menuOptionsControlJoystickListAxes; // contains list of editable joystick axes
+CGameMenu menuOptionsControlJoystickAxis[MAXJOYAXES]; // options menu for each joystick axis
+CGameMenu menuOptionsControlJoystickMisc;
 
 void SetupMouseMenu(CGameMenuItemChain *pItem);
+void SetupJoystickButtonsMenu(CGameMenuItemChain *pItem);
+void SetupJoystickAxesMenu(CGameMenuItemChain *pItem);
+void SetJoystickScale(CGameMenuItemSlider* pItem);
+void SetJoystickAnalogue(CGameMenuItemZCycle* pItem);
+void SetJoystickAnalogueInvert(CGameMenuItemZBool* pItem);
+void SetJoystickDigitalPos(CGameMenuItemZCycle* pItem);
+void SetJoystickDigitalNeg(CGameMenuItemZCycle* pItem);
+void SetJoystickDeadzone(CGameMenuItemSlider* pItem);
+void SetJoystickSaturate(CGameMenuItemSlider* pItem);
 
 CGameMenuItemTitle itemOptionsControlTitle("CONTROL SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsControlKeyboard("KEYBOARD SETUP", 1, 0, 60, 320, 1, &menuOptionsControlKeyboard, -1, NULL, 0);
 CGameMenuItemChain itemOptionsControlMouse("MOUSE SETUP", 1, 0, 80, 320, 1, &menuOptionsControlMouse, -1, SetupMouseMenu, 0);
+CGameMenuItemChain itemOptionsControlJoystickButtons("JOYSTICK BUTTONS SETUP", 1, 0, 120, 320, 1, &menuOptionsControlJoystickButtonAssignment[0], -1, SetupJoystickButtonsMenu, 0);
+CGameMenuItemChain itemOptionsControlJoystickAxes("JOYSTICK AXES SETUP", 1, 0, 140, 320, 1, &menuOptionsControlJoystickListAxes, -1, SetupJoystickAxesMenu, 0);
+CGameMenuItemChain itemOptionsControlJoystickMisc("JOYSTICK MISC SETUP", 1, 0, 160, 320, 1, &menuOptionsControlJoystickMisc, -1, NULL, 0);
 
 CGameMenuItemTitle itemOptionsControlKeyboardTitle("KEYBOARD SETUP", 1, 160, 20, 2038);
 CGameMenuItemSlider itemOptionsControlKeyboardSliderTurnSpeed("Key Turn Speed:", 1, 18, 50, 280, &gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
@@ -938,12 +887,17 @@ CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 125
 CGameMenuItemChain itemOptionsControlKeyboardReset("Reset Keys (default)...", 1, 0, 145, 320, 1, &menuKeys, -1, ResetKeys, 0);
 CGameMenuItemChain itemOptionsControlKeyboardResetClassic("Reset Keys (classic)...", 1, 0, 165, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
 
+CGameMenuItemTitle itemKeysTitle("KEY SETUP", 1, 160, 20, 2038);
+CGameMenuItemKeyList itemKeyList("", 3, 56, 40, 200, 16, NUMGAMEFUNCTIONS, 0);
+
 void SetMouseAimMode(CGameMenuItemZBool *pItem);
 void SetMouseVerticalAim(CGameMenuItemZBool *pItem);
 void SetMouseXSensitivity(CGameMenuItemSliderFloat *pItem);
 void SetMouseYSensitivity(CGameMenuItemSliderFloat*pItem);
 
 void PreDrawControlMouse(CGameMenuItem *pItem);
+void SetMouseButton(CGameMenuItemZCycle *pItem);
+void SetJoyButton(CGameMenuItemZCycle *pItem);
 
 void SetupMouseButtonMenu(CGameMenuItemChain *pItem);
 
@@ -1018,20 +972,44 @@ static int32_t MenuMouseDataIndex[MENUMOUSEFUNCTIONS][2] = {
     { 6, 1, },
 };
 
-void SetMouseButton(CGameMenuItemZCycle *pItem);
-
 CGameMenuItemZCycle *pItemOptionsControlMouseButton[MENUMOUSEFUNCTIONS];
+
+char MenuJoyButtonNames[MAXJOYBUTTONSANDHATS*2][64] = {""};
+
+const char *zJoystickAnalogue[] =
+{
+    "-None-",
+    "Turning",
+    "Strafing",
+    "Moving",
+    "Look Up/Down",
+};
+
+CGameMenuItemTitle itemJoyButtonsTitle("JOYSTICK SETUP", 1, 160, 20, 2038);
+CGameMenuItemZCycle *pItemOptionsControlJoyButton[MAXJOYSTICKBUTTONPAGES][JOYSTICKITEMSPERPAGE];
+CGameMenuItemChain *pItemOptionsControlJoyButtonNextPage[MAXJOYSTICKBUTTONPAGES];
+
+char MenuJoyAxisNames[MAXJOYAXES][64] = {""};
+
+CGameMenuItemTitle itemJoyAxesTitle("JOYSTICK AXES", 1, 160, 20, 2038);
+CGameMenuItemChain *pItemOptionsControlJoystickAxis[MAXJOYAXES]; // dynamic list for each axis
+
+CGameMenuItemTitle *pItemOptionsControlJoystickAxisName[MAXJOYAXES];
+CGameMenuItemSlider *pItemOptionsControlJoystickAxisScale[MAXJOYAXES];
+CGameMenuItemZCycle *pItemOptionsControlJoystickAxisAnalogue[MAXJOYAXES];
+CGameMenuItemZBool *pItemOptionsControlJoystickAxisAnalogueInvert[MAXJOYAXES];
+CGameMenuItemZCycle *pItemOptionsControlJoystickAxisDigitalPos[MAXJOYAXES];
+CGameMenuItemZCycle *pItemOptionsControlJoystickAxisDigitalNeg[MAXJOYAXES];
+CGameMenuItemSlider *pItemOptionsControlJoystickAxisDeadzone[MAXJOYAXES];
+CGameMenuItemSlider *pItemOptionsControlJoystickAxisSaturate[MAXJOYAXES];
+
+CGameMenuItemTitle itemOptionsControlJoystickMiscTitle("JOYSTICK AXES", 1, 160, 20, 2038);
+CGameMenuItemZBool itemOptionsControlJoystickMiscCrouchToggle("CROUCH TOGGLE:", 1, 18, 70, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
+CGameMenuItemZBool itemOptionsControlJoystickMiscCrouchCenterView("CENTER VIEW ON DROP:", 1, 18, 90, 280, gCenterViewOnDrop, SetCenterView, NULL, NULL);
 
 void SetupLoadingScreen(void)
 {
     menuLoading.Add(&itemLoadingText, true);
-}
-
-void SetupKeyListMenu(void)
-{
-    menuKeys.Add(&itemKeysTitle, false);
-    menuKeys.Add(&itemKeyList, true);
-    menuKeys.Add(&itemBloodQAV, false);
 }
 
 void SetupMessagesMenu(void)
@@ -1046,52 +1024,6 @@ void SetupMessagesMenu(void)
     menuMessages.Add(&boolMsgOther, false);
     menuMessages.Add(&boolMsgRespawn, false);
     menuMessages.Add(&itemBloodQAV, false);
-}
-
-void SetupControlsMenu(void)
-{
-    sliderMouseSpeed.fValue = ClipRangeF(CONTROL_MouseSensitivity, sliderMouseSpeed.fRangeLow, sliderMouseSpeed.fRangeHigh);
-    sliderTurnSpeed.nValue = ClipRange(gTurnSpeed, sliderTurnSpeed.nRangeLow, sliderTurnSpeed.nRangeHigh);
-    boolMouseFlipped.at20 = gMouseAimingFlipped;
-    menuControls.Add(&itemControlsTitle, false);
-    menuControls.Add(&sliderMouseSpeed, true);
-    menuControls.Add(&boolMouseFlipped, false);
-    menuControls.Add(&sliderTurnSpeed, false);
-    menuControls.Add(&itemChainKeyList, false);
-    menuControls.Add(&itemChainKeyReset, false);
-    menuControls.Add(&itemChainKeyResetClassic, false);
-    menuControls.Add(&itemBloodQAV, false);
-}
-
-void SetupOptionsOldMenu(void)
-{
-    sliderDetail.nValue = ClipRange(gDetail, sliderDetail.nRangeLow, sliderDetail.nRangeHigh);
-    sliderGamma.nValue = ClipRange(gGamma, sliderGamma.nRangeLow, sliderGamma.nRangeHigh);
-    sliderMusic.nValue = ClipRange(MusicVolume, sliderMusic.nRangeLow, sliderMusic.nRangeHigh);
-    sliderSound.nValue = ClipRange(FXVolume, sliderSound.nRangeLow, sliderSound.nRangeHigh);
-    bool3DAudio.at20 = gStereo;
-    itemCycleCrosshair.m_nFocus = gAimReticle % ARRAY_SSIZE(pzCrosshairStrings);
-    itemCycleShowWeapons.m_nFocus = gShowWeapon;
-    boolSlopeTilting.at20 = gSlopeTilting;
-    boolViewBobbing.at20 = gViewVBobbing;
-    boolViewSwaying.at20 = gViewHBobbing;
-    boolMessages.at20 = gGameMessageMgr.state;
-    menuOptionsOld.Add(&itemOptionsTitle, false);
-    menuOptionsOld.Add(&itemOption1, true);
-    menuOptionsOld.Add(&sliderDetail, false);
-    menuOptionsOld.Add(&sliderGamma, false);
-    menuOptionsOld.Add(&sliderMusic, false);
-    menuOptionsOld.Add(&sliderSound, false);
-    menuOptionsOld.Add(&sliderCDAudio, false);
-    menuOptionsOld.Add(&bool3DAudio, false);
-    menuOptionsOld.Add(&itemCycleCrosshair, false);
-    menuOptionsOld.Add(&itemCycleShowWeapons, false);
-    menuOptionsOld.Add(&boolSlopeTilting, false);
-    menuOptionsOld.Add(&boolViewBobbing, false);
-    menuOptionsOld.Add(&boolViewSwaying, false);
-    menuOptionsOld.Add(&itemOption2, false);
-    menuOptionsOld.Add(&itemChainParentalLock, false);
-    menuOptionsOld.Add(&itemBloodQAV, false);
 }
 
 void SetupDifficultyMenu(void)
@@ -1428,18 +1360,6 @@ void SetupLoadGameMenu(void)
     menuLoadGame.Add(&itemBloodQAV, false);
 }
 
-void SetupSoundsMenu(void)
-{
-    itemSoundsMusic.nValue = ClipRange(MusicVolume, itemSoundsMusic.nRangeLow, itemSoundsMusic.nRangeHigh);
-    itemSoundsSound.nValue = ClipRange(FXVolume, itemSoundsSound.nRangeLow, itemSoundsSound.nRangeHigh);
-    menuSounds.Add(&itemSoundsTitle, false);
-    menuSounds.Add(&itemSoundsMusic, true);
-    menuSounds.Add(&itemSoundsSound, false);
-    menuSounds.Add(&itemSoundsCDAudio, false);
-    menuSounds.Add(&itemSounds3DAudio, false);
-    menuSounds.Add(&itemBloodQAV, false);
-}
-
 void SetupQuitMenu(void)
 {
     menuQuit.Add(&itemQuitTitle, false);
@@ -1453,12 +1373,12 @@ void SetupQuitMenu(void)
     menuRestart.Add(&itemBloodQAV, false);
 }
 
-void SetupHelpOrderMenu(void)
+void SetupHelpMenu(void)
 {
-    menuOrder.Add(&itemHelp4QAV, true);
-    menuOrder.Add(&itemHelp5QAV, false);
-    menuOrder.Add(&itemHelp3QAV, false);
-    menuOrder.Add(&itemHelp3BQAV, false);
+    menuHelp.Add(&itemHelp4QAV, true);
+    menuHelp.Add(&itemHelp5QAV, false);
+    menuHelp.Add(&itemHelp3QAV, false);
+    menuHelp.Add(&itemHelp3BQAV, false);
     itemHelp4QAV.bEnable = 1;
     itemHelp4QAV.bNoDraw = 1;
     itemHelp5QAV.bEnable = 1;
@@ -1476,45 +1396,6 @@ void SetupCreditsMenu(void)
     itemCreditsQAV.bNoDraw = 1;
 }
 
-void SetupParentalLockMenu(void)
-{
-    itemParentalLockToggle.at20 = gbAdultContent;
-    strcpy(itemParentalLockPassword.at20, gzAdultPassword);
-    menuParentalLock.Add(&itemParentalLockTitle, false);
-    menuParentalLock.Add(&itemParentalLockToggle, true);
-    menuParentalLock.Add(&itemParentalLockPassword, false);
-    menuParentalLock.Add(&itemBloodQAV, false);
-}
-
-void SetupSorry3Menu(void)
-{
-    menuPlayOnline.Add(&unk_26E06C, false);
-    menuPlayOnline.Add(&unk_26E090, true);
-    menuPlayOnline.Add(&unk_26E0E8, false);
-    menuPlayOnline.Add(&unk_26E140, false);
-    menuPlayOnline.Add(&unk_26E198, false);
-    menuPlayOnline.Add(&unk_26E1F0, false);
-    menuPlayOnline.Add(&unk_26E248, false);
-    menuPlayOnline.Add(&itemBloodQAV, false);
-}
-
-void SetupSorryMenu(void)
-{
-    menuSorry.Add(&itemSorryPicCycle, true);
-    menuSorry.Add(&itemSorryText1, false);
-    menuSorry.Add(&itemSorryText3, false);
-    menuSorry.Add(&itemBloodQAV, false);
-}
-
-void SetupSorry2Menu(void)
-{
-    menuSorry2.Add(&itemSorryPicCycle, true);
-    menuSorry2.Add(&itemSorry2Text1, false);
-    menuSorry2.Add(&itemSorry2Text2, false);
-    menuSorry2.Add(&itemSorry2Text3, false);
-    menuSorry2.Add(&itemBloodQAV, false);
-}
-
 void SetupOptionsMenu(void)
 {
     menuOptions.Add(&itemOptionsTitle, false);
@@ -1524,7 +1405,6 @@ void SetupOptionsMenu(void)
     menuOptions.Add(&itemOptionsChainPlayer, false);
     menuOptions.Add(&itemOptionsChainControl, false);
     menuOptions.Add(&itemOptionsChainEnhancements, false);
-    //menuOptions.Add(&itemOptionsChainOld, false);
     menuOptions.Add(&itemBloodQAV, false);
 
     menuOptionsGame.Add(&itemOptionsGameTitle, false);
@@ -1796,10 +1676,16 @@ void SetupOptionsMenu(void)
     itemOptionsPlayerChatSound.at20 = gChatSnd;
     itemOptionsPlayerKillMsg.at20 = gKillMsg;
     itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
+}
 
+void SetupControlsMenu(void)
+{
     menuOptionsControl.Add(&itemOptionsControlTitle, false);
     menuOptionsControl.Add(&itemOptionsControlKeyboard, true);
     menuOptionsControl.Add(&itemOptionsControlMouse, false);
+    menuOptionsControl.Add(&itemOptionsControlJoystickButtons, false);
+    menuOptionsControl.Add(&itemOptionsControlJoystickAxes, false);
+    menuOptionsControl.Add(&itemOptionsControlJoystickMisc, false);
     menuOptionsControl.Add(&itemBloodQAV, false);
 
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardTitle, false);
@@ -1815,6 +1701,10 @@ void SetupOptionsMenu(void)
     itemOptionsControlKeyboardBoolCrouchToggle.at20 = gCrouchToggle;
     itemOptionsControlKeyboardBoolAutoRun.at20 = gAutoRun;
 
+    menuKeys.Add(&itemKeysTitle, false);
+    menuKeys.Add(&itemKeyList, true);
+    menuKeys.Add(&itemBloodQAV, false);
+
     menuOptionsControlMouse.Add(&itemOptionsControlMouseTitle, false);
     menuOptionsControlMouse.Add(&itemOptionsControlMouseButton, true);
     menuOptionsControlMouse.Add(&itemOptionsControlMouseSensitivity, false);
@@ -1828,8 +1718,9 @@ void SetupOptionsMenu(void)
     itemOptionsControlMouseVerticalAim.pPreDrawCallback = PreDrawControlMouse;
 
     menuOptionsControlMouseButtonAssignment.Add(&itemOptionsControlMouseTitle, false);
+    int i;
     int y = 60;
-    for (int i = 0; i < MENUMOUSEFUNCTIONS; i++)
+    for (i = 0; i < MENUMOUSEFUNCTIONS; i++)
     {
         pItemOptionsControlMouseButton[i] = new CGameMenuItemZCycle(MenuMouseNames[i], 3, 66, y, 180, 0, SetMouseButton, pzGamefuncsStrings, NUMGAMEFUNCTIONS+1, 0, true);
         dassert(pItemOptionsControlMouseButton[i] != NULL);
@@ -1837,6 +1728,143 @@ void SetupOptionsMenu(void)
         y += 10;
     }
     menuOptionsControlMouseButtonAssignment.Add(&itemBloodQAV, false);
+
+    if (!CONTROL_JoystickEnabled) // joystick disabled, don't bother populating joystick menus
+    {
+        itemOptionsControlJoystickButtons.bEnable = 0;
+        itemOptionsControlJoystickAxes.bEnable = 0;
+        itemOptionsControlJoystickMisc.bEnable = 0;
+        return;
+    }
+
+    menuOptionsControlJoystickMisc.Add(&itemOptionsControlMouseTitle, false);
+    menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscCrouchToggle, true);
+    menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscCrouchCenterView, false);
+    menuOptionsControlJoystickMisc.Add(&itemBloodQAV, false);
+
+    itemOptionsControlJoystickMiscCrouchToggle.at20 = gCrouchToggle;
+    itemOptionsControlJoystickMiscCrouchCenterView.at20 = gCenterViewOnDrop;
+
+    i = 0;
+    for (int nButton = 0; nButton < joystick.numButtons; nButton++) // store every joystick button/hat name for button list at launch
+    {
+        const char *pzButtonName = joyGetName(1, nButton);
+        if (pzButtonName == NULL) // if we've ran out of button names, store joystick hat names
+        {
+            for (int nHats = 0; nHats < (joystick.numHats > 0) * 4; nHats++)
+            {
+                const char *pzHatName = joyGetName(2, nHats);
+                if (pzHatName == NULL)
+                    break;
+                Bsnprintf(MenuJoyButtonNames[i++], 64, "%s", pzHatName);
+                Bsnprintf(MenuJoyButtonNames[i++], 64, "Double %s", pzHatName);
+            }
+            break;
+        }
+        Bsnprintf(MenuJoyButtonNames[i++], 64, "%s", pzButtonName);
+        Bsnprintf(MenuJoyButtonNames[i++], 64, "Double %s", pzButtonName);
+    }
+    const int nMaxJoyButtons = i;
+
+    i = 0;
+    for (int nAxis = 0; nAxis < joystick.numAxes; nAxis++) // store every joystick axes for axes list at launch
+    {
+        const char *pzAxisName = joyGetName(0, nAxis);
+        if (pzAxisName == NULL) // if we've ran out of axes names, stop
+            break;
+        Bsnprintf(MenuJoyAxisNames[i++], 64, "%s", pzAxisName);
+    }
+    const int nMaxJoyAxes = i;
+
+    if (nMaxJoyButtons <= 0) // joystick has no buttons, disable axis menu
+    {
+        itemOptionsControlJoystickButtons.bEnable = 0;
+    }
+    else
+    {
+        i = 0;
+        for (int nPage = 0; nPage < MAXJOYSTICKBUTTONPAGES; nPage++) // create lists of joystick button items
+        {
+            y = 35;
+            menuOptionsControlJoystickButtonAssignment[nPage].Add(&itemJoyButtonsTitle, false);
+            for (int nButton = 0; nButton < JOYSTICKITEMSPERPAGE; nButton++) // populate button list
+            {
+                pItemOptionsControlJoyButton[nPage][nButton] = new CGameMenuItemZCycle(MenuJoyButtonNames[i], 3, 66, y, 180, 0, SetJoyButton, pzGamefuncsStrings, NUMGAMEFUNCTIONS+1, 0, true);
+                dassert(pItemOptionsControlJoyButton[nPage][nButton] != NULL);
+                menuOptionsControlJoystickButtonAssignment[nPage].Add(pItemOptionsControlJoyButton[nPage][nButton], nButton == 0);
+                y += 9;
+                i++;
+                if (i >= nMaxJoyButtons) // if we've reached the total number of buttons, stop populating list
+                    break;
+            }
+            if (i < nMaxJoyButtons) // if we still have more buttons to list, add next page menu item at bottom of page
+            {
+                pItemOptionsControlJoyButtonNextPage[nPage] = new CGameMenuItemChain("NEXT PAGE", 3, 0, 182, 320, 1, &menuOptionsControlJoystickButtonAssignment[nPage+1], -1, NULL, 0);
+                dassert(pItemOptionsControlJoyButtonNextPage[nPage] != NULL);
+                menuOptionsControlJoystickButtonAssignment[nPage].Add(pItemOptionsControlJoyButtonNextPage[nPage], false);
+            }
+            menuOptionsControlJoystickButtonAssignment[nPage].Add(&itemBloodQAV, false);
+        }
+    }
+
+    if (nMaxJoyAxes <= 0) // joystick has no axes, disable axis menu
+    {
+        itemOptionsControlJoystickAxes.bEnable = 0;
+        return;
+    }
+
+    for (int nAxis = 0; nAxis < (int)ARRAY_SIZE(pItemOptionsControlJoystickAxis); nAxis++) // set all possible axis items to null (used for button setup)
+        pItemOptionsControlJoystickAxis[nAxis] = NULL;
+
+    y = 40;
+    const char bUseBigFont = nMaxJoyAxes <= 6;
+    menuOptionsControlJoystickListAxes.Add(&itemJoyAxesTitle, false);
+    for (int nAxis = 0; nAxis < nMaxJoyAxes; nAxis++) // create list of axes for joystick axis menu
+    {
+        pItemOptionsControlJoystickAxis[nAxis] = new CGameMenuItemChain(MenuJoyAxisNames[nAxis], bUseBigFont ? 1 : 3, 66, y, 180, 0, &menuOptionsControlJoystickAxis[nAxis], -1, NULL, 0);
+        dassert(pItemOptionsControlJoystickAxis[nAxis] != NULL);
+        menuOptionsControlJoystickListAxes.Add(pItemOptionsControlJoystickAxis[nAxis], nAxis == 0);
+        y += bUseBigFont ? 20 : 10;
+    }
+    menuOptionsControlJoystickListAxes.Add(&itemBloodQAV, false);
+
+    for (int nAxis = 0; nAxis < nMaxJoyAxes; nAxis++) // create settings for each listed joystick axis
+    {
+        y = 40;
+        menuOptionsControlJoystickAxis[nAxis].Add(&itemJoyAxesTitle, false);
+        pItemOptionsControlJoystickAxisName[nAxis] = new CGameMenuItemTitle(MenuJoyAxisNames[nAxis], 3, 160, y, -1); // get axis name
+        dassert(pItemOptionsControlJoystickAxisName[nAxis] != NULL);
+        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisName[nAxis], false);
+        y += 12;
+        pItemOptionsControlJoystickAxisScale[nAxis] = new CGameMenuItemSlider("AXIS SCALE:", 1, 18, y, 280, &JoystickAnalogueScale[nAxis], fix16_from_int(0), fix16_from_float(2.f), fix16_from_float(0.025f), SetJoystickScale, -1, -1, kMenuSliderQ16); // get axis scale
+        dassert(pItemOptionsControlJoystickAxisScale[nAxis] != NULL);
+        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisScale[nAxis], true);
+        y += 25;
+        pItemOptionsControlJoystickAxisAnalogue[nAxis] = new CGameMenuItemZCycle("ANALOG:", 1, 18, y, 280, 0, SetJoystickAnalogue, zJoystickAnalogue, ARRAY_SSIZE(zJoystickAnalogue), 0); // get analog function
+        dassert(pItemOptionsControlJoystickAxisAnalogue[nAxis] != NULL);
+        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisAnalogue[nAxis], true);
+        y += 17;
+        pItemOptionsControlJoystickAxisAnalogueInvert[nAxis] = new CGameMenuItemZBool("ANALOG INVERT:", 1, 18, y, 280, false, SetJoystickAnalogueInvert, NULL, NULL); // get analog function
+        dassert(pItemOptionsControlJoystickAxisAnalogueInvert[nAxis] != NULL);
+        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisAnalogueInvert[nAxis], true);
+        y += 17;
+        pItemOptionsControlJoystickAxisDigitalPos[nAxis] = new CGameMenuItemZCycle("DIGITAL +:", 1, 18, y, 280, 0, SetJoystickDigitalPos, pzGamefuncsStrings, NUMGAMEFUNCTIONS+1, 0, true); // get digital function
+        dassert(pItemOptionsControlJoystickAxisDigitalPos[nAxis] != NULL);
+        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisDigitalPos[nAxis], true);
+        y += 17;
+        pItemOptionsControlJoystickAxisDigitalNeg[nAxis] = new CGameMenuItemZCycle("DIGITAL -:", 1, 18, y, 280, 0, SetJoystickDigitalNeg, pzGamefuncsStrings, NUMGAMEFUNCTIONS+1, 0, true); // get digital function
+        dassert(pItemOptionsControlJoystickAxisDigitalNeg[nAxis] != NULL);
+        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisDigitalNeg[nAxis], true);
+        y += 25;
+        pItemOptionsControlJoystickAxisDeadzone[nAxis] = new CGameMenuItemSlider("DEAD ZONE:", 1, 18, y, 280, &JoystickAnalogueDead[nAxis], fix16_from_int(0), fix16_from_float(0.5f), fix16_from_float(0.025f), SetJoystickDeadzone, -1, -1, kMenuSliderPercent); // get dead size
+        dassert(pItemOptionsControlJoystickAxisDeadzone[nAxis] != NULL);
+        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisDeadzone[nAxis], true);
+        y += 17;
+        pItemOptionsControlJoystickAxisSaturate[nAxis] = new CGameMenuItemSlider("SATURATE:", 1, 18, y, 280, &JoystickAnalogueSaturate[nAxis], fix16_from_int(0), fix16_from_float(0.5f), fix16_from_float(0.025f), SetJoystickSaturate, -1, -1, kMenuSliderPercent); // get saturate
+        dassert(pItemOptionsControlJoystickAxisSaturate[nAxis] != NULL);
+        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisSaturate[nAxis], true);
+        menuOptionsControlJoystickAxis[nAxis].Add(&itemBloodQAV, false);
+    }
 }
 
 void SetupMenus(void)
@@ -1864,27 +1892,20 @@ void SetupMenus(void)
     nGamefuncsNum = k;
 
     SetupLoadingScreen();
-    SetupKeyListMenu();
     SetupMessagesMenu();
-    SetupControlsMenu();
     SetupSaveGameMenu();
     SetupLoadGameMenu();
-    SetupOptionsOldMenu();
     SetupCreditsMenu();
-    SetupHelpOrderMenu();
-    SetupSoundsMenu();
+    SetupHelpMenu();
     SetupDifficultyMenu();
     SetupEpisodeMenu();
     SetupMainMenu();
     SetupMainMenuWithSave();
     SetupNetStartMenu();
     SetupQuitMenu();
-    SetupParentalLockMenu();
-    SetupSorryMenu();
-    SetupSorry2Menu();
-    SetupSorry3Menu();
 
     SetupOptionsMenu();
+    SetupControlsMenu();
     SetupNetworkMenu();
 }
 
@@ -2113,17 +2134,6 @@ void SetWeaponInterpolate(CGameMenuItemZCycle *pItem)
     gWeaponInterpolate = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponInterpolateStrings);
 }
 
-void SetDetail(CGameMenuItemSlider *pItem)
-{
-    gDetail = pItem->nValue;
-}
-
-void SetGamma(CGameMenuItemSlider *pItem)
-{
-    gGamma = pItem->nValue;
-    scrSetGamma(gGamma);
-}
-
 void SetMusicVol(CGameMenuItemSlider *pItem)
 {
     sndSetMusicVolume(pItem->nValue);
@@ -2161,9 +2171,14 @@ void SetTurnSpeed(CGameMenuItemSlider *pItem)
     gTurnSpeed = pItem->nValue;
 }
 
+void SetCenterView(CGameMenuItemZBool *pItem)
+{
+    gCenterViewOnDrop = pItem->at20;
+}
+
 void SetCrouchToggle(CGameMenuItemZBool *pItem)
 {
-    gCrouchToggle = pItem->at20;
+    gCrouchToggle = itemOptionsControlKeyboardBoolCrouchToggle.at20 = itemOptionsControlJoystickMiscCrouchToggle.at20 = pItem->at20;
 }
 
 void SetAutoRun(CGameMenuItemZBool *pItem)
@@ -2356,25 +2371,6 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
         viewResizeView(gViewSize);
     }
     gGameMenuMgr.Deactivate();
-}
-
-void SetVideoModeOld(CGameMenuItemChain *pItem)
-{
-    if (pItem->at30 == validmodecnt)
-    {
-        gSetup.fullscreen = 0;
-        gSetup.xdim = 640;
-        gSetup.ydim = 480;
-    }
-    else
-    {
-        gSetup.fullscreen = 0;
-        gSetup.xdim = validmode[pItem->at30].xdim;
-        gSetup.ydim = validmode[pItem->at30].ydim;
-    }
-    scrSetGameMode(gSetup.fullscreen, gSetup.xdim, gSetup.ydim, gSetup.bpp);
-    scrSetDac();
-    viewResizeView(gViewSize);
 }
 
 void SetVideoMode(CGameMenuItemChain *pItem)
@@ -2891,6 +2887,206 @@ void SetupMouseMenu(CGameMenuItemChain *pItem)
     // itemOptionsControlMouseYScale.nValue = CONTROL_MouseAxesScale[1];
 }
 
+void SetupJoystickButtonsMenu(CGameMenuItemChain *pItem)
+{
+    UNREFERENCED_PARAMETER(pItem);
+    const int nMaxJoyButtons = (joystick.numButtons * 2) + ((joystick.numHats > 0) * 4);
+    for (int nPage = 0; nPage < MAXJOYSTICKBUTTONPAGES; nPage++) // go through each axis and setup binds
+    {
+        for (int nButton = 0; nButton < JOYSTICKITEMSPERPAGE; nButton++)
+        {
+            if (nButton >= nMaxJoyButtons) // reached end of button list
+                return;
+            const char bDoubleTap = nButton & 1;
+            const int nJoyButton = ((nPage * JOYSTICKITEMSPERPAGE)>>1) + (nButton>>1); // we halve the button index because button lists are listed in pairs of single tap/double tap inputs
+            auto pButton = pItemOptionsControlJoyButton[nPage][nButton];
+            if (!pButton)
+                break;
+            pButton->m_nFocus = 0;
+            for (int j = 0; j < NUMGAMEFUNCTIONS+1; j++)
+            {
+                if (JoystickFunctions[nJoyButton][bDoubleTap] == nGamefuncsValues[j])
+                {
+                    pButton->m_nFocus = j;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void SetupJoystickAxesMenu(CGameMenuItemChain *pItem)
+{
+    UNREFERENCED_PARAMETER(pItem);
+    for (int nAxis = 0; nAxis < MAXJOYAXES; nAxis++) // set settings for each listed joystick axis
+    {
+        if (pItemOptionsControlJoystickAxis[nAxis] == NULL) // reached end of list, stop
+            return;
+        pItemOptionsControlJoystickAxisScale[nAxis]->nValue = JoystickAnalogueScale[nAxis];
+        switch (JoystickAnalogueAxes[nAxis])
+        {
+        case analog_lookingupanddown:
+            pItemOptionsControlJoystickAxisAnalogue[nAxis]->m_nFocus = 4;
+            break;
+        case analog_moving:
+            pItemOptionsControlJoystickAxisAnalogue[nAxis]->m_nFocus = 3;
+            break;
+        case analog_strafing:
+            pItemOptionsControlJoystickAxisAnalogue[nAxis]->m_nFocus = 2;
+            break;
+        case analog_turning:
+            pItemOptionsControlJoystickAxisAnalogue[nAxis]->m_nFocus = 1;
+            break;
+        default: // unsupported/none
+            pItemOptionsControlJoystickAxisAnalogue[nAxis]->m_nFocus = 0;
+            break;
+        }
+        pItemOptionsControlJoystickAxisDigitalPos[nAxis]->m_nFocus = 0;
+        for (int j = 0; j < NUMGAMEFUNCTIONS+1; j++)
+        {
+            if (JoystickDigitalFunctions[nAxis][0] == nGamefuncsValues[j])
+            {
+                pItemOptionsControlJoystickAxisDigitalPos[nAxis]->m_nFocus = j;
+                break;
+            }
+        }
+        pItemOptionsControlJoystickAxisDigitalNeg[nAxis]->m_nFocus = 0;
+        for (int j = 0; j < NUMGAMEFUNCTIONS+1; j++)
+        {
+            if (JoystickDigitalFunctions[nAxis][1] == nGamefuncsValues[j])
+            {
+                pItemOptionsControlJoystickAxisDigitalNeg[nAxis]->m_nFocus = j;
+                break;
+            }
+        }
+        pItemOptionsControlJoystickAxisDeadzone[nAxis]->nValue = JoystickAnalogueDead[nAxis];
+        pItemOptionsControlJoystickAxisSaturate[nAxis]->nValue = JoystickAnalogueSaturate[nAxis];
+    }
+}
+
+void SetJoystickScale(CGameMenuItemSlider* pItem)
+{
+    for (int nAxis = 0; nAxis < MAXJOYAXES; nAxis++)
+    {
+        if (pItem == pItemOptionsControlJoystickAxisScale[nAxis])
+        {
+            JoystickAnalogueScale[nAxis] = pItem->nValue;
+            CONTROL_SetAnalogAxisScale(nAxis, JoystickAnalogueScale[nAxis], controldevice_joystick);
+            break;
+        }
+    }
+}
+
+void SetJoystickAnalogue(CGameMenuItemZCycle* pItem)
+{
+    for (int nAxis = 0; nAxis < MAXJOYAXES; nAxis++)
+    {
+        if (pItem == pItemOptionsControlJoystickAxisAnalogue[nAxis])
+        {
+            switch (pItem->m_nFocus)
+            {
+            case 4: // looking up/down
+                JoystickAnalogueAxes[nAxis] = analog_lookingupanddown;
+                break;
+            case 3: // moving
+                JoystickAnalogueAxes[nAxis] = analog_moving;
+                break;
+            case 2: // strafing
+                JoystickAnalogueAxes[nAxis] = analog_strafing;
+                break;
+            case 1: // turning
+                JoystickAnalogueAxes[nAxis] = analog_turning;
+                break;
+            case 0: // none
+            default:
+                JoystickAnalogueAxes[nAxis] = -1;
+                break;
+            }
+            CONTROL_MapAnalogAxis(nAxis, JoystickAnalogueAxes[nAxis]);
+            break;
+        }
+    }
+}
+
+void SetJoystickAnalogueInvert(CGameMenuItemZBool* pItem)
+{
+    for (int nAxis = 0; nAxis < MAXJOYAXES; nAxis++)
+    {
+        if (pItem == pItemOptionsControlJoystickAxisAnalogueInvert[nAxis])
+        {
+            JoystickAnalogueInvert[nAxis] = pItem->at20;
+            CONTROL_SetAnalogAxisInvert(nAxis, JoystickAnalogueInvert[nAxis]);
+            break;
+        }
+    }
+}
+
+void SetJoystickDigitalPos(CGameMenuItemZCycle* pItem)
+{
+    for (int nAxis = 0; nAxis < MAXJOYAXES; nAxis++)
+    {
+        if (pItem == pItemOptionsControlJoystickAxisDigitalPos[nAxis])
+        {
+            for (int j = 0; j < NUMGAMEFUNCTIONS+1; j++)
+            {
+                if (JoystickDigitalFunctions[nAxis][0] == nGamefuncsValues[j])
+                {
+                    int nFunc = nGamefuncsValues[pItem->m_nFocus];
+                    JoystickDigitalFunctions[nAxis][0] = nFunc;
+                    CONTROL_MapDigitalAxis(nAxis, JoystickDigitalFunctions[nAxis][0], 0);
+                    return;
+                }
+            }
+        }
+    }
+}
+
+void SetJoystickDigitalNeg(CGameMenuItemZCycle* pItem)
+{
+    for (int nAxis = 0; nAxis < MAXJOYAXES; nAxis++)
+    {
+        if (pItem == pItemOptionsControlJoystickAxisDigitalNeg[nAxis])
+        {
+            for (int j = 0; j < NUMGAMEFUNCTIONS+1; j++)
+            {
+                if (JoystickDigitalFunctions[nAxis][1] == nGamefuncsValues[j])
+                {
+                    int nFunc = nGamefuncsValues[pItem->m_nFocus];
+                    JoystickDigitalFunctions[nAxis][1] = nFunc;
+                    CONTROL_MapDigitalAxis(nAxis, JoystickDigitalFunctions[nAxis][1], 1);
+                    return;
+                }
+            }
+        }
+    }
+}
+
+void SetJoystickDeadzone(CGameMenuItemSlider* pItem)
+{
+    for (int nAxis = 0; nAxis < MAXJOYAXES; nAxis++)
+    {
+        if (pItem == pItemOptionsControlJoystickAxisDeadzone[nAxis])
+        {
+            JoystickAnalogueDead[nAxis] = pItem->nValue;
+            JOYSTICK_SetDeadZone(nAxis, JoystickAnalogueDead[nAxis], JoystickAnalogueSaturate[nAxis]);
+            break;
+        }
+    }
+}
+
+void SetJoystickSaturate(CGameMenuItemSlider* pItem)
+{
+    for (int nAxis = 0; nAxis < MAXJOYAXES; nAxis++)
+    {
+        if (pItem == pItemOptionsControlJoystickAxisSaturate[nAxis])
+        {
+            JoystickAnalogueSaturate[nAxis] = pItem->nValue;
+            JOYSTICK_SetDeadZone(nAxis, JoystickAnalogueDead[nAxis], JoystickAnalogueSaturate[nAxis]);
+            break;
+        }
+    }
+}
+
 void PreDrawControlMouse(CGameMenuItem *pItem)
 {
     if (pItem == &itemOptionsControlMouseVerticalAim)
@@ -2908,6 +3104,25 @@ void SetMouseButton(CGameMenuItemZCycle *pItem)
             CONTROL_MapButton(nFunc, MenuMouseDataIndex[i][0], MenuMouseDataIndex[i][1], controldevice_mouse);
             CONTROL_FreeMouseBind(MenuMouseDataIndex[i][0]);
             break;
+        }
+    }
+}
+
+void SetJoyButton(CGameMenuItemZCycle *pItem)
+{
+    for (int nPage = 0; nPage < MAXJOYSTICKBUTTONPAGES; nPage++) // find selected menu item used for this bind
+    {
+        for (int nButton = 0; nButton < JOYSTICKITEMSPERPAGE; nButton++)
+        {
+            if (pItem == pItemOptionsControlJoyButton[nPage][nButton]) // found menu item, now bind function to joystick button
+            {
+                const char bDoubleTap = nButton & 1;
+                const int nJoyButton = ((nPage * JOYSTICKITEMSPERPAGE)>>1) + (nButton>>1); // we halve the button index because button lists are listed in pairs of single tap/double tap inputs
+                int nFunc = nGamefuncsValues[pItem->m_nFocus];
+                JoystickFunctions[nJoyButton][bDoubleTap] = nFunc;
+                CONTROL_MapButton(nFunc, nJoyButton, bDoubleTap, controldevice_joystick);
+                return;
+            }
         }
     }
 }
@@ -2996,11 +3211,6 @@ void NetworkJoinGame(CGameMenuItemChain *pItem)
 }
 
 void SaveGameProcess(CGameMenuItemChain *pItem)
-{
-    UNREFERENCED_PARAMETER(pItem);
-}
-
-void TenProcess(CGameMenuItem7EA1C *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
 }
@@ -3251,33 +3461,6 @@ void Quit(CGameMenuItemChain *pItem)
     else
         gQuitRequest = 1;
     gGameMenuMgr.Deactivate();
-}
-
-void SetParentalLock(CGameMenuItemZBool *pItem)
-{
-    if (!pItem->at20)
-    {
-        pItem->at20 = true;
-        pItem->Draw();
-        if (strcmp(itemParentalLockPassword.at20, ""))
-        {
-            itemParentalLockPassword.pMenu->FocusNextItem();
-            itemParentalLockPassword.at32 = 0;
-            itemParentalLockPassword.at37 = 1;
-            itemParentalLockPassword.at5f = pItem;
-            itemParentalLockPassword.at29[0] = 0;
-            return;
-        }
-        else
-        {
-            itemParentalLockPassword.at20[0] = 0;
-            pItem->Draw();
-            gbAdultContent = false;
-        }
-    }
-    else
-        gbAdultContent = true;
-    // NUKE-TODO: CONFIG_WriteAdultMode();
 }
 
 void MenuSetupEpisodeInfo(void)

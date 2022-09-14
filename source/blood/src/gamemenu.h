@@ -165,6 +165,7 @@ public:
     virtual bool Event(CGameMenuEvent &);
 };
 
+#if 0
 class CGameMenuItem7EA1C : public CGameMenuItem
 {
 public:
@@ -196,6 +197,7 @@ public:
     virtual void Draw(void);
     virtual bool Event(CGameMenuEvent &);
 };
+#endif
 
 class CGameMenuItemChain7F2F0 : public CGameMenuItemChain
 {
@@ -419,6 +421,7 @@ public:
     void SetPicIndex(int);
 };
 
+#if 0
 class CGameMenuItemPassword : public CGameMenuItem
 {
 public:
@@ -435,6 +438,7 @@ public:
     virtual void Draw(void);
     virtual bool Event(CGameMenuEvent &);
 };
+#endif
 
 class CGameMenuFileSelect : public CGameMenuItem
 {
