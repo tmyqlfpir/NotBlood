@@ -478,6 +478,21 @@ void CDemo::ProcessKeys(void)
                 break;
             }
         }
+        if (!nKey && CONTROL_JoystickEnabled)
+        {
+            static int32_t joyold = 0;
+            int32_t joy = JOYSTICK_GetControllerButtons() == (1 << CONTROLLER_BUTTON_START);
+            if (joy && !joyold)
+            {
+                JOYSTICK_ClearAllButtons();
+                if (!CGameMenuMgr::m_bActive)
+                {
+                    gGameMenuMgr.Push(&menuMain, -1);
+                    at2 = 1;
+                }
+            }
+            joyold = joy;
+        }
         break;
     default:
         gInputMode = INPUT_MODE_0;
