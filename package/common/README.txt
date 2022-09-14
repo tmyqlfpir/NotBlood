@@ -218,6 +218,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Position offset for selected weapon weapon bar
 * hud_showweaponselectscale
    - Sets scale for selected weapon weapon bar (default: 10, range: 5-20)
+* in_centerviewondrop
+   - Enable/disable recenter view when dropping down onto ground
 * in_crouchmode
    - Toggles crouch button (0:hold, 1:toggle)
 * in_turnsensitivity

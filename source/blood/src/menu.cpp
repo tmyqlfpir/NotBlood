@@ -76,6 +76,7 @@ void SetWeaponInterpolate(CGameMenuItemZCycle *);
 void SetMouseSensitivity(CGameMenuItemSliderFloat *);
 void SetMouseAimFlipped(CGameMenuItemZBool *);
 void SetTurnSpeed(CGameMenuItemSlider *);
+void SetCenterView(CGameMenuItemZBool *);
 void SetCrouchToggle(CGameMenuItemZBool *);
 void SetAutoRun(CGameMenuItemZBool *);
 void ResetKeys(CGameMenuItemChain *);
@@ -1004,6 +1005,7 @@ CGameMenuItemSlider *pItemOptionsControlJoystickAxisSaturate[MAXJOYAXES];
 
 CGameMenuItemTitle itemOptionsControlJoystickMiscTitle("JOYSTICK AXES", 1, 160, 20, 2038);
 CGameMenuItemZBool itemOptionsControlJoystickMiscCrouchToggle("CROUCH TOGGLE:", 1, 18, 70, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
+CGameMenuItemZBool itemOptionsControlJoystickMiscCrouchCenterView("CENTER VIEW ON DROP:", 1, 18, 90, 280, gCenterViewOnDrop, SetCenterView, NULL, NULL);
 
 void SetupLoadingScreen(void)
 {
@@ -1737,9 +1739,11 @@ void SetupControlsMenu(void)
 
     menuOptionsControlJoystickMisc.Add(&itemOptionsControlMouseTitle, false);
     menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscCrouchToggle, true);
+    menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscCrouchCenterView, false);
     menuOptionsControlJoystickMisc.Add(&itemBloodQAV, false);
 
     itemOptionsControlJoystickMiscCrouchToggle.at20 = gCrouchToggle;
+    itemOptionsControlJoystickMiscCrouchCenterView.at20 = gCenterViewOnDrop;
 
     i = 0;
     for (int nButton = 0; nButton < joystick.numButtons; nButton++) // store every joystick button/hat name for button list at launch
@@ -2165,6 +2169,11 @@ void SetMouseAimFlipped(CGameMenuItemZBool *pItem)
 void SetTurnSpeed(CGameMenuItemSlider *pItem)
 {
     gTurnSpeed = pItem->nValue;
+}
+
+void SetCenterView(CGameMenuItemZBool *pItem)
+{
+    gCenterViewOnDrop = pItem->at20;
 }
 
 void SetCrouchToggle(CGameMenuItemZBool *pItem)
