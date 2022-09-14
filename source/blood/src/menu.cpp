@@ -1003,7 +1003,7 @@ CGameMenuItemZCycle *pItemOptionsControlJoystickAxisDigitalNeg[MAXJOYAXES];
 CGameMenuItemSlider *pItemOptionsControlJoystickAxisDeadzone[MAXJOYAXES];
 CGameMenuItemSlider *pItemOptionsControlJoystickAxisSaturate[MAXJOYAXES];
 
-CGameMenuItemTitle itemOptionsControlJoystickMiscTitle("JOYSTICK AXES", 1, 160, 20, 2038);
+CGameMenuItemTitle itemOptionsControlJoystickMiscTitle("JOYSTICK MISC", 1, 160, 20, 2038);
 CGameMenuItemZBool itemOptionsControlJoystickMiscCrouchToggle("CROUCH TOGGLE:", 1, 18, 70, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
 CGameMenuItemZBool itemOptionsControlJoystickMiscCrouchCenterView("CENTER VIEW ON DROP:", 1, 18, 90, 280, gCenterViewOnDrop, SetCenterView, NULL, NULL);
 
@@ -1737,7 +1737,7 @@ void SetupControlsMenu(void)
         return;
     }
 
-    menuOptionsControlJoystickMisc.Add(&itemOptionsControlMouseTitle, false);
+    menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscTitle, false);
     menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscCrouchToggle, true);
     menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscCrouchCenterView, false);
     menuOptionsControlJoystickMisc.Add(&itemBloodQAV, false);
