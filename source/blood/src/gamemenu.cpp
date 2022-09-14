@@ -40,15 +40,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 CMenuTextMgr gMenuTextMgr;
 CGameMenuMgr gGameMenuMgr;
 
-extern CGameMenuItemPicCycle itemSorryPicCycle;
 extern CGameMenuItemQAV itemBloodQAV;
 
 CMenuTextMgr::CMenuTextMgr()
 {
     at0 = -1;
 }
-
-static char buffer[21][45];
 
 void CMenuTextMgr::DrawText(const char *pString, int nFont, int x, int y, int nShade, int nPalette, bool shadow )
 {
@@ -279,6 +276,27 @@ void CGameMenuMgr::Process(void)
             break;
         }
     }
+    else if (CONTROL_JoystickEnabled && (key == 0))
+    {
+        static int32_t joyold = 0;
+        int32_t joy = JOYSTICK_GetControllerButtons();
+        if (joy != joyold)
+        {
+            if (joy & (1 << CONTROLLER_BUTTON_DPAD_UP))
+                event.at0 = kMenuEventUp;
+            else if (joy & (1 << CONTROLLER_BUTTON_DPAD_DOWN))
+                event.at0 = kMenuEventDown;
+            else if (joy & (1 << CONTROLLER_BUTTON_DPAD_LEFT))
+                event.at0 = kMenuEventLeft;
+            else if (joy & (1 << CONTROLLER_BUTTON_DPAD_RIGHT))
+                event.at0 = kMenuEventRight;
+            else if (joy & (1 << CONTROLLER_BUTTON_A))
+                event.at0 = kMenuEventEnter;
+            else if ((joy & (1 << CONTROLLER_BUTTON_B)) || (joy & (1 << CONTROLLER_BUTTON_START)))
+                event.at0 = kMenuEventEscape;
+        }
+        joyold = joy;
+    }
     if (pActiveMenu->Event(event))
         Pop();
 
@@ -322,7 +340,7 @@ CGameMenu::~CGameMenu()
         return;
     for (int i = 0; i < m_nItems; i++)
     {
-        if (pItemList[i] != &itemBloodQAV && pItemList[i] != &itemSorryPicCycle)
+        if (pItemList[i] != &itemBloodQAV)
             delete pItemList[i];
     }
 }
@@ -763,6 +781,9 @@ bool CGameMenuItemChain::Event(CGameMenuEvent &event)
     return CGameMenuItem::Event(event);
 }
 
+#if 0
+static char buffer[21][45];
+
 CGameMenuItem7EA1C::CGameMenuItem7EA1C()
 {
     m_pzText = NULL;
@@ -824,7 +845,6 @@ void CGameMenuItem7EA1C::Setup(void)
         return;
     const char *title = at34->GetKeyString(at48, "Title", at48);
     at24->Add(new CGameMenuItemTitle(title, 1, 160, 20, 2038), false);
-    at24->Add(&itemSorryPicCycle, true);
     int y = 40;
     for (int i = 0; i < 21; i++)
     {
@@ -931,7 +951,7 @@ void CGameMenuItem7EE34::Draw(void)
     gMenuTextMgr.DrawText(m_pzText, m_nFont, x, m_nY, shade, pal, true);
 }
 
-extern void SetVideoModeOld(CGameMenuItemChain *pItem);
+extern void SetVideoMode(CGameMenuItemChain *pItem);
 
 void CGameMenuItem7EE34::Setup(void)
 {
@@ -942,7 +962,6 @@ void CGameMenuItem7EE34::Setup(void)
     {
         at2c = new CGameMenu(1);
         at2c->Add(new CGameMenuItemTitle(" Mode Change ", 1, 160, 20, 2038), false);
-        at2c->Add(&itemSorryPicCycle, true);
         CGameMenuItem *pItem1 = new CGameMenuItemText("VIDEO MODE WAS SET", 1, 160, 90, 1);
         CGameMenuItem *pItem2 = new CGameMenuItemText("NOT ALL MODES Work correctly", 1, 160, 110, 1);
         CGameMenuItem *pItem3 = new CGameMenuItemText("Press ESC to exit", 3, 160, 140, 1);
@@ -956,12 +975,12 @@ void CGameMenuItem7EE34::Setup(void)
     }
     sprintf(buffer[0], "640 x 480 (default)");
     int y = 40;
-    at28->Add(new CGameMenuItemChain(buffer[0], 3, 0, y, 320, 1, at2c, -1, SetVideoModeOld, validmodecnt), true);
+    at28->Add(new CGameMenuItemChain(buffer[0], 3, 0, y, 320, 1, at2c, -1, SetVideoMode, validmodecnt), true);
     y += 20;
     for (int i = 0; i < validmodecnt && i < 20; i++)
     {
         sprintf(buffer[i+1], "%d x %d", validmode[i].xdim, validmode[i].ydim);
-        at28->Add(new CGameMenuItemChain(buffer[i+1], 3, 0, y, 320, 1, at2c, -1, SetVideoModeOld, i), false);
+        at28->Add(new CGameMenuItemChain(buffer[i+1], 3, 0, y, 320, 1, at2c, -1, SetVideoMode, i), false);
         if (validmodecnt > 10)
             y += 7;
         else
@@ -992,6 +1011,7 @@ bool CGameMenuItem7EE34::Event(CGameMenuEvent &event)
     }
     return CGameMenuItem::Event(event);
 }
+#endif
 
 CGameMenuItemChain7F2F0::CGameMenuItemChain7F2F0()
 {
@@ -2879,6 +2899,7 @@ void CGameMenuItemPicCycle::SetPicIndex(int nIndex)
     at24 = ClipRange(nIndex, 0, m_nItems);
 }
 
+#if 0
 CGameMenuItemPassword::CGameMenuItemPassword()
 {
     at37 = 0;
@@ -3052,6 +3073,7 @@ bool CGameMenuItemPassword::Event(CGameMenuEvent &event)
     }
     return CGameMenuItem::Event(event);
 }
+#endif
 
 CGameMenuFileSelect::CGameMenuFileSelect(const char* _pzText, int _nFont, int _x, int _y, int _nWidth, const char* _startdir, const char* _pattern, char* _destination, void(*_onFileSelectedEventHandler)(), const char _doPop)
 {

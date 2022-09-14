@@ -1089,7 +1089,7 @@ void LocalKeys(void)
         case sc_F1:
             keyFlushScans();
             if (gGameOptions.nGameType == 0)
-                gGameMenuMgr.Push(&menuOrder,-1);
+                gGameMenuMgr.Push(&menuHelp,-1);
             break;
         case sc_F2:
             keyFlushScans();
@@ -1142,6 +1142,26 @@ void LocalKeys(void)
             videoCaptureScreen("blud0000.tga", 0);
             break;
         }
+    }
+    else if (CONTROL_JoystickEnabled)
+    {
+        static int32_t joyold = 0;
+        int32_t joy = JOYSTICK_GetControllerButtons();
+        if ((joy != joyold) && (joy & (1 << CONTROLLER_BUTTON_START)))
+        {
+            if (gGameStarted && !gDemo.bRecording && (gPlayer[myconnectindex].pXSprite->health != 0 || gGameOptions.nGameType > 0))
+            {
+                if (!gGameMenuMgr.m_bActive)
+                    gGameMenuMgr.Push(&menuMainWithSave,-1);
+            }
+            else
+            {
+                if (!gGameMenuMgr.m_bActive)
+                    gGameMenuMgr.Push(&menuMain,-1);
+            }
+        }
+        joyold = joy;
+        return;
     }
 }
 
