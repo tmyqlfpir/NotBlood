@@ -339,8 +339,8 @@ void ctrlGetInput(void)
         gCrouchToggleState = 0;
     }
 
-    if (gCrouchToggle && gInput.buttonFlags.jump && gInput.buttonFlags.crouch) // allow player to jump while crouching (only if crouch toggle is enabled)
-        gInput.buttonFlags.crouch = 0;
+    if (gCrouchToggle && gInput.buttonFlags.jump) // reset crouch toggle state on jump
+        gCrouchToggleState = 0;
 
     if (BUTTON(gamefunc_Weapon_Fire))
         gInput.buttonFlags.shoot = 1;
