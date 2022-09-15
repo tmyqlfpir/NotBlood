@@ -590,3 +590,15 @@ void ctrlGetInput(void)
         gViewLook = fix16_clamp(gViewLook+(input.q16mlook << 3), F16(downAngle), F16(upAngle));
     }
 }
+
+void ctrlForceFeedback(int nTime)
+{
+    if (!CONTROL_JoystickEnabled || !joystick.hasRumble || !gSetup.joystickrumble)
+        return;
+
+    const int nRumble = nTime<<9;
+    nTime = ClipLow(nTime, 28)<<3;
+    joystick.rumbleHigh = UINT16_MAX > joystick.rumbleHigh + nRumble ? joystick.rumbleHigh + nRumble : UINT16_MAX;
+    joystick.rumbleLow  = UINT16_MAX > joystick.rumbleHigh + nRumble ? joystick.rumbleLow  + nRumble : UINT16_MAX;
+    joystick.rumbleTime = nTime      > joystick.rumbleTime ? nTime : joystick.rumbleTime;
+}

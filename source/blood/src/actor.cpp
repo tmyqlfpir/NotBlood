@@ -6542,6 +6542,8 @@ void actProcessSprites(void)
             int t = divscale16(pXSprite->data2, nDist);
             gPlayer[p].flickerEffect += t;
         }
+        if (gMe->flickerEffect)
+            ctrlForceFeedback(gMe->flickerEffect);
 
         #ifdef NOONE_EXTENSIONS
         if (pXSprite->data1 != 0) {
