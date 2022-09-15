@@ -6543,7 +6543,7 @@ void actProcessSprites(void)
             gPlayer[p].flickerEffect += t;
         }
         if (gMe->flickerEffect)
-            ctrlForceFeedback(gMe->flickerEffect);
+            ctrlJoystickRumble(gMe->flickerEffect);
 
         #ifdef NOONE_EXTENSIONS
         if (pXSprite->data1 != 0) {

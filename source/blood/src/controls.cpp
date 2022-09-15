@@ -591,7 +591,7 @@ void ctrlGetInput(void)
     }
 }
 
-void ctrlForceFeedback(int nTime)
+void ctrlJoystickRumble(int nTime)
 {
     if (!CONTROL_JoystickEnabled || !joystick.hasRumble || !gSetup.joystickrumble)
         return;

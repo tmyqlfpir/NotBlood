@@ -2375,7 +2375,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
     nDamage = playerDamageArmor(pPlayer, nDamageType, nDamage);
     pPlayer->painEffect = ClipHigh(pPlayer->painEffect+(nDamage>>3), 600);
     if (pPlayer == gMe)
-        ctrlForceFeedback(pPlayer->painEffect);
+        ctrlJoystickRumble(pPlayer->painEffect);
 
     spritetype *pSprite = pPlayer->pSprite;
     XSPRITE *pXSprite = pPlayer->pXSprite;
