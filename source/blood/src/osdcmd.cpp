@@ -854,6 +854,10 @@ static int osdcmd_cvar_set_game(osdcmdptr_t parm)
     {
         CONTROL_JoystickEnabled = (gSetup.usejoystick && CONTROL_JoyPresent);
     }
+    else if (!Bstrcasecmp(parm->name, "in_rumble"))
+    {
+        gSetup.joystickrumble = (gSetup.usejoystick && CONTROL_JoyPresent && joystick.hasRumble);
+    }
     else if (!Bstrcasecmp(parm->name, "vid_gamma"))
     {
         gBrightness = GAMMA_CALC;
