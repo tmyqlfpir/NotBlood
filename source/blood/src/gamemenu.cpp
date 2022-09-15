@@ -222,7 +222,7 @@ void CGameMenuMgr::Process(void)
     CGameMenuEvent event;
     event.at0 = 0;
     event.at2 = 0;
-    char key;
+    char key = 0;
     if (!pActiveMenu->MouseEvent(event) && (key = keyGetScan()) != 0 )
     {
         keyFlushScans();
@@ -276,7 +276,7 @@ void CGameMenuMgr::Process(void)
             break;
         }
     }
-    else if (CONTROL_JoystickEnabled && (key == 0))
+    else if (CONTROL_JoystickEnabled && !key)
     {
         static int32_t joyold = 0;
         int32_t joy = JOYSTICK_GetControllerButtons();
