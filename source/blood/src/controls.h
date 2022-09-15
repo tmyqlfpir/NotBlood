@@ -116,4 +116,5 @@ int32_t ctrlCheckAllInput(void);
 void ctrlClearAllInput(void);
 void ctrlInit();
 void ctrlGetInput();
+void ctrlJoystickRumble(int nTime);
 
