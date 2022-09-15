@@ -193,7 +193,7 @@ spritetype * CFX::fxSpawn(FX_ID nFx, int nSector, int x, int y, int z, unsigned 
             break;
         }
     }
-    if (gStatCount[1] == (MAXSTATUS/2)) // hit upper limit of available sprites, don't spawn any more
+    if (gStatCount[kStatFX] == 512) // hit upper limit of available sprites, don't spawn any more
     {
         int nSprite = headspritestat[kStatFX];
         while ((sprite[nSprite].flags & 32) && nSprite != -1) // scan through sprites for free slot
