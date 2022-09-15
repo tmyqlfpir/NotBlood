@@ -1007,7 +1007,7 @@ CGameMenuItemSlider *pItemOptionsControlJoystickAxisSaturate[MAXJOYAXES];
 CGameMenuItemTitle itemOptionsControlJoystickMiscTitle("JOYSTICK MISC", 1, 160, 20, 2038);
 CGameMenuItemZBool itemOptionsControlJoystickMiscCrouchToggle("CROUCH TOGGLE:", 1, 18, 70, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
 CGameMenuItemZBool itemOptionsControlJoystickMiscCenterView("CENTER VIEW ON DROP:", 1, 18, 90, 280, gCenterViewOnDrop, SetCenterView, NULL, NULL);
-CGameMenuItemZBool itemOptionsControlJoystickMiscRumble("RUMBLE CONTROLLER:", 1, 18, 110, 280, gJoystickRumble, SetJoystickRumble, NULL, NULL);
+CGameMenuItemZBool itemOptionsControlJoystickMiscRumble("RUMBLE CONTROLLER:", 1, 18, 110, 280, 0, SetJoystickRumble, NULL, NULL);
 
 void SetupLoadingScreen(void)
 {
@@ -1747,7 +1747,7 @@ void SetupControlsMenu(void)
 
     itemOptionsControlJoystickMiscCrouchToggle.at20 = gCrouchToggle;
     itemOptionsControlJoystickMiscCenterView.at20 = gCenterViewOnDrop;
-    itemOptionsControlJoystickMiscRumble.at20 = gJoystickRumble;
+    itemOptionsControlJoystickMiscRumble.at20 = gSetup.joystickrumble;
 
     i = 0;
     for (int nButton = 0; nButton < joystick.numButtons; nButton++) // store every joystick button/hat name for button list at launch
@@ -2182,7 +2182,7 @@ void SetCenterView(CGameMenuItemZBool *pItem)
 
 void SetJoystickRumble(CGameMenuItemZBool *pItem)
 {
-    gJoystickRumble = pItem->at20;
+    gSetup.joystickrumble = pItem->at20;
 }
 
 void SetCrouchToggle(CGameMenuItemZBool *pItem)

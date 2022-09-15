@@ -593,7 +593,7 @@ void ctrlGetInput(void)
 
 void ctrlForceFeedback(int nTime)
 {
-    if (!CONTROL_JoystickEnabled || !joystick.hasRumble)
+    if (!CONTROL_JoystickEnabled || !joystick.hasRumble || !gSetup.joystickrumble)
         return;
 
     const int nRumble = nTime<<9;
