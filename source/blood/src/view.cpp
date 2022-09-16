@@ -147,6 +147,7 @@ int gScreenTilt;
 CGameMessageMgr gGameMessageMgr;
 
 bool bLoadScreenCrcMatch = false;
+bool bMenuBackDimCrcMatch = false;
 
 void RotateYZ(int *pX, int *pY, int *pZ, int ang)
 {
@@ -2357,6 +2358,7 @@ void viewInit(void)
     g_frameDelay = calcFrameDelay(r_maxfps);
 
     bLoadScreenCrcMatch = tileGetCRC32(kLoadScreen) == kLoadScreenCRC;
+    bMenuBackDimCrcMatch = tileGetCRC32(kMenuBackDim) == kMenuBackDimCRC;
 }
 
 inline int viewCalculateOffetRatio(int nRatio)
@@ -2495,6 +2497,12 @@ void UpdateFrame(void)
     viewTileSprite(nTile, 20, nPalette, gViewX0, gViewY0-3, gViewX1+4, gViewY0, nWidth, nHeight, nScale);
     viewTileSprite(nTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4, nWidth, nHeight, nScale);
     viewTileSprite(nTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4, nWidth, nHeight, nScale);
+}
+
+void viewDimScreen(void)
+{
+    if (bMenuBackDimCrcMatch && (gGameMenuMgr.pActiveMenu != &menuOptionsDisplayColor)) // if current menu is not on color correction menu, dim screen
+        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(128),0,kMenuBackDim,0,0,RS_STRETCH,192); // stretch black menu tile across entire screen
 }
 
 void viewDrawInterface(ClockTicks arg)

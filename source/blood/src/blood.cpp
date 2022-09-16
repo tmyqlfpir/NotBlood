@@ -2175,7 +2175,11 @@ RESTART:
             {
             case INPUT_MODE_1:
                 if (gGameMenuMgr.m_bActive)
+                {
+                    if (gGameStarted) // dim background
+                        viewDimScreen();
                     gGameMenuMgr.Draw();
+                }
                 break;
             case INPUT_MODE_2:
                 gPlayerMsg.ProcessKeys();

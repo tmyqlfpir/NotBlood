@@ -76,6 +76,9 @@ enum INTERPOLATE_TYPE {
 #define kLoadScreenWideRight 9218
 #define kLoadScreenWideMiddle 9219
 
+#define kMenuBackDim 2038
+#define kMenuBackDimCRC 652733431
+
 #define kSBarNumberHealth 9220
 #define kSBarNumberAmmo 9230
 #define kSBarNumberInv 9240
@@ -152,6 +155,7 @@ void viewInit(void);
 void viewUpdateHudRatio(void);
 void viewResizeView(int size);
 void UpdateFrame(void);
+void viewDimScreen(void);
 void viewDrawInterface(ClockTicks arg);
 tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect);
 void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t smooth);

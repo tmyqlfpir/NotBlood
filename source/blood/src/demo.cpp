@@ -658,7 +658,11 @@ _DEMOPLAYBACK:
                 MUSIC_Update();
             viewDrawScreen();
             if ((gInputMode == INPUT_MODE_1) && CGameMenuMgr::m_bActive && !gDemoRunValidation)
+            {
+                if (gGameStarted) // dim background
+                    viewDimScreen();
                 gGameMenuMgr.Draw();
+            }
             else if (gDemoRunValidation) // keep game locked
                 gInputMode = INPUT_MODE_1;
             videoNextPage();
