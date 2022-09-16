@@ -2176,8 +2176,8 @@ RESTART:
             case INPUT_MODE_1:
                 if (gGameMenuMgr.m_bActive)
                 {
-                    if (gGameStarted && bMenuBackDimCrcMatch) // dim background
-                        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(127),0,kMenuBackDim,0,0,RS_STRETCH,192);
+                    if (gGameStarted) // dim background
+                        viewDimScreen();
                     gGameMenuMgr.Draw();
                 }
                 break;

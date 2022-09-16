@@ -2361,6 +2361,13 @@ void viewInit(void)
     bMenuBackDimCrcMatch = tileGetCRC32(kMenuBackDim) == kMenuBackDimCRC;
 }
 
+void viewDimScreen(void)
+{
+    const char bColorCorrectMenuActive = gGameMenuMgr.pActiveMenu == &menuOptionsDisplayColor;
+    if (bMenuBackDimCrcMatch && !bColorCorrectMenuActive)
+        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(128),0,kMenuBackDim,0,0,RS_STRETCH,192); // stretch black tile across entire screen
+}
+
 inline int viewCalculateOffetRatio(int nRatio)
 {
     const int ratios[] = {320, (int)((4. / 3.) / (16. / 10.) * 320.), (int)((4. / 3.) / (16. / 9.) * 320.), (int)((4. / 3.) / (21. / 9.) * 320.)}; // 4:3, 16:10, 16:9, 21:9

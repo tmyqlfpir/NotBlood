@@ -45,6 +45,7 @@ extern CGameMenu menuOptions;
 extern CGameMenu menuOptionsGame;
 extern CGameMenu menuOptionsGameEnhancements;
 extern CGameMenu menuOptionsDisplay;
+extern CGameMenu menuOptionsDisplayColor;
 extern CGameMenu menuOptionsDisplayMode;
 extern CGameMenu menuOptionsSound;
 extern CGameMenu menuOptionsPlayer;

@@ -555,8 +555,6 @@ _DEMOPLAYBACK:
                     if (!pValidateInfo) // run newly added verify demos at a slower speed for visual verification
                         timerInit(CLOCKTICKSPERSECOND*5);
                 }
-                if (gDemoRunValidation && !pValidateInfo) // run newly added verify demos at a slower speed for visual verification
-                    timerInit(CLOCKTICKSPERSECOND*5);
                 for (int i = 0; i < kMaxPlayers; i++)
                 {
                     gProfile[i].nAutoAim = nAutoAim;
@@ -661,8 +659,8 @@ _DEMOPLAYBACK:
             viewDrawScreen();
             if ((gInputMode == INPUT_MODE_1) && CGameMenuMgr::m_bActive && !gDemoRunValidation)
             {
-                if (gGameStarted && bMenuBackDimCrcMatch) // dim background
-                    rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(127),0,kMenuBackDim,0,0,RS_STRETCH,192);
+                if (gGameStarted) // dim background
+                    viewDimScreen();
                 gGameMenuMgr.Draw();
             }
             else if (gDemoRunValidation) // keep game locked
