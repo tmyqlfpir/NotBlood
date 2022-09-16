@@ -76,6 +76,9 @@ enum INTERPOLATE_TYPE {
 #define kLoadScreenWideRight 9218
 #define kLoadScreenWideMiddle 9219
 
+#define kMenuBackDim 2038
+#define kMenuBackDimCRC 652733431
+
 #define kSBarNumberHealth 9220
 #define kSBarNumberAmmo 9230
 #define kSBarNumberInv 9240
@@ -113,6 +116,7 @@ extern int gViewX0, gViewY0, gViewX1, gViewY1;
 extern int gViewX0S, gViewY0S, gViewX1S, gViewY1S;
 extern palette_t CrosshairColors;
 extern bool g_isAlterDefaultCrosshair;
+extern bool bMenuBackDimCrcMatch;
 extern float r_ambientlight, r_ambientlightrecip;
 extern int gLastPal;
 extern int32_t gShowFps, gFramePeriod;
