@@ -147,6 +147,7 @@ int gScreenTilt;
 CGameMessageMgr gGameMessageMgr;
 
 bool bLoadScreenCrcMatch = false;
+bool bMenuBackDimCrcMatch = false;
 
 void RotateYZ(int *pX, int *pY, int *pZ, int ang)
 {
@@ -2357,6 +2358,7 @@ void viewInit(void)
     g_frameDelay = calcFrameDelay(r_maxfps);
 
     bLoadScreenCrcMatch = tileGetCRC32(kLoadScreen) == kLoadScreenCRC;
+    bMenuBackDimCrcMatch = tileGetCRC32(kMenuBackDim) == kMenuBackDimCRC;
 }
 
 inline int viewCalculateOffetRatio(int nRatio)

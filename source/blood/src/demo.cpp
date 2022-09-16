@@ -660,7 +660,11 @@ _DEMOPLAYBACK:
                 MUSIC_Update();
             viewDrawScreen();
             if ((gInputMode == INPUT_MODE_1) && CGameMenuMgr::m_bActive && !gDemoRunValidation)
+            {
+                if (gGameStarted && bMenuBackDimCrcMatch) // dim background
+                    rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(127),0,kMenuBackDim,0,0,RS_STRETCH,192);
                 gGameMenuMgr.Draw();
+            }
             else if (gDemoRunValidation) // keep game locked
                 gInputMode = INPUT_MODE_1;
             videoNextPage();
