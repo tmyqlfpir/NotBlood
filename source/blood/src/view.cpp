@@ -147,6 +147,7 @@ int gScreenTilt;
 CGameMessageMgr gGameMessageMgr;
 
 bool bLoadScreenCrcMatch = false;
+bool bMenuBackDimCrcMatch = false;
 
 void RotateYZ(int *pX, int *pY, int *pZ, int ang)
 {
@@ -2357,6 +2358,14 @@ void viewInit(void)
     g_frameDelay = calcFrameDelay(r_maxfps);
 
     bLoadScreenCrcMatch = tileGetCRC32(kLoadScreen) == kLoadScreenCRC;
+    bMenuBackDimCrcMatch = tileGetCRC32(kMenuBackDim) == kMenuBackDimCRC;
+}
+
+void viewDimScreen(void)
+{
+    const char bColorCorrectMenuActive = gGameMenuMgr.pActiveMenu == &menuOptionsDisplayColor;
+    if (bMenuBackDimCrcMatch && !bColorCorrectMenuActive)
+        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(128),0,kMenuBackDim,0,0,RS_STRETCH,192); // stretch black tile across entire screen
 }
 
 inline int viewCalculateOffetRatio(int nRatio)

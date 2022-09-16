@@ -76,6 +76,9 @@ enum INTERPOLATE_TYPE {
 #define kLoadScreenWideRight 9218
 #define kLoadScreenWideMiddle 9219
 
+#define kMenuBackDim 2038
+#define kMenuBackDimCRC 652733431
+
 #define kSBarNumberHealth 9220
 #define kSBarNumberAmmo 9230
 #define kSBarNumberInv 9240
@@ -149,6 +152,7 @@ void viewDrawPack(PLAYER *pPlayer, int x, int y);
 void DrawPackItemInStatusBar(PLAYER *pPlayer, int x, int y, int x2, int y2, int nStat = 0);
 void UpdateStatusBar(ClockTicks arg);
 void viewInit(void);
+void viewDimScreen(void);
 void viewUpdateHudRatio(void);
 void viewResizeView(int size);
 void UpdateFrame(void);
