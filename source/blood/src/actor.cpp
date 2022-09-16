@@ -7151,10 +7151,12 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     yvel[nMissile] = mulscale14(pMissileInfo->velocity, a5);
     zvel[nMissile] = mulscale14(pMissileInfo->velocity, a6);
     actPropagateSpriteOwner(pMissile, pSprite);
-    pMissile->cstat |= 1;
+    pMissile->cstat |= CSTAT_SPRITE_BLOCK;
     if ((nType == kMissileShell) || (nType == kMissileBullet)) // do not set collisions on for bullet projectiles (so bullets will not collide with each other)
     {
-        pMissile->cstat &= ~257;
+        pMissile->cstat &= ~(CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_BLOCK_HITSCAN);
+        if (gTransparentHitscanProjectiles)
+            pMissile->cstat |= CSTAT_SPRITE_TRANSLUCENT;
         if (gGameOptions.nDifficulty < 3) // slow down by 75% if on lower difficulties
         {
             xvel[nMissile] = (xvel[nMissile]>>1) + (xvel[nMissile]>>2);
