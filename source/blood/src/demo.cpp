@@ -155,6 +155,9 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST093.DEM", (int32_t)0x000075C7, 0xB1752688, 0x00000640, {(int32_t)0x00006693, (int32_t)0xFFFF226B, (int32_t)0xFFFD79E4}, 1},
     {"/validatedemos/TEST094.DEM", (int32_t)0x00005264, 0x119CF6D1, 0x00000000, {(int32_t)0x0000AE5B, (int32_t)0x00005036, (int32_t)0x000025A4}, 1},
     {"/validatedemos/TEST095.DEM", (int32_t)0x00002C7D, 0x6E7B8D97, 0x00000000, {(int32_t)0xFFFFEF48, (int32_t)0xFFFF9643, (int32_t)0x000099A4}, 1},
+    {"/validatedemos/TEST096.DEM", (int32_t)0x00003647, 0xC2DE5F9B, 0x00000000, {(int32_t)0xFFFFF402, (int32_t)0x00000096, (int32_t)0x000389A4}, 1},
+    {"/validatedemos/TEST097.DEM", (int32_t)0x00003902, 0x04ADDBE5, 0x00000000, {(int32_t)0x00014C09, (int32_t)0x00011CC1, (int32_t)0x000005A4}, 1}, // this demo crashes DOS v1.21 (ERROR (1344) src\ai.cpp)
+    {"/validatedemos/TEST098.DEM", (int32_t)0x00003061, 0xB813201F, 0x0000043C, {(int32_t)0x0000957B, (int32_t)0x0001362C, (int32_t)0xFFFFE9E4}, 1},
 };
 
 int nBuild = 0;
@@ -168,8 +171,8 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     strcpy(gameOptions.zLevelName, gameOptionsLegacy.zLevelName);
     strcpy(gameOptions.zLevelSong, gameOptionsLegacy.zLevelSong);
     gameOptions.nTrackNumber = gameOptionsLegacy.nTrackNumber;
-    strcpy(gameOptions.szSaveGameName, gameOptionsLegacy.szSaveGameName);
-    strcpy(gameOptions.szUserGameName, gameOptionsLegacy.szUserGameName);
+    //strcpy(gameOptions.szSaveGameName, gameOptionsLegacy.szSaveGameName);
+    //strcpy(gameOptions.szUserGameName, gameOptionsLegacy.szUserGameName);
     gameOptions.nSaveGameSlot = gameOptionsLegacy.nSaveGameSlot;
     gameOptions.picEntry = gameOptionsLegacy.picEntry;
     gameOptions.uMapCRC = gameOptionsLegacy.uMapCRC;
@@ -200,11 +203,13 @@ void WriteGameOptionsLegacy(GAMEOPTIONSLEGACY &gameOptionsLegacy, GAMEOPTIONS &g
     gameOptionsLegacy.nDifficulty = gameOptions.nDifficulty;
     gameOptionsLegacy.nEpisode = gameOptions.nEpisode;
     gameOptionsLegacy.nLevel = gameOptions.nLevel;
-    strcpy(gameOptionsLegacy.zLevelName, gameOptions.zLevelName);
-    strcpy(gameOptionsLegacy.zLevelSong, gameOptions.zLevelSong);
+    memset(gameOptionsLegacy.zLevelName, '\0', sizeof(gameOptionsLegacy.zLevelName));
+    memset(gameOptionsLegacy.zLevelSong, '\0', sizeof(gameOptionsLegacy.zLevelSong));
+    strncpy(gameOptionsLegacy.zLevelName, gameOptions.zLevelName, sizeof(gameOptionsLegacy.zLevelName));
+    strncpy(gameOptionsLegacy.zLevelSong, gameOptions.zLevelSong, sizeof(gameOptionsLegacy.zLevelSong));
     gameOptionsLegacy.nTrackNumber = gameOptions.nTrackNumber;
-    strcpy(gameOptionsLegacy.szSaveGameName, gameOptions.szSaveGameName);
-    strcpy(gameOptionsLegacy.szUserGameName, gameOptions.szUserGameName);
+    memset(gameOptionsLegacy.szSaveGameName, '\0', sizeof(gameOptionsLegacy.szSaveGameName));
+    memset(gameOptionsLegacy.szUserGameName, '\0', sizeof(gameOptionsLegacy.szUserGameName));
     gameOptionsLegacy.nSaveGameSlot = gameOptionsLegacy.nSaveGameSlot;
     gameOptionsLegacy.picEntry = gameOptionsLegacy.picEntry;
     gameOptionsLegacy.uMapCRC = gameOptionsLegacy.uMapCRC;
