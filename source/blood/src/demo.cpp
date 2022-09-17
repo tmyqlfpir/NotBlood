@@ -168,8 +168,8 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     strcpy(gameOptions.zLevelName, gameOptionsLegacy.zLevelName);
     strcpy(gameOptions.zLevelSong, gameOptionsLegacy.zLevelSong);
     gameOptions.nTrackNumber = gameOptionsLegacy.nTrackNumber;
-    strcpy(gameOptions.szSaveGameName, gameOptionsLegacy.szSaveGameName);
-    strcpy(gameOptions.szUserGameName, gameOptionsLegacy.szUserGameName);
+    //strcpy(gameOptions.szSaveGameName, gameOptionsLegacy.szSaveGameName);
+    //strcpy(gameOptions.szUserGameName, gameOptionsLegacy.szUserGameName);
     gameOptions.nSaveGameSlot = gameOptionsLegacy.nSaveGameSlot;
     gameOptions.picEntry = gameOptionsLegacy.picEntry;
     gameOptions.uMapCRC = gameOptionsLegacy.uMapCRC;
@@ -200,11 +200,13 @@ void WriteGameOptionsLegacy(GAMEOPTIONSLEGACY &gameOptionsLegacy, GAMEOPTIONS &g
     gameOptionsLegacy.nDifficulty = gameOptions.nDifficulty;
     gameOptionsLegacy.nEpisode = gameOptions.nEpisode;
     gameOptionsLegacy.nLevel = gameOptions.nLevel;
-    strcpy(gameOptionsLegacy.zLevelName, gameOptions.zLevelName);
-    strcpy(gameOptionsLegacy.zLevelSong, gameOptions.zLevelSong);
+    memset(gameOptionsLegacy.zLevelName, '\0', sizeof(gameOptionsLegacy.zLevelName));
+    memset(gameOptionsLegacy.zLevelSong, '\0', sizeof(gameOptionsLegacy.zLevelSong));
+    strncpy(gameOptionsLegacy.zLevelName, gameOptions.zLevelName, sizeof(gameOptionsLegacy.zLevelName));
+    strncpy(gameOptionsLegacy.zLevelSong, gameOptions.zLevelSong, sizeof(gameOptionsLegacy.zLevelSong));
     gameOptionsLegacy.nTrackNumber = gameOptions.nTrackNumber;
-    strcpy(gameOptionsLegacy.szSaveGameName, gameOptions.szSaveGameName);
-    strcpy(gameOptionsLegacy.szUserGameName, gameOptions.szUserGameName);
+    memset(gameOptionsLegacy.szSaveGameName, '\0', sizeof(gameOptionsLegacy.szSaveGameName));
+    memset(gameOptionsLegacy.szUserGameName, '\0', sizeof(gameOptionsLegacy.szUserGameName));
     gameOptionsLegacy.nSaveGameSlot = gameOptionsLegacy.nSaveGameSlot;
     gameOptionsLegacy.picEntry = gameOptionsLegacy.picEntry;
     gameOptionsLegacy.uMapCRC = gameOptionsLegacy.uMapCRC;
