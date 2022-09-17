@@ -2971,7 +2971,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->shade = pTSprite->shade;
         pNSprite->xrepeat = 32;
         pNSprite->yrepeat = 32;
-        pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
+        pNSprite->ang = (gCameraAng + kAng90) & kAngMask; // always face viewer
         const int nVoxel = voxelIndex[nTile];
         if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
             pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
