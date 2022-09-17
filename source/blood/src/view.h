@@ -157,6 +157,7 @@ void viewDimScreen(void);
 void viewUpdateHudRatio(void);
 void viewResizeView(int size);
 void UpdateFrame(void);
+void viewDimScreen(void);
 void viewDrawInterface(ClockTicks arg);
 tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect);
 void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t smooth);

@@ -2361,13 +2361,6 @@ void viewInit(void)
     bMenuBackDimCrcMatch = tileGetCRC32(kMenuBackDim) == kMenuBackDimCRC;
 }
 
-void viewDimScreen(void)
-{
-    const char bColorCorrectMenuActive = gGameMenuMgr.pActiveMenu == &menuOptionsDisplayColor;
-    if (bMenuBackDimCrcMatch && !bColorCorrectMenuActive)
-        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(128),0,kMenuBackDim,0,0,RS_STRETCH,192); // stretch black tile across entire screen
-}
-
 inline int viewCalculateOffetRatio(int nRatio)
 {
     const int ratios[] = {320, (int)((4. / 3.) / (16. / 10.) * 320.), (int)((4. / 3.) / (16. / 9.) * 320.), (int)((4. / 3.) / (21. / 9.) * 320.)}; // 4:3, 16:10, 16:9, 21:9
@@ -2504,6 +2497,12 @@ void UpdateFrame(void)
     viewTileSprite(nTile, 20, nPalette, gViewX0, gViewY0-3, gViewX1+4, gViewY0, nWidth, nHeight, nScale);
     viewTileSprite(nTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4, nWidth, nHeight, nScale);
     viewTileSprite(nTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4, nWidth, nHeight, nScale);
+}
+
+void viewDimScreen(void)
+{
+    if (bMenuBackDimCrcMatch && (gGameMenuMgr.pActiveMenu != &menuOptionsDisplayColor)) // if current menu is not on color correction menu, dim screen
+        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(128),0,kMenuBackDim,0,0,RS_STRETCH,192); // stretch black menu tile across entire screen
 }
 
 void viewDrawInterface(ClockTicks arg)
