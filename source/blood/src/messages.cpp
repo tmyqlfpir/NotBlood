@@ -319,7 +319,7 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     gGameOptions.uGameFlags = 0;
     playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
     StartLevel(&gGameOptions);
-    for (int i = 0; i < 8; i++) // set to 1.21 defaults so demo playback syncs
+    for (int i = 0; i < kMaxPlayers; i++) // set to 1.21 defaults so demo playback syncs
     {
         gProfile[i].nAutoAim = 1;
         gProfile[i].nWeaponSwitch = 1;

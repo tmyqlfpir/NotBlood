@@ -2971,7 +2971,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->shade = pTSprite->shade;
         pNSprite->xrepeat = 32;
         pNSprite->yrepeat = 32;
-        pNSprite->ang = (gCameraAng + 512) & 2047; // always face viewer
+        pNSprite->ang = (gCameraAng + kAng90) & kAngMask; // always face viewer
         const int nVoxel = voxelIndex[nTile];
         if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
             pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
@@ -3399,7 +3399,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     pTSprite->pal = 5;
                 } else if (powerupCheck(pPlayer, kPwUpDoppleganger) && (VanillaMode() || !bIsTeammate)) {
                     if ((gGameOptions.nGameType == 3) && !VanillaMode())
-                        pTSprite->pal = (gView->teamId&1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
+                        pTSprite->pal = (gView->teamId&1) ? 2 : 10; // tint characters depending on their team (red/blue)
                     else
                         pTSprite->pal = 11+(gView->teamId&3);
                 }

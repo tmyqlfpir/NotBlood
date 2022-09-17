@@ -3932,7 +3932,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                     pXMissile->goalAng = getangle(pMissile->x-pSpriteHit->x, pMissile->y-pSpriteHit->y)-pSpriteHit->ang;
                     pXMissile->state = 1;
                     actPostSprite(pMissile->index, kStatFlare);
-                    pMissile->cstat &= ~257;
+                    pMissile->cstat &= ~(CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_BLOCK_HITSCAN);
                     break;
                 }
             }
@@ -4093,7 +4093,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
         trTriggerSprite(nSpriteHit, pXSpriteHit, kCmdSpriteImpact, (nOwner >= 0) ? nOwner : kCauserGame);
     }
     #endif
-    pMissile->cstat &= ~257;
+    pMissile->cstat &= ~(CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_BLOCK_HITSCAN);
 }
 
 void actKickObject(spritetype *pSprite1, spritetype *pSprite2)

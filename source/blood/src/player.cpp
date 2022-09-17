@@ -925,7 +925,7 @@ void playerStart(int nPlayer, int bNewLevel)
     pSprite->z -= bottom - pSprite->z;
     pSprite->pal = 11+(pPlayer->teamId&3);
     if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint characters depending on their team (red/blue)
-        pSprite->pal = (pPlayer->teamId&1) ? kMediumGoo : 10;
+        pSprite->pal = (pPlayer->teamId&1) ? 2 : 10;
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
     pSprite->type = kDudePlayer1+nPlayer;
@@ -2051,7 +2051,7 @@ void playerProcess(PLAYER *pPlayer)
         if (pXSprite->height < 256)
         {
             int isRunning = pPlayer->isRunning;
-            if ((gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || (VanillaMode() && numplayers > 1)) // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
+            if (gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) // v1.0x weapon swaying
                 isRunning = 1; // always running
             pPlayer->bobAmp = (pPlayer->bobAmp+pPosture->pace[isRunning]*4) & 2047;
             pPlayer->swayAmp = (pPlayer->swayAmp+(pPosture->pace[isRunning]*4)/2) & 2047;
