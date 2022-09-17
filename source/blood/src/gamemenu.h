@@ -387,25 +387,6 @@ public:
     void SetPicIndex(int);
 };
 
-#if 0
-class CGameMenuItemPassword : public CGameMenuItem
-{
-public:
-    char at20[9];
-    char at29[9];
-    int at32;
-    char at36;
-    int at37;
-    char at3b[32];
-    int at5b;
-    CGameMenuItemZBool *at5f;
-    CGameMenuItemPassword();
-    CGameMenuItemPassword(const char *, int, int, int);
-    virtual void Draw(void);
-    virtual bool Event(CGameMenuEvent &);
-};
-#endif
-
 class CGameMenuFileSelect : public CGameMenuItem
 {
 private:
