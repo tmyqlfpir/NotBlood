@@ -925,7 +925,7 @@ void playerStart(int nPlayer, int bNewLevel)
     pSprite->z -= bottom - pSprite->z;
     pSprite->pal = 11+(pPlayer->teamId&3);
     if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint characters depending on their team (red/blue)
-        pSprite->pal = (pPlayer->teamId&1) ? kMediumGoo : 10;
+        pSprite->pal = (pPlayer->teamId&1) ? 2 : 10;
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
     pSprite->type = kDudePlayer1+nPlayer;

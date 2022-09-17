@@ -3399,7 +3399,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     pTSprite->pal = 5;
                 } else if (powerupCheck(pPlayer, kPwUpDoppleganger) && (VanillaMode() || !bIsTeammate)) {
                     if ((gGameOptions.nGameType == 3) && !VanillaMode())
-                        pTSprite->pal = (gView->teamId&1) ? kMediumGoo : 10; // tint characters depending on their team (red/blue)
+                        pTSprite->pal = (gView->teamId&1) ? 2 : 10; // tint characters depending on their team (red/blue)
                     else
                         pTSprite->pal = 11+(gView->teamId&3);
                 }
