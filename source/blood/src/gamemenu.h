@@ -165,26 +165,6 @@ public:
     virtual bool Event(CGameMenuEvent &);
 };
 
-#if 0
-class CGameMenuItem7EA1C : public CGameMenuItem
-{
-public:
-    int at20; // text align
-    CGameMenu *at24;
-    int at28;
-    void(*at2c)(CGameMenuItem7EA1C *);
-    int at30;
-    IniFile *at34;
-    char at38[16];
-    char at48[16];
-    CGameMenuItem7EA1C();
-    CGameMenuItem7EA1C(const char *a1, int a2, int a3, int a4, int a5, const char *a6, const char *a7, int a8, int a9, void(*a10)(CGameMenuItem7EA1C *), int a11);
-    void Setup(void);
-    virtual void Draw(void);
-    virtual bool Event(CGameMenuEvent &);
-};
-#endif
-
 class CGameMenuItemChain7F2F0 : public CGameMenuItemChain
 {
 public:
