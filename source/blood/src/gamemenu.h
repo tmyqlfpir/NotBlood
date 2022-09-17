@@ -183,20 +183,6 @@ public:
     virtual void Draw(void);
     virtual bool Event(CGameMenuEvent &);
 };
-
-class CGameMenuItem7EE34 : public CGameMenuItem
-{
-public:
-    int at20;
-    int at24;
-    CGameMenu *at28;
-    CGameMenu *at2c;
-    CGameMenuItem7EE34();
-    CGameMenuItem7EE34(const char *a1, int a2, int a3, int a4, int a5, int a6);
-    void Setup(void);
-    virtual void Draw(void);
-    virtual bool Event(CGameMenuEvent &);
-};
 #endif
 
 class CGameMenuItemChain7F2F0 : public CGameMenuItemChain
