@@ -396,7 +396,7 @@ inline void playerSetSkill(int nSkill)
 
 inline int playerColorPalMessage(int nTeam)
 {
-    if (gGameOptions.nGameType == 3)) // tint message depending on team (red/blue)
+    if (gGameOptions.nGameType == 3) // tint message depending on team (red/blue)
         return nTeam&1 ? kFlagRedPal : kFlagBluePal;
     return kFlagBluePal;
 }
