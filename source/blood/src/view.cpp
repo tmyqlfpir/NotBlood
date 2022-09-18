@@ -1634,9 +1634,7 @@ void viewDrawAimedPlayerName(void)
             if (!VanillaMode() && powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && ((gGameOptions.nGameType != 3) || !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite))) // if doppleganger powerup is active, set player id as viewer
                 nPlayer = gView->pSprite->type-kDudePlayer1;
             char* szName = gProfile[nPlayer].name;
-            int nPalette = (gPlayer[nPlayer].teamId&3)+11;
-            if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint characters depending on their team (red/blue)
-                nPalette = (gPlayer[nPlayer].teamId&1) ? 12 : 10;
+            int nPalette = !VanillaMode() ? playerColorPalAimName(gPlayer[nPlayer].teamId) : playerColorPalDefault(gPlayer[nPlayer].teamId);
             viewDrawText(4, szName, 160, 125, -128, nPalette, 1, 1);
         }
     }
@@ -1719,16 +1717,16 @@ void viewDrawPlayerFrags(void)
     {
         int x = 80 * (i & 3);
         int y = 9 * (i / 4);
-        int col = gPlayer[p].teamId & 3;
+        int col = playerColorPalDefault(gPlayer[p].teamId);
         char* name = gProfile[p].name;
         if (gProfile[p].skill == 2)
             sprintf(gTempStr, "%s", name);
         else
             sprintf(gTempStr, "%s [%d]", name, gProfile[p].skill);
         Bstrupr(gTempStr);
-        viewDrawText(4, gTempStr, x + 4, y + 1, -128, 11 + col, 0, 0);
+        viewDrawText(4, gTempStr, x + 4, y + 1, -128, col, 0, 0);
         sprintf(gTempStr, "%2d", gPlayer[p].fragCount);
-        viewDrawText(4, gTempStr, x + 76, y + 1, -128, 11 + col, 2, 0);
+        viewDrawText(4, gTempStr, x + 76, y + 1, -128, col, 2, 0);
     }
 }
 
@@ -1739,25 +1737,25 @@ void viewDrawPlayerFlags(void)
     {
         int x = 80 * (i & 3);
         int y = 9 * (i / 4);
-        int col = gPlayer[p].teamId & 3;
+        int col = playerColorPalDefault(gPlayer[p].teamId);
         char* name = gProfile[p].name;
         if (gProfile[p].skill == 2)
             sprintf(gTempStr, "%s", name);
         else
             sprintf(gTempStr, "%s [%d]", name, gProfile[p].skill);
         Bstrupr(gTempStr);
-        viewDrawText(4, gTempStr, x + 4, y + 1, -128, 11 + col, 0, 0);
+        viewDrawText(4, gTempStr, x + 4, y + 1, -128, col, 0, 0);
 
         sprintf(gTempStr, "F");
         x += 76;
         if (gPlayer[p].hasFlag & 2)
         {
-            viewDrawText(4, gTempStr, x, y + 1, -128, 12, 2, 0);
+            viewDrawText(4, gTempStr, x, y + 1, -128, playerColorPalDefault(1), 2, 0);
             x -= 6;
         }
 
         if (gPlayer[p].hasFlag & 1)
-            viewDrawText(4, gTempStr, x, y + 1, -128, 11, 2, 0);
+            viewDrawText(4, gTempStr, x, y + 1, -128, playerColorPalDefault(0), 2, 0);
     }
 }
 
@@ -1766,22 +1764,22 @@ void viewDrawCtfHudVanilla(ClockTicks arg)
     int x = 1, y = 1;
     if (gPlayerScoreTicks[0] == 0 || ((int)totalclock & 8))
     {
-        viewDrawText(0, "BLUE", x, y, -128, 10, 0, 0, 256);
+        viewDrawText(0, "BLUE", x, y, -128, kFlagBluePal, 0, 0, 256);
         gPlayerScoreTicks[0] = gPlayerScoreTicks[0] - arg;
         if (gPlayerScoreTicks[0] < 0)
             gPlayerScoreTicks[0] = 0;
         sprintf(gTempStr, "%-3d", gPlayerScores[0]);
-        viewDrawText(0, gTempStr, x, y + 10, -128, 10, 0, 0, 256);
+        viewDrawText(0, gTempStr, x, y + 10, -128, kFlagBluePal, 0, 0, 256);
     }
     x = 319;
     if (gPlayerScoreTicks[1] == 0 || ((int)totalclock & 8))
     {
-        viewDrawText(0, "RED", x, y, -128, 7, 2, 0, 512);
+        viewDrawText(0, "RED", x, y, -128, kFlagRedPal, 2, 0, 512);
         gPlayerScoreTicks[1] = gPlayerScoreTicks[1] - arg;
         if (gPlayerScoreTicks[1] < 0)
             gPlayerScoreTicks[1] = 0;
         sprintf(gTempStr, "%3d", gPlayerScores[1]);
-        viewDrawText(0, gTempStr, x, y + 10, -128, 7, 2, 0, 512);
+        viewDrawText(0, gTempStr, x, y + 10, -128, kFlagRedPal, 2, 0, 512);
     }
 }
 
@@ -1796,7 +1794,7 @@ void flashTeamScore(ClockTicks arg, int team, bool show)
             gPlayerScoreTicks[team] = 0;
 
         if (show)
-            DrawStatNumber("%d", gPlayerScores[team], kSBarNumberInv, 290+xscalectfhud, team ? 125 : 90, 0, team ? 2 : 10, 512, 65536 * 0.75);
+            DrawStatNumber("%d", gPlayerScores[team], kSBarNumberInv, 290+xscalectfhud, team ? 125 : 90, 0, playerColorPalSprite(team), 512, 65536 * 0.75);
     }
 }
 
@@ -1818,29 +1816,29 @@ void viewDrawCtfHud(ClockTicks arg)
         if ((gPlayer[p].hasFlag & 1) != 0)
         {
             blueFlagTaken = true;
-            blueFlagCarrierColor = gPlayer[p].teamId & 3;
+            blueFlagCarrierColor = playerColorPalSprite(gPlayer[p].teamId);
         }
         if ((gPlayer[p].hasFlag & 2) != 0)
         {
             redFlagTaken = true;
-            redFlagCarrierColor = gPlayer[p].teamId & 3;
+            redFlagCarrierColor = playerColorPalSprite(gPlayer[p].teamId);
         }
     }
 
     bool meHaveBlueFlag = gMe->hasFlag & 1;
-    DrawStatMaskedSprite(meHaveBlueFlag ? 3558 : 3559, 320+xscalectfhud, 75, 0, 10, 512, 65536 * 0.35);
+    DrawStatMaskedSprite(meHaveBlueFlag ? 3558 : 3559, 320+xscalectfhud, 75, 0, playerColorPalSprite(0), 512, 65536 * 0.35);
     if (gBlueFlagDropped)
-        DrawStatMaskedSprite(2332, 305+xscalectfhud, 83, 0, 10, 512, 65536);
+        DrawStatMaskedSprite(2332, 305+xscalectfhud, 83, 0, playerColorPalSprite(0), 512, 65536);
     else if (blueFlagTaken)
-        DrawStatMaskedSprite(4097, 307+xscalectfhud, 77, 0, blueFlagCarrierColor ? 2 : 10, 512, 65536);
+        DrawStatMaskedSprite(4097, 307+xscalectfhud, 77, 0, blueFlagCarrierColor, 512, 65536);
     flashTeamScore(arg, 0, true);
 
     bool meHaveRedFlag = gMe->hasFlag & 2;
-    DrawStatMaskedSprite(meHaveRedFlag ? 3558 : 3559, 320+xscalectfhud, 110, 0, 2, 512, 65536 * 0.35);
+    DrawStatMaskedSprite(meHaveRedFlag ? 3558 : 3559, 320+xscalectfhud, 110, 0, playerColorPalSprite(1), 512, 65536 * 0.35);
     if (gRedFlagDropped)
-        DrawStatMaskedSprite(2332, 305+xscalectfhud, 117, 0, 2, 512, 65536);
+        DrawStatMaskedSprite(2332, 305+xscalectfhud, 117, 0, playerColorPalSprite(1), 512, 65536);
     else if (redFlagTaken)
-        DrawStatMaskedSprite(4097, 307+xscalectfhud, 111, 0, redFlagCarrierColor ? 2 : 10, 512, 65536);
+        DrawStatMaskedSprite(4097, 307+xscalectfhud, 111, 0, redFlagCarrierColor, 512, 65536);
     flashTeamScore(arg, 1, true);
 }
 
@@ -1854,22 +1852,20 @@ void viewDrawKillMsg(ClockTicks arg)
     if (!bShowKillerMsg && !bShowVictimMsg)
         return;
 
-    int nPal = 10; // 10: dark blue
+    int nPal;
     char buffer[128] = "";
     if (bShowVictimMsg)
     {
-        if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
-            nPal = (gPlayer[gPlayerLastKiller].teamId&1) ? 7 : 10;
+        nPal = playerColorPalMessage(gPlayer[gPlayerLastKiller].teamId);
         sprintf(buffer, "Killed by %s", gProfile[gPlayerLastKiller].name);
-        COLORSTR colorStr = {nPal, 10, {10, 127}, {-1, -1}};
+        COLORSTR colorStr = {nPal, 0, {10, 127}, {-1, -1}};
         viewDrawText(0, buffer, 160, 137, -128, 0, 1, 1, 0, 0, &colorStr);
     }
     else if (bShowKillerMsg)
     {
-        if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
-            nPal = (gPlayer[gPlayerLastVictim].teamId&1) ? 7 : 10;
+        nPal = playerColorPalMessage(gPlayer[gPlayerLastVictim].teamId);
         sprintf(buffer, "Killed %s", gProfile[gPlayerLastVictim].name);
-        COLORSTR colorStr = {nPal, 10, {7, 127}, {-1, -1}};
+        COLORSTR colorStr = {nPal, 0, {7, 127}, {-1, -1}};
         viewDrawText(0, buffer, 160, 137, -128, 0, 1, 1, 0, 0, &colorStr);
     }
     gPlayerKillMsgTicks = gPlayerKillMsgTicks - arg;
@@ -1891,7 +1887,7 @@ void viewDrawMultiKill(ClockTicks arg)
         }
     }
     const int nPlayer = gMe->nPlayer;
-    const int nPalette = (gGameOptions.nGameType == 3) ? ((gMe->teamId&1) ? 7 : 10) : 7; // tint message depending on team (red/blue)
+    const int nPalette = playerColorPalMultiKill(gMe->teamId);
     const char bShowMultiKill = (gFrameClock - gMultiKillsTicks[nPlayer]) < (int)(kTicRate * 1.5); // show multi kill message for 1.5 seconds
     if (bShowMultiKill)
     {
@@ -1979,19 +1975,11 @@ void UpdateStatusBar(ClockTicks arg)
     PLAYER *pPlayer = gView;
     XSPRITE *pXSprite = pPlayer->pXSprite;
 
-    int nPalette = 0;
+    const int nPalette = playerColorPalHud(pPlayer->teamId);
     int nThrowPower = pPlayer->throwPower;
     const char bVanilla = VanillaMode();
     if (!bVanilla && gViewInterpolate && (pPlayer->throwPower > 0) && (pPlayer->throwPower > pPlayer->throwPowerOld))
         nThrowPower = interpolate(pPlayer->throwPowerOld, pPlayer->throwPower, gInterpolate);
-
-    if (gGameOptions.nGameType == 3)
-    {
-        if (pPlayer->teamId & 1)
-            nPalette = 7;
-        else
-            nPalette = 10;
-    }
 
     if (gViewSize < 0) return;
 
@@ -2461,14 +2449,7 @@ void viewResizeView(int size)
 
 void UpdateFrame(void)
 {
-    int nPalette = 0;
-    if (gGameOptions.nGameType == 3)
-    {
-        if (gView->teamId & 1)
-            nPalette = 7;
-        else
-            nPalette = 10;
-    }
+    const int nPalette = !VanillaMode() ? playerColorPalHud(gView->teamId) : 0;
 
     const int nTile = !VanillaMode() ? kBackTile : kBackTileVanilla;
     int nScale = 65536;
@@ -3271,21 +3252,21 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 case kItemFlagABase:
                     if (pTXSprite && pTXSprite->state > 0 && gGameOptions.nGameType == 3) {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectBigFlag);
-                        if (pNTSprite) pNTSprite->pal = 10;
+                        if (pNTSprite) pNTSprite->pal = kFlagBluePal;
                     }
                     break;
                 case kItemFlagBBase:
                     if (pTXSprite && pTXSprite->state > 0 && gGameOptions.nGameType == 3) {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectBigFlag);
-                        if (pNTSprite) pNTSprite->pal = 7;
+                        if (pNTSprite) pNTSprite->pal = kFlagRedPal;
                     }
                     break;
                 case kItemFlagA:
-                    pTSprite->pal = 10;
+                    pTSprite->pal = kFlagBluePal;
                     pTSprite->cstat |= 1024;
                     break;
                 case kItemFlagB:
-                    pTSprite->pal = 7;
+                    pTSprite->pal = kFlagRedPal;
                     pTSprite->cstat |= 1024;
                     break;
                 default:
@@ -3398,10 +3379,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     pTSprite->shade = -128;
                     pTSprite->pal = 5;
                 } else if (powerupCheck(pPlayer, kPwUpDoppleganger) && (VanillaMode() || !bIsTeammate)) {
-                    if ((gGameOptions.nGameType == 3) && !VanillaMode())
-                        pTSprite->pal = (gView->teamId&1) ? 2 : 10; // tint characters depending on their team (red/blue)
-                    else
-                        pTSprite->pal = 11+(gView->teamId&3);
+                    pTSprite->pal = !VanillaMode() ? playerColorPalSprite(gView->teamId) : playerColorPalDefault(gView->teamId);
                 }
                 
                 if (powerupCheck(pPlayer, kPwUpReflectShots)) {
@@ -3445,7 +3423,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     if (pPlayer->hasFlag&1)  {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
                         if (pNTSprite) {
-                            pNTSprite->pal = 10;
+                            pNTSprite->pal = kFlagBluePal;
                             pNTSprite->cstat |= CSTAT_SPRITE_XFLIP;
                             if (bThirdPerson) // if viewing current player in third person, set flag to transparent
                                 pNTSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
@@ -3454,7 +3432,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     if (pPlayer->hasFlag&2) {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
                         if (pNTSprite) {
-                            pNTSprite->pal = 7;
+                            pNTSprite->pal = kFlagRedPal;
                             pNTSprite->cstat |= CSTAT_SPRITE_XFLIP;
                             if (bThirdPerson) // if viewing current player in third person, set flag to transparent
                                 pNTSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
@@ -3783,12 +3761,11 @@ void viewSetMessageColor(char *pMessage, const int nPal, const MESSAGE_PRIORITY 
     if (VanillaMode())
     {
         gGameMessageMgr.Add(pMessage, 15, nPal, nPriority);
+        return;
     }
-    else
-    {
-        COLORSTR colorStr = {nPal1, nPal2, {nColorOffsets[0], nColorOffsets[1]}, {nColorOffsets[2], nColorOffsets[3]}}; // set info for coloring sub-strings within string
-        gGameMessageMgr.Add(pMessage, 15, nPal, nPriority, &colorStr);
-    }
+
+    COLORSTR colorStr = {nPal1, nPal2, {nColorOffsets[0], nColorOffsets[1]}, {nColorOffsets[2], nColorOffsets[3]}}; // set info for coloring sub-strings within string
+    gGameMessageMgr.Add(pMessage, 15, nPal, nPriority, &colorStr);
 }
 
 void viewDisplayMessage(void)
