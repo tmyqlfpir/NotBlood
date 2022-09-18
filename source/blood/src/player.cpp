@@ -923,9 +923,7 @@ void playerStart(int nPlayer, int bNewLevel)
     int top, bottom;
     GetSpriteExtents(pSprite, &top, &bottom);
     pSprite->z -= bottom - pSprite->z;
-    pSprite->pal = 11+(pPlayer->teamId&3);
-    if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint characters depending on their team (red/blue)
-        pSprite->pal = (pPlayer->teamId&1) ? 2 : 10;
+    pSprite->pal = !VanillaMode() ? playerColorPalSprite(pPlayer->teamId) : playerColorPalDefault(pPlayer->teamId);
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
     pSprite->type = kDudePlayer1+nPlayer;
@@ -1177,7 +1175,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
         case kItemFlagBBase: {
             if (gGameOptions.nGameType != 3 || pItem->extra <= 0) return 0;
             XSPRITE * pXItem = &xsprite[pItem->extra];
-            const int nPal = (pPlayer->teamId&1) ? 7 : 10; // tint characters depending on their team (red/blue)
+            const int nPal = playerColorPalMessage(pPlayer->teamId);
             if (pItem->type == kItemFlagABase) {
                 if (pPlayer->teamId == 1) {
                     if ((pPlayer->hasFlag & 1) == 0 && pXItem->state) {
@@ -1186,7 +1184,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         trTriggerSprite(pItem->index, pXItem, kCmdOff, pPlayer->nSprite);
                         sprintf(buffer, "\r%s\r stole \rBlue Flag\r", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8007, 255, 2, 0);
-                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 10);
+                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagBluePal);
                     }
                 }
 
@@ -1198,7 +1196,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         trTriggerSprite(pItem->index, pXItem, kCmdOn, pPlayer->nSprite);
                         sprintf(buffer, "\r%s\r returned \rBlue Flag\r", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8003, 255, 2, 0);
-                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 10);
+                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagBluePal);
                     }
 
                     if ((pPlayer->hasFlag & 2) != 0 && pXItem->state) {
@@ -1209,7 +1207,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         evSend(0, 0, 81, kCmdOn, pPlayer->nSprite);
                         sprintf(buffer, "\r%s\r captured \rRed Flag\r!", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8001, 255, 2, 0);
-                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 7);
+                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagRedPal);
 #if 0
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
@@ -1230,7 +1228,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         trTriggerSprite(pItem->index, pXItem, kCmdOff, pPlayer->nSprite);
                         sprintf(buffer, "\r%s\r stole \rRed Flag\r", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8006, 255, 2, 0);
-                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 7);
+                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagRedPal);
                     }
                 }
 
@@ -1242,7 +1240,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         trTriggerSprite(pItem->index, pXItem, kCmdOn, pPlayer->nSprite);
                         sprintf(buffer, "\r%s\r returned \rRed Flag\r", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8002, 255, 2, 0);
-                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 7);
+                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagRedPal);
                     }
                     if ((pPlayer->hasFlag & 1) != 0 && pXItem->state)
                     {
@@ -1253,7 +1251,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         evSend(0, 0, 80, kCmdOn, pPlayer->nSprite);
                         sprintf(buffer, "\r%s\r captured \rBlue Flag\r!", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8000, 255, 2, 0);
-                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 10);
+                        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagBluePal);
 #if 0
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
@@ -1272,12 +1270,12 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             pPlayer->hasFlag |= 1;
             pPlayer->used2[0] = pItem->owner;
             const bool enemyTeam = (pPlayer->teamId&1) == 1;
-            const int nPal = (pPlayer->teamId&1) ? 7 : 10; // tint characters depending on their team (red/blue)
+            const int nPal = playerColorPalMessage(pPlayer->teamId);
             if (enemyTeam)
             {
                 sprintf(buffer, "\r%s\r stole \rBlue Flag\r", gProfile[pPlayer->nPlayer].name);
                 sndStartSample(8007, 255, 2, 0);
-                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 10);
+                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagBluePal);
             }
             break;
         }
@@ -1287,12 +1285,12 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             pPlayer->hasFlag |= 2;
             pPlayer->used2[1] = pItem->owner;
             const bool enemyTeam = (pPlayer->teamId&1) == 0;
-            const int nPal = (pPlayer->teamId&1) ? 7 : 10; // tint characters depending on their team (red/blue)
+            const int nPal = playerColorPalMessage(pPlayer->teamId);
             if (enemyTeam)
             {
                 sprintf(buffer, "\r%s\r stole \rRed Flag\r", gProfile[pPlayer->nPlayer].name);
                 sndStartSample(8006, 255, 2, 0);
-                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 7);
+                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagRedPal);
             }
             break;
         }
@@ -2243,15 +2241,8 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     int nPal1 = 0, nPal2 = 0;
     if (!VanillaMode()) // tint names within message string
     {
-        if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
-        {
-            nPal1 = (pKiller->teamId&1) ? 7 : 10;
-            nPal2 = (pVictim->teamId&1) ? 7 : 10;
-        }
-        else if (gGameOptions.nGameType >= 1) // co-op/bloodbath
-        {
-            nPal1 = nPal2 = 10; // 10: dark blue
-        }
+        nPal1 = playerColorPalMessage(pKiller->teamId);
+        nPal2 = playerColorPalMessage(pVictim->teamId);
     }
     if ((buffer[0] != '\0') || VanillaMode())
         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal1, nPal2);
@@ -2308,7 +2299,7 @@ int playerDamageArmor(PLAYER *pPlayer, DAMAGE_TYPE nType, int nDamage)
 
 spritetype *playerDropFlag(PLAYER *pPlayer, int a2)
 {
-    int nPal = (pPlayer->teamId&1) ? 7 : 10; // tint characters depending on their team (red/blue)
+    int nPal = playerColorPalMessage(pPlayer->teamId);
     char buffer[80];
     spritetype *pSprite = NULL;
     switch (a2)
@@ -2321,7 +2312,7 @@ spritetype *playerDropFlag(PLAYER *pPlayer, int a2)
         gBlueFlagDropped = true;
         sprintf(buffer, "\r%s\r dropped \rBlue Flag\r", gProfile[pPlayer->nPlayer].name);
         sndStartSample(8005, 255, 2, 0);
-        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 10);
+        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagBluePal);
         break;
     case kItemFlagB:
         pPlayer->hasFlag &= ~2;
@@ -2331,7 +2322,7 @@ spritetype *playerDropFlag(PLAYER *pPlayer, int a2)
         gRedFlagDropped = true;
         sprintf(buffer, "\r%s\r dropped \rRed Flag\r", gProfile[pPlayer->nPlayer].name);
         sndStartSample(8004, 255, 2, 0);
-        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 7);
+        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagRedPal);
         break;
     }
     return pSprite;

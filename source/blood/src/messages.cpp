@@ -613,9 +613,7 @@ void CPlayerMsg::Send(void)
             char *myName = gProfile[myconnectindex].name;
             char szTemp[128];
             sprintf(szTemp, "%s: %s", myName, text);
-            int nPalette = 10; // 10: dark blue
-            if (gGameOptions.nGameType == 3) // tint message depending on team (red/blue)
-                nPalette = (gPlayer[myconnectindex].teamId&1) ? 7 : 10;
+            int nPalette = playerColorPalMessage(gPlayer[myconnectindex].teamId);
             viewSetMessage(szTemp, nPalette);
         }
         else

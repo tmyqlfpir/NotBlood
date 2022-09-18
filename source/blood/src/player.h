@@ -391,6 +391,49 @@ inline void playerSetSkill(int nSkill)
         gProfile[i].skill = nSkill;
 }
 
+#define kFlagBluePal 10 // 10: dark blue
+#define kFlagRedPal 7 // 7: light red
+
+inline int playerColorPalMessage(int nTeam)
+{
+    if (gGameOptions.nGameType == 3) // tint message depending on team (red/blue)
+        return nTeam&1 ? kFlagRedPal : kFlagBluePal;
+    return kFlagBluePal;
+}
+
+inline int playerColorPalMultiKill(int nTeam)
+{
+    if (gGameOptions.nGameType == 3) // tint multikill message depending on team (red/blue)
+        return nTeam&1 ? kFlagRedPal : kFlagBluePal;
+    return kFlagRedPal;
+}
+
+inline int playerColorPalHud(int nTeam)
+{
+    if (gGameOptions.nGameType == 3) // tint hud depending on team (red/blue)
+        return nTeam&1 ? kFlagRedPal : kFlagBluePal;
+    return 0;
+}
+
+inline int playerColorPalDefault(int nTeam)
+{
+    return 11+(nTeam&3);
+}
+
+inline int playerColorPalSprite(int nTeam)
+{
+    if (gGameOptions.nGameType == 3) // tint sprite depending on team (red/blue)
+        return nTeam&1 ? 2 : 10;
+    return playerColorPalDefault(nTeam);
+}
+
+inline int playerColorPalAimName(int nTeam)
+{
+    if (gGameOptions.nGameType == 3) // tint name depending on team (red/blue)
+        return nTeam&1 ? 12 : 10;
+    return playerColorPalDefault(nTeam);
+}
+
 int         powerupCheck(PLAYER *pPlayer, int nPowerUp);
 char        powerupActivate(PLAYER *pPlayer, int nPowerUp);
 void        powerupDeactivate(PLAYER *pPlayer, int nPowerUp);
