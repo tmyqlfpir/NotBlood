@@ -613,7 +613,7 @@ void CPlayerMsg::Send(void)
             char *myName = gProfile[myconnectindex].name;
             char szTemp[128];
             sprintf(szTemp, "%s: %s", myName, text);
-            int nPalette = playerColorPalMessage(gPlayer[myconnectindex].teamId);
+            int nPalette = gColorMsg ? playerColorPalMessage(gPlayer[myconnectindex].teamId) : 0;
             viewSetMessage(szTemp, nPalette);
         }
         else
