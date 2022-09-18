@@ -1175,7 +1175,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
         case kItemFlagBBase: {
             if (gGameOptions.nGameType != 3 || pItem->extra <= 0) return 0;
             XSPRITE * pXItem = &xsprite[pItem->extra];
-            const int nPal = gColorMsg ? playerColorPalMessage(pPlayer->teamId) : 0;
+            const int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
             if (pItem->type == kItemFlagABase) {
                 if (pPlayer->teamId == 1) {
                     if ((pPlayer->hasFlag & 1) == 0 && pXItem->state) {
@@ -1270,7 +1270,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             pPlayer->hasFlag |= 1;
             pPlayer->used2[0] = pItem->owner;
             const bool enemyTeam = (pPlayer->teamId&1) == 1;
-            const int nPal = gColorMsg ? playerColorPalMessage(pPlayer->teamId) : 0;
+            const int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
             if (enemyTeam)
             {
                 sprintf(buffer, "\r%s\r stole \rBlue Flag\r", gProfile[pPlayer->nPlayer].name);
@@ -1285,7 +1285,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             pPlayer->hasFlag |= 2;
             pPlayer->used2[1] = pItem->owner;
             const bool enemyTeam = (pPlayer->teamId&1) == 0;
-            const int nPal = gColorMsg ? playerColorPalMessage(pPlayer->teamId) : 0;
+            const int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
             if (enemyTeam)
             {
                 sprintf(buffer, "\r%s\r stole \rRed Flag\r", gProfile[pPlayer->nPlayer].name);
@@ -2299,7 +2299,7 @@ int playerDamageArmor(PLAYER *pPlayer, DAMAGE_TYPE nType, int nDamage)
 
 spritetype *playerDropFlag(PLAYER *pPlayer, int a2)
 {
-    int nPal = gColorMsg ? playerColorPalMessage(pPlayer->teamId) : 0;
+    int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
     char buffer[80];
     spritetype *pSprite = NULL;
     switch (a2)

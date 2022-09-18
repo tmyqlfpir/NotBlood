@@ -1382,7 +1382,7 @@ void netPlayerQuit(int nPlayer)
 {
     char buffer[128];
     sprintf(buffer, "\r%s\r left the game with %d frags.", gProfile[nPlayer].name, gPlayer[nPlayer].fragCount);
-    int nPalette = gColorMsg ? playerColorPalMessage(gPlayer[nPlayer].teamId) : 0;
+    int nPalette = gColorMsg && !VanillaMode() ? playerColorPalMessage(gPlayer[nPlayer].teamId) : 0;
     viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPalette, 0);
     if (gGameStarted)
     {
