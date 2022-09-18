@@ -1856,14 +1856,14 @@ void viewDrawKillMsg(ClockTicks arg)
     char buffer[128] = "";
     if (bShowVictimMsg)
     {
-        nPal = playerColorPalMessage(gPlayer[gPlayerLastKiller].teamId);
+        nPal = gColorMsg ? playerColorPalMessage(gPlayer[gPlayerLastKiller].teamId) : 0;
         sprintf(buffer, "Killed by %s", gProfile[gPlayerLastKiller].name);
         COLORSTR colorStr = {nPal, 0, {10, 127}, {-1, -1}};
         viewDrawText(0, buffer, 160, 137, -128, 0, 1, 1, 0, 0, &colorStr);
     }
     else if (bShowKillerMsg)
     {
-        nPal = playerColorPalMessage(gPlayer[gPlayerLastVictim].teamId);
+        nPal = gColorMsg ? playerColorPalMessage(gPlayer[gPlayerLastVictim].teamId) : 0;
         sprintf(buffer, "Killed %s", gProfile[gPlayerLastVictim].name);
         COLORSTR colorStr = {nPal, 0, {7, 127}, {-1, -1}};
         viewDrawText(0, buffer, 160, 137, -128, 0, 1, 1, 0, 0, &colorStr);
@@ -1887,7 +1887,7 @@ void viewDrawMultiKill(ClockTicks arg)
         }
     }
     const int nPlayer = gMe->nPlayer;
-    const int nPalette = playerColorPalMultiKill(gMe->teamId);
+    const int nPalette = gColorMsg ? playerColorPalMultiKill(gMe->teamId) : 0;
     const char bShowMultiKill = (gFrameClock - gMultiKillsTicks[nPlayer]) < (int)(kTicRate * 1.5); // show multi kill message for 1.5 seconds
     if (bShowMultiKill)
     {
@@ -3758,7 +3758,7 @@ void viewSetMessageColor(char *pMessage, const int nPal, const MESSAGE_PRIORITY 
         nColorOffsets[0] = nColorOffsets[1] = nColorOffsets[2] = nColorOffsets[3] = -1;
 
     OSD_Printf("%s\n", pMessage);
-    if (VanillaMode())
+    if ((nPal == nPal1) || VanillaMode())
     {
         gGameMessageMgr.Add(pMessage, 15, nPal, nPriority);
         return;
@@ -4634,7 +4634,15 @@ RORHACK:
     else if (gView != gMe)
     {
         sprintf(gTempStr, "] %s [", gProfile[gView->nPlayer].name);
-        viewDrawText(0, gTempStr, 160, 10, 0, 0, 1, 0);
+        if (gColorMsg && !VanillaMode()) // color player name
+        {
+            COLORSTR colorStr = {playerColorPalMessage(gPlayer[gView->nPlayer].teamId), 0, {2, 2+(int)strlen(gProfile[gView->nPlayer].name)}, {-1, -1}};
+            viewDrawText(0, gTempStr, 160, 10, 0, 0, 1, 0, 0, 0, &colorStr);
+        }
+        else
+        {
+            viewDrawText(0, gTempStr, 160, 10, 0, 0, 1, 0);
+        }
     }
     if (errMsg[0])
     {

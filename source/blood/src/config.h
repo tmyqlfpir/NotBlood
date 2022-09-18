@@ -67,6 +67,7 @@ extern bool gAutosaveInCurLevel;
 extern int32_t gAutoRun;
 extern int32_t gCalebTalk;
 extern int32_t gChatSnd;
+extern int32_t gColorMsg;
 extern int32_t gKillMsg;
 extern int32_t gMultiKill;
 extern int32_t gViewInterpolate;

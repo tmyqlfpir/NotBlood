@@ -826,6 +826,7 @@ CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 170, 180
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
 void UpdatePlayerSkill(CGameMenuItemZCycle *pItem);
 void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem);
+void UpdatePlayerColorMessages(CGameMenuItemZBool *pItem);
 void UpdatePlayerKillMessage(CGameMenuItemZBool *pItem);
 void UpdatePlayerMultiKill(CGameMenuItemZCycle *pItem);
 
@@ -847,8 +848,9 @@ CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
 CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 65, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
 CGameMenuItemZCycle itemOptionsPlayerSkill("HEALTH HANDICAP:", 3, 66, 75, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
 CGameMenuItemZBool itemOptionsPlayerChatSound("CHAT BEEP:", 3, 66, 90, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
-CGameMenuItemZBool itemOptionsPlayerKillMsg("KILL MESSAGES:", 3, 66, 100, 180, true, UpdatePlayerKillMessage, NULL, NULL);
-CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 110, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
+CGameMenuItemZBool itemOptionsPlayerColorMsg("COLORED MESSAGES:", 3, 66, 100, 180, true, UpdatePlayerColorMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsPlayerKillMsg("SHOW KILLS ON HUD:", 3, 66, 110, 180, true, UpdatePlayerKillMessage, NULL, NULL);
+CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 120, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
 
 #define JOYSTICKITEMSPERPAGE 16 // this must be an even value, as double tap inputs rely on odd index position
 #define MAXJOYSTICKBUTTONPAGES (max(1, (MAXJOYBUTTONSANDHATS*2 / JOYSTICKITEMSPERPAGE))) // we double all buttons/hats so each input can be bind for double tap
@@ -1664,11 +1666,14 @@ void SetupOptionsMenu(void)
     menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
     menuOptionsPlayer.Add(&itemOptionsPlayerSkill, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerChatSound, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerColorMsg, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerKillMsg, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerMultiKill, false);
     menuOptionsPlayer.Add(&itemBloodQAV, false);
     itemOptionsPlayerSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
     itemOptionsPlayerSkill.tooltip_pzTextLower = "(only for multiplayer)";
+    itemOptionsPlayerColorMsg.tooltip_pzTextUpper = "Color player names in messages";
+    itemOptionsPlayerColorMsg.tooltip_pzTextLower = "(only for multiplayer)";
     itemOptionsPlayerKillMsg.tooltip_pzTextUpper = "Show player killed on screen";
     itemOptionsPlayerKillMsg.tooltip_pzTextLower = "(for bloodbath/teams multiplayer)";
     itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
@@ -1676,6 +1681,7 @@ void SetupOptionsMenu(void)
 
     itemOptionsPlayerSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
     itemOptionsPlayerChatSound.at20 = gChatSnd;
+    itemOptionsPlayerColorMsg.at20 = gColorMsg;
     itemOptionsPlayerKillMsg.at20 = gKillMsg;
     itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
 }
@@ -2854,6 +2860,11 @@ void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
 void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem)
 {
     gChatSnd = pItem->at20;
+}
+
+void UpdatePlayerColorMessages(CGameMenuItemZBool *pItem)
+{
+    gColorMsg = pItem->at20;
 }
 
 void UpdatePlayerKillMessage(CGameMenuItemZBool *pItem)
