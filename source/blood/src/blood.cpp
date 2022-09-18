@@ -1233,7 +1233,7 @@ void ProcessFrame(void)
             gPaused = !gPaused;
             if (gPaused && gGameOptions.nGameType > 0 && numplayers > 1)
             {
-                int nPal = !VanillaMode() ? playerColorPalMessage(gPlayer[i].teamId) : 0;
+                int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(gPlayer[i].teamId) : 0;
                 sprintf(buffer,"\r%s\r paused the game",gProfile[i].name);
                 viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 0);
             }
