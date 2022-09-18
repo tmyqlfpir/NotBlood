@@ -479,10 +479,7 @@ void netGetPackets(void)
             if (*pPacket != '/' || (*pPacket == 0 && *(pPacket+1) == 0) || (*(pPacket+1) >= '1' && *(pPacket+1) <= '8' && *(pPacket+1)-'1' == myconnectindex))
             {
                 sprintf(buffer, VanillaMode() ? "%s : %s" : "%s: %s", gProfile[nPlayer].name, pPacket);
-                int nPalette = VanillaMode() ? 0 : 10; // 10: dark blue
-                if ((gGameOptions.nGameType == 3) && !VanillaMode()) // tint message depending on team (red/blue)
-                    nPalette = (gPlayer[nPlayer].teamId&1) ? 7 : 10;
-                viewSetMessage(buffer, nPalette);
+                viewSetMessage(buffer, VanillaMode() ? 0 : playerColorPalMessage(gPlayer[nPlayer].teamId));
                 if (gChatSnd) // trigger message beep
                     sndStartSample("DMRADIO", 128, -1);
             }
@@ -1384,11 +1381,8 @@ void faketimerhandler(void)
 void netPlayerQuit(int nPlayer)
 {
     char buffer[128];
-    int nPal = 10; // 10: dark blue
-    if (gGameOptions.nGameType == 3) // tint characters depending on their team (red/blue)
-        nPal = (gPlayer[nPlayer].teamId&1) ? 7 : 10;
     sprintf(buffer, "\r%s\r left the game with %d frags.", gProfile[nPlayer].name, gPlayer[nPlayer].fragCount);
-    viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 0);
+    viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, playerColorPalMessage(gPlayer[nPlayer].teamId), 0);
     if (gGameStarted)
     {
         seqKill(3, gPlayer[nPlayer].pSprite->extra);
