@@ -1995,14 +1995,13 @@ void videoBeginDrawing(void)
 //
 // mirrorTile() -- mirror input tile buffer
 //
-static uint8_t mirroredFrame[1920*1080*4] = {0};
+static uint8_t mirroredLine[1920*4] = {0};
 
 void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
 {
-    const size_t nSize = nWidth * nHeight;
-    uint8_t *pBuff = mirroredFrame;
-    const char bAllocBuff = nSize > sizeof(mirroredFrame); // if bigger than static 4k mirrored frame, allocate from memory (very slow!)
-    int x, y;
+    const size_t nSize = nWidth;
+    uint8_t *pBuff = mirroredLine;
+    const char bAllocBuff = nSize > sizeof(mirroredLine); // if bigger than static mirrored line, allocate from memory (very slow!)
 
     if (!r_mirrormode || !pTile || !nSize)
         return;
@@ -2012,48 +2011,26 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
         if (!pBuff)
             return;
     }
-    Bmemcpy(pBuff, (void *)pTile, nSize);
 
-    switch (r_mirrormode)
+    if (r_mirrormode & 1) // mirror mode (horiz)
     {
-        case 1: // mirror mode (horiz)
+        uint8_t *pRow = pTile, *pEnd = &pTile[(nHeight-1)*nWidth], *pPixel;
+        while (pRow <= pEnd)
         {
-            for (y = 0; y < nHeight; y++)
-            {
-                const int curLine = y*nWidth;
-                for (x = 0; x < nWidth; x++)
-                {
-                    pTile[curLine+x] = pBuff[curLine+((nWidth-1)-x)];
-                }
-            }
-            break;
+            Bmemcpy(pBuff, pRow, nWidth);
+            for (pPixel = &pBuff[nWidth-1]; pPixel >= pBuff; pPixel--, pRow++)
+                *pRow = *pPixel;
         }
-        case 2: // mirror mode (vert)
+    }
+    if (r_mirrormode & 2) // mirror mode (vert)
+    {
+        uint8_t *pLow = pTile, *pHigh = &pTile[(nHeight-1)*nWidth];
+        for (; pLow < pHigh; pLow += nWidth, pHigh -= nWidth)
         {
-            for (y = 0; y < nHeight; y++)
-            {
-                const int curLine = y*nWidth, inveredLine = (nHeight-y-1)*nWidth;
-                for (x = 0; x < nWidth; x++)
-                {
-                    pTile[curLine+x] = pBuff[inveredLine+x];
-                }
-            }
-            break;
+            Bmemcpy(pBuff, pLow, nWidth);
+            Bmemcpy(pLow, pHigh, nWidth);
+            Bmemcpy(pHigh, pBuff, nWidth);
         }
-        case 3: // mirror mode (horiz+vert)
-        {
-            for (y = 0; y < nHeight; y++)
-            {
-                const int curLine = y*nWidth, inveredLine = (nHeight-y-1)*nWidth;
-                for (x = 0; x < nWidth; x++)
-                {
-                    pTile[curLine+x] = pBuff[inveredLine+((nWidth-1)-x)];
-                }
-            }
-            break;
-        }
-        default:
-            break;
     }
     if (bAllocBuff)
         Bfree(pBuff);
