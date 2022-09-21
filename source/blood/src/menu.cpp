@@ -1974,7 +1974,11 @@ void SetMonsters(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
         gMonsterSettings = pItem->m_nFocus % ARRAY_SSIZE(pzMonsterStrings);
-        if (!VanillaMode())
+        if (VanillaMode())
+        {
+            gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
+        }
+        else
         {
             gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
             if (gMonsterSettings <= 1)
@@ -2324,7 +2328,8 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.uMonsterBannedType = BANNED_NONE;
     gGameOptions.nLevel = 0;
-    gGameOptions.uGameFlags = 0;
+    if (!gVanilla) // don't reset gameflags for vanilla mode
+        gGameOptions.uGameFlags = 0;
     if (gDemo.bPlaying)
         gDemo.StopPlayback();
     else if (gDemo.bRecording)
@@ -2369,7 +2374,8 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     if (itemCustomDifficultyMonsterBanHellHounds.at20)
         gGameOptions.uMonsterBannedType |= BANNED_HHOUNDS;
     gGameOptions.nLevel = 0;
-    gGameOptions.uGameFlags = 0;
+    if (!gVanilla) // don't reset gameflags for vanilla mode
+        gGameOptions.uGameFlags = 0;
     if (gDemo.bPlaying)
         gDemo.StopPlayback();
     else if (gDemo.bRecording)
