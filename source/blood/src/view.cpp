@@ -3670,6 +3670,7 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
     const int32_t nStat = r_usenewaspect ? RS_AUTO : RS_AUTO | RS_STRETCH;
     const char bBannedWeapon = (pPlayer->curWeapon == kWeaponNone) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT);
     const char bShowAutoAimTarget = (gAimReticle == 2) && (gProfile[pPlayer->nPlayer].nAutoAim) && pPlayer->aimTargetsCount && !bBannedWeapon;
+    const char bPaused = !((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.bPlaying);
     int q16SlopeTilt = fix16_from_float(0.82f);
     int cX = 160;
     int cY = defaultHoriz;
@@ -3697,12 +3698,12 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
             q16SlopeTilt = mulscale16(q16SlopeTilt, q16hfov);
     }
 
-    if (gViewInterpolate && ((cXOld != cX) || (cY != cYOld)))
+    if (!bPaused && gViewInterpolate && ((cXOld != cX) || (cY != cYOld)))
     {
         int nSteps = gFrameRate / kTicsPerSec; // get number of steps to interpolate using current fps
         if (nSteps >= 2) // if fps is double the game tickrate (60 and above), interpolate position
         {
-            nSteps /= 2; // reduce the interpolation speed by half so crosshair doesn't behave too snappy
+            nSteps >>= 1; // reduce the interpolation speed by half so crosshair doesn't behave too snappy
             const int nInterpolate = ClipLow(gInterpolate, 1) / nSteps;
             cX = interpolate(cXOld, cX, nInterpolate);
             cY = interpolate(cYOld, cY, nInterpolate);
