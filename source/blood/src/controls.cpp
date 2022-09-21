@@ -488,8 +488,10 @@ void ctrlGetInput(void)
     {
         input.strafe = -input.strafe;
         info.mousex = -info.mousex;
-        turnLeft = !turnLeft;
-        turnRight = !turnRight;
+        if (turnLeft && !turnRight)
+            turnLeft = 0, turnRight = 1;
+        else if (turnRight && !turnLeft)
+            turnLeft = 1, turnRight = 0;
         info.dx = -info.dx;
         info.dyaw = -info.dyaw;
     }
