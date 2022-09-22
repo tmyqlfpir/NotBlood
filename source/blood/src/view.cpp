@@ -2025,10 +2025,13 @@ void UpdateStatusBar(ClockTicks arg)
 
         if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
         {
+            int nKeys = 5;
             for (int i = 0; i < 6; i++)
             {
-                if (pPlayer->hasKey[i+1])
-                    DrawStatMaskedSprite(2552+i, (260+10*i)+xscalehud, 170, 0, 0, 512, (int)(65536*0.25));
+                if (!pPlayer->hasKey[i+1])
+                    continue;
+                DrawStatSprite(2220+i, (260+10*nKeys)+xscalehud, 170, 0, 0, 512);
+                nKeys--;
             }
         }
 
