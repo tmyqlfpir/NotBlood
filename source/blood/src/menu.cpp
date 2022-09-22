@@ -1170,11 +1170,11 @@ void SetupMainMenuWithSave(void)
     menuMainWithSave.Add(&itemMainSave8, false);
     menuMainWithSave.Add(&itemBloodQAV, false);
 
-    itemMainSave3.bEnable = !gLockManualSaving; // disable save option in main menu if lock saving mode is set
     itemMainSave3.bDisableForNet = 1;
     itemMainSave4.bDisableForNet = 1;
     itemMainSave5.bDisableForNet = 1;
     itemMainSave6.bDisableForNet = 1;
+    itemMainSave3.bEnable = !gLockManualSaving; // disable save option in main menu if lock saving mode is set
 }
 
 void SetupNetStartMenu(void)
@@ -1349,6 +1349,10 @@ void SetupLoadGameMenu(void)
     itemLoadGame9.at35 = 0;
     itemLoadGameAutosaveStart.at35 = 0;
     itemLoadGameAutosaveKey.at35 = 0;
+    itemLoadGameAutosaveStart.bEnable = gAutosave != 0; // remove autosave slots if autosaves are disabled
+    itemLoadGameAutosaveStart.bNoDraw = gAutosave == 0;
+    itemLoadGameAutosaveKey.bEnable = gAutosave == 2;
+    itemLoadGameAutosaveKey.bNoDraw = gAutosave != 2;
     itemLoadGame0.at2c = &itemLoadGamePic;
     itemLoadGame1.at2c = &itemLoadGamePic;
     itemLoadGame2.at2c = &itemLoadGamePic;
@@ -1495,12 +1499,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameWeaponSwitch.m_nFocus = (gWeaponSwitch&1) ? ((gWeaponSwitch&2) ? 1 : 2) : 0;
     itemOptionsGameWeaponFastSwitch.at20 = !!gWeaponFastSwitch;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
-    itemLoadGameAutosaveStart.bEnable = gAutosave != 0; // remove autosave slots if autosaves are disabled
-    itemLoadGameAutosaveStart.bNoDraw = gAutosave == 0;
-    itemLoadGameAutosaveKey.bEnable = gAutosave == 2;
-    itemLoadGameAutosaveKey.bNoDraw = gAutosave != 2;
     itemOptionsGameLockSaving.at20 = !!gLockManualSaving;
-    itemMainSave3.bEnable = !gLockManualSaving; // disable save option in main menu if lock saving mode is set
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
     SetGameVanillaMode(gVanilla); // enable/disable menu items depending on current vanilla mode state
 
