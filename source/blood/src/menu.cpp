@@ -1495,6 +1495,10 @@ void SetupOptionsMenu(void)
     itemOptionsGameWeaponSwitch.m_nFocus = (gWeaponSwitch&1) ? ((gWeaponSwitch&2) ? 1 : 2) : 0;
     itemOptionsGameWeaponFastSwitch.at20 = !!gWeaponFastSwitch;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
+    itemLoadGameAutosaveStart.bEnable = gAutosave != 0; // remove autosave slots if autosaves are disabled
+    itemLoadGameAutosaveStart.bNoDraw = gAutosave == 0;
+    itemLoadGameAutosaveKey.bEnable = gAutosave == 2;
+    itemLoadGameAutosaveKey.bNoDraw = gAutosave != 2;
     itemOptionsGameLockSaving.at20 = !!gLockManualSaving;
     itemMainSave3.bEnable = !gLockManualSaving; // disable save option in main menu if lock saving mode is set
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
@@ -2282,6 +2286,11 @@ void SetWeaponFastSwitch(CGameMenuItemZBool *pItem)
 void SetAutosaveMode(CGameMenuItemZCycle *pItem)
 {
     gAutosave = pItem->m_nFocus % ARRAY_SSIZE(pzAutosaveModeStrings);
+
+    itemLoadGameAutosaveStart.bEnable = gAutosave != 0; // remove autosave slots if autosaves are disabled
+    itemLoadGameAutosaveStart.bNoDraw = gAutosave == 0;
+    itemLoadGameAutosaveKey.bEnable = gAutosave == 2;
+    itemLoadGameAutosaveKey.bNoDraw = gAutosave != 2;
 }
 
 void SetLockSaving(CGameMenuItemZBool *pItem)
