@@ -38,10 +38,14 @@ enum
     kLoadSaveSlot7        = 7,
     kLoadSaveSlot8        = 8,
     kLoadSaveSlot9        = 9,
-    kLoadSaveSlotAutosave = 10,
+
+    kLoadSaveSlot10       = 10,
+    kLoadSaveSlotQuick    = kLoadSaveSlot10,
+
+    kLoadSaveSlotAutosave = 11,
     kLoadSaveSlotSpawn    = kLoadSaveSlotAutosave,
-    kLoadSaveSlotKey      = 11,
-    kMaxLoadSaveSlot      = 12,
+    kLoadSaveSlotKey      = 12,
+    kMaxLoadSaveSlot      = 13,
 };
 
 class LoadSave {

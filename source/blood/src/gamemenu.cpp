@@ -1831,7 +1831,7 @@ void CGameMenuItemZEditBitmap::Draw(void)
         int width;
         char genericSave[16];
         char *strSave = at20;
-        if ((at20[0] == '\0') && (at28 <= kLoadSaveSlot9) && !bScan) // if save game name is blank, use level's name instead
+        if ((at20[0] == '\0') && (at28 <= kLoadSaveSlot10) && !bScan) // if save game name is blank, use level's name instead
         {
             snprintf(genericSave, sizeof(genericSave), "%s", gSaveGameOptions[at28].zLevelName);
             strSave = genericSave;

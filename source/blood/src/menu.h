@@ -51,7 +51,6 @@ extern CGameMenu menuOptionsSound;
 extern CGameMenu menuOptionsPlayer;
 extern CGameMenu menuOptionsControl;
 extern short gQuickLoadSlot;
-extern short gQuickSaveSlot;
 extern char strRestoreGameStrings[][16];
 extern char restoreGameDifficulty[];
 extern const char *zDiffStrings[];

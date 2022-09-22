@@ -921,13 +921,7 @@ static void DoQuickLoad(void)
             QuickLoadGame();
             return;
         }
-        if (gQuickLoadSlot == kLoadSaveNull && gQuickSaveSlot != kLoadSaveNull)
-        {
-            gQuickLoadSlot = gQuickSaveSlot;
-            QuickLoadGame();
-            return;
-        }
-        else if (gLockManualSaving && gAutosaveInCurLevel) // if quicksave slot is not set, and manual saving is locked, load autosave
+        if (gLockManualSaving && gAutosaveInCurLevel) // if quicksave slot is not set, and manual saving is locked, load autosave
         {
             gQuickLoadSlot = kLoadSaveSlotSpawn;
             QuickLoadGame();
@@ -947,12 +941,7 @@ static void DoQuickSave(void)
             viewSetMessage("Change lock save settings to save...");
             return;
         }
-        if (gQuickSaveSlot != kLoadSaveNull)
-        {
-            QuickSaveGame();
-            return;
-        }
-        gGameMenuMgr.Push(&menuSaveGame,-1);
+        QuickSaveGame();
     }
 }
 
@@ -965,9 +954,9 @@ int DoRestoreSave(void)
         QuickLoadGame();
         return 1;
     }
-    else if (LoadSavedInCurrentSession(gQuickSaveSlot)) // if quicksaved has saved in session, load save
+    else if (LoadSavedInCurrentSession(kLoadSaveSlotQuick)) // if quicksaved has saved in session, load save
     {
-        gQuickLoadSlot = gQuickSaveSlot;
+        gQuickLoadSlot = kLoadSaveSlotQuick;
         QuickLoadGame();
         return 1;
     }
