@@ -380,7 +380,7 @@ void CONFIG_SetDefaults(void)
     SoundToggle     = 1;
     CDAudioToggle = 0;
     DopplerToggle = 1;
-    MusicDevice = ASS_SF2;
+    MusicDevice = ASS_OPL3;
     Bstrcpy(SF2_BankFile, "notblood.sf2");
     gFMPianoFix = 1;
     //ud.config.VoiceToggle     = 5;  // bitfield, 1 = local, 2 = dummy, 4 = other players in DM

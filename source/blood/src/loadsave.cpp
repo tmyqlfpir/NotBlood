@@ -508,7 +508,7 @@ void LoadSavedInfo(void)
 {
     auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "game00*.sav", BUILDVFS_FIND_FILE);
     int nCount = 0;
-    for (auto pIterator = pList; pIterator != NULL && nCount <= kLoadSaveSlot9; pIterator = pIterator->next, nCount++)
+    for (auto pIterator = pList; pIterator != NULL && nCount <= kLoadSaveSlot10; pIterator = pIterator->next, nCount++)
     {
         int hFile = kopen4loadfrommod(pIterator->name, 0);
         if (hFile == -1)
