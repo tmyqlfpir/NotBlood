@@ -2512,7 +2512,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             if ((pPlayer->curWeapon == kWeaponSprayCan) && (pPlayer->weaponState == 2)) // fix spray can state glitch when switching from spray to tnt and back quickly
             {
                 pPlayer->weaponState = 1;
-                pPlayer->input.newWeapon = 0;
+                pPlayer->input.newWeapon = kWeaponNone;
                 return;
             }
         }
@@ -2526,12 +2526,12 @@ void WeaponProcess(PLAYER *pPlayer) {
                 pPlayer->input.newWeapon = weapon;
                 return;
             }
-            pPlayer->input.newWeapon = 0;
+            pPlayer->input.newWeapon = kWeaponNone;
             return;
         }
         if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkLitSprayOrTNT(pPlayer))
         {
-            pPlayer->input.newWeapon = 0;
+            pPlayer->input.newWeapon = kWeaponNone;
             return;
         }
         int nWeapon = pPlayer->input.newWeapon;
