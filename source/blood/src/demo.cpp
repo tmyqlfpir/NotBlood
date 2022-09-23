@@ -158,6 +158,7 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST096.DEM", (int32_t)0x00003647, 0xC2DE5F9B, 0x00000000, {(int32_t)0xFFFFF402, (int32_t)0x00000096, (int32_t)0x000389A4}, 1},
     {"/validatedemos/TEST097.DEM", (int32_t)0x00003902, 0x04ADDBE5, 0x00000000, {(int32_t)0x00014C09, (int32_t)0x00011CC1, (int32_t)0x000005A4}, 1}, // this demo crashes DOS v1.21 (ERROR (1344) src\ai.cpp)
     {"/validatedemos/TEST098.DEM", (int32_t)0x00003061, 0xB813201F, 0x0000043C, {(int32_t)0x0000957B, (int32_t)0x0001362C, (int32_t)0xFFFFE9E4}, 1},
+    {"/validatedemos/TEST099.DEM", (int32_t)0x00000D8E, 0xCC24C186, 0x00000000, {(int32_t)0x0000143E, (int32_t)0x0000F753, (int32_t)0x0001F5A4}, 1},
 };
 
 int nBuild = 0;
