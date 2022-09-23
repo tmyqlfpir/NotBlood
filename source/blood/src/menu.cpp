@@ -120,6 +120,8 @@ char strRestoreGameStrings[kMaxLoadSaveSlot][16] =
     "<Empty>",
 
     "<Empty>",
+
+    "<Empty>",
     "<Empty>",
 };
 
@@ -134,6 +136,8 @@ char restoreGameDifficulty[kMaxLoadSaveSlot] =
     2,
     2,
     2,
+    2,
+
     2,
 
     2,
