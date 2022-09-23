@@ -52,22 +52,9 @@ int gSaveGameProfileSkill[kMaxLoadSaveSlot];
 char *gSaveGamePic[kMaxLoadSaveSlot];
 unsigned int gSavedOffset = 0;
 
-unsigned int dword_27AA38 = 0;
-unsigned int dword_27AA3C = 0;
-unsigned int dword_27AA40 = 0;
-void *dword_27AA44 = NULL;
-
 LoadSave LoadSave::head(123);
 FILE *LoadSave::hSFile = NULL;
 int LoadSave::hLFile = -1;
-
-short word_27AA54 = 0;
-
-void sub_76FD4(void)
-{
-    if (!dword_27AA44)
-        dword_27AA44 = Resource::Alloc(0x186a0);
-}
 
 void LoadSave::Save(void)
 {
@@ -81,7 +68,6 @@ void LoadSave::Load(void)
 
 void LoadSave::Read(void *pData, int nSize)
 {
-    dword_27AA38 += nSize;
     dassert(hLFile != -1);
     if (kread(hLFile, pData, nSize) != nSize)
         ThrowError("Error reading save file.");
@@ -89,8 +75,6 @@ void LoadSave::Read(void *pData, int nSize)
 
 void LoadSave::Write(void *pData, int nSize)
 {
-    dword_27AA38 += nSize;
-    dword_27AA3C += nSize;
     dassert(hSFile != NULL);
     if (fwrite(pData, 1, nSize, hSFile) != (size_t)nSize)
         ThrowError("File error #%d writing save file.", errno);
@@ -257,15 +241,10 @@ void LoadSave::SaveGame(char *pzFile)
     hSFile = fopen(pzFile, "wb");
     if (hSFile == NULL)
         ThrowError("File error #%d creating save file.", errno);
-    dword_27AA38 = 0;
-    dword_27AA40 = 0;
     LoadSave *rover = head.next;
     while (rover != &head)
     {
         rover->Save();
-        if (dword_27AA38 > dword_27AA40)
-            dword_27AA40 = dword_27AA38;
-        dword_27AA38 = 0;
         rover = rover->next;
     }
     fclose(hSFile);
@@ -411,7 +390,6 @@ void MyLoadSave::Save(void)
         if (sprite[nSprite].statnum < kMaxStatus && nSprite > nNumSprites)
             nNumSprites = nSprite;
     }
-    //nNumSprites += 2;
     nNumSprites++;
     Write(&gGameOptions, sizeof(gGameOptions));
     Write(&numsectors, sizeof(numsectors));
@@ -514,7 +492,7 @@ void LoadSavedInfo(void)
         if (hFile == -1)
             ThrowError("Error loading save file header.");
         int id = 0;
-        short version = word_27AA54;
+        short version = 0;
         short nSkill = 0, nSlot = 0;
         if ((uint32_t)kread(hFile, &id, sizeof(id)) != sizeof(id))
         {
@@ -563,7 +541,7 @@ void LoadAutosavedInfo(void)
         if (hFile == -1)
             ThrowError("Error loading save file header.");
         int id = 0;
-        short version = word_27AA54;
+        short version = 0;
         short nSkill = 0, nSlot = 0;
         if ((uint32_t)kread(hFile, &id, sizeof(id)) != sizeof(id))
         {
