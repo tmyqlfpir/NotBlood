@@ -1,7 +1,7 @@
 ### NotBlood
 A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-engineer port NBlood
 
-### Features:
+### Features
 * Switch to last active weapon if TNT/spray can is active when entering water
 * Basic room over room support for positional audio
 * Autosaving support for collecting keys and start of level
@@ -21,10 +21,10 @@ A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-en
 ### Multiplayer Features
 * Cloak powerup hides player weapon icon
 * Improved spawning randomization logic
-* Adjustable spawn weapon option
-* UT99 style multi kill alerts
-* Adjustable spawn protection
 * Colored player names for messages
+* Adjustable spawn weapon option
+* Adjustable spawn protection
+* UT99 style multi kill alerts
 
 ### Enhancements
 * Replaced sector based damage logic for player explosions

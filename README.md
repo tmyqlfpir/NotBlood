@@ -34,10 +34,10 @@ Download for Windows/Linux can be found on [https://github.com/clipmove/NotBlood
 ### Multiplayer Features
 * Cloak powerup hides player weapon icon
 * Improved spawning randomization logic
-* Adjustable spawn weapon option
-* UT99 style multi kill alerts
-* Adjustable spawn protection
 * Colored player names for messages
+* Adjustable spawn weapon option
+* Adjustable spawn protection
+* UT99 style multi kill alerts
 
 ### Enhancements (Optional)
 * Replaced sector based damage logic for player explosions ([before](https://web.archive.org/web/20220514202656if_/https://files.catbox.moe/h6xcrg.mp4)/[after](https://web.archive.org/web/20220514202724if_/https://files.catbox.moe/35e08d.mp4))
