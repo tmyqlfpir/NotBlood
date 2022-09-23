@@ -2350,14 +2350,14 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (!gProfile[pPlayer->nPlayer].bWeaponFastSwitch && (pPlayer->curWeapon == kWeaponNone) && (pPlayer->input.newWeapon != kWeaponNone) && !VanillaMode()) // if fast weapon select is off, and player is switching weapon (and not holstered), clear next/prev/last keyflags
     {
-        pPlayer->input.keyFlags.nextWeapon = kWeaponNone;
-        pPlayer->input.keyFlags.prevWeapon = kWeaponNone;
-        pPlayer->input.keyFlags.lastWeapon = kWeaponNone;
+        pPlayer->input.keyFlags.nextWeapon = 0;
+        pPlayer->input.keyFlags.prevWeapon = 0;
+        pPlayer->input.keyFlags.lastWeapon = 0;
     }
     const KEYFLAGS oldKeyFlags = pPlayer->input.keyFlags; // used to fix next/prev weapon issue for banned weapons
     if (pPlayer->input.keyFlags.lastWeapon)
     {
-        pPlayer->input.keyFlags.lastWeapon = kWeaponNone;
+        pPlayer->input.keyFlags.lastWeapon = 0;
         if (!VanillaMode())
         {
             int weapon = pPlayer->curWeapon;
@@ -2367,8 +2367,8 @@ void WeaponProcess(PLAYER *pPlayer) {
             {
                 if (WeaponIsEquipable(pPlayer, pPlayer->lastWeapon)) // if last weapon can be switched to
                 {
-                    pPlayer->input.keyFlags.nextWeapon = kWeaponNone;
-                    pPlayer->input.keyFlags.prevWeapon = kWeaponNone;
+                    pPlayer->input.keyFlags.nextWeapon = 0;
+                    pPlayer->input.keyFlags.prevWeapon = 0;
                     pPlayer->nextWeapon = kWeaponNone;
                     pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
                     pPlayer->input.newWeapon = pPlayer->lastWeapon;
@@ -2384,7 +2384,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (pPlayer->input.keyFlags.nextWeapon)
     {
-        pPlayer->input.keyFlags.nextWeapon = kWeaponNone;
+        pPlayer->input.keyFlags.nextWeapon = 0;
         if (VanillaMode())
         {
             pPlayer->weaponState = 0;
@@ -2406,7 +2406,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (pPlayer->input.keyFlags.prevWeapon)
     {
-        pPlayer->input.keyFlags.prevWeapon = kWeaponNone;
+        pPlayer->input.keyFlags.prevWeapon = 0;
         if (VanillaMode())
         {
             pPlayer->weaponState = 0;
@@ -2509,7 +2509,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             if ((pPlayer->curWeapon == kWeaponSprayCan) && (pPlayer->weaponState == 2)) // fix spray can state glitch when switching from spray to tnt and back quickly
             {
                 pPlayer->weaponState = 1;
-                pPlayer->input.newWeapon = kWeaponNone;
+                pPlayer->input.newWeapon = 0;
                 return;
             }
         }
@@ -2523,12 +2523,12 @@ void WeaponProcess(PLAYER *pPlayer) {
                 pPlayer->input.newWeapon = weapon;
                 return;
             }
-            pPlayer->input.newWeapon = kWeaponNone;
+            pPlayer->input.newWeapon = 0;
             return;
         }
         if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkLitSprayOrTNT(pPlayer))
         {
-            pPlayer->input.newWeapon = kWeaponNone;
+            pPlayer->input.newWeapon = 0;
             return;
         }
         int nWeapon = pPlayer->input.newWeapon;
