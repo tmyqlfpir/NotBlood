@@ -1,42 +1,49 @@
-# NotBlood
+### NotBlood
 A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-engineer port NBlood
 
-New features include:
-* Default midi uses a SC55 soundfont by trevor0402 (https://github.com/trevor0402/SC55Soundfont)
-* Difficulty based invulnerability timer for player damage
-* Smaller hitboxes for player projectiles
-* Raymarching collision testing for player projectiles
-* Replaced sector based damage logic for player explosions
-* Vanilla mode with optional DOS mouse handling
-* Quad damage replacement for guns akimbo powerup
-* Randomize mode for enemies and pickups (multiplayer supported)
-* Increase drawn sprites on screen limit from 2560 to 4096
-* Autosaving on collecting keys and start of level
-* Bullet projectiles for hitscan enemies
-* Fixed bullet casings clipping into walls
-* New enhancements menu under game options
-* New last weapon key binding (default Q)
-* Lower gravity of bullet casings and gibs underwater
-* Fix blood/bullet casings not being dragged with sectors
-* Improved spawning randomization logic for bloodbath mode
-* Cloak powerup hides player weapon icon for bloodbath mode
-* Allow particle sprites to traverse through room over room sectors
+### Features:
 * Switch to last active weapon if TNT/spray can is active when entering water
-* Increased blood splatter duration and improved floor collision accuracy
-* Make blood splatter/flare gun glow effect slope on sloped surfaces
 * Basic room over room support for positional audio
-* Fixed missiles colliding with water sector edges
-* Fixed underwater issue with hitscan weapons
-* Respawning enemies option for singleplayer
-* Custom difficult options for singleplayer
+* Autosaving support for collecting keys and start of level
+* Increase drawn sprites on screen limit from 2560 to 4096
+* New last weapon key binding (default Q)
+* Vanilla mode (v1.21) with optional DOS mouse handling
+* BloodGDX style difficulty options for singleplayer
 * Set item box selection to activated item
 * Ability to record 1.21 compatible demos
-* Colored names for multiplayer messages
 * Interpolated level texture panning
 * Drag and drop folder mod support
 * Customizable palette adjustment
+* New singleplayer cheats
 * Weapon selection bar
 * Mirror mode
+
+### Multiplayer Features
+* Cloak powerup hides player weapon icon
+* Improved spawning randomization logic
+* Adjustable spawn weapon option
+* UT99 style multi kill alerts
+* Adjustable spawn protection
+* Colored player names for messages
+
+### Enhancements
+* Replaced sector based damage logic for player explosions
+* Difficulty based invulnerability timer for player damage
+* Raymarching collision testing for player projectiles
+* Fix blood/bullet casings not being dragged with sectors
+* Fixed underwater issue with hitscan weapons
+* Fixed missiles colliding with water sector edges
+* Smaller hitboxes for player projectiles
+* NotBlood balance mod for weapons (see below for details)
+* Randomize mode for enemies and pickups (multiplayer supported)
+* Quad damage replacement for guns akimbo powerup
+* Respawning enemies option for singleplayer
+* Bullet projectiles for hitscan enemies
+* Fixed bullet casings clipping into walls
+* Lower gravity of bullet casings and gibs underwater
+* Allow particle sprites to traverse through room over room sectors
+* Increased blood splatter duration and improved floor collision accuracy
+* Make blood splatter/flare gun glow effect slope on sloped surfaces
 
 ### Installing
 1. Extract NotBlood to a new directory
