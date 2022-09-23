@@ -506,16 +506,16 @@ void MyLoadSave::Save(void)
 
 void LoadSavedInfo(void)
 {
+    const int nNameMin = strlen("##.sav"); // length offset for string numbers
     auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "game00*.sav", BUILDVFS_FIND_FILE);
-    int nCount = 0;
-    for (auto pIterator = pList; pIterator != NULL && nCount <= kLoadSaveSlot10; pIterator = pIterator->next, nCount++)
+    for (auto pIterator = pList; pIterator != NULL; pIterator = pIterator->next)
     {
         int hFile = kopen4loadfrommod(pIterator->name, 0);
         if (hFile == -1)
             ThrowError("Error loading save file header.");
         int id = 0;
         short version = word_27AA54;
-        short nSkill = 0;
+        short nSkill = 0, nSlot = 0;
         if ((uint32_t)kread(hFile, &id, sizeof(id)) != sizeof(id))
         {
             kclose(hFile);
@@ -532,10 +532,22 @@ void LoadSavedInfo(void)
             kclose(hFile);
             continue;
         }
+        nSlot = strlen(pIterator->name);
+        if (nSlot < nNameMin) // unexpected size, abort
+        {
+            kclose(hFile);
+            continue;
+        }
+        nSlot = ((pIterator->name[nSlot-nNameMin] - '0') * 10) + (pIterator->name[nSlot-(nNameMin+1)] - '0');
+        if (nSlot > kLoadSaveSlot10) // slot id too big, skip
+        {
+            kclose(hFile);
+            continue;
+        }
         kread(hFile, &nSkill, sizeof(nSkill));
-        if ((uint32_t)kread(hFile, &gSaveGameOptions[nCount], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
+        if ((uint32_t)kread(hFile, &gSaveGameOptions[nSlot], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
             ThrowError("Error reading save file.");
-        LoadUpdateSaveGame(nCount, nSkill);
+        LoadUpdateSaveGame(nSlot, nSkill);
         kclose(hFile);
     }
     klistfree(pList);
@@ -543,16 +555,16 @@ void LoadSavedInfo(void)
 
 void LoadAutosavedInfo(void)
 {
+    const int nNameMin = strlen("#.sav"); // length offset for string numbers
     auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "gameautosave*.sav", BUILDVFS_FIND_FILE);
-    int nCount = kLoadSaveSlotAutosave;
-    for (auto pIterator = pList; pIterator != NULL && nCount < kMaxLoadSaveSlot; pIterator = pIterator->next, nCount++)
+    for (auto pIterator = pList; pIterator != NULL; pIterator = pIterator->next)
     {
         int hFile = kopen4loadfrommod(pIterator->name, 0);
         if (hFile == -1)
             ThrowError("Error loading save file header.");
         int id = 0;
         short version = word_27AA54;
-        short nSkill = 0;
+        short nSkill = 0, nSlot = 0;
         if ((uint32_t)kread(hFile, &id, sizeof(id)) != sizeof(id))
         {
             kclose(hFile);
@@ -569,10 +581,22 @@ void LoadAutosavedInfo(void)
             kclose(hFile);
             continue;
         }
+        nSlot = strlen(pIterator->name);
+        if (nSlot < nNameMin) // unexpected size, abort
+        {
+            kclose(hFile);
+            continue;
+        }
+        nSlot = kLoadSaveSlotAutosave + (pIterator->name[nSlot-nNameMin] - '0');
+        if (nSlot > kLoadSaveSlotKey) // slot id too big, skip
+        {
+            kclose(hFile);
+            continue;
+        }
         kread(hFile, &nSkill, sizeof(nSkill));
-        if ((uint32_t)kread(hFile, &gSaveGameOptions[nCount], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
+        if ((uint32_t)kread(hFile, &gSaveGameOptions[nSlot], sizeof(gSaveGameOptions[0])) != sizeof(gSaveGameOptions[0]))
             ThrowError("Error reading save file.");
-        LoadUpdateSaveGame(nCount, nSkill);
+        LoadUpdateSaveGame(nSlot, nSkill);
         kclose(hFile);
     }
     klistfree(pList);
