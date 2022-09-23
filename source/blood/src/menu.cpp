@@ -3337,7 +3337,7 @@ void QuickSaveGame(void)
     }*/
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", kLoadSaveSlotQuick);
     memset(gGameOptions.szUserGameName, 0, sizeof(gGameOptions.szSaveGameName));
-    snprintf(gGameOptions.szUserGameName, sizeof(gGameOptions.szUserGameName), "%s quicksave", gGameOptions.zLevelName);
+    snprintf(gGameOptions.szUserGameName, sizeof(gGameOptions.szUserGameName), "%s quick", gGameOptions.zLevelName);
     memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = kLoadSaveSlotQuick;

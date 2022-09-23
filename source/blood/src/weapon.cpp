@@ -2226,7 +2226,8 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     #endif
 
-    bool lastWeaponPressed = false; // needed to bypass weapon cycle issues with tnt->remote->proxy and check when to set last weapon
+    char bLastWeaponPressed = 0;
+    char bIgnoreTNTRemoteProxyCycling = 0; // needed to bypass weapon cycle issues with tnt->remote->proxy and check when to set last weapon
     if (pPlayer->pXSprite->health == 0)
     {
         pPlayer->qavLoop = 0;
@@ -2273,7 +2274,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 }
             }
             pPlayer->lastWeapon = prevWeapon;
-            lastWeaponPressed = true;
+            bLastWeaponPressed = bIgnoreTNTRemoteProxyCycling = 1;
         }
     }
     WeaponPlay(pPlayer);
@@ -2350,14 +2351,14 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (!gProfile[pPlayer->nPlayer].bWeaponFastSwitch && (pPlayer->curWeapon == kWeaponNone) && (pPlayer->input.newWeapon != kWeaponNone) && !VanillaMode()) // if fast weapon select is off, and player is switching weapon (and not holstered), clear next/prev/last keyflags
     {
-        pPlayer->input.keyFlags.nextWeapon = kWeaponNone;
-        pPlayer->input.keyFlags.prevWeapon = kWeaponNone;
-        pPlayer->input.keyFlags.lastWeapon = kWeaponNone;
+        pPlayer->input.keyFlags.nextWeapon = 0;
+        pPlayer->input.keyFlags.prevWeapon = 0;
+        pPlayer->input.keyFlags.lastWeapon = 0;
     }
     const KEYFLAGS oldKeyFlags = pPlayer->input.keyFlags; // used to fix next/prev weapon issue for banned weapons
     if (pPlayer->input.keyFlags.lastWeapon)
     {
-        pPlayer->input.keyFlags.lastWeapon = kWeaponNone;
+        pPlayer->input.keyFlags.lastWeapon = 0;
         if (!VanillaMode())
         {
             int weapon = pPlayer->curWeapon;
@@ -2367,13 +2368,13 @@ void WeaponProcess(PLAYER *pPlayer) {
             {
                 if (WeaponIsEquipable(pPlayer, pPlayer->lastWeapon)) // if last weapon can be switched to
                 {
-                    pPlayer->input.keyFlags.nextWeapon = kWeaponNone;
-                    pPlayer->input.keyFlags.prevWeapon = kWeaponNone;
+                    pPlayer->input.keyFlags.nextWeapon = 0;
+                    pPlayer->input.keyFlags.prevWeapon = 0;
                     pPlayer->nextWeapon = kWeaponNone;
                     pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
                     pPlayer->input.newWeapon = pPlayer->lastWeapon;
                     pPlayer->lastWeapon = weapon;
-                    lastWeaponPressed = true;
+                    bLastWeaponPressed = bIgnoreTNTRemoteProxyCycling = 1;
                 }
             }
         }
@@ -2384,7 +2385,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (pPlayer->input.keyFlags.nextWeapon)
     {
-        pPlayer->input.keyFlags.nextWeapon = kWeaponNone;
+        pPlayer->input.keyFlags.nextWeapon = 0;
         if (VanillaMode())
         {
             pPlayer->weaponState = 0;
@@ -2406,7 +2407,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     if (pPlayer->input.keyFlags.prevWeapon)
     {
-        pPlayer->input.keyFlags.prevWeapon = kWeaponNone;
+        pPlayer->input.keyFlags.prevWeapon = 0;
         if (VanillaMode())
         {
             pPlayer->weaponState = 0;
@@ -2424,6 +2425,8 @@ void WeaponProcess(PLAYER *pPlayer) {
                 return;
             }
         }
+        else
+            bIgnoreTNTRemoteProxyCycling = 1; // set this so switching from remote to tnt doesn't glitch out
         pPlayer->input.newWeapon = weapon;
     }
     if (!VanillaMode())
@@ -2471,7 +2474,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 pPlayer->curWeapon = oldWeapon;
             }
         }
-        if (pPlayer->input.newWeapon == kWeaponTNT && !lastWeaponPressed)
+        if ((pPlayer->input.newWeapon == kWeaponTNT) && !bIgnoreTNTRemoteProxyCycling)
         {
             if (pPlayer->curWeapon == kWeaponTNT)
             {
@@ -2509,7 +2512,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             if ((pPlayer->curWeapon == kWeaponSprayCan) && (pPlayer->weaponState == 2)) // fix spray can state glitch when switching from spray to tnt and back quickly
             {
                 pPlayer->weaponState = 1;
-                pPlayer->input.newWeapon = kWeaponNone;
+                pPlayer->input.newWeapon = 0;
                 return;
             }
         }
@@ -2523,12 +2526,12 @@ void WeaponProcess(PLAYER *pPlayer) {
                 pPlayer->input.newWeapon = weapon;
                 return;
             }
-            pPlayer->input.newWeapon = kWeaponNone;
+            pPlayer->input.newWeapon = 0;
             return;
         }
         if (pPlayer->isUnderwater && BannedUnderwater(pPlayer->input.newWeapon) && !checkLitSprayOrTNT(pPlayer))
         {
-            pPlayer->input.newWeapon = kWeaponNone;
+            pPlayer->input.newWeapon = 0;
             return;
         }
         int nWeapon = pPlayer->input.newWeapon;
@@ -2576,7 +2579,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             int v6c = (pPlayer->weaponMode[nWeapon]+i)%v4c;
             if (CheckWeaponAmmo(pPlayer, nWeapon, weaponModes[nWeapon].at4, 1))
             {
-                if (!lastWeaponPressed) // set new weapon to last weapon slot
+                if (!bLastWeaponPressed) // set new weapon to last weapon slot
                     pPlayer->lastWeapon = pPlayer->curWeapon;
                 WeaponLower(pPlayer);
                 pPlayer->weaponMode[nWeapon] = v6c;
