@@ -2226,7 +2226,8 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     #endif
 
-    bool lastWeaponPressed = false; // needed to bypass weapon cycle issues with tnt->remote->proxy and check when to set last weapon
+    char bLastWeaponPressed = 0;
+    char bIgnoreTNTRemoteProxyCycling = 0; // needed to bypass weapon cycle issues with tnt->remote->proxy and check when to set last weapon
     if (pPlayer->pXSprite->health == 0)
     {
         pPlayer->qavLoop = 0;
@@ -2273,7 +2274,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 }
             }
             pPlayer->lastWeapon = prevWeapon;
-            lastWeaponPressed = true;
+            bLastWeaponPressed = bIgnoreTNTRemoteProxyCycling = 1;
         }
     }
     WeaponPlay(pPlayer);
@@ -2373,7 +2374,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                     pPlayer->weaponMode[pPlayer->lastWeapon] = 0;
                     pPlayer->input.newWeapon = pPlayer->lastWeapon;
                     pPlayer->lastWeapon = weapon;
-                    lastWeaponPressed = true;
+                    bLastWeaponPressed = bIgnoreTNTRemoteProxyCycling = 1;
                 }
             }
         }
@@ -2424,6 +2425,8 @@ void WeaponProcess(PLAYER *pPlayer) {
                 return;
             }
         }
+        else
+            bIgnoreTNTRemoteProxyCycling = 1; // set this so switching from remote to tnt doesn't glitch out
         pPlayer->input.newWeapon = weapon;
     }
     if (!VanillaMode())
@@ -2471,7 +2474,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 pPlayer->curWeapon = oldWeapon;
             }
         }
-        if (pPlayer->input.newWeapon == kWeaponTNT && !lastWeaponPressed)
+        if ((pPlayer->input.newWeapon == kWeaponTNT) && !bIgnoreTNTRemoteProxyCycling)
         {
             if (pPlayer->curWeapon == kWeaponTNT)
             {
@@ -2576,7 +2579,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             int v6c = (pPlayer->weaponMode[nWeapon]+i)%v4c;
             if (CheckWeaponAmmo(pPlayer, nWeapon, weaponModes[nWeapon].at4, 1))
             {
-                if (!lastWeaponPressed) // set new weapon to last weapon slot
+                if (!bLastWeaponPressed) // set new weapon to last weapon slot
                     pPlayer->lastWeapon = pPlayer->curWeapon;
                 WeaponLower(pPlayer);
                 pPlayer->weaponMode[nWeapon] = v6c;
