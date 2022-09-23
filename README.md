@@ -1,54 +1,66 @@
 <p align="center">
+  <!-- logo -->
   <a href="https://github.com/clipmove/NotBlood" target="_blank"><img src="https://raw.githubusercontent.com/clipmove/NotBlood/master/.github/workflows/logo.png"></a>
   <br>
+  <!-- primary badges -------------------------------------->
   <a href="https://github.com/clipmove/NotBlood/actions/workflows/build.yml" target"_blank"><img src="https://github.com/clipmove/NotBlood/actions/workflows/build.yml/badge.svg?style=flat-square" alt="Build Status"></a>
   <a href="https://github.com/clipmove/NotBlood/releases" target"_blank"><img src="https://raw.githubusercontent.com/clipmove/NotBlood/master/.github/workflows/download.svg?style=flat-square" alt="Github Download"></a>
 </p><h1></h1>
 
-### About
+### Overview
 **NotBlood** is a gameplay modification of Blood, based upon the reverse-engineer port [NBlood](https://github.com/nukeykt/NBlood)
 
 ### Downloads
 Download for Windows/Linux can be found on [https://github.com/clipmove/NotBlood/releases](https://github.com/clipmove/NotBlood/releases)
+<details><summary><h3 dir="auto">New Features For NotBlood</h3></summary>
 
 ### Features
-* Default midi uses a [SC55 soundfont by trevor0402](https://github.com/trevor0402/SC55Soundfont)
-* Difficulty based invulnerability timer for player damage ([before](https://web.archive.org/web/20220319193718if_/https://files.catbox.moe/ucs7gp.mp4)/[after](https://web.archive.org/web/20220514201922if_/https://files.catbox.moe/8hyaqm.mp4))
-* Smaller hitboxes for player projectiles ([before](https://web.archive.org/web/20220319193738if_/https://files.catbox.moe/3peiru.mp4)/[after](https://web.archive.org/web/20220514201943if_/https://files.catbox.moe/zso8g4.mp4))
-* Raymarching collision testing for player projectiles ([before](https://web.archive.org/web/20220514202239if_/https://files.catbox.moe/qxtv05.mp4)/[after](https://web.archive.org/web/20220319193719if_/https://files.catbox.moe/vo03ck.mp4))
-* Replaced sector based damage logic for player explosions ([before](https://web.archive.org/web/20220514202656if_/https://files.catbox.moe/h6xcrg.mp4)/[after](https://web.archive.org/web/20220514202724if_/https://files.catbox.moe/35e08d.mp4))
-* Vanilla mode with optional DOS mouse handling
-* Quad damage replacement for guns akimbo powerup
-* Randomize mode for enemies and pickups (multiplayer supported)
-* Increase drawn sprites on screen limit from 2560 to 4096
-* Autosaving on collecting keys and start of level
-* Bullet projectiles for hitscan enemies
-* Fixed bullet casings clipping into walls
-* New enhancements menu under game options
-* New last weapon key binding (default Q) ([demo](https://web.archive.org/web/20220319193716if_/https://files.catbox.moe/28cirg.mp4))
-* Lower gravity of bullet casings and gibs underwater
-* Fix blood/bullet casings not being dragged with sectors ([before](https://web.archive.org/web/20220514202751if_/https://files.catbox.moe/4q9rc3.mp4)/[after](https://web.archive.org/web/20220514202840if_/https://files.catbox.moe/7n76gv.mp4))
-* Improved spawning randomization logic for bloodbath mode
-* Cloak powerup hides player weapon icon for bloodbath mode
-* Allow particle sprites to traverse through room over room sectors
 * Switch to last active weapon if TNT/spray can is active when entering water
-* Increased blood splatter duration and improved floor collision accuracy
-* Make blood splatter/flare gun glow effect slope on sloped surfaces
 * Basic room over room support for positional audio ([before](https://web.archive.org/web/20220319193715if_/https://files.catbox.moe/qca0k4.mp4)/[after](https://web.archive.org/web/20220514202908if_/https://files.catbox.moe/wq1so4.mp4))
-* Fixed missiles colliding with water sector edges ([before](https://web.archive.org/web/20220514202908if_/https://files.catbox.moe/38t9t8.mp4)/[after](https://web.archive.org/web/20220514202910if_/https://files.catbox.moe/smvi92.mp4))
-* Fixed underwater issue with hitscan weapons ([before](https://web.archive.org/web/20220514203003if_/https://files.catbox.moe/k9dxjj.mp4)/[after](https://web.archive.org/web/20220514203004if_/https://files.catbox.moe/gfahdq.mp4))
-* Respawning enemies option for singleplayer
-* Custom difficult options for singleplayer
+* Autosaving support for collecting keys and start of level
+* Increase drawn sprites on screen limit from 2560 to 4096
+* New last weapon key binding (default Q) ([demo](https://web.archive.org/web/20220319193716if_/https://files.catbox.moe/28cirg.mp4))
+* Vanilla mode (v1.21) with optional DOS mouse handling
+* BloodGDX style difficulty options for singleplayer
 * Set item box selection to activated item
 * Ability to record 1.21 compatible demos
-* Colored names for multiplayer messages
 * Interpolated level texture panning
 * Drag and drop folder mod support ([demo](https://web.archive.org/web/20220514203004if_/https://files.catbox.moe/lb7nxb.mp4))
 * Customizable palette adjustment
+* New singleplayer cheats
 * Weapon selection bar ([demo](https://web.archive.org/web/20220514203005if_/https://files.catbox.moe/0zh37q.mp4))
 * Mirror mode
 
-### Installing
+### Multiplayer Features
+* Cloak powerup hides player weapon icon
+* Improved spawning randomization logic
+* Colored player names for messages
+* Adjustable spawn weapon option
+* Adjustable spawn protection
+* UT99 style multi kill alerts
+
+### Enhancements (Optional)
+* Replaced sector based damage logic for player explosions ([before](https://web.archive.org/web/20220514202656if_/https://files.catbox.moe/h6xcrg.mp4)/[after](https://web.archive.org/web/20220514202724if_/https://files.catbox.moe/35e08d.mp4))
+* Difficulty based invulnerability timer for player damage ([before](https://web.archive.org/web/20220319193718if_/https://files.catbox.moe/ucs7gp.mp4)/[after](https://web.archive.org/web/20220514201922if_/https://files.catbox.moe/8hyaqm.mp4))
+* Raymarching collision testing for player projectiles ([before](https://web.archive.org/web/20220514202239if_/https://files.catbox.moe/qxtv05.mp4)/[after](https://web.archive.org/web/20220319193719if_/https://files.catbox.moe/vo03ck.mp4))
+* Fix blood/bullet casings not being dragged with sectors ([before](https://web.archive.org/web/20220514202751if_/https://files.catbox.moe/4q9rc3.mp4)/[after](https://web.archive.org/web/20220514202840if_/https://files.catbox.moe/7n76gv.mp4))
+* Fixed underwater issue with hitscan weapons ([before](https://web.archive.org/web/20220514203003if_/https://files.catbox.moe/k9dxjj.mp4)/[after](https://web.archive.org/web/20220514203004if_/https://files.catbox.moe/gfahdq.mp4))
+* Fixed missiles colliding with water sector edges ([before](https://web.archive.org/web/20220514202908if_/https://files.catbox.moe/38t9t8.mp4)/[after](https://web.archive.org/web/20220514202910if_/https://files.catbox.moe/smvi92.mp4))
+* Smaller hitboxes for player projectiles ([before](https://web.archive.org/web/20220319193738if_/https://files.catbox.moe/3peiru.mp4)/[after](https://web.archive.org/web/20220514201943if_/https://files.catbox.moe/zso8g4.mp4))
+* NotBlood balance mod for weapons (see README.txt for details)
+* Randomize mode for enemies and pickups (multiplayer supported)
+* Quad damage replacement for guns akimbo powerup
+* Respawning enemies option for singleplayer
+* Bullet projectiles for hitscan enemies
+* Fixed bullet casings clipping into walls
+* Lower gravity of bullet casings and gibs underwater
+* Allow particle sprites to traverse through room over room sectors
+* Increased blood splatter duration and improved floor collision accuracy
+* Make blood splatter/flare gun glow effect slope on sloped surfaces
+</details>
+
+<details><summary><h3 dir="auto">Installing</h3></summary>
+
 1. Extract NotBlood to a new directory
 2. Copy the following files from Blood 1.21 to NotBlood folder:
 
@@ -78,6 +90,7 @@ If you have the GOG version of the game, do the following:
    * mount the `.cue` as a virtual CD (for example with `WinCDEmu`)
    * copy the `movie` folder from the mounted CD into NotBlood's folder
 5. Launch NotBlood (on Linux, to play Cryptic Passage, launch with the `-ini CRYPTIC.INI` parameter)
+</details>
 
 ### Building from source
 See: https://wiki.eduke32.com/wiki/Main_Page
