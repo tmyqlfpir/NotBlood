@@ -2227,7 +2227,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     #endif
 
     char bAlreadySetLastWeapon = 0;
-    char bIgnoreTNTRemoteProxyCycling = 0; // needed to bypass weapon cycle issues with tnt->remote->proxy
+    char bTNTRemoteProxyCycling = 1;
     if (pPlayer->pXSprite->health == 0)
     {
         pPlayer->qavLoop = 0;
@@ -2275,7 +2275,7 @@ void WeaponProcess(PLAYER *pPlayer) {
             }
             pPlayer->lastWeapon = prevWeapon;
             bAlreadySetLastWeapon = 1;
-            bIgnoreTNTRemoteProxyCycling = 1;
+            bTNTRemoteProxyCycling = 0;
         }
     }
     WeaponPlay(pPlayer);
@@ -2376,7 +2376,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                     pPlayer->input.newWeapon = pPlayer->lastWeapon;
                     pPlayer->lastWeapon = weapon;
                     bAlreadySetLastWeapon = 1;
-                    bIgnoreTNTRemoteProxyCycling = 1;
+                    bTNTRemoteProxyCycling = 0;
                 }
             }
         }
@@ -2407,7 +2407,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         }
         else
         {
-            bIgnoreTNTRemoteProxyCycling = 1; // next weapon should ignore tnt cycling logic
+            bTNTRemoteProxyCycling = 0; // next weapon should ignore tnt cycling logic
         }
         pPlayer->input.newWeapon = weapon;
     }
@@ -2433,7 +2433,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         }
         else
         {
-            bIgnoreTNTRemoteProxyCycling = 1; // prev weapon should ignore tnt cycling logic
+            bTNTRemoteProxyCycling = 0; // prev weapon should ignore tnt cycling logic
         }
         pPlayer->input.newWeapon = weapon;
     }
@@ -2482,7 +2482,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 pPlayer->curWeapon = oldWeapon;
             }
         }
-        if ((pPlayer->input.newWeapon == kWeaponTNT) && !bIgnoreTNTRemoteProxyCycling)
+        if (bTNTRemoteProxyCycling && (pPlayer->input.newWeapon == kWeaponTNT))
         {
             if (pPlayer->curWeapon == kWeaponTNT)
             {
