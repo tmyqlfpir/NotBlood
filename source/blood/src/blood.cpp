@@ -585,7 +585,7 @@ int gDoQuickSave = 0;
 
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
-    const bool triggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == 0) && gameOptions->uGameFlags&1; // if demo isn't active and not in multiplayer session and we switched to new level
+    const bool triggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == kGameTypeSinglePlayer) && gameOptions->uGameFlags&1; // if demo isn't active and not in multiplayer session and we switched to new level
     EndLevel();
     gInput = {};
     gStartNewGame = 0;
@@ -595,14 +595,14 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     if (gDemo.bRecording && gGameStarted)
         gDemo.Close();
     netWaitForEveryone(0);
-    if (gGameOptions.nGameType == 0)
+    if (gGameOptions.nGameType == kGameTypeSinglePlayer)
     {
-        if (!(gGameOptions.uGameFlags&1))
+        if (!(gGameOptions.uGameFlags&kGameFlagContinuing))
             levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
         if (gEpisodeInfo[gGameOptions.nEpisode].cutALevel == gGameOptions.nLevel
             && gEpisodeInfo[gGameOptions.nEpisode].cutsceneASmkPath[0])
-            gGameOptions.uGameFlags |= 4;
-        if ((gGameOptions.uGameFlags&4) && !gDemo.bPlaying && !gDemo.bRecording && !Bstrlen(gGameOptions.szUserMap))
+            gGameOptions.uGameFlags |= kGameFlagPlayIntro;
+        if ((gGameOptions.uGameFlags&kGameFlagPlayIntro) && !gDemo.bPlaying && !gDemo.bRecording && !Bstrlen(gGameOptions.szUserMap))
             levelPlayIntroScene(gGameOptions.nEpisode);
 
         ///////
@@ -630,7 +630,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nRandomizerCheat = -1;
         ///////
     }
-    else if (gGameOptions.nGameType > 0 && !(gGameOptions.uGameFlags&1))
+    else if (gGameOptions.nGameType != kGameTypeSinglePlayer && !(gGameOptions.uGameFlags&kGameFlagContinuing))
     {
         gGameOptions.nEpisode = gPacketStartGame.episodeId;
         gGameOptions.nLevel = gPacketStartGame.levelId;
@@ -674,14 +674,14 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.uMonsterBannedType = BANNED_NONE;
         ///////
     }
-    if (gGameOptions.nGameType > 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
     {
         gBlueFlagDropped = false;
         gRedFlagDropped = false;
         gView = gMe;
         gViewIndex = myconnectindex;
     }
-    if (gameOptions->uGameFlags&1)
+    if (gameOptions->uGameFlags&kGameFlagContinuing) // if episode is in progress, remember player stats
     {
         for (int i = connecthead; i >= 0; i = connectpoint2[i])
         {
@@ -711,9 +711,9 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         if (pSprite->statnum < kMaxStatus && pSprite->extra > 0) {
             
             pXSprite = &xsprite[pSprite->extra];
-            if ((pXSprite->lSkill & (1 << gameOptions->nEnemyQuantity)) || (pXSprite->lS && gameOptions->nGameType == 0)
-                || (pXSprite->lB && gameOptions->nGameType == 2) || (pXSprite->lT && gameOptions->nGameType == 3)
-                || (pXSprite->lC && gameOptions->nGameType == 1)) {
+            if ((pXSprite->lSkill & (1 << gameOptions->nEnemyQuantity)) || (pXSprite->lS && gameOptions->nGameType == kGameTypeSinglePlayer)
+                || (pXSprite->lB && gameOptions->nGameType == kGameTypeBloodBath) || (pXSprite->lT && gameOptions->nGameType == kGameTypeTeams)
+                || (pXSprite->lC && gameOptions->nGameType == kGameTypeCoop)) {
                 
                 DeleteSprite(i);
                 continue;
@@ -788,7 +788,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     evInit();
     for (int i = connecthead; i >= 0; i = connectpoint2[i])
     {
-        if (!(gameOptions->uGameFlags&1)) // if new game
+        if (!(gameOptions->uGameFlags&kGameFlagContinuing)) // if new game
         {
             if (numplayers == 1)
             {
@@ -799,12 +799,12 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             }
             playerInit(i,0);
         }
-        else if ((gGameOptions.nGameType == 3) && !VanillaMode()) // if ctf mode and went to next level, reset scores
+        else if ((gGameOptions.nGameType == kGameTypeTeams) && !VanillaMode()) // if ctf mode and went to next level, reset scores
             playerResetScores(i);
         gProfileNet[i] = gProfile[i];
         playerStart(i, 1);
     }
-    if (gameOptions->uGameFlags&1)
+    if (gameOptions->uGameFlags&kGameFlagContinuing) // if episode is in progress, restore player stats
     {
         for (int i = connecthead; i >= 0; i = connectpoint2[i])
         {
@@ -831,7 +831,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
                 playerResetWeaponState(pPlayer, false);
         }
     }
-    gameOptions->uGameFlags &= ~3;
+    gameOptions->uGameFlags &= ~(kGameFlagContinuing|kGameFlagEnding);
     scrSetDac();
     PreloadCache();
     InitMirrors();
@@ -865,7 +865,7 @@ void StartNetworkLevel(void)
 {
     if (gDemo.bRecording)
         gDemo.Close();
-    if (!(gGameOptions.uGameFlags&1))
+    if (!(gGameOptions.uGameFlags&kGameFlagContinuing))
     {
         gGameOptions.nEpisode = gPacketStartGame.episodeId;
         gGameOptions.nLevel = gPacketStartGame.levelId;
@@ -947,7 +947,7 @@ static void DoQuickSave(void)
 
 int DoRestoreSave(void)
 {
-    if (gGameOptions.nGameType > 0 || numplayers > 1) // in multiplayer game, do not save
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer || numplayers > 1) // in multiplayer game, do not save
         return 0;
     if (LoadSavedInCurrentSession(gQuickLoadSlot)) // if quickload is set to save from current session, load save
     {
@@ -985,14 +985,14 @@ void LocalKeys(void)
     if (BUTTON(gamefunc_See_Coop_View))
     {
         CONTROL_ClearButton(gamefunc_See_Coop_View);
-        if (gGameOptions.nGameType == 1) // co-op
+        if (gGameOptions.nGameType == kGameTypeCoop)
         {
             gViewIndex = connectpoint2[gViewIndex];
             if (gViewIndex == -1)
                 gViewIndex = connecthead;
             gView = &gPlayer[gViewIndex];
         }
-        else if (gGameOptions.nGameType == 3) // teams
+        else if (gGameOptions.nGameType == kGameTypeTeams)
         {
             do
             {
@@ -1006,7 +1006,7 @@ void LocalKeys(void)
     if (gDoQuickSave)
     {
         keyFlushScans();
-        if ((gGameOptions.nGameType == 0) && !gDemo.bPlaying && !gDemo.bRecording) // if not in multiplayer session and not in demo playback, allow quicksave
+        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gDemo.bPlaying && !gDemo.bRecording) // if not in multiplayer session and not in demo playback, allow quicksave
         {
             switch (gDoQuickSave)
             {
@@ -1027,7 +1027,7 @@ void LocalKeys(void)
     char key;
     if ((key = keyGetScan()) != 0)
     {
-        if ((alt || shift) && gGameOptions.nGameType > 0 && key >= sc_F1 && key <= sc_F10)
+        if ((alt || shift) && gGameOptions.nGameType != kGameTypeSinglePlayer && key >= sc_F1 && key <= sc_F10)
         {
             char fk = key - sc_F1;
             if (alt)
@@ -1044,7 +1044,7 @@ void LocalKeys(void)
             CONTROL_ClearButton(gamefunc_See_Chase_View);
             return;
         }
-        else if (alt && (gGameOptions.nGameType > 0) && (key == sc_F11) && !VanillaMode()) // secret fart hotkey
+        else if (alt && (gGameOptions.nGameType != kGameTypeSinglePlayer) && (key == sc_F11) && !VanillaMode()) // secret fart hotkey
         {
             netBroadcastFart(myconnectindex);
             keyFlushScans();
@@ -1063,7 +1063,7 @@ void LocalKeys(void)
             break;
         case sc_Escape:
             keyFlushScans();
-            if (gGameStarted && !gDemo.bRecording && (gPlayer[myconnectindex].pXSprite->health != 0 || gGameOptions.nGameType > 0))
+            if (gGameStarted && !gDemo.bRecording && (gPlayer[myconnectindex].pXSprite->health != 0 || gGameOptions.nGameType != kGameTypeSinglePlayer))
             {
                 if (!gGameMenuMgr.m_bActive)
                     gGameMenuMgr.Push(&menuMainWithSave,-1);
@@ -1076,14 +1076,14 @@ void LocalKeys(void)
             return;
         case sc_F1:
             keyFlushScans();
-            if (gGameOptions.nGameType == 0)
+            if (gGameOptions.nGameType == kGameTypeSinglePlayer)
                 gGameMenuMgr.Push(&menuHelp,-1);
             break;
         case sc_F2:
             keyFlushScans();
-            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == 0 && !gLockManualSaving)
+            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == kGameTypeSinglePlayer && !gLockManualSaving)
                 gGameMenuMgr.Push(&menuSaveGame,-1);
-            else if (gLockManualSaving && gGameOptions.nGameType == 0) // if manual saving is locked and not currently in multiplayer
+            else if (gLockManualSaving && gGameOptions.nGameType == kGameTypeSinglePlayer) // if manual saving is locked and not currently in multiplayer
             {
                 viewSetMessage("Saving is locked!");
                 viewSetMessage("Change lock save settings to save...");
@@ -1091,7 +1091,7 @@ void LocalKeys(void)
             break;
         case sc_F3:
             keyFlushScans();
-            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == 0)
+            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == kGameTypeSinglePlayer)
                 gGameMenuMgr.Push(&menuLoadGame,-1);
             break;
         case sc_F4:
@@ -1106,7 +1106,7 @@ void LocalKeys(void)
             return;
         case sc_F6:
             keyFlushScans();
-            if (gGameOptions.nGameType == 0)
+            if (gGameOptions.nGameType == kGameTypeSinglePlayer)
                 DoQuickSave();
             break;
         case sc_F8:
@@ -1116,7 +1116,7 @@ void LocalKeys(void)
             return;
         case sc_F9:
             keyFlushScans();
-            if (gGameOptions.nGameType == 0)
+            if (gGameOptions.nGameType == kGameTypeSinglePlayer)
                 DoQuickLoad();
             break;
         case sc_F10:
@@ -1138,7 +1138,7 @@ void LocalKeys(void)
         if (joy && !joyold)
         {
             JOYSTICK_ClearAllButtons();
-            if (gGameStarted && !gDemo.bRecording && (gPlayer[myconnectindex].pXSprite->health != 0 || gGameOptions.nGameType > 0))
+            if (gGameStarted && !gDemo.bRecording && (gPlayer[myconnectindex].pXSprite->health != 0 || gGameOptions.nGameType != kGameTypeSinglePlayer))
             {
                 if (!gGameMenuMgr.m_bActive)
                     gGameMenuMgr.Push(&menuMainWithSave,-1);
@@ -1208,7 +1208,7 @@ void ProcessFrame(void)
         if (gPlayer[i].input.keyFlags.restart) // if restart requested from ProcessInput()
         {
             gPlayer[i].input.keyFlags.restart = 0;
-            if (gPlayer[i].input.keyFlags.action && gGameOptions.nGameType == 0 && numplayers == 1) // if pressed action key and not in multiplayer session
+            if (gPlayer[i].input.keyFlags.action && gGameOptions.nGameType == kGameTypeSinglePlayer && numplayers == 1) // if pressed action key and not in multiplayer session
             {
                 if (DoRestoreSave()) // attempt to load last save, if fail then restart current level
                     return;
@@ -1220,7 +1220,7 @@ void ProcessFrame(void)
         {
             gPlayer[i].input.keyFlags.pause = 0;
             gPaused = !gPaused;
-            if (gPaused && gGameOptions.nGameType > 0 && numplayers > 1)
+            if (gPaused && gGameOptions.nGameType != kGameTypeSinglePlayer && numplayers > 1)
             {
                 int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(gPlayer[i].teamId) : 0;
                 sprintf(buffer,"\r%s\r paused the game",gProfile[i].name);
@@ -1231,7 +1231,7 @@ void ProcessFrame(void)
     viewClearInterpolations();
     if (!gDemo.bPlaying)
     {
-        if (gPaused || gEndGameMgr.at0 || (gGameOptions.nGameType == 0 && (gGameMenuMgr.m_bActive || ((osd->flags & OSD_DRAW) == OSD_DRAW))))
+        if (gPaused || gEndGameMgr.at0 || (gGameOptions.nGameType == kGameTypeSinglePlayer && (gGameMenuMgr.m_bActive || ((osd->flags & OSD_DRAW) == OSD_DRAW))))
             return;
         if (gDemo.bRecording)
             gDemo.Write(gFifoInput[(gNetFifoTail-1)&255]);
@@ -1268,7 +1268,7 @@ void ProcessFrame(void)
     gLevelTime++;
     gFrame++;
     gFrameClock += kTicsPerFrame;
-    if ((gGameOptions.uGameFlags&1) != 0 && !gStartNewGame)
+    if ((gGameOptions.uGameFlags&kGameFlagContinuing) && !gStartNewGame)
     {
         ready2send = 0;
         if (gNetPlayers > 1 && gNetMode == NETWORK_SERVER && gPacketMode == PACKETMODE_1 && myconnectindex == connecthead)
@@ -1283,16 +1283,16 @@ void ProcessFrame(void)
             gDemo.Close();
         sndFadeSong(4000);
         seqKillAll();
-        if (gGameOptions.uGameFlags&2)
+        if (gGameOptions.uGameFlags&kGameFlagEnding)
         {
-            if (gGameOptions.nGameType == 0)
+            if (gGameOptions.nGameType == kGameTypeSinglePlayer)
             {
-                if (gGameOptions.uGameFlags&8)
+                if (gGameOptions.uGameFlags&kGameFlagPlayOutro)
                     levelPlayEndScene(gGameOptions.nEpisode);
                 gGameMenuMgr.Deactivate();
                 gGameMenuMgr.Push(&menuCredits,-1);
             }
-            gGameOptions.uGameFlags &= ~3;
+            gGameOptions.uGameFlags &= ~(kGameFlagContinuing|kGameFlagEnding);
             gRestartGame = 1;
             gQuitGame = 1;
         }
@@ -1494,8 +1494,8 @@ void ParseOptions(void)
         case 4:
             //if (OptArgc < 1)
             //    ThrowError("Missing argument");
-            //if (gGameOptions.nGameType == 0)
-            //    gGameOptions.nGameType = 2;
+            //if (gGameOptions.nGameType == kGameTypeSinglePlayer)
+            //    gGameOptions.nGameType = kGameTypeBloodBath;
             break;
         case 30:
             if (OptArgc < 1)
@@ -2024,12 +2024,12 @@ RESTART:
     UpdateNetworkMenus();
     if (!bNoDemo && gQuickStart && !gDemoRunValidation) // disable demo playback in quick start mode
         bNoDemo = 1;
-    if (!gDemo.bRecording && gDemo.nDemosFound > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
+    if (!gDemo.bRecording && gDemo.nDemosFound > 0 && gGameOptions.nGameType == kGameTypeSinglePlayer && !bNoDemo)
         gDemo.SetupPlayback(NULL);
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     gQuitGame = 0;
     gRestartGame = 0;
-    if (gGameOptions.nGameType > 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
     {
         KB_ClearKeysDown();
         KB_FlushKeyboardQueue();
@@ -2042,7 +2042,7 @@ RESTART:
     if (!bAddUserMap && !gGameStarted)
     {
         gGameMenuMgr.Push(&menuMain, -1);
-        if (gGameOptions.nGameType > 0)
+        if (gGameOptions.nGameType != kGameTypeSinglePlayer)
             gGameMenuMgr.Push(&menuNetStart, 1);
     }
     ready2send = 1;
@@ -2219,9 +2219,9 @@ RESTART:
                 videoNextPage();
             }
         }
-        if (gGameOptions.nGameType != 0)
+        if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         {
-            if (!gDemo.bRecording && gDemo.nDemosFound > 0 && gGameOptions.nGameType == 0 && !bNoDemo)
+            if (!gDemo.bRecording && gDemo.nDemosFound > 0 && gGameOptions.nGameType == kGameTypeSinglePlayer && !bNoDemo)
                 gDemo.NextDemo();
             videoSetViewableArea(0,0,xdim-1,ydim-1);
             scrSetDac();
@@ -2987,10 +2987,10 @@ void LoadExtraArts(void)
 
 bool VanillaMode(const bool demoState) {
     if (gVanilla == 2) // vanilla mode override, always return true (except for multiplayer)
-        return (gGameOptions.nGameType == 0) && (numplayers == 1);
+        return (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1);
     if (demoState) // only check if demo recording/playing is active
         return gDemo.bPlaying || gDemo.bRecording;
-    return (gDemo.bPlaying || gDemo.bRecording) || (gVanilla && (gGameOptions.nGameType == 0) && (numplayers == 1)); // fallback on single-player global vanilla mode settings
+    return (gDemo.bPlaying || gDemo.bRecording) || (gVanilla && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)); // fallback on single-player global vanilla mode settings
 }
 
 bool WeaponsNotBlood(void) {

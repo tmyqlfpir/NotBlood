@@ -1084,7 +1084,7 @@ void SetupEpisodeMenu(void)
     for (int i = 0; i < gEpisodeCount; i++)
     {
         EPISODEINFO *pEpisode = &gEpisodeInfo[i];
-        if (!pEpisode->bloodbath || gGameOptions.nGameType != 0)
+        if (!pEpisode->bloodbath || gGameOptions.nGameType != kGameTypeSinglePlayer)
             nOffset -= 10;
     }
     nOffset = max(min(nOffset, 55), 35);
@@ -1092,7 +1092,7 @@ void SetupEpisodeMenu(void)
     for (int i = 0; i < gEpisodeCount; i++)
     {
         EPISODEINFO *pEpisode = &gEpisodeInfo[i];
-        if (!pEpisode->bloodbath || gGameOptions.nGameType != 0)
+        if (!pEpisode->bloodbath || gGameOptions.nGameType != kGameTypeSinglePlayer)
         {
             if (j >= ARRAY_SSIZE(itemEpisodes))
                 ThrowError("Too many ini episodes to display (max %d).\n", ARRAY_SSIZE(itemEpisodes));
@@ -1133,7 +1133,7 @@ void SetupMainMenu(void)
 {
     menuMain.Add(&itemMainTitle, false);
     menuMain.Add(&itemMain1, true);
-    if (gGameOptions.nGameType > 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
     {
         itemMain1.at24 = &menuNetStart;
         itemMain1.at28 = 2;
@@ -1156,7 +1156,7 @@ void SetupMainMenuWithSave(void)
 {
     menuMainWithSave.Add(&itemMainSaveTitle, false);
     menuMainWithSave.Add(&itemMainSave1, true);
-    if (gGameOptions.nGameType > 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
     {
         itemMainSave1.at24 = &menuNetStart;
         itemMainSave1.at28 = 2;
@@ -1932,7 +1932,7 @@ void SetupMenus(void)
 
 void UpdateNetworkMenus(void)
 {
-    if (gGameOptions.nGameType > 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
     {
         itemMain1.at24 = &menuNetStart;
         itemMain1.at28 = 2;
@@ -1942,7 +1942,7 @@ void UpdateNetworkMenus(void)
         itemMain1.at24 = &menuEpisode;
         itemMain1.at28 = -1;
     }
-    if (gGameOptions.nGameType > 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
     {
         itemMainSave1.at24 = &menuNetStart;
         itemMainSave1.at28 = 2;
@@ -1983,7 +1983,7 @@ void ResetKeysClassic(CGameMenuItemChain *)
 ////
 void SetMonsters(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gMonsterSettings = pItem->m_nFocus % ARRAY_SSIZE(pzMonsterStrings);
         if (VanillaMode())
         {
@@ -2006,7 +2006,7 @@ void SetMonsters(CGameMenuItemZCycle *pItem)
 
 void SetQuadDamagePowerup(CGameMenuItemZBool* pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gQuadDamagePowerup = pItem->at20;
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
     } else {
@@ -2016,7 +2016,7 @@ void SetQuadDamagePowerup(CGameMenuItemZBool* pItem)
 
 void SetDamageInvul(CGameMenuItemZBool* pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gDamageInvul = pItem->at20;
         gGameOptions.bDamageInvul = gDamageInvul;
     } else {
@@ -2026,7 +2026,7 @@ void SetDamageInvul(CGameMenuItemZBool* pItem)
 
 void SetExplosionBehavior(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gExplosionBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
     } else {
@@ -2036,7 +2036,7 @@ void SetExplosionBehavior(CGameMenuItemZCycle *pItem)
 
 void SetProjectileBehavior(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gProjectileBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
         gGameOptions.nProjectileBehavior = gProjectileBehavior;
     } else {
@@ -2046,7 +2046,7 @@ void SetProjectileBehavior(CGameMenuItemZCycle *pItem)
 
 void SetEnemyBehavior(CGameMenuItemZBool *pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gEnemyBehavior = pItem->at20;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
     } else {
@@ -2056,7 +2056,7 @@ void SetEnemyBehavior(CGameMenuItemZBool *pItem)
 
 void SetEnemyRandomTNT(CGameMenuItemZBool* pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gEnemyRandomTNT = pItem->at20;
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
     } else {
@@ -2066,7 +2066,7 @@ void SetEnemyRandomTNT(CGameMenuItemZBool* pItem)
 
 void SetWeaponsVer(CGameMenuItemZCycle* pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gWeaponsVer = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
         gGameOptions.nWeaponsVer = gWeaponsVer;
     } else {
@@ -2076,7 +2076,7 @@ void SetWeaponsVer(CGameMenuItemZCycle* pItem)
 
 void SetSectorBehavior(CGameMenuItemZBool *pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gSectorBehavior = pItem->at20;
         gGameOptions.bSectorBehavior = gSectorBehavior;
     } else {
@@ -2086,7 +2086,7 @@ void SetSectorBehavior(CGameMenuItemZBool *pItem)
 
 void SetHitscanProjectiles(CGameMenuItemZBool *pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gHitscanProjectiles = pItem->at20;
         gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
     } else {
@@ -2096,7 +2096,7 @@ void SetHitscanProjectiles(CGameMenuItemZBool *pItem)
 
 void SetRandomizerMode(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) {
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
         gRandomizerMode = pItem->m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
         gGameOptions.nRandomizerMode = gRandomizerMode;
     } else {
@@ -2109,7 +2109,7 @@ void SetRandomizerSeed(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
     UNREFERENCED_PARAMETER(pItem);
     UNREFERENCED_PARAMETER(pEvent);
     Bstrncpy(gzRandomizerSeed, szRandomizerSeedMenu, sizeof(gzRandomizerSeed));
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1))
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1))
         Bstrncpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
 }
 ////
@@ -2144,7 +2144,7 @@ void SetWeaponSwaying(CGameMenuItemZCycle *pItem)
     gWeaponHBobbing = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponHBobbingStrings);
     if (!gDemo.bRecording && !gDemo.bPlaying)
     {
-        if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         {
             netBroadcastPlayerInfoUpdate(myconnectindex);
             return;
@@ -2221,7 +2221,7 @@ void SetAutoAim(CGameMenuItemZCycle *pItem)
     gAutoAim = pItem->m_nFocus;
     if (!gDemo.bRecording && !gDemo.bPlaying)
     {
-        if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         {
             netBroadcastPlayerInfoUpdate(myconnectindex);
             return;
@@ -2265,7 +2265,7 @@ void SetWeaponSwitch(CGameMenuItemZCycle *pItem)
     }
     if (!gDemo.bRecording && !gDemo.bPlaying)
     {
-        if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         {
             netBroadcastPlayerInfoUpdate(myconnectindex);
             return;
@@ -2280,7 +2280,7 @@ void SetWeaponFastSwitch(CGameMenuItemZBool *pItem)
     gWeaponFastSwitch = pItem->at20;
     if (!gDemo.bRecording && !gDemo.bPlaying)
     {
-        if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+        if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         {
             netBroadcastPlayerInfoUpdate(myconnectindex);
             return;
@@ -2317,7 +2317,7 @@ void SetGameVanillaMode(char nState)
 
 void SetVanillaMode(CGameMenuItemZCycle *pItem)
 {
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1))
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1))
     {
         SetGameVanillaMode((char)pItem->m_nFocus);
         viewClearInterpolations();
@@ -2344,7 +2344,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.uMonsterBannedType = BANNED_NONE;
     gGameOptions.nLevel = 0;
     if (!gVanilla) // don't reset gameflags for vanilla mode
-        gGameOptions.uGameFlags = 0;
+        gGameOptions.uGameFlags = kGameFlagNone;
     if (gDemo.bPlaying)
         gDemo.StopPlayback();
     else if (gDemo.bRecording)
@@ -2874,7 +2874,7 @@ void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
 void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
 {
     gSkill = 4 - (pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
-    if ((numplayers > 1) || (gGameOptions.nGameType > 0)) // if multiplayer session is active
+    if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         netBroadcastPlayerInfoUpdate(myconnectindex);
 }
 
@@ -3299,7 +3299,7 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
 {
     char strSaveGameName[BMAX_PATH];
     int nSlot = pItem->at28;
-    if (gGameOptions.nGameType > 0 || !gGameStarted)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer || !gGameStarted)
         return;
     if (event->at0 != 6/* || strSaveGameName[0]*/)
     {
@@ -3328,7 +3328,7 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
 void QuickSaveGame(void)
 {
     char strSaveGameName[BMAX_PATH];
-    if (gGameOptions.nGameType > 0 || !gGameStarted)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer || !gGameStarted)
         return;
     /*if (strSaveGameName[0])
     {
@@ -3357,7 +3357,7 @@ void AutosaveGame(bool bLevelStartSave)
 {
     char strSaveGameName[BMAX_PATH];
     int nSlot = bLevelStartSave ? kLoadSaveSlotSpawn : kLoadSaveSlotKey;
-    if (gGameOptions.nGameType > 0 || !gGameStarted)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer || !gGameStarted)
         return;
     G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot - kLoadSaveSlotSpawn);
     snprintf(gGameOptions.szUserGameName, sizeof(gGameOptions.szUserGameName), "%s %s", gGameOptions.zLevelName, nSlot == kLoadSaveSlotSpawn ? "start": "key");
@@ -3385,7 +3385,7 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     UNREFERENCED_PARAMETER(event);
     char strLoadGameName[BMAX_PATH];
     int nSlot = pItem->at28;
-    if (gGameOptions.nGameType > 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         return;
     if (nSlot <= kLoadSaveSlot10)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot);
@@ -3405,7 +3405,7 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
 void QuickLoadGame(void)
 {
     char strLoadGameName[BMAX_PATH];
-    if (gGameOptions.nGameType > 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         return;
     if (gQuickLoadSlot < kLoadSaveSlotAutosave)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot);
@@ -3484,7 +3484,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
 void Restart(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
-    if (gGameOptions.nGameType == 0 || numplayers == 1)
+    if (gGameOptions.nGameType == kGameTypeSinglePlayer || numplayers == 1)
     {
         gQuitGame = true;
         gRestartGame = true;
@@ -3497,7 +3497,7 @@ void Restart(CGameMenuItemChain *pItem)
 void Quit(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
-    if (gGameOptions.nGameType == 0 || numplayers == 1)
+    if (gGameOptions.nGameType == kGameTypeSinglePlayer || numplayers == 1)
         gQuitGame = true;
     else
         gQuitRequest = 1;
@@ -3528,7 +3528,7 @@ void MenuSetupEpisodeInfo(void)
 void drawLoadingScreen(void)
 {
     char buffer[80];
-    if (gGameOptions.nGameType == 0)
+    if (gGameOptions.nGameType == kGameTypeSinglePlayer)
     {
         if (gDemo.bPlaying)
             sprintf(buffer, "Loading Demo");

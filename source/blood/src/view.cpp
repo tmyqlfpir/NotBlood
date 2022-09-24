@@ -1332,7 +1332,7 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
         );
     viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
     y += nHeight+1;
-    if (gGameOptions.nGameType != 3)
+    if (gGameOptions.nGameType != kGameTypeTeams)
         sprintf(buffer, "K:%d/%d", gKillMgr.at4, max(gKillMgr.at4, gKillMgr.at0));
     else
         sprintf(buffer, "K:%d", pPlayer->fragCount);
@@ -1465,7 +1465,7 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
     }
 
     int statsOffset = 0;
-    if (gGameOptions.nGameType > 0) // offset for multiplayer stats bar
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer) // offset for multiplayer stats bar
     {
         for (int nRows = (gNetPlayers - 1) / 4; nRows >= 0; nRows--)
         {
@@ -1620,7 +1620,7 @@ void viewDrawMapTitle(void)
 
 void viewDrawAimedPlayerName(void)
 {
-    if (!gShowPlayerNames || (gView->aim.dx == 0 && gView->aim.dy == 0) || (gGameOptions.nGameType == 0))
+    if (!gShowPlayerNames || (gView->aim.dx == 0 && gView->aim.dy == 0) || (gGameOptions.nGameType == kGameTypeSinglePlayer))
         return;
 
     int hit;
@@ -1630,7 +1630,7 @@ void viewDrawAimedPlayerName(void)
     }
     else
     {
-        const int nDist = (gGameOptions.nGameType == 1) ? 640 : 512; // set hitscan distance to 20/16 meters for co-op mode
+        const int nDist = (gGameOptions.nGameType == kGameTypeCoop) ? 640 : 512; // set hitscan distance to 20/16 meters for co-op mode
         hit = HitScan(gView->pSprite, gView->zView, gView->aim.dx, gView->aim.dy, gView->aim.dz, CLIPMASK0, nDist);
     }
     if (hit == 3)
@@ -1639,7 +1639,7 @@ void viewDrawAimedPlayerName(void)
         if (IsPlayerSprite(pSprite))
         {
             char nPlayer = pSprite->type-kDudePlayer1;
-            if (!VanillaMode() && powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && ((gGameOptions.nGameType != 3) || !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite))) // if doppleganger powerup is active, set player id as viewer
+            if (!VanillaMode() && powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && ((gGameOptions.nGameType != kGameTypeTeams) || !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite))) // if doppleganger powerup is active, set player id as viewer
                 nPlayer = gView->pSprite->type-kDudePlayer1;
             char* szName = gProfile[nPlayer].name;
             int nPalette = !VanillaMode() ? playerColorPalAimName(gPlayer[nPlayer].teamId) : playerColorPalDefault(gPlayer[nPlayer].teamId);
@@ -1887,7 +1887,7 @@ void viewDrawMultiKill(ClockTicks arg)
         return;
 
     int nY = 40;
-    if (gGameOptions.nGameType > 0) // offset for multiplayer stats bar
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer) // offset for multiplayer stats bar
     {
         for (int nRows = (gNetPlayers - 1) / 4; nRows >= 0; nRows--)
         {
@@ -2031,7 +2031,7 @@ void UpdateStatusBar(ClockTicks arg)
             DrawStatNumber("%3d", num, kSBarNumberAmmo, 267+xscalehud, 187, 0, 0, 512);
         }
 
-        if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
+        if (gGameOptions.nGameType <= kGameTypeCoop) // don't show keys for bloodbath/teams as all players have every key
         {
             int nKeys = 5;
             for (int i = 0; i < 6; i++)
@@ -2111,7 +2111,7 @@ void UpdateStatusBar(ClockTicks arg)
                     DrawStatSprite(nTile, x, y, 40, 5, 256);
             }
         }
-        else if (gGameOptions.nGameType < 2) // don't show keys for bloodbath/teams as all players have every key
+        else if (gGameOptions.nGameType <= kGameTypeCoop) // don't show keys for bloodbath/teams as all players have every key
         {
             for (int i = 0; i < 6; i++)
             {
@@ -2234,15 +2234,15 @@ void UpdateStatusBar(ClockTicks arg)
     if (bDrawWeaponHud) // draw weapon select bar over hud
         viewDrawWeaponSelect(pPlayer, pXSprite);
 
-    if (gGameOptions.nGameType < 1) return;
+    if (gGameOptions.nGameType == kGameTypeSinglePlayer) return;
 
-    if (gGameOptions.nGameType >= 2)
+    if (gGameOptions.nGameType >= kGameTypeTeams)
     {
         viewDrawKillMsg(arg);
         viewDrawMultiKill(arg);
     }
 
-    if (gGameOptions.nGameType == 3)
+    if (gGameOptions.nGameType == kGameTypeTeams)
     {
         if (bVanilla)
         {
@@ -2409,7 +2409,7 @@ void viewResizeView(int size)
         gViewX1 = xdim-1;
         gViewY0 = 0;
         gViewY1 = ydim-1;
-        if (gGameOptions.nGameType > 0 && gGameOptions.nGameType <= 3)
+        if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         {
             gViewY0 = (tilesiz[2229].y*ydim*((gNetPlayers+3)/4))/200;
         }
@@ -2424,7 +2424,7 @@ void viewResizeView(int size)
         gViewY0 = 0;
         gViewX1 = xdim-1;
         gViewY1 = ydim-1-(25*ydim)/200;
-        if (gGameOptions.nGameType > 0 && gGameOptions.nGameType <= 3)
+        if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         {
             gViewY0 = (tilesiz[2229].y*ydim*((gNetPlayers+3)/4))/200;
         }
@@ -2440,16 +2440,16 @@ void viewResizeView(int size)
         gViewY1S = divscale16(gViewY1, yscale);
     }
     videoSetViewableArea(gViewX0, gViewY0, gViewX1, gViewY1);
-    if ((gGameOptions.nGameType == 3) && VanillaMode())
+    if ((gGameOptions.nGameType == kGameTypeTeams) && VanillaMode()) // lower text for vanilla CTF hud (v1.21 did not do this btw)
     {
         gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+15);
     }
     else
     {
-        const int nOffset = !VanillaMode() && (gGameOptions.nGameType == 0) && (gViewSize < 6) ? 6 : 1; // lower message position for single-player
+        const int nOffset = !VanillaMode() && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (gViewSize < 6) ? 6 : 1; // lower message position for single-player
         gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+nOffset);
     }
-    gGameMessageMgr.maxNumberOfMessagesToDisplay = !VanillaMode() && (gGameOptions.nGameType > 0) ? 3 : 4; // set max displayed messages to 3 for multiplayer (reduces on screen clutter)
+    gGameMessageMgr.maxNumberOfMessagesToDisplay = !VanillaMode() && (gGameOptions.nGameType != kGameTypeSinglePlayer) ? 3 : 4; // set max displayed messages to 3 for multiplayer (reduces on screen clutter)
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     viewUpdateHudRatio();
     viewUpdatePages();
@@ -2499,7 +2499,7 @@ void viewDimScreen(void)
 
 void viewDrawInterface(ClockTicks arg)
 {
-    if (gViewMode == 3 && ((gViewSize >= 4) || (gViewSize <= 3 && gGameOptions.nGameType > 0)))
+    if (gViewMode == 3 && ((gViewSize >= 4) || (gViewSize <= 3 && gGameOptions.nGameType != kGameTypeSinglePlayer)))
     {
         UpdateFrame();
         pcBackground--;
@@ -3261,13 +3261,13 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         case kStatItem: {
             switch (pTSprite->type) {
                 case kItemFlagABase:
-                    if (pTXSprite && pTXSprite->state > 0 && gGameOptions.nGameType == 3) {
+                    if (pTXSprite && pTXSprite->state > 0 && gGameOptions.nGameType == kGameTypeTeams) {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectBigFlag);
                         if (pNTSprite) pNTSprite->pal = kFlagBluePal;
                     }
                     break;
                 case kItemFlagBBase:
-                    if (pTXSprite && pTXSprite->state > 0 && gGameOptions.nGameType == 3) {
+                    if (pTXSprite && pTXSprite->state > 0 && gGameOptions.nGameType == kGameTypeTeams) {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectBigFlag);
                         if (pNTSprite) pNTSprite->pal = kFlagRedPal;
                     }
@@ -3381,7 +3381,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
 
                 PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
                 const char bIsTeammate = IsTargetTeammate(gView, pPlayer->pSprite);
-                const char bIsDoppleganger = (gGameOptions.nGameType == 3) && powerupCheck(pPlayer, kPwUpDoppleganger);
+                const char bIsDoppleganger = (gGameOptions.nGameType == kGameTypeTeams) && powerupCheck(pPlayer, kPwUpDoppleganger);
                 const char bIsTeammateOrDoppleganger = bIsTeammate || bIsDoppleganger;
                 if (powerupCheck(pPlayer, kPwUpShadowCloak) && !powerupCheck(gView, kPwUpBeastVision)) {
                     pTSprite->cstat |= 2;
@@ -3397,7 +3397,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     viewAddEffect(nTSprite, kViewEffectReflectiveBall);
                 }
                 
-                if (gShowWeapon && (gGameOptions.nGameType > 0) && gView) {
+                if (gShowWeapon && (gGameOptions.nGameType != kGameTypeSinglePlayer) && gView) {
                     const char bDrawDudeWeap = (pPlayer == gView) || !powerupCheck(pPlayer, kPwUpShadowCloak) || bIsTeammateOrDoppleganger; // don't draw enemy weapon if they are cloaked
                     if (bDrawDudeWeap || VanillaMode())
                         viewAddEffect(nTSprite, kViewEffectShowWeapon);
@@ -3429,8 +3429,9 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     }
                 }
 
-                if ((pPlayer->hasFlag > 0) && (gGameOptions.nGameType == 3)) { // if teams mode and has flag
+                if ((pPlayer->hasFlag > 0) && (gGameOptions.nGameType == kGameTypeTeams)) { // if teams mode and has flag
                     const char bThirdPerson = (pPlayer == gView) && (gViewPos != VIEWPOS_0) && !VanillaMode();
+
                     if (pPlayer->hasFlag&1)  {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
                         if (pNTSprite) {
@@ -3681,7 +3682,7 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
     const int32_t nStat = r_usenewaspect ? RS_AUTO : RS_AUTO | RS_STRETCH;
     const char bBannedWeapon = (pPlayer->curWeapon == kWeaponNone) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT);
     const char bShowAutoAimTarget = (gAimReticle == 2) && (gProfile[pPlayer->nPlayer].nAutoAim) && pPlayer->aimTargetsCount && !bBannedWeapon;
-    const char bPaused = !((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.bPlaying);
+    const char bPaused = !((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != kGameTypeSinglePlayer))) || gDemo.bPlaying);
     int q16SlopeTilt = fix16_from_float(0.82f);
     int cX = 160;
     int cY = defaultHoriz;
@@ -4032,7 +4033,7 @@ void viewDrawScreen(void)
     if (delta < 0)
         delta = 0;
     lastUpdate = totalclock;
-    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.bPlaying)
+    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != kGameTypeSinglePlayer))) || gDemo.bPlaying)
     {
         gInterpolate = ((totalclock-gNetFifoClock)+4).toScale16()/4;
     }
@@ -4045,7 +4046,7 @@ void viewDrawScreen(void)
         CalcInterpolations();
     }
 
-    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != 0))) || gDemo.bPlaying)
+    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != kGameTypeSinglePlayer))) || gDemo.bPlaying)
         rotatespritesmoothratio = gInterpolate;
     else
         rotatespritesmoothratio = 65536;

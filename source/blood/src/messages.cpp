@@ -305,6 +305,7 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
 {
     char buffer[BMAX_PATH];
     levelSetupOptions(nEpisode, nLevel);
+    gGameOptions.uGameFlags = kGameFlagNone;
     gGameStarted = false;
     gCheatMgr.ResetCheats();
     strcpy(buffer, levelGetFilename(nEpisode, nLevel));
@@ -661,7 +662,7 @@ void CPlayerMsg::ProcessKeys(void)
             break;
         case sc_Enter:
         case sc_kpad_Enter:
-            if ((gGameOptions.nGameType == 0) && gCheatMgr.Check(text))
+            if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && gCheatMgr.Check(text))
                 Term();
             else
                 Send();
@@ -786,7 +787,7 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         gShowFps = !gShowFps;
         return;
     }
-    if (gGameOptions.nGameType != 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         return;
     int nEpisode, nLevel;
     switch (nCheatCode)
