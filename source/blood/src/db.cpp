@@ -764,7 +764,7 @@ void dbRandomizerModeInit(void)
     gGameOptions.nRandomizerCheat = -1;
     if (gGameOptions.szRandomizerSeed[0] == '\0') // if seed is empty, generate a new one
     {
-        if (gGameOptions.nGameType > 0) // if in multiplayer, use a failsafe seed
+        if (gGameOptions.nGameType != kGameTypeSinglePlayer) // if in multiplayer, use a failsafe seed
             curRandomizerSeed = defaultSeed;
         else // in single-player
             curRandomizerSeed = QRandom2(defaultSeed);
@@ -793,7 +793,7 @@ void dbRandomizerModeInit(void)
             break;
     }
 
-    if ((gGameOptions.nRandomizerCheat != -1) && (gGameOptions.nGameType == 0)) // if seed cheat is active and in single-player
+    if ((gGameOptions.nRandomizerCheat != -1) && (gGameOptions.nGameType == kGameTypeSinglePlayer)) // if seed cheat is active and in single-player
         curRandomizerSeed = qrand(); // always re-roll random seed when cheat seed mode is active
     else
         curRandomizerSeed = defaultSeed; // reset seed

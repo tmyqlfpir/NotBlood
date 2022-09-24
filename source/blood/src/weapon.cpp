@@ -1844,7 +1844,7 @@ void AltFireLifeLeech(int nTrigger, PLAYER *pPlayer)
         pXSprite->DudeLockout = 1;
         pXSprite->stateTimer = 1;
         evPost(pMissile->index, 3, 120, kCallbackLeechStateTimer);
-        if (gGameOptions.nGameType <= 1)
+        if (gGameOptions.nGameType <= kGameTypeCoop)
         {
             int nAmmo = pPlayer->ammoCount[8];
             if (nAmmo < 25 && pPlayer->pXSprite->health > ((25-nAmmo)<<4))
@@ -2138,7 +2138,7 @@ void processLifeLeech(PLAYER *pPlayer)
 {
     if (pPlayer->weaponState != 3)
         return;
-    if (gGameOptions.nGameType <= 1 && !checkAmmo2(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
+    if ((gGameOptions.nGameType <= kGameTypeCoop) && !checkAmmo2(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
     {
         sfxPlay3DSound(pPlayer->pSprite, 494, 2, 0);
         StartQAV(pPlayer, 116, nClientFireLifeLeech, 0);
@@ -2407,7 +2407,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         }
         else
         {
-            bTNTRemoteProxyCycling = 0; // next weapon should ignore tnt cycling logic
+            bTNTRemoteProxyCycling = 0; // next weapon should bypass tnt cycling logic
         }
         pPlayer->input.newWeapon = weapon;
     }
@@ -2433,7 +2433,7 @@ void WeaponProcess(PLAYER *pPlayer) {
         }
         else
         {
-            bTNTRemoteProxyCycling = 0; // prev weapon should ignore tnt cycling logic
+            bTNTRemoteProxyCycling = 0; // prev weapon should bypass tnt cycling logic
         }
         pPlayer->input.newWeapon = weapon;
     }
@@ -2917,7 +2917,7 @@ void WeaponProcess(PLAYER *pPlayer) {
                 pPlayer->throwTime = (int)gFrameClock;
                 pPlayer->throwPower = pPlayer->throwPowerOld = 0;
             }
-            else if (gGameOptions.nGameType <= 1 && !checkAmmo2(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
+            else if (gGameOptions.nGameType <= kGameTypeCoop && !checkAmmo2(pPlayer, 8, 1) && pPlayer->pXSprite->health < (25 << 4))
             {
                 sfxPlay3DSound(pPlayer->pSprite, 494, 2, 0);
                 StartQAV(pPlayer, 116, nClientFireLifeLeech, 0);

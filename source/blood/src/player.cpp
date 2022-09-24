@@ -322,7 +322,7 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
             pPlayer->damageControl[kDamageFall]++;
             break;
         case kItemReflectShots: // reflective shots
-            if (pPlayer == gMe && gGameOptions.nGameType == 0)
+            if (pPlayer == gMe && gGameOptions.nGameType == kGameTypeSinglePlayer)
                 sfxSetReverb2(1);
             break;
         case kItemDeathMask:
@@ -331,7 +331,7 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
             break;
         case kItemDivingSuit: // diving suit
             pPlayer->damageControl[kDamageDrown]++;
-            if (pPlayer == gMe && gGameOptions.nGameType == 0)
+            if (pPlayer == gMe && gGameOptions.nGameType == kGameTypeSinglePlayer)
                 sfxSetReverb(1);
             break;
         case kItemGasMask:
@@ -590,7 +590,7 @@ void packUseItem(PLAYER *pPlayer, int nPack)
             ThrowError("Unhandled pack item %d", nPack);
             return;
         }
-        if ((gPackSlotSwitch || (gGameOptions.nGameType > 0)) && !packItemActive(pPlayer, nPack) && (nPack != kPackDivingSuit) && !VanillaMode()) // switch current slot item to activated item (ignore diving suit)
+        if ((gPackSlotSwitch || (gGameOptions.nGameType != kGameTypeSinglePlayer)) && !packItemActive(pPlayer, nPack) && (nPack != kPackDivingSuit) && !VanillaMode()) // switch current slot item to activated item (ignore diving suit)
             pPlayer->packItemId = nPack;
     }
     pPlayer->packItemTime = 0;
@@ -829,17 +829,17 @@ void playerStart(int nPlayer, int bNewLevel)
     // this is used to safely update profiles while in a network multiplayer session, for example...
     // if a player updated their autoaim settings while facing an enemy, it would cause a game desync thanks to the autoaim target changing for local player before the gProfile update packet has been sent to the other clients
     // by tunneling all mid-session gProfile updates to gProfileNet it'll allow all clients to update the current player's settings at the same tick, which is on spawn (this ensures everybody stays synced)
-    if ((numplayers > 1) && (gGameOptions.nGameType > 0))
+    if ((numplayers > 1) && (gGameOptions.nGameType != kGameTypeSinglePlayer))
         gProfile[nPlayer] = gProfileNet[nPlayer];
 
     // normal start position
-    if (gGameOptions.nGameType <= 1)
+    if (gGameOptions.nGameType <= kGameTypeCoop)
         pStartZone = &gStartZone[nPlayer];
     
     #ifdef NOONE_EXTENSIONS
     // let's check if there is positions of teams is specified
     // if no, pick position randomly, just like it works in vanilla.
-    else if (gModernMap && gGameOptions.nGameType == 3 && gTeamsSpawnUsed == true) {
+    else if (gModernMap && gGameOptions.nGameType == kGameTypeTeams && gTeamsSpawnUsed == true) {
         int maxRetries = 5;
         while (maxRetries-- > 0) {
             if (pPlayer->teamId == 0) pStartZone = &gStartZoneTeam1[Random(3)];
@@ -864,7 +864,7 @@ void playerStart(int nPlayer, int bNewLevel)
     #endif
     else {
         int zoneId = Random(kMaxPlayers);
-        if ((gGameOptions.nGameType >= 2) && !VanillaMode()) { // search for a safe random spawn for bloodbath/teams mode
+        if ((gGameOptions.nGameType >= kGameTypeBloodBath) && !VanillaMode()) { // search for a safe random spawn for bloodbath/teams mode
             const int nSearchList = zoneId;
             for (int nZone = 0; nZone < kMaxPlayers; nZone++) {
                 pStartZone = &gStartZone[nZoneRandList[nSearchList][nZone]];
@@ -962,9 +962,9 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->relAim.dz = 0;
     pPlayer->aimTarget = -1;
     pPlayer->zViewVel = pPlayer->zWeaponVel;
-    if (!(gGameOptions.nGameType == 1 && gGameOptions.nKeySettings && !bNewLevel))
+    if (!(gGameOptions.nGameType == kGameTypeCoop && gGameOptions.nKeySettings && !bNewLevel))
         for (int i = 0; i < 8; i++)
-            pPlayer->hasKey[i] = gGameOptions.nGameType >= 2;
+            pPlayer->hasKey[i] = gGameOptions.nGameType >= kGameTypeBloodBath;
     pPlayer->hasFlag = 0;
     for (int i = 0; i < 8; i++)
         pPlayer->used2[i] = -1;
@@ -1019,7 +1019,7 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->hand = 0;
     pPlayer->nWaterPal = 0;
     playerResetPowerUps(pPlayer);
-    if ((gGameOptions.nGameType > 0) && (gGameOptions.nSpawnProtection > 0))
+    if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && (gGameOptions.nSpawnProtection > 0))
         playerSpawnProtection(pPlayer, gGameOptions.nSpawnProtection*kTicRate);
 
     if (pPlayer == gMe)
@@ -1088,7 +1088,7 @@ void playerReset(PLAYER *pPlayer)
     pPlayer->qavLoop = 0;
     pPlayer->packItemId = -1;
 
-    if ((gGameOptions.nGameType > 0) && (gGameOptions.nSpawnWeapon > 0))
+    if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && (gGameOptions.nSpawnWeapon > 0))
         playerSpawnWeapon(pPlayer, gGameOptions.nSpawnWeapon+kWeaponPitchfork);
 
     for (int i = 0; i < kPackMax; i++) {
@@ -1118,7 +1118,7 @@ void playerInit(int nPlayer, unsigned int a2)
         memset((void *)pPlayer, 0, sizeof(PLAYER));
     pPlayer->nPlayer = nPlayer;
     pPlayer->teamId = nPlayer;
-    if (gGameOptions.nGameType == 3)
+    if (gGameOptions.nGameType == kGameTypeTeams)
         pPlayer->teamId = nPlayer&1;
     playerResetScores(nPlayer);
 
@@ -1173,7 +1173,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
         #endif
         case kItemFlagABase:
         case kItemFlagBBase: {
-            if (gGameOptions.nGameType != 3 || pItem->extra <= 0) return 0;
+            if (gGameOptions.nGameType != kGameTypeTeams || pItem->extra <= 0) return 0;
             XSPRITE * pXItem = &xsprite[pItem->extra];
             const int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
             if (pItem->type == kItemFlagABase) {
@@ -1265,7 +1265,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
         }
         return 0;
         case kItemFlagA: {
-            if (gGameOptions.nGameType != 3) return 0;
+            if (gGameOptions.nGameType != kGameTypeTeams) return 0;
             gBlueFlagDropped = false;
             pPlayer->hasFlag |= 1;
             pPlayer->used2[0] = pItem->owner;
@@ -1280,7 +1280,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             break;
         }
         case kItemFlagB: {
-            if (gGameOptions.nGameType != 3) return 0;
+            if (gGameOptions.nGameType != kGameTypeTeams) return 0;
             gRedFlagDropped = false;
             pPlayer->hasFlag |= 2;
             pPlayer->used2[1] = pItem->owner;
@@ -1320,7 +1320,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             break;
         }
         case kItemCrystalBall:
-            if (gGameOptions.nGameType == 0 || !packAddItem(pPlayer, gItemData[nType].packSlot)) return 0;
+            if (gGameOptions.nGameType == kGameTypeSinglePlayer || !packAddItem(pPlayer, gItemData[nType].packSlot)) return 0;
             break;
         case kItemKeySkull:
         case kItemKeyEye:
@@ -1332,9 +1332,9 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             if (pPlayer->hasKey[pItem->type-99]) return 0;
             pPlayer->hasKey[pItem->type-99] = 1;
             pickupSnd = 781;
-            if ((gAutosave > 1) && (gGameOptions.nGameType == 0) && !gDemo.bPlaying && !gDemo.bRecording) // if autosave is on and not currently in multiplayer/demo playback, autosave on key pickup
+            if ((gAutosave > 1) && (gGameOptions.nGameType == kGameTypeSinglePlayer) && !gDemo.bPlaying && !gDemo.bRecording) // if autosave is on and not currently in multiplayer/demo playback, autosave on key pickup
                 gDoQuickSave = 3;
-            if ((gGameOptions.nGameType == 1) && (gGameOptions.nKeySettings == 2)) { // if co-op and global key collection is on, also give key to all players
+            if ((gGameOptions.nGameType == kGameTypeCoop) && (gGameOptions.nKeySettings == 2)) { // if co-op and global key collection is on, also give key to all players
                 for (int i = connecthead; i >= 0; i = connectpoint2[i]) {
                     gPlayer[i].hasKey[pItem->type-99] = 1;
                 }
@@ -1365,7 +1365,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
             if (!packAddItem(pPlayer, gItemData[nType].packSlot)) return 0;
             break;
         default:
-            if (pPlayer->pwUpTime[nType] && !gPowerUpInfo[nType].pickupOnce && (gGameOptions.nGameType <= 1) && !VanillaMode()) // if powerup is already active, reset time (only for co-op/single-player - Mario star logic)
+            if (pPlayer->pwUpTime[nType] && !gPowerUpInfo[nType].pickupOnce && (gGameOptions.nGameType <= kGameTypeCoop) && !VanillaMode()) // if powerup is already active, reset time (only for co-op/single-player - Mario star logic)
                 pPlayer->pwUpTime[nType] = 0;
             if (!powerupActivate(pPlayer, nType)) return 0;
             return 1;
@@ -1397,7 +1397,7 @@ char PickupWeapon(PLAYER *pPlayer, spritetype *pWeapon) {
     int nWeaponType = pWeaponItemData->type;
     int nAmmoType = pWeaponItemData->ammoType;
     if (!pPlayer->hasWeapon[nWeaponType] || gGameOptions.nWeaponSettings == 2 || gGameOptions.nWeaponSettings == 3) {
-        if (pWeapon->type == kItemWeaponLifeLeech && gGameOptions.nGameType > 1 && findDroppedLeech(pPlayer, NULL))
+        if ((pWeapon->type == kItemWeaponLifeLeech) && (gGameOptions.nGameType >= kGameTypeBloodBath) && findDroppedLeech(pPlayer, NULL))
             return 0;
         pPlayer->hasWeapon[nWeaponType] = 1;
         if (nAmmoType == -1) return 0;
@@ -1540,7 +1540,7 @@ int ActionScan(PLAYER *pPlayer, int *a2, int *a3)
                 XSPRITE *pXSprite = &xsprite[*a3];
                 if (pSprite->type == kThingDroppedLifeLeech)
                 {
-                    if (gGameOptions.nGameType > 1 && findDroppedLeech(pPlayer, pSprite))
+                    if ((gGameOptions.nGameType >= kGameTypeBloodBath) && findDroppedLeech(pPlayer, pSprite))
                         return -1;
                     pXSprite->data4 = pPlayer->nPlayer;
                     pXSprite->isTriggered = 0;
@@ -1647,7 +1647,7 @@ void ProcessInput(PLAYER *pPlayer)
                 actPostSprite(pPlayer->nSprite, kStatThing);
                 seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
                 playerReset(pPlayer);
-                if ((gGameOptions.nGameType == 0) && (numplayers == 1)) // if single-player
+                if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // if single-player
                 {
                     if (gDemo.bRecording)
                         gDemo.Close();
@@ -2139,7 +2139,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     int nVictim = pVictim->pSprite->type-kDudePlayer1;
     dassert(nVictim >= 0 && nVictim < kMaxPlayers);
     const ClockTicks nKillingSpreeTime = kTicRate * 3; // three seconds window for kill sprees
-    const char bKillingSpreeStopped = !VanillaMode() && (gGameOptions.nGameType >= 2) && gMultiKill && (gMultiKillsFrags[nVictim] >= 5) && ((gFrameClock - gMultiKillsTicks[nVictim]) < nKillingSpreeTime);
+    const char bKillingSpreeStopped = !VanillaMode() && (gGameOptions.nGameType >= kGameTypeBloodBath) && gMultiKill && (gMultiKillsFrags[nVictim] >= 5) && ((gFrameClock - gMultiKillsTicks[nVictim]) < nKillingSpreeTime);
     if (myconnectindex == connecthead)
     {
         sprintf(buffer, "frag %d killed %d\n", pKiller->nPlayer+1, pVictim->nPlayer+1);
@@ -2151,31 +2151,31 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     if (nKiller == nVictim)
     {
         pKiller->fraggerId = -1;
-        if (VanillaMode() || gGameOptions.nGameType != 1)
+        if (VanillaMode() || gGameOptions.nGameType != kGameTypeCoop)
         {
             pKiller->fragCount--;
             pKiller->fragInfo[nKiller]--;
             gMultiKillsFrags[nVictim] = 0; // reset multi kill counter
         }
-        if (gGameOptions.nGameType == 3)
+        if (gGameOptions.nGameType == kGameTypeTeams)
             gPlayerScores[pKiller->teamId]--;
         const int nMessage = Random(5);
         const int nSound = !bKillingSpreeStopped ? gSuicide[nMessage].nSound : gKillingSpreeSuicide.nSound;
         const char* pzMessage = !bKillingSpreeStopped ? gSuicide[nMessage].pzMessage : gKillingSpreeSuicide.pzMessage;
         if (gMe->handTime <= 0)
         {
-            if (!VanillaMode() && (gGameOptions.nGameType > 0)) // use unused suicide messages for multiplayer
+            if (!VanillaMode() && (gGameOptions.nGameType != kGameTypeSinglePlayer)) // use unused suicide messages for multiplayer
                 sprintf(buffer, pzMessage, gProfile[nKiller].name);
             else if (pKiller == gMe)
                 sprintf(buffer, "You killed yourself!");
-            if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
+            if (gGameOptions.nGameType != kGameTypeSinglePlayer && nSound >= 0 && pKiller == gMe)
                 sndStartSample(nSound, 255, 2, 0);
         }
     }
     else
     {
         char bKilledEnemy = 1;
-        if (VanillaMode() || gGameOptions.nGameType != 1)
+        if (VanillaMode() || gGameOptions.nGameType != kGameTypeCoop)
         {
             pKiller->fragCount++;
             pKiller->fragInfo[nKiller]++;
@@ -2197,7 +2197,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
                 }
             }
         }
-        if (gGameOptions.nGameType == 3)
+        if (gGameOptions.nGameType == kGameTypeTeams)
         {
             if (pKiller->teamId == pVictim->teamId) // teammate was killed
             {
@@ -2210,7 +2210,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
                 gPlayerScoreTicks[pKiller->teamId]+=120;
             }
         }
-        if (!VanillaMode() && (gGameOptions.nGameType >= 2) && bKilledEnemy) // calculate multi kill/killing spree for bloodbath/teams mode (ignore friendly fire)
+        if (!VanillaMode() && (gGameOptions.nGameType >= kGameTypeBloodBath) && bKilledEnemy) // calculate multi kill/killing spree for bloodbath/teams mode (ignore friendly fire)
         {
             const char bKillerAlive = pKiller->pXSprite->health > 0;
             const char bKillerSpreeActive = (gFrameClock - gMultiKillsTicks[nKiller]) < nKillingSpreeTime;
@@ -2235,7 +2235,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         const int nSound = !bKillingSpreeStopped ? gVictory[nMessage].nSound : gKillingSpreeFrag.nSound;
         const char* pzMessage = !bKillingSpreeStopped ? gVictory[nMessage].pzMessage : gKillingSpreeFrag.pzMessage;
         sprintf(buffer, pzMessage, gProfile[nKiller].name, gProfile[nVictim].name);
-        if (gGameOptions.nGameType > 0 && nSound >= 0 && pKiller == gMe)
+        if (gGameOptions.nGameType != kGameTypeSinglePlayer && nSound >= 0 && pKiller == gMe)
             sndStartSample(nSound, 255, 2, 0);
     }
     int nPal1 = 0, nPal2 = 0;
@@ -2433,7 +2433,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
             return nDamage;
         }
         sfxKill3DSound(pPlayer->pSprite, -1, 441);
-        if (gGameOptions.nGameType == 3 && pPlayer->hasFlag) {
+        if (gGameOptions.nGameType == kGameTypeTeams && pPlayer->hasFlag) {
             if (pPlayer->hasFlag&1) playerDropFlag(pPlayer, kItemFlagA);
             if (pPlayer->hasFlag&2) playerDropFlag(pPlayer, kItemFlagB);
         }
@@ -2462,7 +2462,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
             nDeathSeqID = 1;
             break;
         default:
-            if (nHealth < -20 && gGameOptions.nGameType >= 2 && Chance(0x4000))
+            if (nHealth < -20 && gGameOptions.nGameType >= kGameTypeBloodBath && Chance(0x4000))
             {
                 DAMAGEINFO *pDamageInfo = &damageInfo[nDamageType];
                 sfxPlay3DSound(pSprite, pDamageInfo->at10[0], 0, 2);
@@ -2496,7 +2496,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         FragPlayer(pPlayer, nSource);
         trTriggerSprite(nSprite, pXSprite, kCmdOff, nSource);
 
-        if ((gGameOptions.nGameType == 0) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode(true)) // if died in single-player and not playing demo
+        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode(true)) // if died in single-player and not playing demo
         {
             extern short gQuickLoadSlot; // from menu.h
             bool bAutosavedInSession = gAutosaveInCurLevel;
@@ -2509,7 +2509,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         }
         #ifdef NOONE_EXTENSIONS
         // allow drop items and keys in multiplayer
-        if (gModernMap && gGameOptions.nGameType != 0 && pPlayer->pXSprite->health <= 0) {
+        if (gModernMap && gGameOptions.nGameType != kGameTypeSinglePlayer && pPlayer->pXSprite->health <= 0) {
             
             spritetype* pItem = NULL;
             if (pPlayer->pXSprite->dropMsg && (pItem = actDropItem(pPlayer->pSprite, pPlayer->pXSprite->dropMsg)) != NULL)
@@ -2607,7 +2607,7 @@ void PlayerSurvive(int, int nXSprite)
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
     actHealDude(pXSprite, 1, 2);
-    if (gGameOptions.nGameType > 0 && numplayers > 1)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer && numplayers > 1)
     {
         sfxPlay3DSound(pSprite, 3009, 0, 6);
         if (IsPlayerSprite(pSprite))

@@ -211,7 +211,7 @@ void fxDynPuff(int nSprite) // 8
     spritetype *pSprite = &sprite[nSprite];
     if (zvel[nSprite])
     {
-        const bool bSmokeTrail3D = gSmokeTrail3D && !VanillaMode() && (gGameOptions.nGameType == 0) && actSpriteOwnerIsDude(pSprite) && ((pSprite->type == kThingArmedTNTStick) || (pSprite->type == kThingArmedTNTBundle) || (pSprite->type == kThingArmedSpray));
+        const bool bSmokeTrail3D = gSmokeTrail3D && !VanillaMode() && (gGameOptions.nGameType == kGameTypeSinglePlayer) && actSpriteOwnerIsDude(pSprite) && ((pSprite->type == kThingArmedTNTStick) || (pSprite->type == kThingArmedTNTBundle) || (pSprite->type == kThingArmedSpray));
         if (bSmokeTrail3D) // feature is single-player only (causes desync)
         {
             const int nTile = 3436;
@@ -734,9 +734,9 @@ void DropVoodoo(int nSprite) // unused
                 {
                     if (pPlayer2)
                     {
-                        if (gGameOptions.nGameType == 1)
+                        if (gGameOptions.nGameType == kGameTypeCoop)
                             continue;
-                        if (gGameOptions.nGameType == 3 && pPlayer->teamId == pPlayer2->teamId)
+                        if (gGameOptions.nGameType == kGameTypeTeams && pPlayer->teamId == pPlayer2->teamId)
                             continue;
                         int t = 0x8000/ClipLow(gNetPlayers-1, 1);
                         if (!powerupCheck(pPlayer2, kPwUpDeathMask))

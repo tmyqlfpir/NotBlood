@@ -210,7 +210,7 @@ void LoadSave::LoadGame(char *pzFile)
     netBroadcastPlayerInfo(myconnectindex);
     //sndPlaySong(gGameOptions.zLevelSong, 1);
 
-    if ((gGameOptions.nGameType == 0) && (numplayers == 1)) // if single-player, update the game options/player profile by loading the current set settings
+    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // if single-player, update the game options/player profile by loading the current set settings
     {
         if (!VanillaMode())
         {

@@ -305,6 +305,7 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
 {
     char buffer[BMAX_PATH];
     levelSetupOptions(nEpisode, nLevel);
+    gGameOptions.uGameFlags = kGameFlagNone;
     gGameStarted = false;
     gCheatMgr.ResetCheats();
     strcpy(buffer, levelGetFilename(nEpisode, nLevel));
@@ -316,7 +317,6 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.uMonsterBannedType = BANNED_NONE;
-    gGameOptions.uGameFlags = 0;
     playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
     StartLevel(&gGameOptions);
     for (int i = 0; i < kMaxPlayers; i++) // set to 1.21 defaults so demo playback syncs
@@ -608,7 +608,7 @@ void CPlayerMsg::Send(void)
     if (VanillaMode() || !IsWhitespaceOnly(text))
     {
         netBroadcastMessage(myconnectindex, text);
-        if (!VanillaMode() && (gGameOptions.nGameType > 0))
+        if (!VanillaMode() && (gGameOptions.nGameType != kGameTypeSinglePlayer))
         {
             char *myName = gProfile[myconnectindex].name;
             char szTemp[128];
@@ -661,7 +661,7 @@ void CPlayerMsg::ProcessKeys(void)
             break;
         case sc_Enter:
         case sc_kpad_Enter:
-            if ((gGameOptions.nGameType == 0) && gCheatMgr.Check(text))
+            if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && gCheatMgr.Check(text))
                 Term();
             else
                 Send();
@@ -786,7 +786,7 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         gShowFps = !gShowFps;
         return;
     }
-    if (gGameOptions.nGameType != 0)
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         return;
     int nEpisode, nLevel;
     switch (nCheatCode)
