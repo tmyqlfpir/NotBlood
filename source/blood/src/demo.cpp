@@ -541,7 +541,7 @@ _DEMOPLAYBACK:
                 gNetFifoTail = 0;
                 //memcpy(connectpoint2, aimHeight.connectPoints, sizeof(aimHeight.connectPoints));
                 memcpy(&gGameOptions, &m_gameOptions, sizeof(GAMEOPTIONS));
-                gGameOptions.uGameFlags &= ~1; // don't let demo attempt to load player health from gHealthTemp
+                gGameOptions.uGameFlags &= ~kGameFlagContinuing; // don't let demo attempt to load player health from gHealthTemp
                 playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
                 for (int i = 0; i < kMaxPlayers; i++)
                     playerInit(i, 0);

@@ -3431,7 +3431,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
 
                 if ((pPlayer->hasFlag > 0) && (gGameOptions.nGameType == kGameTypeTeams)) { // if teams mode and has flag
                     const char bThirdPerson = (pPlayer == gView) && (gViewPos != VIEWPOS_0) && !VanillaMode();
-
                     if (pPlayer->hasFlag&1)  {
                         auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
                         if (pNTSprite) {

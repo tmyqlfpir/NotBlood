@@ -585,7 +585,7 @@ int gDoQuickSave = 0;
 
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
-    const bool triggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == kGameTypeSinglePlayer) && gameOptions->uGameFlags&1; // if demo isn't active and not in multiplayer session and we switched to new level
+    const bool triggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == kGameTypeSinglePlayer) && gameOptions->uGameFlags&kGameFlagContinuing; // if demo isn't active and not in multiplayer session and we switched to new level
     EndLevel();
     gInput = {};
     gStartNewGame = 0;

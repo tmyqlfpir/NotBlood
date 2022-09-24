@@ -2390,7 +2390,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
         gGameOptions.uMonsterBannedType |= BANNED_HHOUNDS;
     gGameOptions.nLevel = 0;
     if (!gVanilla) // don't reset gameflags for vanilla mode
-        gGameOptions.uGameFlags = 0;
+        gGameOptions.uGameFlags = kGameFlagNone;
     if (gDemo.bPlaying)
         gDemo.StopPlayback();
     else if (gDemo.bRecording)
