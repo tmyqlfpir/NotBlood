@@ -211,7 +211,7 @@ void fxDynPuff(int nSprite) // 8
     spritetype *pSprite = &sprite[nSprite];
     if (zvel[nSprite])
     {
-        const bool bSmokeTrail3D = gSmokeTrail3D && !VanillaMode() && (gGameOptions.nGameType == 0) && actSpriteOwnerIsDude(pSprite) && ((pSprite->type == kThingArmedTNTStick) || (pSprite->type == kThingArmedTNTBundle) || (pSprite->type == kThingArmedSpray));
+        const bool bSmokeTrail3D = gSmokeTrail3D && !VanillaMode() && (gGameOptions.nGameType == kGameTypeSinglePlayer) && actSpriteOwnerIsDude(pSprite) && ((pSprite->type == kThingArmedTNTStick) || (pSprite->type == kThingArmedTNTBundle) || (pSprite->type == kThingArmedSpray));
         if (bSmokeTrail3D) // feature is single-player only (causes desync)
         {
             const int nTile = 3436;

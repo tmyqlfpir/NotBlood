@@ -396,21 +396,21 @@ inline void playerSetSkill(int nSkill)
 
 inline int playerColorPalMessage(int nTeam)
 {
-    if (gGameOptions.nGameType == 3) // tint message depending on team (red/blue)
+    if (gGameOptions.nGameType == kGameTypeTeams) // tint message depending on team (red/blue)
         return nTeam&1 ? kFlagRedPal : kFlagBluePal;
     return kFlagBluePal;
 }
 
 inline int playerColorPalMultiKill(int nTeam)
 {
-    if (gGameOptions.nGameType == 3) // tint multikill message depending on team (red/blue)
+    if (gGameOptions.nGameType == kGameTypeTeams) // tint multikill message depending on team (red/blue)
         return nTeam&1 ? kFlagRedPal : kFlagBluePal;
     return kFlagRedPal;
 }
 
 inline int playerColorPalHud(int nTeam)
 {
-    if (gGameOptions.nGameType == 3) // tint hud depending on team (red/blue)
+    if (gGameOptions.nGameType == kGameTypeTeams) // tint hud depending on team (red/blue)
         return nTeam&1 ? kFlagRedPal : kFlagBluePal;
     return 0;
 }
@@ -422,14 +422,14 @@ inline int playerColorPalDefault(int nTeam)
 
 inline int playerColorPalSprite(int nTeam)
 {
-    if (gGameOptions.nGameType == 3) // tint sprite depending on team (red/blue)
+    if (gGameOptions.nGameType == kGameTypeTeams) // tint sprite depending on team (red/blue)
         return nTeam&1 ? 2 : 10;
     return playerColorPalDefault(nTeam);
 }
 
 inline int playerColorPalAimName(int nTeam)
 {
-    if (gGameOptions.nGameType == 3) // tint name depending on team (red/blue)
+    if (gGameOptions.nGameType == kGameTypeTeams) // tint name depending on team (red/blue)
         return nTeam&1 ? 12 : 10;
     return playerColorPalDefault(nTeam);
 }
