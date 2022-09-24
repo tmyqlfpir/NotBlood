@@ -833,6 +833,7 @@ static int osdcmd_cvar_set_game(osdcmdptr_t parm)
         {
             videoSetGameMode(fullscreen, xres, yres, bpp, gUpscaleFactor);
             viewResizeView(gViewSize);
+            OSD_Printf("Render resolution set to %dx%d\n", xdim, ydim);
         }
     }
     else if (!Bstrcasecmp(parm->name, "r_size"))
