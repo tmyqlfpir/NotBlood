@@ -126,6 +126,7 @@ bool gEnemyZoomies;
 bool gSonicMode;
 bool gFullMap;
 int32_t gUpscaleFactor;
+int32_t gRenderScale;
 int32_t gLevelStats;
 int32_t gHudRatio;
 int32_t gHudBgScale;
@@ -390,7 +391,8 @@ void CONFIG_SetDefaults(void)
     //ud.crosshairscale         = 50;
     //ud.default_skill          = 1;
     //ud.democams               = 1;
-    gUpscaleFactor = 0;
+    gUpscaleFactor = 1;
+    gRenderScale = 1;
     //ud.display_bonus_screen   = 1;
     //ud.drawweapon             = 1;
     //ud.hudontop               = 0;

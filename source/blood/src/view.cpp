@@ -1008,7 +1008,7 @@ void viewAddInterpolation(void *data, INTERPOLATE_TYPE type)
     }
     else if (!bInterpWarnVanilla && VanillaMode() && (nInterpolations >= kMaxInterpolationsVanilla))
     {
-        OSD_Printf("Warning: Interpolations over vanilla limit (%d/%d)", nInterpolations, kMaxInterpolationsVanilla);
+        OSD_Printf("Warning: Interpolations over vanilla limit (%d/%d)\n", nInterpolations, kMaxInterpolationsVanilla);
         bInterpWarnVanilla = 1;
     }
     INTERPOLATE *pInterpolate = &gInterpolation[nInterpolations++];
@@ -4019,6 +4019,8 @@ int gLastPal = 0;
 
 int32_t g_frameRate;
 
+char gRenderScaleRefresh = 0;
+
 void viewDrawScreen(void)
 {
     int nPalette = 0;
@@ -4163,7 +4165,6 @@ void viewDrawScreen(void)
         }
         int v78 = gViewInterpolate ? interpolateang(gScreenTiltO, gScreenTilt, gInterpolate) : gScreenTilt;
         char v14 = 0;
-        char v10 = 0;
         bool bDelirium = powerupCheck(gView, kPwUpDeliriumShroom) > 0;
         static bool bDeliriumOld = false;
         int tiltcs = 0, tiltdim = 320;
@@ -4176,7 +4177,7 @@ void viewDrawScreen(void)
             if (videoGetRenderMode() == REND_CLASSIC)
             {
                 int vr = viewingrange;
-                walock[TILTBUFFER] = 255;
+                walock[TILTBUFFER] = CACHE1D_PERMANENT;
                 if (!waloff[TILTBUFFER])
                 {
                     tileAllocTile(TILTBUFFER, 640, 640, 0, 0);
@@ -4318,6 +4319,16 @@ RORHACKOTHER:
         else
         {
             othercameraclock = (int)totalclock;
+            if ((gRenderScale > 1) && !gRenderScaleRefresh && (videoGetRenderMode() == REND_CLASSIC))
+            {
+                if (!waloff[UPSCALEBUFFER])
+                    viewSetRenderScale(0);
+                if (waloff[UPSCALEBUFFER])
+                {
+                    renderSetTarget(UPSCALEBUFFER, tilesiz[UPSCALEBUFFER].x, tilesiz[UPSCALEBUFFER].y);
+                    renderSetAspect(viewingRange_fov, yxaspect);
+                }
+            }
         }
 
         if (!bDelirium)
@@ -4461,6 +4472,23 @@ RORHACK:
             }
 #endif
         }
+        else if ((gRenderScale > 1) && !gRenderScaleRefresh && (videoGetRenderMode() == REND_CLASSIC))
+        {
+            dassert(waloff[UPSCALEBUFFER] != 0);
+            renderRestoreTarget();
+            tileInvalidate(UPSCALEBUFFER, -1, -1);
+            const int nScale = divscale16(fix16_from_int(320), fix16_from_int(tilesiz[UPSCALEBUFFER].y-1));
+            if (bMirrorScreen) // mirror tilt buffer
+            {
+                videoMirrorTile((uint8_t *)waloff[UPSCALEBUFFER], tilesiz[UPSCALEBUFFER].y, tilesiz[UPSCALEBUFFER].x);
+                bMirrorScreen = 0;
+            }
+            rotatesprite(fix16_from_int(320/2), fix16_from_int(200/2), nScale, kAng90, UPSCALEBUFFER, 0, 0, RS_NOMASK|RS_YFLIP|RS_AUTO|RS_STRETCH, gViewX0, gViewY0, gViewX1, gViewY1);
+        }
+        else if (gRenderScaleRefresh)
+        {
+            gRenderScaleRefresh = 0;
+        }
 
         if (bMirrorScreen)
             videoMirrorDrawing();
@@ -4556,14 +4584,14 @@ RORHACK:
             rotatesprite(0, 200<<16, 65536, 0, 2358, 0, 0, 256+22, gViewX0, gViewY0, gViewX1, gViewY1);
             rotatesprite(320<<16, 200<<16, 65536, 1024, 2358, 0, 0, 512+18, gViewX0, gViewY0, gViewX1, gViewY1);
         }
-        if (bCrystalBall)
+        if (bCrystalBall && waloff[4079])
         {
             DoLensEffect();
             viewingRange = viewingrange;
             yxAspect = yxaspect;
             renderSetAspect(65536, 54613);
-            rotatesprite((280+xscalehud)<<16, 35<<16, 53248, 512, 4077, v10, v14, 512+6, gViewX0, gViewY0, gViewX1, gViewY1);
-            rotatesprite((280+xscalehud)<<16, 35<<16, 53248, 0, 1683, v10, 0, 512+35, gViewX0, gViewY0, gViewX1, gViewY1);
+            rotatesprite((280+xscalehud)<<16, 35<<16, 53248, 512, 4077, 0, v14, 512+6, gViewX0, gViewY0, gViewX1, gViewY1);
+            rotatesprite((280+xscalehud)<<16, 35<<16, 53248, 0, 1683, 0, 0, 512+35, gViewX0, gViewY0, gViewX1, gViewY1);
             renderSetAspect(viewingRange, yxAspect);
         }
         
@@ -4805,6 +4833,29 @@ void viewResetCrosshairToDefault(void)
 {
     paletteFreeLookupTable(CROSSHAIR_PAL);
     tileLoad(kCrosshairTile);
+}
+
+void viewSetRenderScale(char bShowRes)
+{
+    if ((gRenderScale <= 1) || (videoGetRenderMode() != REND_CLASSIC))
+    {
+        if (bShowRes)
+            OSD_Printf("Render resolution set to native res\n");
+        return;
+    }
+
+    int nSizeX = ClipRange((gViewX1-gViewX0)/gRenderScale, 8, 640);
+    int nSizeY = ClipRange((gViewY1-gViewY0)/gRenderScale, 8, 640);
+
+    if (waloff[UPSCALEBUFFER]) // for some reason build has a problem when changing the render scale, so we need to skip a single frame before it'll work again
+        gRenderScaleRefresh = 1;
+    if (!waloff[UPSCALEBUFFER])
+        tileAllocTile(UPSCALEBUFFER, 640, 640, 0, 0);
+    walock[UPSCALEBUFFER] = CACHE1D_PERMANENT;
+    tileSetSize(UPSCALEBUFFER, nSizeY, nSizeX);
+
+    if (bShowRes)
+        OSD_Printf("Render resolution set to %dx%d\n", nSizeX, nSizeY);
 }
 
 #define COLOR_RED redcol

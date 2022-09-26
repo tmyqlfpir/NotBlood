@@ -282,7 +282,8 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
 {
     if (powerupCheck(pPlayer, nPowerUp) > 0 && gPowerUpInfo[nPowerUp].pickupOnce)
         return 0;
-    if (!pPlayer->pwUpTime[nPowerUp]) {
+    const int nPwUpTime = pPlayer->pwUpTime[nPowerUp];
+    if (!nPwUpTime) {
         int bonusTime = gPowerUpInfo[nPowerUp].bonusTime;
         if ((nPowerUp == kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if picked up quad damage
             bonusTime = kTicRate*22; // set to 22 seconds
@@ -345,10 +346,13 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
             {
                 if (gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not switch weapon
                 {
-                    if (pPlayer == gMe) // play quad damage ending sfx
-                        sndStartSample("NOTBLOOD0", 128, -1);
-                    else
-                        sfxPlay3DSoundCP(pPlayer->pSprite, 776, -1, 0, 0, 192, "NOTBLOOD0");
+                    if (!nPwUpTime) // play quad damage starting sfx if quad damage is not already active
+                    {
+                        if (pPlayer == gMe)
+                            sndStartSample("NOTBLOOD0", 128, -1);
+                        else
+                            sfxPlay3DSoundCP(pPlayer->pSprite, 776, -1, 0, 0, 192, "NOTBLOOD0");
+                    }
                     return 1;
                 }
                 if ((pPlayer->curWeapon == kWeaponPitchfork) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponSprayCan) || (pPlayer->curWeapon >= kWeaponLifeLeech)) // if weapon doesn't have a akimbo state, don't raise weapon
