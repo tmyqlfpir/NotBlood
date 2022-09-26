@@ -4176,7 +4176,7 @@ void viewDrawScreen(void)
             if (videoGetRenderMode() == REND_CLASSIC)
             {
                 int vr = viewingrange;
-                walock[TILTBUFFER] = 255;
+                walock[TILTBUFFER] = CACHE1D_PERMANENT;
                 if (!waloff[TILTBUFFER])
                 {
                     tileAllocTile(TILTBUFFER, 640, 640, 0, 0);
