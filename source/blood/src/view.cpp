@@ -2451,6 +2451,7 @@ void viewResizeView(int size)
     }
     gGameMessageMgr.maxNumberOfMessagesToDisplay = !VanillaMode() && (gGameOptions.nGameType != kGameTypeSinglePlayer) ? 3 : 4; // set max displayed messages to 3 for multiplayer (reduces on screen clutter)
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
+    viewSetRenderScale(0);
     viewUpdateHudRatio();
     viewUpdatePages();
 }
