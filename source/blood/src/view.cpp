@@ -2451,6 +2451,7 @@ void viewResizeView(int size)
     }
     gGameMessageMgr.maxNumberOfMessagesToDisplay = !VanillaMode() && (gGameOptions.nGameType != kGameTypeSinglePlayer) ? 3 : 4; // set max displayed messages to 3 for multiplayer (reduces on screen clutter)
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
+    viewSetRenderScale(0);
     viewUpdateHudRatio();
     viewUpdatePages();
 }
@@ -4019,6 +4020,8 @@ int gLastPal = 0;
 
 int32_t g_frameRate;
 
+char gRenderScaleRefresh = 0;
+
 void viewDrawScreen(void)
 {
     int nPalette = 0;
@@ -4317,6 +4320,16 @@ RORHACKOTHER:
         else
         {
             othercameraclock = (int)totalclock;
+            if ((gRenderScale > 1) && !gRenderScaleRefresh && (videoGetRenderMode() == REND_CLASSIC))
+            {
+                if (!waloff[UPSCALEBUFFER])
+                    viewSetRenderScale(0);
+                if (waloff[UPSCALEBUFFER])
+                {
+                    renderSetTarget(UPSCALEBUFFER, tilesiz[UPSCALEBUFFER].x, tilesiz[UPSCALEBUFFER].y);
+                    renderSetAspect(viewingRange_fov, yxaspect);
+                }
+            }
         }
 
         if (!bDelirium)
@@ -4459,6 +4472,23 @@ RORHACK:
                 }
             }
 #endif
+        }
+        else if ((gRenderScale > 1) && !gRenderScaleRefresh && (videoGetRenderMode() == REND_CLASSIC))
+        {
+            dassert(waloff[UPSCALEBUFFER] != 0);
+            renderRestoreTarget();
+            tileInvalidate(UPSCALEBUFFER, -1, -1);
+            const int nScale = divscale16(fix16_from_int(320), fix16_from_int(tilesiz[UPSCALEBUFFER].y-1));
+            if (bMirrorScreen) // mirror tilt buffer
+            {
+                videoMirrorTile((uint8_t *)waloff[UPSCALEBUFFER], tilesiz[UPSCALEBUFFER].y, tilesiz[UPSCALEBUFFER].x);
+                bMirrorScreen = 0;
+            }
+            rotatesprite(fix16_from_int(320/2), fix16_from_int(200/2), nScale, kAng90, UPSCALEBUFFER, 0, 0, RS_NOMASK|RS_YFLIP|RS_AUTO|RS_STRETCH, gViewX0, gViewY0, gViewX1, gViewY1);
+        }
+        else if (gRenderScaleRefresh)
+        {
+            gRenderScaleRefresh = 0;
         }
 
         if (bMirrorScreen)
@@ -4804,6 +4834,29 @@ void viewResetCrosshairToDefault(void)
 {
     paletteFreeLookupTable(CROSSHAIR_PAL);
     tileLoad(kCrosshairTile);
+}
+
+void viewSetRenderScale(char bShowRes)
+{
+    if ((gRenderScale <= 1) || (videoGetRenderMode() != REND_CLASSIC))
+    {
+        if (bShowRes)
+            OSD_Printf("Render resolution set to native res\n");
+        return;
+    }
+
+    int nSizeX = ClipRange((gViewX1-gViewX0)/gRenderScale, 8, 640);
+    int nSizeY = ClipRange((gViewY1-gViewY0)/gRenderScale, 8, 640);
+
+    if (waloff[UPSCALEBUFFER]) // for some reason build has a problem when changing the render scale, so we need to skip a single frame before it'll work again
+        gRenderScaleRefresh = 1;
+    if (!waloff[UPSCALEBUFFER])
+        tileAllocTile(UPSCALEBUFFER, 640, 640, 0, 0);
+    walock[UPSCALEBUFFER] = CACHE1D_PERMANENT;
+    tileSetSize(UPSCALEBUFFER, nSizeY, nSizeX);
+
+    if (bShowRes)
+        OSD_Printf("Render resolution set to %dx%d\n", nSizeX, nSizeY);
 }
 
 #define COLOR_RED redcol
