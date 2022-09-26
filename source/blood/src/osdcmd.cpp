@@ -836,6 +836,11 @@ static int osdcmd_cvar_set_game(osdcmdptr_t parm)
             OSD_Printf("Render resolution set to %dx%d\n", xdim, ydim);
         }
     }
+    else if (!Bstrcasecmp(parm->name, "r_renderscale"))
+    {
+        if (in3dmode())
+            viewSetRenderScale(1);
+    }
     else if (!Bstrcasecmp(parm->name, "r_size"))
     {
         //ud.statusbarmode = (ud.screen_size < 8);
@@ -1113,6 +1118,7 @@ int32_t registerosdcommands(void)
         { "r_size", "change size of viewable area", (void *)&gViewSize, CVAR_INT|CVAR_FUNCPTR, 0, 9 },
 //        { "r_rotatespritenowidescreen", "pass bit 1024 to all CON rotatesprite calls", (void *)&g_rotatespriteNoWidescreen, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
         { "r_upscalefactor", "increase performance by rendering at upscalefactor less than the screen resolution and upscale to the full resolution in the software renderer", (void *)&gUpscaleFactor, CVAR_INT|CVAR_FUNCPTR, 1, 16 },
+        { "r_renderscale", "adjust internal rendering resolution by scale while keeping hud elements native to full resolution (only for software renderer)", (void *)&gRenderScale, CVAR_INT|CVAR_FUNCPTR, 1, 32 },
         { "r_precache", "enable/disable the pre-level caching routine", (void *)&useprecache, CVAR_BOOL, 0, 1 },
 //
         { "r_ambientlight", "sets the global map light level",(void *)&r_ambientlight, CVAR_FLOAT|CVAR_FUNCPTR, 0, 10 },

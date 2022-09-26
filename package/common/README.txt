@@ -26,7 +26,7 @@ A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-en
 * Adjustable spawn protection
 * UT99 style multi kill alerts
 
-### Enhancements
+### Enhancements (Optional)
 * Replaced sector based damage logic for player explosions
 * Difficulty based invulnerability timer for player damage
 * Raymarching collision testing for player projectiles
@@ -241,6 +241,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Forcefully draw invisible sprites
 * r_mirrormode
    - Mirror output display: 0: off 1: mirror horizontal 2: mirror vertically 3: mirror horizontal/vertically
+* r_renderscale
+   - Adjust internal rendering resolution by scale while keeping hud elements native to full resolution (only for software renderer)
 * r_rotatespriteinterp
    - Interpolate repeated rotatesprite calls
    - 0: disable
