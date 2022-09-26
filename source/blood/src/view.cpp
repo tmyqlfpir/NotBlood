@@ -4320,15 +4320,15 @@ RORHACKOTHER:
         else
         {
             othercameraclock = (int)totalclock;
-            if ((gRenderScale > 1) && !gRenderScaleRefresh && (videoGetRenderMode() == REND_CLASSIC))
+        }
+        if ((gRenderScale > 1) && !gRenderScaleRefresh && !(v78 || bDelirium) && (videoGetRenderMode() == REND_CLASSIC))
+        {
+            if (!waloff[UPSCALEBUFFER])
+                viewSetRenderScale(0);
+            if (waloff[UPSCALEBUFFER])
             {
-                if (!waloff[UPSCALEBUFFER])
-                    viewSetRenderScale(0);
-                if (waloff[UPSCALEBUFFER])
-                {
-                    renderSetTarget(UPSCALEBUFFER, tilesiz[UPSCALEBUFFER].x, tilesiz[UPSCALEBUFFER].y);
-                    renderSetAspect(viewingRange_fov, yxaspect);
-                }
+                renderSetTarget(UPSCALEBUFFER, tilesiz[UPSCALEBUFFER].x, tilesiz[UPSCALEBUFFER].y);
+                renderSetAspect(viewingRange_fov, yxaspect);
             }
         }
 
