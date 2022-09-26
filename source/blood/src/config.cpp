@@ -389,7 +389,7 @@ void CONFIG_SetDefaults(void)
     //ud.crosshairscale         = 50;
     //ud.default_skill          = 1;
     //ud.democams               = 1;
-    gUpscaleFactor = 0;
+    gUpscaleFactor = 1;
     //ud.display_bonus_screen   = 1;
     //ud.drawweapon             = 1;
     //ud.hudontop               = 0;
