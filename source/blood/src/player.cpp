@@ -1453,7 +1453,7 @@ void PickUp(PLAYER *pPlayer, spritetype *pSprite)
         if (pickedUp && customMsg == -1) {
             const char *pItemText = gItemText[nType - kItemBase];
             if ((nType == kItemTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // replace guns akimbo pickup text
-                pItemText = "Tome Of Quad";
+                pItemText = "Tome of Quad";
             sprintf(buffer, "Picked up %s", pItemText);
         }
     
