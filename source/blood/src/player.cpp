@@ -1451,10 +1451,10 @@ void PickUp(PLAYER *pPlayer, spritetype *pSprite)
     if (nType >= kItemBase && nType <= kItemMax) {
         pickedUp = PickupItem(pPlayer, pSprite);
         if (pickedUp && customMsg == -1) {
+            const char *pItemText = gItemText[nType - kItemBase];
             if ((nType == kItemTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // replace guns akimbo pickup text
-                sprintf(buffer, "Picked up Quad Damage");
-            else
-                sprintf(buffer, "Picked up %s", gItemText[nType - kItemBase]);
+                pItemText = "Tome Of Quad";
+            sprintf(buffer, "Picked up %s", pItemText);
         }
     
     } else if (nType >= kItemAmmoBase && nType < kItemAmmoMax) {
