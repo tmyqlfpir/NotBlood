@@ -83,7 +83,7 @@ void _consoleSysMsg(const char* pMessage, ...);
 
 #define TILTBUFFER 4078
 
-#define UPSCALEBUFFER 30456
+#define DOWNSCALEBUFFER 30456
 
 #define kExplodeMax 8
 

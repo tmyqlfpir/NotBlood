@@ -4323,11 +4323,11 @@ RORHACKOTHER:
         }
         if ((gRenderScale > 1) && !gRenderScaleRefresh && !(v78 || bDelirium) && (videoGetRenderMode() == REND_CLASSIC))
         {
-            if (!waloff[UPSCALEBUFFER])
+            if (!waloff[DOWNSCALEBUFFER])
                 viewSetRenderScale(0);
-            if (waloff[UPSCALEBUFFER])
+            if (waloff[DOWNSCALEBUFFER])
             {
-                renderSetTarget(UPSCALEBUFFER, tilesiz[UPSCALEBUFFER].x, tilesiz[UPSCALEBUFFER].y);
+                renderSetTarget(DOWNSCALEBUFFER, tilesiz[DOWNSCALEBUFFER].x, tilesiz[DOWNSCALEBUFFER].y);
                 renderSetAspect(viewingRange_fov, yxaspect);
             }
         }
@@ -4475,16 +4475,16 @@ RORHACK:
         }
         else if ((gRenderScale > 1) && !gRenderScaleRefresh && (videoGetRenderMode() == REND_CLASSIC))
         {
-            dassert(waloff[UPSCALEBUFFER] != 0);
+            dassert(waloff[DOWNSCALEBUFFER] != 0);
             renderRestoreTarget();
-            tileInvalidate(UPSCALEBUFFER, -1, -1);
-            const int nScale = divscale16(fix16_from_int(320), fix16_from_int(tilesiz[UPSCALEBUFFER].y-1));
+            tileInvalidate(DOWNSCALEBUFFER, -1, -1);
+            const int nScale = divscale16(fix16_from_int(320), fix16_from_int(tilesiz[DOWNSCALEBUFFER].y-1));
             if (bMirrorScreen) // mirror tilt buffer
             {
-                videoMirrorTile((uint8_t *)waloff[UPSCALEBUFFER], tilesiz[UPSCALEBUFFER].y, tilesiz[UPSCALEBUFFER].x);
+                videoMirrorTile((uint8_t *)waloff[DOWNSCALEBUFFER], tilesiz[DOWNSCALEBUFFER].y, tilesiz[DOWNSCALEBUFFER].x);
                 bMirrorScreen = 0;
             }
-            rotatesprite(fix16_from_int(320/2), fix16_from_int(200/2), nScale, kAng90, UPSCALEBUFFER, 0, 0, RS_NOMASK|RS_YFLIP|RS_AUTO|RS_STRETCH, gViewX0, gViewY0, gViewX1, gViewY1);
+            rotatesprite(fix16_from_int(320/2), fix16_from_int(200/2), nScale, kAng90, DOWNSCALEBUFFER, 0, 0, RS_NOMASK|RS_YFLIP|RS_AUTO|RS_STRETCH, gViewX0, gViewY0, gViewX1, gViewY1);
         }
         else if (gRenderScaleRefresh)
         {
@@ -4838,6 +4838,7 @@ void viewResetCrosshairToDefault(void)
 
 void viewSetRenderScale(char bShowRes)
 {
+    const int kMaxDownScale = 480*2;
     if ((gRenderScale <= 1) || (videoGetRenderMode() != REND_CLASSIC))
     {
         if (bShowRes)
@@ -4845,15 +4846,15 @@ void viewSetRenderScale(char bShowRes)
         return;
     }
 
-    int nSizeX = ClipRange((gViewX1-gViewX0)/gRenderScale, 8, 640);
-    int nSizeY = ClipRange((gViewY1-gViewY0)/gRenderScale, 8, 640);
+    int nSizeX = ClipRange((gViewX1-gViewX0+1)/gRenderScale, 8, kMaxDownScale);
+    int nSizeY = ClipRange((gViewY1-gViewY0+1)/gRenderScale, 8, kMaxDownScale);
 
-    if (waloff[UPSCALEBUFFER]) // for some reason build has a problem when changing the render scale, so we need to skip a single frame before it'll work again
+    if (waloff[DOWNSCALEBUFFER]) // for some reason build has a problem when changing the render scale, so we need to skip a single frame before it'll work again
         gRenderScaleRefresh = 1;
-    if (!waloff[UPSCALEBUFFER])
-        tileAllocTile(UPSCALEBUFFER, 640, 640, 0, 0);
-    walock[UPSCALEBUFFER] = CACHE1D_PERMANENT;
-    tileSetSize(UPSCALEBUFFER, nSizeY, nSizeX);
+    if (!waloff[DOWNSCALEBUFFER])
+        tileAllocTile(DOWNSCALEBUFFER, kMaxDownScale, kMaxDownScale, 0, 0);
+    walock[DOWNSCALEBUFFER] = CACHE1D_PERMANENT;
+    tileSetSize(DOWNSCALEBUFFER, nSizeY, nSizeX);
 
     if (bShowRes)
         OSD_Printf("Render resolution set to %dx%d\n", nSizeX, nSizeY);
