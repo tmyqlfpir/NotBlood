@@ -88,7 +88,6 @@ void aiMoveDodge(spritetype *pSprite, XSPRITE *pXSprite);
 void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite);
 void aiSetTarget(XSPRITE *pXSprite, int x, int y, int z);
 void aiSetTarget(XSPRITE *pXSprite, int nTarget);
-bool aiDudeIsDead(int nSprite);
 int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_TYPE nDmgType, int nDamage);
 void aiThinkTarget(spritetype *pSprite, XSPRITE *pXSprite);
 void aiLookForTarget(spritetype *pSprite, XSPRITE *pXSprite);

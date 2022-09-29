@@ -904,16 +904,18 @@ void aiSetTarget(XSPRITE *pXSprite, int nTarget)
     }
 }
 
-bool aiDudeIsDead(int nSprite)
+char aiDudeIsDead(int nSprite)
 {
     if (!spriRangeIsFine(nSprite))
-        return false;
+        return 0;
     spritetype *pSprite = &sprite[nSprite];
-    if ((pSprite->extra < 0) || (pSprite->extra >= kMaxXSprites))
-        return false;
+    if (!xspriRangeIsFine(pSprite->extra))
+        return 0;
     if ((pSprite->inittype < kDudeBase) || (pSprite->inittype >= kDudeMax))
-        return false;
-    return (IsDudeSprite(pSprite) && (xsprite[pSprite->extra].health == 0)) || !IsDudeSprite(pSprite);
+        return 0;
+    if (!IsDudeSprite(pSprite))
+        return 1;
+    return (pSprite->statnum != kStatDude) || (xsprite[pSprite->extra].health == 0);
 }
 
 int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_TYPE nDmgType, int nDamage)
@@ -927,11 +929,11 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
     int nSprite = pXSprite->reference;
     if (nSource >= 0) {
         spritetype *pSource = &sprite[nSource];
-        const bool bTargetIsAlive = !aiDudeIsDead(nSource);
+        const char bTargetIsAlive = !EnemiesNotBlood() || !aiDudeIsDead(nSource); // if target is dude and dude is not dead
         if (pSprite == pSource) return 0;
         else if (pXSprite->target == -1) // if no target, give the dude a target
         {
-            if ((bTargetIsAlive && EnemiesNotBlood() && !VanillaMode()) || (!EnemiesNotBlood() || VanillaMode())) // if target is dude and dude is not dead, set target
+            if (bTargetIsAlive || VanillaMode())
                 aiSetTarget(pXSprite, nSource);
             aiActivateDude(pSprite, pXSprite);
         }
@@ -945,7 +947,7 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
 
             if (Chance(nThresh))
             {
-                if ((bTargetIsAlive && EnemiesNotBlood() && !VanillaMode()) || (!EnemiesNotBlood() || VanillaMode())) // if target is dude and dude is not dead, set target
+                if (bTargetIsAlive || VanillaMode())
                     aiSetTarget(pXSprite, nSource);
                 aiActivateDude(pSprite, pXSprite);
             }
