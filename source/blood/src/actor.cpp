@@ -2862,6 +2862,8 @@ spritetype *actSpawnFloor(spritetype *pSprite)
 
 spritetype *actDropAmmo(spritetype *pSprite, int nType)
 {
+    if (dbIsBannedSpriteType(nType))
+        return NULL;
     spritetype *pSprite2 = NULL;
     if (pSprite && pSprite->statnum < kMaxStatus && nType >= kItemAmmoBase && nType < kItemAmmoMax)
     {
@@ -2878,6 +2880,8 @@ spritetype *actDropAmmo(spritetype *pSprite, int nType)
 
 spritetype *actDropWeapon(spritetype *pSprite, int nType)
 {
+    if (dbIsBannedSpriteType(nType))
+        return NULL;
     spritetype *pSprite2 = NULL;
     if (pSprite && pSprite->statnum < kMaxStatus && nType >= kItemWeaponBase && nType < kItemWeaponMax)
     {
@@ -2894,6 +2898,8 @@ spritetype *actDropWeapon(spritetype *pSprite, int nType)
 
 spritetype *actDropItem(spritetype *pSprite, int nType)
 {
+    if (dbIsBannedSpriteType(nType))
+        return NULL;
     spritetype *pSprite2 = NULL;
     if (pSprite && pSprite->statnum < kMaxStatus && nType >= kItemBase && nType < kItemMax)
     {

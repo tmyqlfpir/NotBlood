@@ -87,7 +87,7 @@ GAMEOPTIONS gSingleGameOptions = {
     1,     // char nKeySettings;
     0,     // char nSpawnProtection;
     0,     // char nSpawnWeapon;
-    0,     // unsigned char uMonsterBannedType;
+    0,     // unsigned short uSpriteBannedFlags;
     "",    // char szUserMap[BMAX_PATH];
 };
 
