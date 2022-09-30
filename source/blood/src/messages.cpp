@@ -316,7 +316,7 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     gGameOptions.bPitchforkOnly = false;
-    gGameOptions.uMonsterBannedType = BANNED_NONE;
+    gGameOptions.uSpriteBannedFlags = BANNED_NONE;
     playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
     StartLevel(&gGameOptions);
     for (int i = 0; i < kMaxPlayers; i++) // set to 1.21 defaults so demo playback syncs
