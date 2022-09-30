@@ -32,7 +32,7 @@ extern bool gModernMap;
 
 
 
-// by NoOne: functions to quckly check range of specifical arrays
+// by NoOne: functions to quickly check range of specific arrays
 inline bool xspriRangeIsFine(int nXindex) {
     return (nXindex > 0 && nXindex < kMaxXSprites);
 }
@@ -371,7 +371,8 @@ void dbXWallClean(void);
 void dbXSectorClean(void);
 void dbInit(void);
 void PropagateMarkerReferences(void);
-char dbIsBannedDude(spritetype *pSprite, XSPRITE* pXSprite);
+char dbIsBannedSpriteType(int nType);
+char dbIsBannedSprite(spritetype *pSprite, XSPRITE* pXSprite);
 void dbRandomizerMode(spritetype *pSprite);
 void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite);
 unsigned int dbReadMapCRC(const char *pPath);

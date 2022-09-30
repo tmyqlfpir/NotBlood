@@ -74,7 +74,6 @@ struct PKT_STARTGAME {
     short version;
     char gameType, difficulty, monsterSettings, weaponSettings, itemSettings, respawnSettings, keySettings, randomizerMode;
     char episodeId, levelId;
-    int unk;
     char userMap, userMapName[BMAX_PATH];
     bool bQuadDamagePowerup;
     bool bDamageInvul;
@@ -89,6 +88,7 @@ struct PKT_STARTGAME {
     char nSpawnProtection;
     char nSpawnWeapon;
     char szRandomizerSeed[9];
+    unsigned int uSpriteBannedFlags;
 };
 
 extern PKT_STARTGAME gPacketStartGame;
