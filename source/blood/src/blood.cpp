@@ -707,7 +707,9 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     for (int i = 0; i < kMaxSprites; i++)
     {
         spritetype *pSprite = &sprite[i];
-        XSPRITE *pXSprite = xspriRangeIsFine(pSprite->extra) ? &xsprite[pSprite->extra] : NULL;
+        XSPRITE *pXSprite = NULL;
+        if (xspriRangeIsFine(pSprite->extra))
+            pXSprite = &xsprite[pSprite->extra];
         if (pSprite->statnum < kMaxStatus && pSprite->extra > 0) {
             
             if ((pXSprite->lSkill & (1 << gameOptions->nEnemyQuantity)) || (pXSprite->lS && gameOptions->nGameType == kGameTypeSinglePlayer)

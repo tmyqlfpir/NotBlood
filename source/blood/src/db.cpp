@@ -1124,6 +1124,10 @@ void dbRandomizerMode(spritetype *pSprite)
     }
     if (gGameOptions.nRandomizerMode >= 2) // if pickups or enemies+pickups mode, randomize pickup
     {
+        const int nPicnumOrig = pSprite->picnum;
+        int nTopOrig, nBottomOrig;
+        GetSpriteExtents(pSprite, &nTopOrig, &nBottomOrig);
+
         switch (pSprite->type)
         {
         case kItemWeaponFlarePistol:
@@ -1349,6 +1353,14 @@ void dbRandomizerMode(spritetype *pSprite)
         }
         default:
             break;
+        }
+
+        if (pSprite->picnum != nPicnumOrig) // if changed sprite type and picnum, readjust position
+        {
+            int top, bottom;
+            GetSpriteExtents(pSprite, &top, &bottom);
+            if (bottom >= nBottomOrig)
+                pSprite->z -= bottom - nBottomOrig;
         }
     }
 }
