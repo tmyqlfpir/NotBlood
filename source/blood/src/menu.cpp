@@ -2497,7 +2497,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
     playerSetSkill(itemCustomDifficultyPlayerDamage.nValue);
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
-    gGameOptions.uSpriteBannedFlags = SetBannedSprites(0);
+    gGameOptions.uSpriteBannedFlags = SetBannedSprites(1);
     gGameOptions.nLevel = 0;
     if (!gVanilla) // don't reset gameflags for vanilla mode
         gGameOptions.uGameFlags = kGameFlagNone;
@@ -3581,7 +3581,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     Bstrncpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
     if (gPacketStartGame.szRandomizerSeed[0] == '\0') // if no seed entered, generate new one before sending packet
         sprintf(gPacketStartGame.szRandomizerSeed, "%08X", QRandom2(gGameMenuMgr.m_mousepos.x*gGameMenuMgr.m_mousepos.y));
-    gPacketStartGame.uSpriteBannedFlags = SetBannedSprites(1);
+    gPacketStartGame.uSpriteBannedFlags = SetBannedSprites(0);
     ////
     Bstrncpy(gPacketStartGame.userMapName, zUserMapName, sizeof(zUserMapName));
     gPacketStartGame.userMap = gPacketStartGame.userMapName[0] != 0;
