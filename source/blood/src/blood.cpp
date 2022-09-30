@@ -707,10 +707,9 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     for (int i = 0; i < kMaxSprites; i++)
     {
         spritetype *pSprite = &sprite[i];
-        XSPRITE *pXSprite = NULL;
+        XSPRITE *pXSprite = xspriRangeIsFine(pSprite->extra) ? &xsprite[pSprite->extra] : NULL;
         if (pSprite->statnum < kMaxStatus && pSprite->extra > 0) {
             
-            pXSprite = &xsprite[pSprite->extra];
             if ((pXSprite->lSkill & (1 << gameOptions->nEnemyQuantity)) || (pXSprite->lS && gameOptions->nGameType == kGameTypeSinglePlayer)
                 || (pXSprite->lB && gameOptions->nGameType == kGameTypeBloodBath) || (pXSprite->lT && gameOptions->nGameType == kGameTypeTeams)
                 || (pXSprite->lC && gameOptions->nGameType == kGameTypeCoop)) {
@@ -730,7 +729,6 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         }
         if (!VanillaMode() && (pSprite->statnum >= 0) && (pSprite->statnum < kMaxStatus)) // randomize sprites and replace guns akimbo with quad damage icon
         {
-            pXSprite = (pSprite->extra > 0) && (pSprite->extra < kMaxXSprites) ? &xsprite[pSprite->extra] : NULL;
             const bool bRandomEnemy = (gGameOptions.nRandomizerMode & 1) && IsDudeSprite(pSprite) && !IsPlayerSprite(pSprite); // if randomizer is set to enemies or enemies+weapons mode and sprite is a dude
             const bool bRandomItem = gGameOptions.nRandomizerMode > 0;
             if (bRandomEnemy) // if randomizer enemy, randomize non-player enemy
