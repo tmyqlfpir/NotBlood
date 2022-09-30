@@ -598,7 +598,7 @@ bool LoadSavedInCurrentSession(int nSlot)
         return false;
     if (gSaveGameOptions[nSlot].bPitchforkOnly != gGameOptions.bPitchforkOnly)
         return false;
-    if (gSaveGameOptions[nSlot].uMonsterBannedType != gGameOptions.uMonsterBannedType)
+    if (gSaveGameOptions[nSlot].uSpriteBannedFlags != gGameOptions.uSpriteBannedFlags)
         return false;
     if (gSaveGameOptions[nSlot].nRandomizerCheat != gGameOptions.nRandomizerCheat)
         return false;
@@ -621,7 +621,7 @@ void LoadUpdateSaveGame(int nSlot, int nSkill)
         nDifficulty = 5;
     else if (gSaveGameOptions[nSlot].bPitchforkOnly)
         nDifficulty = 5;
-    else if (gSaveGameOptions[nSlot].uMonsterBannedType)
+    else if (gSaveGameOptions[nSlot].uSpriteBannedFlags)
         nDifficulty = 5;
     restoreGameDifficulty[gSaveGameOptions[nSlot].nSaveGameSlot] = nDifficulty;
 }

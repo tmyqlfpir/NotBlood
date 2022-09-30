@@ -195,7 +195,7 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.nKeySettings = 0;
     gameOptions.nSpawnProtection = 0;
     gameOptions.nSpawnWeapon = 0;
-    gameOptions.uMonsterBannedType = BANNED_NONE;
+    gameOptions.uSpriteBannedFlags = BANNED_NONE;
 }
 
 void WriteGameOptionsLegacy(GAMEOPTIONSLEGACY &gameOptionsLegacy, GAMEOPTIONS &gameOptions)

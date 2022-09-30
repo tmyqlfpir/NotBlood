@@ -85,7 +85,7 @@ void CEndGameMgr::ProcessKeys(void)
 {
     //if (dword_28E3D4 == 1)
     //{
-    //    if (gGameOptions.gameType >= 0 || numplayers > 1)
+    //    if (gGameOptions.gameType != kGameTypeSinglePlayer || numplayers > 1)
     //        netWaitForEveryone(0);
     //    Finish();
     //}
