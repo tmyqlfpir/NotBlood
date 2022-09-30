@@ -292,6 +292,8 @@ CGameMenu menuNetStart;
 CGameMenu menuEpisode;
 CGameMenu menuDifficulty;
 CGameMenu menuCustomDifficulty;
+CGameMenu menuBannedMonsters;
+CGameMenu menuBannedItems;
 CGameMenu menuControls;
 CGameMenu menuMessages;
 CGameMenu menuSaveGame;
@@ -350,19 +352,44 @@ CGameMenuItemChain itemDifficultyCustom("< CUSTOM >", 1, 0, 155, 320, 1, &menuCu
 
 CGameMenuItemTitle itemCustomDifficultyTitle("CUSTOM", 1, 160, 20, 2038);
 CGameMenuItemSlider itemCustomDifficultyEnemyQuantity("ENEMIES QUANTITY:", 3, 66, 40, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 50, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemSlider itemCustomDifficultyPlayerDamage("PLAYER DAMAGE TAKEN:", 3, 66, 70, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 80, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemCustomDifficultyMonsterBanBats("BATS:", 3, 75, 93, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanRats("RATS:", 3, 75, 101, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanFish("FISH:", 3, 75, 109, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHands("HANDS:", 3, 75, 117, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanGhosts("GHOSTS:", 3, 75, 125, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanSpiders("SPIDERS:", 3, 75, 133, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanTinyCaleb("TINY CALEBS:", 3, 75, 141, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemCustomDifficultyMonsterBanHellHounds("HELL HOUNDS:", 3, 75, 149, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 161, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
+CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 51, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 62, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemSlider itemCustomDifficultyPlayerDamage("PLAYER DAMAGE TAKEN:", 3, 66, 73, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 84, 180, false, NULL, NULL, NULL);
+CGameMenuItemChain itemCustomDifficultyBannedMonsters("SET MONSTERS", 3, 66, 100, 180, 1, &menuBannedMonsters, -1, NULL, 0);
+CGameMenuItemChain itemCustomDifficultyBannedItems("SET ITEMS", 3, 66, 111, 180, 1, &menuBannedItems, -1, NULL, 0);
+CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 150, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
+
+CGameMenuItemTitle itemBannedMonstersTitle("SET MONSTERS", 1, 160, 20, 2038);
+CGameMenuItemZBool itemBannedMonstersBats("BATS:", 3, 75, 40, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedMonstersRats("RATS:", 3, 75, 48, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedMonstersFish("FISH:", 3, 75, 56, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedMonstersHands("HANDS:", 3, 75, 64, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedMonstersGhosts("GHOSTS:", 3, 75, 72, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedMonstersSpiders("SPIDERS:", 3, 75, 80, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedMonstersTinyCaleb("TINY CALEBS:", 3, 75, 88, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedMonstersHellHounds("HELL HOUNDS:", 3, 75, 96, 161, false, NULL, "REMOVE", "KEEP");
+
+CGameMenuItemTitle itemBannedItemsTitle("SET ITEMS", 1, 160, 20, 2038);
+CGameMenuItemZBool itemBannedItemsFlare("FLARE PISTOL:", 3, 75, 36, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsShotgun("SAWED-OFF:", 3, 75, 44, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsTommyGun("TOMMY GUN:", 3, 75, 52, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsNapalm("NAPALM LAUNCHER:", 3, 75, 60, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsTNT("DYNAMITE:", 3, 75, 68, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsSpray("SPRAY CAN:", 3, 75, 76, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsTesla("TESLA CANNON:", 3, 75, 84, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsLifeLeech("LIFE LEECH:", 3, 75, 92, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsVoodoo("VOODOO DOLL:", 3, 75, 100, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsProxy("PROXIMITY TNT:", 3, 75, 108, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsRemote("REMOTE TNT:", 3, 75, 116, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsMedKit("DOCTOR'S BAG:", 3, 75, 132, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsLifeSeed("LIFE SEED:", 3, 75, 140, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsSuperArmor("SUPER ARMOR:", 3, 75, 148, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsJumpBoots("JUMP BOOTS:", 3, 75, 156, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsCloak("INVISIBILITY CLOAK:", 3, 75, 164, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsDeathMask("INVULNERABILITY MASK:", 3, 75, 172, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsAkimbo("GUNS AKIMBO:", 3, 75, 180, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsReflect("REFLECTIVE SHOTS:", 3, 75, 188, 161, false, NULL, "REMOVE", "KEEP");
 
 CGameMenuItemTitle itemMessagesTitle("MESSAGES", 1, 160, 20, 2038);
 CGameMenuItemZBool boolMessages("MESSAGES:", 3, 66, 70, 180, 0, SetMessages, NULL, NULL);
@@ -425,17 +452,18 @@ CGameMenuItemChain itemNetStart13("ENHANCEMENTS", 3, 66, 160, 320, 0, &menuNetwo
 CGameMenuItemChain itemNetStart14("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
 
 ///////////////
-CGameMenuItemZBool itemNetEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 55, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
-CGameMenuItemZCycle itemNetEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
-CGameMenuItemZBool itemNetEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 85, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
-CGameMenuItemZBool itemNetEnhancementBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 95, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 105, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
-CGameMenuItemZBool itemNetEnhancementSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 115, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
-CGameMenuItemZBool itemNetEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 125, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 135, 180, 0, NULL, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
-CGameMenuItemZEdit itemNetEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 145, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
+CGameMenuItemChain itemNetEnhancementBannedItems("SET ITEMS", 3, 0, 40, 320, 1, &menuBannedItems, -1, NULL, 0);
+CGameMenuItemZBool itemNetEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 55, 180, false, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 65, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 75, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
+CGameMenuItemZCycle itemNetEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 85, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
+CGameMenuItemZBool itemNetEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemNetEnhancementBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
+CGameMenuItemZBool itemNetEnhancementSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 125, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemNetEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 135, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 145, 180, 0, NULL, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
+CGameMenuItemZEdit itemNetEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 155, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
 CGameMenuItemText itemLoadingText("LOADING...", 1, 160, 100, 1);
@@ -1053,26 +1081,50 @@ void SetupDifficultyMenu(void)
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyDifficulty, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyPlayerDamage, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyPitchfork, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanBats, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanRats, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanFish, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanHands, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanGhosts, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanSpiders, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanTinyCaleb, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyMonsterBanHellHounds, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyBannedMonsters, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyBannedItems, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyStart, false);
     menuCustomDifficulty.Add(&itemBloodQAV, false);
-    itemCustomDifficultyEnemyQuantity.tooltip_pzTextUpper = "";
-    itemCustomDifficultyEnemyQuantity.tooltip_pzTextLower = "Set how many enemies will spawn in the level";
-    itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "";
-    itemCustomDifficultyEnemyHealth.tooltip_pzTextLower = "Set enemy's starting health";
-    itemCustomDifficultyEnemyDifficulty.tooltip_pzTextUpper = "";
-    itemCustomDifficultyEnemyDifficulty.tooltip_pzTextLower = "Set enemy's behavior difficulty";
-    itemCustomDifficultyPlayerDamage.tooltip_pzTextUpper = "";
-    itemCustomDifficultyPlayerDamage.tooltip_pzTextLower = "Set player's damage taken scale";
-    itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "";
-    itemCustomDifficultyPitchfork.tooltip_pzTextLower = "Player will lose all items on new level";
+    itemCustomDifficultyEnemyQuantity.tooltip_pzTextUpper = "Set how many enemies will spawn in the level";
+    itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "Set enemy's starting health";
+    itemCustomDifficultyEnemyDifficulty.tooltip_pzTextUpper = "Set enemy's behavior difficulty";
+    itemCustomDifficultyPlayerDamage.tooltip_pzTextUpper = "Set player's damage taken scale";
+    itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "Player will lose all items on new level";
+    itemCustomDifficultyBannedMonsters.tooltip_pzTextUpper = "Set which monsters to spawn";
+    itemCustomDifficultyBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
+
+    menuBannedMonsters.Add(&itemBannedMonstersTitle, false);
+    menuBannedMonsters.Add(&itemBannedMonstersBats, true);
+    menuBannedMonsters.Add(&itemBannedMonstersRats, false);
+    menuBannedMonsters.Add(&itemBannedMonstersFish, false);
+    menuBannedMonsters.Add(&itemBannedMonstersHands, false);
+    menuBannedMonsters.Add(&itemBannedMonstersGhosts, false);
+    menuBannedMonsters.Add(&itemBannedMonstersSpiders, false);
+    menuBannedMonsters.Add(&itemBannedMonstersTinyCaleb, false);
+    menuBannedMonsters.Add(&itemBannedMonstersHellHounds, false);
+    menuBannedMonsters.Add(&itemBloodQAV, false);
+
+    menuBannedItems.Add(&itemBannedItemsTitle, false);
+    menuBannedItems.Add(&itemBannedItemsFlare, true);
+    menuBannedItems.Add(&itemBannedItemsShotgun, false);
+    menuBannedItems.Add(&itemBannedItemsTommyGun, false);
+    menuBannedItems.Add(&itemBannedItemsNapalm, false);
+    menuBannedItems.Add(&itemBannedItemsTNT, false);
+    menuBannedItems.Add(&itemBannedItemsSpray, false);
+    menuBannedItems.Add(&itemBannedItemsTesla, false);
+    menuBannedItems.Add(&itemBannedItemsLifeLeech, false);
+    menuBannedItems.Add(&itemBannedItemsVoodoo, false);
+    menuBannedItems.Add(&itemBannedItemsProxy, false);
+    menuBannedItems.Add(&itemBannedItemsRemote, false);
+    menuBannedItems.Add(&itemBannedItemsMedKit, false);
+    menuBannedItems.Add(&itemBannedItemsLifeSeed, false);
+    menuBannedItems.Add(&itemBannedItemsSuperArmor, false);
+    menuBannedItems.Add(&itemBannedItemsJumpBoots, false);
+    menuBannedItems.Add(&itemBannedItemsCloak, false);
+    menuBannedItems.Add(&itemBannedItemsDeathMask, false);
+    menuBannedItems.Add(&itemBannedItemsAkimbo, false);
+    menuBannedItems.Add(&itemBannedItemsReflect, false);
+    menuBannedItems.Add(&itemBloodQAV, false);
 }
 
 void SetupEpisodeMenu(void)
@@ -1211,7 +1263,8 @@ void SetupNetStartMenu(void)
 
     //////////////////////
     menuNetworkGameEnhancements.Add(&itemGameEnhancementsTitle, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolQuadDamagePowerup, true);
+    menuNetworkGameEnhancements.Add(&itemNetEnhancementBannedItems, true);
+    menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolQuadDamagePowerup, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolDamageInvul, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementExplosionBehavior, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementProjectileBehavior, false);
@@ -1223,6 +1276,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerMode, false);
     menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerSeed, false);
     menuNetworkGameEnhancements.Add(&itemBloodQAV, false);
+    itemNetEnhancementBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
     itemNetEnhancementBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
     itemNetEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
     itemNetEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
@@ -2327,6 +2381,78 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem)
     viewResizeView(gViewSize);
 }
 
+inline unsigned int SetBannedSprites(char bSinglePlayer)
+{
+    unsigned int uSpriteBannedFlags = BANNED_NONE;
+
+    if (bSinglePlayer)
+    {
+        // monsters
+        if (itemBannedMonstersBats.at20)
+            uSpriteBannedFlags |= BANNED_BATS;
+        if (itemBannedMonstersRats.at20)
+            uSpriteBannedFlags |= BANNED_RATS;
+        if (itemBannedMonstersFish.at20)
+            uSpriteBannedFlags |= BANNED_FISH;
+        if (itemBannedMonstersHands.at20)
+            uSpriteBannedFlags |= BANNED_HANDS;
+        if (itemBannedMonstersGhosts.at20)
+            uSpriteBannedFlags |= BANNED_GHOSTS;
+        if (itemBannedMonstersSpiders.at20)
+            uSpriteBannedFlags |= BANNED_SPIDERS;
+        if (itemBannedMonstersTinyCaleb.at20)
+            uSpriteBannedFlags |= BANNED_TCALEBS;
+        if (itemBannedMonstersHellHounds.at20)
+            uSpriteBannedFlags |= BANNED_HHOUNDS;
+    }
+
+    // weapons
+    if (itemBannedItemsFlare.at20)
+        uSpriteBannedFlags |= BANNED_FLARE;
+    if (itemBannedItemsShotgun.at20)
+        uSpriteBannedFlags |= BANNED_SHOTGUN;
+    if (itemBannedItemsTommyGun.at20)
+        uSpriteBannedFlags |= BANNED_TOMMYGUN;
+    if (itemBannedItemsNapalm.at20)
+        uSpriteBannedFlags |= BANNED_NAPALM;
+    if (itemBannedItemsTNT.at20)
+        uSpriteBannedFlags |= BANNED_TNT;
+    if (itemBannedItemsSpray.at20)
+        uSpriteBannedFlags |= BANNED_SPRAYCAN;
+    if (itemBannedItemsTesla.at20)
+        uSpriteBannedFlags |= BANNED_TESLA;
+    if (itemBannedItemsLifeLeech.at20)
+        uSpriteBannedFlags |= BANNED_LIFELEECH;
+    if (itemBannedItemsVoodoo.at20)
+        uSpriteBannedFlags |= BANNED_VOODOO;
+    if (itemBannedItemsProxy.at20)
+        uSpriteBannedFlags |= BANNED_PROXY;
+    if (itemBannedItemsRemote.at20)
+        uSpriteBannedFlags |= BANNED_REMOTE;
+
+    // items
+    if (itemBannedItemsMedKit.at20)
+        uSpriteBannedFlags |= BANNED_MEDKIT;
+    if (itemBannedItemsLifeSeed.at20)
+        uSpriteBannedFlags |= BANNED_LIFESEED;
+    if (itemBannedItemsSuperArmor.at20)
+        uSpriteBannedFlags |= BANNED_SUPERARMOR;
+
+    // powerups
+    if (itemBannedItemsJumpBoots.at20)
+        uSpriteBannedFlags |= BANNED_JUMPBOOTS;
+    if (itemBannedItemsCloak.at20)
+        uSpriteBannedFlags |= BANNED_CLOAK;
+    if (itemBannedItemsDeathMask.at20)
+        uSpriteBannedFlags |= BANNED_DEATHMASK;
+    if (itemBannedItemsAkimbo.at20)
+        uSpriteBannedFlags |= BANNED_AKIMBO;
+    if (itemBannedItemsReflect.at20)
+        uSpriteBannedFlags |= BANNED_REFLECT;
+
+    return uSpriteBannedFlags;
+}
+
 short gQuickLoadSlot = kLoadSaveNull;
 
 void ShowDifficulties()
@@ -2341,7 +2467,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
     gGameOptions.bPitchforkOnly = false;
-    gGameOptions.uMonsterBannedType = BANNED_NONE;
+    gGameOptions.uSpriteBannedFlags = BANNED_NONE;
     gGameOptions.nLevel = 0;
     if (!gVanilla) // don't reset gameflags for vanilla mode
         gGameOptions.uGameFlags = kGameFlagNone;
@@ -2371,23 +2497,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
     playerSetSkill(itemCustomDifficultyPlayerDamage.nValue);
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
-    gGameOptions.uMonsterBannedType = BANNED_NONE;
-    if (itemCustomDifficultyMonsterBanBats.at20)
-        gGameOptions.uMonsterBannedType |= BANNED_BATS;
-    if (itemCustomDifficultyMonsterBanRats.at20)
-        gGameOptions.uMonsterBannedType |= BANNED_RATS;
-    if (itemCustomDifficultyMonsterBanFish.at20)
-        gGameOptions.uMonsterBannedType |= BANNED_FISH;
-    if (itemCustomDifficultyMonsterBanHands.at20)
-        gGameOptions.uMonsterBannedType |= BANNED_HANDS;
-    if (itemCustomDifficultyMonsterBanGhosts.at20)
-        gGameOptions.uMonsterBannedType |= BANNED_GHOSTS;
-    if (itemCustomDifficultyMonsterBanSpiders.at20)
-        gGameOptions.uMonsterBannedType |= BANNED_SPIDERS;
-    if (itemCustomDifficultyMonsterBanTinyCaleb.at20)
-        gGameOptions.uMonsterBannedType |= BANNED_TCALEBS;
-    if (itemCustomDifficultyMonsterBanHellHounds.at20)
-        gGameOptions.uMonsterBannedType |= BANNED_HHOUNDS;
+    gGameOptions.uSpriteBannedFlags = SetBannedSprites(0);
     gGameOptions.nLevel = 0;
     if (!gVanilla) // don't reset gameflags for vanilla mode
         gGameOptions.uGameFlags = kGameFlagNone;
@@ -3443,8 +3553,8 @@ void StartNetGame(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
     gPacketStartGame.gameType = itemNetStart1.m_nFocus+1;
-    if (gPacketStartGame.gameType == 0)
-        gPacketStartGame.gameType = 2;
+    if (gPacketStartGame.gameType == kGameTypeSinglePlayer)
+        gPacketStartGame.gameType = kGameTypeBloodBath;
     gPacketStartGame.episodeId = itemNetStart2.m_nFocus;
     gPacketStartGame.levelId = itemNetStart3.m_nFocus;
     gPacketStartGame.difficulty = itemNetStart4.m_nFocus;
@@ -3471,8 +3581,8 @@ void StartNetGame(CGameMenuItemChain *pItem)
     Bstrncpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
     if (gPacketStartGame.szRandomizerSeed[0] == '\0') // if no seed entered, generate new one before sending packet
         sprintf(gPacketStartGame.szRandomizerSeed, "%08X", QRandom2(gGameMenuMgr.m_mousepos.x*gGameMenuMgr.m_mousepos.y));
+    gPacketStartGame.uSpriteBannedFlags = SetBannedSprites(1);
     ////
-    gPacketStartGame.unk = 0;
     Bstrncpy(gPacketStartGame.userMapName, zUserMapName, sizeof(zUserMapName));
     gPacketStartGame.userMap = gPacketStartGame.userMapName[0] != 0;
 

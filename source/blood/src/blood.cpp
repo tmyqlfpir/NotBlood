@@ -671,7 +671,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
         gGameOptions.bPitchforkOnly = false;
-        gGameOptions.uMonsterBannedType = BANNED_NONE;
+        gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////
     }
     if (gGameOptions.nGameType != kGameTypeSinglePlayer)
@@ -728,7 +728,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             }
             #endif
         }
-        if (!VanillaMode() && (sprite[i].statnum >= 0) && (sprite[i].statnum < kMaxStatus)) // randomize sprites and replace guns akimbo with quad damage icon
+        if (!VanillaMode() && (pSprite->statnum >= 0) && (pSprite->statnum < kMaxStatus)) // randomize sprites and replace guns akimbo with quad damage icon
         {
             pXSprite = (pSprite->extra > 0) && (pSprite->extra < kMaxXSprites) ? &xsprite[pSprite->extra] : NULL;
             const bool bRandomEnemy = (gGameOptions.nRandomizerMode & 1) && IsDudeSprite(pSprite) && !IsPlayerSprite(pSprite); // if randomizer is set to enemies or enemies+weapons mode and sprite is a dude
@@ -744,7 +744,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             if (gGameOptions.bQuadDamagePowerup && (pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && (pSprite->type == kItemTwoGuns)) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
                 pSprite->picnum = 30463;
         }
-        if (dbIsBannedDude(pSprite, pXSprite)) // if dude is banned type, deleted dude
+        if (dbIsBannedSprite(pSprite, pXSprite)) // if sprite is banned type, remove sprite
         {
             DeleteSprite(i);
             continue;
@@ -906,7 +906,7 @@ void StartNetworkLevel(void)
         gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
         gGameOptions.bPitchforkOnly = false;
-        gGameOptions.uMonsterBannedType = BANNED_NONE;
+        gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////
     }
     StartLevel(&gGameOptions);
@@ -1460,8 +1460,8 @@ void ParseOptions(void)
         //    byte_148ef0[12] = 0;
         //    bQuickStart = 1;
         //    byte_148eeb = 1;
-        //    if (gGameOptions.gameType == 0)
-        //        gGameOptions.gameType = 2;
+        //    if (gGameOptions.gameType == kGameTypeSinglePlayer)
+        //        gGameOptions.gameType = kGameTypeBloodBath;
         //    break;
         case 25:
             bNoDemo = 1;

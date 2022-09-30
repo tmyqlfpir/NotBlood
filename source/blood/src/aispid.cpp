@@ -183,7 +183,7 @@ static void SpidBirthSeqCallback(int, int nXSprite)
         if (pSpawn) {
             if (gGameOptions.nRandomizerMode && !VanillaMode())
                 dbRandomizerMode(pSpawn);
-            if (dbIsBannedDude(pSpawn, NULL)) { // if spawned sprite is banned, remove sprite
+            if (dbIsBannedSprite(pSpawn, NULL)) { // if spawned sprite is banned, remove sprite
                 evKill(pSpawn->index, 3);
                 if (sprite[pSpawn->index].extra > 0)
                     seqKill(3, sprite[pSpawn->index].extra);
