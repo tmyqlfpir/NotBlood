@@ -478,7 +478,7 @@ void CONFIG_SetDefaults(void)
     gbAdultContent = 0;
     gzAdultPassword[0] = '\0';
     gStereo = 1;
-    gShowPlayerNames = 0;
+    gShowPlayerNames = 1;
     gShowWeapon = 2;
 
     gMouseAimingFlipped = 0;
