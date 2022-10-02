@@ -122,44 +122,43 @@ struct EPISODEINFO
 
 // BANNED SPRITE TYPE FLAGS /////////////////////////////////////
 enum {
-    BANNED_NONE       =  0,
+    BANNED_NONE        =  0,
 
     // monsters
-    BANNED_BATS       =  1 <<  0,
-    BANNED_RATS       =  1 <<  1,
-    BANNED_FISH       =  1 <<  2,
-    BANNED_HANDS      =  1 <<  3,
-    BANNED_GHOSTS     =  1 <<  4,
-    BANNED_SPIDERS    =  1 <<  5,
-    BANNED_TCALEBS    =  1 <<  6,
-    BANNED_HHOUNDS    =  1 <<  7,
+    BANNED_BATS        =  1 <<  0,
+    BANNED_RATS        =  1 <<  1,
+    BANNED_FISH        =  1 <<  2,
+    BANNED_HANDS       =  1 <<  3,
+    BANNED_GHOSTS      =  1 <<  4,
+    BANNED_SPIDERS     =  1 <<  5,
+    BANNED_TCALEBS     =  1 <<  6,
+    BANNED_HHOUNDS     =  1 <<  7,
 
     // weapons
-    BANNED_FLARE      =  1 <<  8,
-    BANNED_SHOTGUN    =  1 <<  9,
-    BANNED_TOMMYGUN   =  1 << 10,
-    BANNED_NAPALM     =  1 << 11,
-    BANNED_TNT        =  1 << 12,
-    BANNED_SPRAYCAN   =  1 << 13,
-    BANNED_TESLA      =  1 << 14,
-    BANNED_LIFELEECH  =  1 << 15,
-    BANNED_VOODOO     =  1 << 16,
-    BANNED_PROXY      =  1 << 17,
-    BANNED_REMOTE     =  1 << 18,
+    BANNED_FLARE       =  1 << 12,
+    BANNED_SHOTGUN     =  1 << 13,
+    BANNED_TOMMYGUN    =  1 << 14,
+    BANNED_NAPALM      =  1 << 15,
+    BANNED_TNT         =  1 << 16,
+    BANNED_SPRAYCAN    =  1 << 17,
+    BANNED_TESLA       =  1 << 18,
+    BANNED_LIFELEECH   =  1 << 19,
+    BANNED_VOODOO      =  1 << 20,
+    BANNED_PROXY       =  1 << 21,
+    BANNED_REMOTE      =  1 << 22,
 
     // items
-    BANNED_MEDKIT     =  1 << 19,
-    BANNED_LIFESEED   =  1 << 20,
-    BANNED_SUPERARMOR =  1 << 21,
+    BANNED_MEDKIT      =  1 << 23,
+    BANNED_LIFEESSENCE =  1 << 24,
+    BANNED_LIFESEED    =  1 << 25,
+    BANNED_SUPERARMOR  =  1 << 26,
 
     // powerups
-    BANNED_JUMPBOOTS  =  1 << 22,
-    BANNED_CLOAK      =  1 << 23,
-    BANNED_DEATHMASK  =  1 << 24,
-    BANNED_AKIMBO     =  1 << 25,
-    BANNED_REFLECT    =  1 << 26,
-
-    BANNED_MAX        =  1 << 31,
+    BANNED_JUMPBOOTS   =  1 << 27,
+    BANNED_CLOAK       =  1 << 28,
+    BANNED_DEATHMASK   =  1 << 29,
+    BANNED_AKIMBO      =  1 << 30,
+    BANNED_REFLECT     =  1 << 31, // max u32 flag possible
 };
 
 extern EPISODEINFO gEpisodeInfo[];
