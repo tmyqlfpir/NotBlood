@@ -725,6 +725,8 @@ char dbIsBannedSpriteType(int nType)
     // items
     if (!bBanned && (nBannedType&BANNED_MEDKIT))
         bBanned = nType == kItemHealthDoctorBag;
+    if (!bBanned && (nBannedType&BANNED_LIFEESSENCE)) // life essence, and other misc healing items
+        bBanned = (nType == kItemHealthMedPouch) || (nType == kItemHealthLifeEssense) || (nType == kItemHealthRedPotion);
     if (!bBanned && (nBannedType&BANNED_LIFESEED))
         bBanned = nType == kItemHealthLifeSeed;
     if (!bBanned && (nBannedType&BANNED_SUPERARMOR))

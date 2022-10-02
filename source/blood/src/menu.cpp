@@ -382,7 +382,8 @@ CGameMenuItemZBool itemBannedItemsLifeLeech("LIFE LEECH:", 3, 75, 92, 161, false
 CGameMenuItemZBool itemBannedItemsVoodoo("VOODOO DOLL:", 3, 75, 100, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedItemsProxy("PROXIMITY TNT:", 3, 75, 108, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedItemsRemote("REMOTE TNT:", 3, 75, 116, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsMedKit("DOCTOR'S BAG:", 3, 75, 132, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsMedKit("DOCTOR'S BAG:", 3, 75, 124, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsLifeEssence("LIFE ESSENCE/MED POUCH:", 3, 75, 132, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedItemsLifeSeed("LIFE SEED:", 3, 75, 140, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedItemsSuperArmor("SUPER ARMOR:", 3, 75, 148, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedItemsJumpBoots("JUMP BOOTS:", 3, 75, 156, 161, false, NULL, "REMOVE", "KEEP");
@@ -1117,6 +1118,7 @@ void SetupDifficultyMenu(void)
     menuBannedItems.Add(&itemBannedItemsProxy, false);
     menuBannedItems.Add(&itemBannedItemsRemote, false);
     menuBannedItems.Add(&itemBannedItemsMedKit, false);
+    menuBannedItems.Add(&itemBannedItemsLifeEssence, false);
     menuBannedItems.Add(&itemBannedItemsLifeSeed, false);
     menuBannedItems.Add(&itemBannedItemsSuperArmor, false);
     menuBannedItems.Add(&itemBannedItemsJumpBoots, false);
@@ -2433,6 +2435,8 @@ inline unsigned int SetBannedSprites(char bSinglePlayer)
     // items
     if (itemBannedItemsMedKit.at20)
         uSpriteBannedFlags |= BANNED_MEDKIT;
+    if (itemBannedItemsLifeEssence.at20)
+        uSpriteBannedFlags |= BANNED_LIFEESSENCE;
     if (itemBannedItemsLifeSeed.at20)
         uSpriteBannedFlags |= BANNED_LIFESEED;
     if (itemBannedItemsSuperArmor.at20)
