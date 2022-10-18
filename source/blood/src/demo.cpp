@@ -191,6 +191,7 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.nSpecialRespawnTime = gameOptionsLegacy.nSpecialRespawnTime;
     gameOptions.nEnemyQuantity = gameOptions.nDifficulty;
     gameOptions.nEnemyHealth = gameOptions.nDifficulty;
+    gameOptions.nEnemySpeed = 0;
     gameOptions.bPitchforkOnly = false;
     gameOptions.bFriendlyFire = true;
     gameOptions.nKeySettings = 0;

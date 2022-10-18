@@ -4781,8 +4781,15 @@ void MoveDude(spritetype *pSprite)
     dassert(nSector >= 0 && nSector < kMaxSectors);
     if (xvel[nSprite] || yvel[nSprite])
     {
-        int vx = xvel[nSprite]>>12;
-        int vy = yvel[nSprite]>>12;
+        int vx = xvel[nSprite];
+        int vy = yvel[nSprite];
+        if (gGameOptions.nEnemySpeed && !pPlayer) // if enemy speed modifier is enabled
+        {
+            vx = mulscale16(vx, (fix16_from_int(gGameOptions.nEnemySpeed)>>1) + fix16_from_int(1));
+            vy = mulscale16(vy, (fix16_from_int(gGameOptions.nEnemySpeed)>>1) + fix16_from_int(1));
+        }
+        vx >>= 12;
+        vy >>= 12;
         if (gSonicMode && pPlayer && !VanillaMode()) // if sonic mode cheat is active
         {
             vx <<= 1; // double player velocity
@@ -4799,11 +4806,6 @@ void MoveDude(spritetype *pSprite)
         {
             short bakCstat = pSprite->cstat;
             pSprite->cstat &= ~257;
-            if (gEnemyZoomies && !pPlayer && !VanillaMode()) // if enemy zoomies cheat is active
-            {
-                vx <<= 1; // double enemy velocity
-                vy <<= 1;
-            }
             gSpriteHit[nXSprite].hit = ClipMove((int*)&pSprite->x, (int*)&pSprite->y, (int*)&pSprite->z, &nSector, vx, vy, wd, tz, bz, CLIPMASK0);
             if (nSector == -1)
             {

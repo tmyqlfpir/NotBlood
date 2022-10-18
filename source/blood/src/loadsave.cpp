@@ -596,6 +596,8 @@ bool LoadSavedInCurrentSession(int nSlot)
         return false;
     if (gSaveGameProfileSkill[nSlot] != gProfile[myconnectindex].skill)
         return false;
+    if (gSaveGameOptions[nSlot].nEnemySpeed != gGameOptions.nEnemySpeed)
+        return false;
     if (gSaveGameOptions[nSlot].bPitchforkOnly != gGameOptions.bPitchforkOnly)
         return false;
     if (gSaveGameOptions[nSlot].uSpriteBannedFlags != gGameOptions.uSpriteBannedFlags)
@@ -618,6 +620,8 @@ void LoadUpdateSaveGame(int nSlot, int nSkill)
     else if (gSaveGameOptions[nSlot].nDifficulty != gSaveGameOptions[nSlot].nEnemyQuantity)
         nDifficulty = 5;
     else if (gSaveGameOptions[nSlot].nDifficulty != (char)gSaveGameProfileSkill[nSlot])
+        nDifficulty = 5;
+    else if (gSaveGameOptions[nSlot].nEnemySpeed)
         nDifficulty = 5;
     else if (gSaveGameOptions[nSlot].bPitchforkOnly)
         nDifficulty = 5;

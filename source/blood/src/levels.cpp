@@ -82,6 +82,7 @@ GAMEOPTIONS gSingleGameOptions = {
     -1,    // int nRandomizerCheat;
     2,     // int nEnemyQuantity;
     2,     // int nEnemyHealth;
+    0,     // int nEnemySpeed;
     0,     // bool bPitchforkOnly;
     0,     // bool bFriendlyFire;
     1,     // char nKeySettings;

@@ -41,7 +41,7 @@ extern int g_useCwd;
 #define BLOODWIDESCREENDEF "blood_widescreen.def"
 #define NOTBLOODDEF "notblood.def"
 
-#define BYTEVERSION 113
+#define BYTEVERSION 114
 #define EXEVERSION 101
 
 void _SetErrorLoc(const char *pzFile, int nLine);
