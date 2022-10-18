@@ -121,7 +121,6 @@ bool gNoTarget;
 bool gInfiniteAmmo;
 bool gLifeleechRnd;
 bool gAlphaPitchfork;
-bool gEnemyZoomies;
 bool gSonicMode;
 bool gFullMap;
 int32_t gUpscaleFactor;

@@ -68,6 +68,7 @@ struct GAMEOPTIONS {
     int nRandomizerCheat;
     int nEnemyQuantity;
     int nEnemyHealth;
+    int nEnemySpeed;
     bool bPitchforkOnly;
     bool bFriendlyFire;
     char nKeySettings;

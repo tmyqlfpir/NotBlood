@@ -670,6 +670,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nRandomizerCheat = -1;
         gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
+        gGameOptions.nEnemySpeed = 0;
         gGameOptions.bPitchforkOnly = false;
         gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////
@@ -905,6 +906,7 @@ void StartNetworkLevel(void)
         gGameOptions.nRandomizerCheat = -1;
         gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
+        gGameOptions.nEnemySpeed = 0;
         gGameOptions.bPitchforkOnly = false;
         gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////

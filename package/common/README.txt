@@ -149,7 +149,6 @@ It should be noted that vanilla mode does not work with modern maps
 ### New cheats (press t in-game to type codes)
 * BIG BERTHA - Toggle randomized lifeleech projectiles (works for alt fire mode)
 * QSKFA - Toggle blood alpha alt fire missile for pitchfork
-* ZOOMIES - Toggle fast enemies
 * SONIC - Toggle fast player movement
 * NO U - Activates reflect shots power-up
 

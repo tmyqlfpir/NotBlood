@@ -274,6 +274,14 @@ const char *pzRandomizerModeStrings[] = {
     "Enemies+Pickups",
 };
 
+const char *pzEnemySpeeds[] = {
+    "Default",
+    "1.5x",
+    "2.0x",
+    "2.5x",
+    "3.0x",
+};
+
 char zUserMapName[BMAX_PATH];
 const char *zEpisodeNames[6];
 const char *zLevelNames[6][16];
@@ -355,9 +363,10 @@ CGameMenuItemSlider itemCustomDifficultyEnemyQuantity("ENEMIES QUANTITY:", 3, 66
 CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 51, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 62, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemCustomDifficultyPlayerDamage("PLAYER DAMAGE TAKEN:", 3, 66, 73, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 84, 180, false, NULL, NULL, NULL);
-CGameMenuItemChain itemCustomDifficultyBannedMonsters("SET MONSTERS", 3, 66, 100, 180, 1, &menuBannedMonsters, -1, NULL, 0);
-CGameMenuItemChain itemCustomDifficultyBannedItems("SET ITEMS", 3, 66, 111, 180, 1, &menuBannedItems, -1, NULL, 0);
+CGameMenuItemZCycle itemCustomDifficultyEnemySpeed("ENEMIES SPEED:", 3, 66, 84, 180, 0, 0, pzEnemySpeeds, ARRAY_SSIZE(pzEnemySpeeds), 0);
+CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 95, 180, false, NULL, NULL, NULL);
+CGameMenuItemChain itemCustomDifficultyBannedMonsters("SET MONSTERS", 3, 66, 111, 180, 1, &menuBannedMonsters, -1, NULL, 0);
+CGameMenuItemChain itemCustomDifficultyBannedItems("SET ITEMS", 3, 66, 122, 180, 1, &menuBannedItems, -1, NULL, 0);
 CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 150, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
 CGameMenuItemTitle itemBannedMonstersTitle("SET MONSTERS", 1, 160, 20, 2038);
@@ -1081,6 +1090,7 @@ void SetupDifficultyMenu(void)
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyHealth, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyDifficulty, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyPlayerDamage, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyEnemySpeed, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyPitchfork, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyBannedMonsters, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyBannedItems, false);
@@ -1090,6 +1100,7 @@ void SetupDifficultyMenu(void)
     itemCustomDifficultyEnemyHealth.tooltip_pzTextUpper = "Set enemy's starting health";
     itemCustomDifficultyEnemyDifficulty.tooltip_pzTextUpper = "Set enemy's behavior difficulty";
     itemCustomDifficultyPlayerDamage.tooltip_pzTextUpper = "Set player's damage taken scale";
+    itemCustomDifficultyEnemySpeed.tooltip_pzTextUpper = "Set enemy's movement speed modifier";
     itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "Player will lose all items on new level";
     itemCustomDifficultyBannedMonsters.tooltip_pzTextUpper = "Set which monsters to spawn";
     itemCustomDifficultyBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
@@ -2470,6 +2481,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
+    gGameOptions.nEnemySpeed = 0;
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.uSpriteBannedFlags = BANNED_NONE;
     gGameOptions.nLevel = 0;
@@ -2500,6 +2512,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyQuantity = ClipRange(itemCustomDifficultyEnemyQuantity.nValue, 0, 4);
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
     playerSetSkill(itemCustomDifficultyPlayerDamage.nValue);
+    gGameOptions.nEnemySpeed = ClipRange(itemCustomDifficultyEnemySpeed.m_nFocus, 0, 4);
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
     gGameOptions.uSpriteBannedFlags = SetBannedSprites(1);
     gGameOptions.nLevel = 0;

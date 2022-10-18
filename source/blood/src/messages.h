@@ -150,7 +150,6 @@ public:
         kCheatCalgon,
         kCheatBigBertha,
         kCheatQskfa,
-        kCheatZoomies,
         kCheatSonic,
         kCheatNoU,
         kCheatMax
