@@ -1909,8 +1909,28 @@ char gWeaponUpgrade[][13] = {
 char WeaponUpgrade(PLAYER *pPlayer, char newWeapon)
 {
     char weapon = pPlayer->curWeapon;
-    if (!checkLitSprayOrTNT(pPlayer) && (gProfile[pPlayer->nPlayer].nWeaponSwitch&1) && (gWeaponUpgrade[pPlayer->curWeapon][newWeapon] || (gProfile[pPlayer->nPlayer].nWeaponSwitch&2)))
-        weapon = newWeapon;
+    const char nWeaponSwitch = gProfile[pPlayer->nPlayer].nWeaponSwitch;
+    if (nWeaponSwitch && !checkLitSprayOrTNT(pPlayer))
+    {
+        char bNewWeapon = 0;
+        switch (nWeaponSwitch)
+        {
+        case 1: // by rating
+            bNewWeapon = gWeaponUpgrade[weapon][newWeapon];
+            break;
+        case 2: // if new
+            bNewWeapon = 1;
+            break;
+        case 3: // only switch when holding pitchfork
+            bNewWeapon = (weapon == kWeaponPitchfork);
+            break;
+        default:
+            ThrowError("nWeaponSwitch out of range\n");
+            break;
+        }
+        if (bNewWeapon)
+            weapon = newWeapon;
+    }
     return weapon;
 }
 

@@ -580,8 +580,9 @@ const char *pzWeaponSelectStrings[] = {
 
 const char *pzWeaponSwitchStrings[] = {
     "NEVER",
+    "BY RATING",
     "IF NEW",
-    "BY RATING"
+    "IF HOLDING PITCHFORK"
 };
 
 const char *pzAutosaveModeStrings[] = {
@@ -1571,7 +1572,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameBoolWeaponSwaying.m_nFocus = gWeaponHBobbing % ARRAY_SSIZE(pzWeaponHBobbingStrings);
     itemOptionsGameBoolWeaponInterpolation.m_nFocus = gWeaponInterpolate % ARRAY_SSIZE(pzWeaponInterpolateStrings);
     itemOptionsGameBoolAutoAim.m_nFocus = gAutoAim;
-    itemOptionsGameWeaponSwitch.m_nFocus = (gWeaponSwitch&1) ? ((gWeaponSwitch&2) ? 1 : 2) : 0;
+    itemOptionsGameWeaponSwitch.m_nFocus = gWeaponSwitch % ARRAY_SSIZE(pzWeaponSwitchStrings);
     itemOptionsGameWeaponFastSwitch.at20 = !!gWeaponFastSwitch;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
     itemOptionsGameLockSaving.at20 = !!gLockManualSaving;
@@ -2317,19 +2318,7 @@ void SetShowMapTitle(CGameMenuItemZBool* pItem)
 
 void SetWeaponSwitch(CGameMenuItemZCycle *pItem)
 {
-    gWeaponSwitch &= ~(1|2);
-    switch (pItem->m_nFocus)
-    {
-    case 0:
-        break;
-    case 1:
-        gWeaponSwitch |= 2;
-        fallthrough__;
-    case 2:
-    default:
-        gWeaponSwitch |= 1;
-        break;
-    }
+    gWeaponSwitch = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponSwitchStrings);
     if (!gDemo.bRecording && !gDemo.bPlaying)
     {
         if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
