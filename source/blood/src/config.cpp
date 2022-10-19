@@ -502,7 +502,7 @@ void CONFIG_SetDefaults(void)
     gMouseAimingFlipped = 0;
     gMouseAim = 1;
     gAutoAim = 2;
-    gWeaponSwitch = 3;
+    gWeaponSwitch = 2;
     gWeaponFastSwitch = 0;
     gLockManualSaving = 0;
     gAutosave = 1;
