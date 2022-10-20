@@ -11,6 +11,7 @@
 #include "polymost.h"
 #include "renderlayer.h"
 
+#ifndef __EMSCRIPTEN__
 #define MINICORO_IMPL
 #define MCO_LOG initprintf
 #define MCO_ASSERT Bassert
@@ -18,6 +19,7 @@
 #define MCO_FREE Xfree
 
 #include "minicoro.h"
+#endif
 
 #define LIBASYNC_IMPLEMENTATION
 #include "libasync_config.h"
@@ -871,7 +873,7 @@ int32_t baselayer_init(void)
 
 void maybe_redirect_outputs(void)
 {
-#if !(defined __APPLE__ && defined __BIG_ENDIAN__)
+#if !(defined __APPLE__ && defined __BIG_ENDIAN__) && !(defined __EMSCRIPTEN__)
     char *argp;
 
     // pipe standard outputs to files

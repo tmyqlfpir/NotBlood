@@ -433,7 +433,9 @@ ifeq ($(PLATFORM),WINDOWS)
     audiolib_objs += driver_directsound.cpp driver_winmm.cpp 
 endif
 ifeq ($(SUBPLATFORM),LINUX)
-    audiolib_objs += driver_alsa.cpp
+    ifneq ($(EMSCRIPTEN),1)
+        audiolib_objs += driver_alsa.cpp
+    endif
 endif
 
 ifeq ($(RENDERTYPE),SDL)
@@ -493,7 +495,9 @@ endif
 #### Depends
 
 ifeq ($(SUBPLATFORM),LINUX)
-    LIBS += -lFLAC -lasound
+    ifneq ($(EMSCRIPTEN),1)
+        LIBS += -lFLAC -lasound
+    endif
 endif
 
 ifeq ($(PLATFORM),BSD)

@@ -77,10 +77,12 @@ extern kb_scancode KB_LastScan;
         KB_SetLastScanCode(sc_None); \
     }
 #define KB_KeyPressed(scan) (keystatus[(scan)] != 0)
+#ifndef KB_ClearKeyDown
 #define KB_ClearKeyDown(scan)      \
     {                              \
         keystatus[(scan)] = FALSE; \
     }
+#endif
 #define KB_UnBoundKeyPressed(scan) (keystatus[(scan)] != 0 && !CONTROL_KeyBinds[scan].cmdstr)
 #define KB_GetCh keyGetChar
 #define KB_KeyWaiting keyBufferWaiting

@@ -122,3 +122,9 @@ project.xcworkspace/
 /platform/Windows/*.cfg_orig
 /platform/Windows/*.DEM
 /platform/Windows/*.DEM_
+
+notblood.data
+notblood.html
+notblood.js
+notblood.wasm
+notblood.worker.js
