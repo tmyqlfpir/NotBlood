@@ -612,7 +612,7 @@ ifndef OPTOPT
 endif
 
 ifneq ($(EMSCRIPTEN),0)
-    override OPTOPT := 2
+    override OPTOPT := 
     override LTO := 1
     override LLD := 0
 endif
