@@ -220,7 +220,7 @@ ifneq ($(EMSCRIPTEN),0)
     STRIP :=
     EMPRELOAD :=
     OPTLEVEL := 3
-    EMFLAGS := -s USE_LIBPNG=1 -s USE_ZLIB=1 -s USE_OGG=1 -s USE_VORBIS=1 -s USE_PTHREADS=1 -s USE_SDL=2 -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["wav", "ogg", "mp3"]'
+    EMFLAGS := -s USE_LIBPNG=1 -s USE_ZLIB=1 -s USE_OGG=1 -s USE_VORBIS=1 -s USE_PTHREADS -s USE_SDL=2 -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["wav", "ogg"]'
     ifeq ($(HTML),1)
         HOSTEXESUFFIX := .html
     else
@@ -564,7 +564,7 @@ else ifeq ($(PLATFORM),WII)
 else ifeq ($(PLATFORM),$(filter $(PLATFORM),DINGOO GCW))
     COMPILERFLAGS += -D__OPENDINGUX__
 else ifneq ($(EMSCRIPTEN),0)
-    LINKERFLAGS += -s TOTAL_MEMORY=268435456 -s ASYNCIFY=1 -s USE_PTHREADS=1
+    LINKERFLAGS += -s TOTAL_MEMORY=268435456 -s ASYNCIFY=1 -s USE_PTHREADS
 else ifeq ($(SUBPLATFORM),LINUX)
     # Locate .so files
     LINKERFLAGS += -Wl,-rpath,'$$ORIGIN' -Wl,-z,origin
@@ -612,9 +612,9 @@ ifndef OPTOPT
 endif
 
 ifneq ($(EMSCRIPTEN),0)
-    override OPTOPT :=
+    override OPTOPT := 2
+    override LTO := 1
     override LLD := 0
-    override LTO := 0
 endif
 
 ifeq ($(PACKAGE_REPOSITORY),0)
@@ -1052,7 +1052,6 @@ endif
 
 ifneq (,$(EMFLAGS))
     COMMONFLAGS += $(EMFLAGS)
-    LINKERFLAGS += $(LDFLAGS)
 endif
 ifneq (,$(CFLAGS))
     COMMONFLAGS += $(CFLAGS)
