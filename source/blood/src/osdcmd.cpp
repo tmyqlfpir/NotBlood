@@ -1011,7 +1011,6 @@ int32_t registerosdcommands(void)
         { "cl_smoketrail3d", "enable/disable 3d smoke trail positioning for tnt/spray can (single-player only)", (void *)&gSmokeTrail3D, CVAR_BOOL, 0, 1 },
         { "cl_hitscantransparent", "enable/disable transparent bullet sprites for hitscan projectiles option", (void *)&gTransparentHitscanProjectiles, CVAR_BOOL, 0, 1 },
         { "cl_particlesduration", "enable/disable extended particle duration modification (single-player only - turned off for modern maps)", (void *)&gParticlesDuration, CVAR_BOOL, 0, 1 },
-        { "cl_quickstart", "enable/disable quick start mode (start to menu on launch/disable demo playback)", (void *)&gQuickStart, CVAR_BOOL, 0, 1 },
 
         { "cl_runmode", "enable/disable modernized run key operation", (void *)&gRunKeyMode, CVAR_BOOL, 0, 1 },
 //

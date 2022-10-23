@@ -35,6 +35,7 @@ typedef struct {
     int32_t bpp;
     int32_t forcesetup;
     int32_t noautoload;
+    int32_t quickstart;
 } ud_setup_t;
 
 extern ud_setup_t gSetup;

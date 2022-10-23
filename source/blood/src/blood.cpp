@@ -85,7 +85,7 @@ const char* AppProperName = APPNAME;
 const char* AppTechnicalName = APPBASENAME;
 
 char SetupFilename[BMAX_PATH] = SETUPFILENAME;
-int32_t gNoSetup = 0, gCommandSetup = 0, gQuickStart = 0;
+int32_t gNoSetup = 0, gCommandSetup = 0;
 
 INPUT_MODE gInputMode;
 
@@ -2004,7 +2004,7 @@ int app_main(int argc, char const * const * argv)
 
     OSD_Exec("autoexec.cfg");
 
-    if (!bQuickStart && !gQuickStart)
+    if (!bQuickStart && !gSetup.quickstart)
         credLogosDos();
     scrSetDac();
 RESTART:
@@ -2024,7 +2024,7 @@ RESTART:
         goto RESTART;
     }
     UpdateNetworkMenus();
-    if (!bNoDemo && gQuickStart && !gDemoRunValidation) // disable demo playback in quick start mode
+    if (!bNoDemo && gSetup.quickstart && !gDemoRunValidation) // disable demo playback in quick start mode
         bNoDemo = 1;
     if (!gDemo.bRecording && gDemo.nDemosFound > 0 && gGameOptions.nGameType == kGameTypeSinglePlayer && !bNoDemo)
         gDemo.SetupPlayback(NULL);
@@ -2049,7 +2049,7 @@ RESTART:
     }
     ready2send = 1;
     static bool frameJustDrawn;
-    static int nGammaMenu = !gQuickStart ? 0 : 40;
+    static int nGammaMenu = !gSetup.quickstart ? 0 : 40;
     while (!gQuitGame)
     {
         bool bDraw;

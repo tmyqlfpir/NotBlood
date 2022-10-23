@@ -176,6 +176,7 @@ static void PopulateForm(int32_t pgs)
     {
         Button_SetCheck(GetDlgItem(pages[TAB_CONFIG], IDCALWAYSSHOW), (settings.shared.forcesetup ? BST_CHECKED : BST_UNCHECKED));
         Button_SetCheck(GetDlgItem(pages[TAB_CONFIG], IDCAUTOLOAD), (!(settings.shared.noautoload) ? BST_CHECKED : BST_UNCHECKED));
+        Button_SetCheck(GetDlgItem(pages[TAB_CONFIG], IDCQUICKSTART), ((settings.shared.quickstart) ? BST_CHECKED : BST_UNCHECKED));
 
         HWND hwnd = GetDlgItem(pages[TAB_CONFIG], IDCINPUT);
 
@@ -260,6 +261,9 @@ static INT_PTR CALLBACK ConfigPageProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, L
             return TRUE;
         case IDCAUTOLOAD:
             settings.shared.noautoload = (IsDlgButtonChecked(hwndDlg, IDCAUTOLOAD) != BST_CHECKED);
+            return TRUE;
+        case IDCQUICKSTART:
+            settings.shared.quickstart = (IsDlgButtonChecked(hwndDlg, IDCQUICKSTART) == BST_CHECKED);
             return TRUE;
         case IDCINPUT:
             if (HIWORD(wParam) == CBN_SELCHANGE)
@@ -356,6 +360,7 @@ static void EnableConfig(bool n)
     EnableWindow(GetDlgItem(pages[TAB_CONFIG], IDCGAMEDIR), n);
     EnableWindow(GetDlgItem(pages[TAB_CONFIG], IDCINPUT), n);
     //EnableWindow(GetDlgItem(pages[TAB_CONFIG], IDCPOLYMER), n);
+    EnableWindow(GetDlgItem(pages[TAB_CONFIG], IDCQUICKSTART), n);
     EnableWindow(GetDlgItem(pages[TAB_CONFIG], IDCVMODE), n);
 }
 

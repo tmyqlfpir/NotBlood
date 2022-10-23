@@ -373,6 +373,7 @@ void CONFIG_SetDefaults(void)
 
     gSetup.forcesetup       = 1;
     gSetup.noautoload       = 1;
+    gSetup.quickstart       = 0;
     gSetup.fullscreen       = 1;
     gSetup.usemouse         = 1;
 
@@ -876,6 +877,7 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Setup", "ConfigVersion", &configversion);
     SCRIPT_GetNumber(scripthandle, "Setup", "ForceSetup", &gSetup.forcesetup);
     SCRIPT_GetNumber(scripthandle, "Setup", "NoAutoLoad", &gSetup.noautoload);
+    SCRIPT_GetNumber(scripthandle, "Setup", "QuickStart", &gSetup.quickstart);
 
     int32_t cachesize;
     SCRIPT_GetNumber(scripthandle, "Setup", "CacheSize", &cachesize);
@@ -1008,6 +1010,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Setup", "ConfigVersion", BYTEVERSION, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "ForceSetup", gSetup.forcesetup, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "NoAutoLoad", gSetup.noautoload, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Setup", "QuickStart", gSetup.quickstart, FALSE, FALSE);
 
 #ifdef POLYMER
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "Polymer", glrendmode == REND_POLYMER, FALSE, FALSE);
