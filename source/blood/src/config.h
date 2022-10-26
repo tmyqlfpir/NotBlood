@@ -110,6 +110,7 @@ extern int32_t gHudRatio;
 extern int32_t gHudBgScale;
 extern int32_t gPowerupDuration;
 extern int32_t gPowerupTicks;
+extern int32_t gShowCompleteTime;
 extern int32_t gShowMapTitle;
 extern int32_t gFov;
 extern int32_t gCenterHoriz;

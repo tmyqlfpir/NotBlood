@@ -130,6 +130,7 @@ int32_t gHudRatio;
 int32_t gHudBgScale;
 int32_t gPowerupDuration;
 int32_t gPowerupTicks;
+int32_t gShowCompleteTime;
 int32_t gShowMapTitle;
 int32_t gFov;
 int32_t gCenterHoriz;
@@ -420,6 +421,7 @@ void CONFIG_SetDefaults(void)
     gHudBgScale = 1;
     gPowerupDuration = 4;
     gPowerupTicks = 100;
+    gShowCompleteTime = 1;
     gShowMapTitle = 1;
     gShowWeaponSelect = 0;
     gShowWeaponSelectTimeStart = 7;

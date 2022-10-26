@@ -1063,6 +1063,7 @@ int32_t registerosdcommands(void)
         { "hud_ratio", "set aspect ratio screen position for hud (0: native, 1: 4:3, 2: 16:10, 3: 16:9, 3: 21:9)", (void*)&gHudRatio, CVAR_INT, 0, 4 },
         { "hud_powerupduration", "enable/disable displaying the remaining time for power-ups (0: off, 1: on [default], 2: on [4:3], 3: on [16:10], 4: on [16:9], 5: on [21:9])", (void *)&gPowerupDuration, CVAR_INT, 0, 5 },
         { "hud_powerupdurationticks", "set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)", (void *)&gPowerupTicks, CVAR_INT, 20, 240 },
+        { "hud_showendtime", "enable/disable displaying the level completion time on end screen", (void*)&gShowCompleteTime, CVAR_BOOL, 0, 1 },
         { "hud_showmaptitle", "enable/disable displaying the map title at the beginning of the maps", (void*)& gShowMapTitle, CVAR_BOOL, 0, 1 },
         { "hud_showweaponselect", "enable/disable weapon select bar display. (0: none, 1: bottom, 2: top)", (void*)&gShowWeaponSelect, CVAR_INT, 0, 2 },
         { "hud_showweaponselecttimestart", "length of time for selected weapon bar to appear", (void*)&gShowWeaponSelectTimeStart, CVAR_INT, 2, 25 },

@@ -213,9 +213,11 @@ It should be noted that vanilla mode does not work with modern maps
 * hud_ratio
    - Enable/disable level statistics display (0: off, 1: on [default], 2: on [4:3], 3: on [16:10], 4: on [16:9], 5: on [21:9])
 * hud_powerupdurationticks
-   - set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)
+   - Set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)
+* hud_showendtime
+   - Enable/disable displaying the level completion time on end screen
 * hud_showweaponselect
-   - Enable/disable weapon select bar display. (0: none, 1: bottom, 2: top)
+   - Enable/disable weapon select bar display (0: none, 1: bottom, 2: top)
 * hud_showweaponselecttimestart
    - Length of time for selected weapon bar to appear
 * hud_showweaponselecttimehold
