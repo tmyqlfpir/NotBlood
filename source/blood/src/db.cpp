@@ -1449,6 +1449,22 @@ void dbShuffleEnemy(void)
         const uint8_t tempPal = pSprite[j]->pal;
         pSprite[j]->pal = pSprite[i]->pal;
         pSprite[i]->pal = tempPal;
+
+        const uint16_t tempCstat = pSprite[j]->cstat;
+        pSprite[j]->cstat = pSprite[i]->cstat;
+        pSprite[i]->cstat = tempCstat;
+
+        const int16_t tempAng = pSprite[j]->ang;
+        pSprite[j]->ang = pSprite[i]->ang;
+        pSprite[i]->ang = tempAng;
+
+        const int16_t tempOwner = pSprite[j]->owner;
+        pSprite[j]->owner = pSprite[i]->owner;
+        pSprite[i]->owner = tempOwner;
+
+        const int16_t tempInittype = pSprite[j]->inittype;
+        pSprite[j]->inittype = pSprite[i]->inittype;
+        pSprite[i]->inittype = tempInittype;
     }
 }
 
