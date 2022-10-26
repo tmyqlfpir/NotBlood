@@ -364,9 +364,10 @@ CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 51
 CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 62, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemCustomDifficultyPlayerDamage("PLAYER DAMAGE TAKEN:", 3, 66, 73, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemZCycle itemCustomDifficultyEnemySpeed("ENEMIES SPEED:", 3, 66, 84, 180, 0, 0, pzEnemySpeeds, ARRAY_SSIZE(pzEnemySpeeds), 0);
-CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 95, 180, false, NULL, NULL, NULL);
-CGameMenuItemChain itemCustomDifficultyBannedMonsters("SET MONSTERS", 3, 66, 111, 180, 1, &menuBannedMonsters, -1, NULL, 0);
-CGameMenuItemChain itemCustomDifficultyBannedItems("SET ITEMS", 3, 66, 122, 180, 1, &menuBannedItems, -1, NULL, 0);
+CGameMenuItemZBool itemCustomDifficultyEnemyShuffle("RANDOMIZE ENEMY POSITIONS:", 3, 66, 95, 180, false, NULL, NULL, NULL);
+CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 106, 180, false, NULL, NULL, NULL);
+CGameMenuItemChain itemCustomDifficultyBannedMonsters("SET MONSTERS", 3, 66, 122, 180, 1, &menuBannedMonsters, -1, NULL, 0);
+CGameMenuItemChain itemCustomDifficultyBannedItems("SET ITEMS", 3, 66, 133, 180, 1, &menuBannedItems, -1, NULL, 0);
 CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 150, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
 CGameMenuItemTitle itemBannedMonstersTitle("SET MONSTERS", 1, 160, 20, 2038);
@@ -1092,6 +1093,7 @@ void SetupDifficultyMenu(void)
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyDifficulty, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyPlayerDamage, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemySpeed, false);
+    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyShuffle, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyPitchfork, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyBannedMonsters, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyBannedItems, false);
@@ -1102,6 +1104,7 @@ void SetupDifficultyMenu(void)
     itemCustomDifficultyEnemyDifficulty.tooltip_pzTextUpper = "Set enemy's behavior difficulty";
     itemCustomDifficultyPlayerDamage.tooltip_pzTextUpper = "Set player's damage taken scale";
     itemCustomDifficultyEnemySpeed.tooltip_pzTextUpper = "Set enemy's movement speed modifier";
+    itemCustomDifficultyEnemyShuffle.tooltip_pzTextUpper = "Shuffle enemy's spawn position";
     itemCustomDifficultyPitchfork.tooltip_pzTextUpper = "Player will lose all items on new level";
     itemCustomDifficultyBannedMonsters.tooltip_pzTextUpper = "Set which monsters to spawn";
     itemCustomDifficultyBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
@@ -2471,6 +2474,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
     gGameOptions.nEnemySpeed = 0;
+    gGameOptions.bEnemyShuffle = false;
     gGameOptions.bPitchforkOnly = false;
     gGameOptions.uSpriteBannedFlags = BANNED_NONE;
     gGameOptions.nLevel = 0;
@@ -2502,6 +2506,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
     playerSetSkill(itemCustomDifficultyPlayerDamage.nValue);
     gGameOptions.nEnemySpeed = ClipRange(itemCustomDifficultyEnemySpeed.m_nFocus, 0, 4);
+    gGameOptions.bEnemyShuffle = !!itemCustomDifficultyEnemyShuffle.at20;
     gGameOptions.bPitchforkOnly = !!itemCustomDifficultyPitchfork.at20;
     gGameOptions.uSpriteBannedFlags = SetBannedSprites(1);
     gGameOptions.nLevel = 0;

@@ -1413,6 +1413,45 @@ void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
     }
 }
 
+void dbShuffleEnemy(void)
+{
+    int nSprites = 0;
+    spritetype *pSprite[kMaxSprites];
+
+    for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i]) // build table of sprites for shuffling logic
+    {
+        if (&sprite[i] == NULL)
+            continue;
+        if (!IsDudeSprite(&sprite[i]) || IsPlayerSprite(&sprite[i])) // not an enemy sprite, skip
+            continue;
+        const int type = sprite[i].type;
+        if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother) && (type != kDudeBoneEel)) // filter problematic enemy types
+        {
+            pSprite[nSprites] = &sprite[i];
+            nSprites++;
+        }
+    }
+    if (nSprites < 2) // only a single enemy in the level, abort
+        return;
+
+    for (int i = 0; i < nSprites - 1; i++) // shuffle enemies
+    {
+        const int j = qrand() % nSprites;
+
+        const int16_t tempType = pSprite[j]->type;
+        pSprite[j]->type = pSprite[i]->type;
+        pSprite[i]->type = tempType;
+
+        const int16_t tempPicnum = pSprite[j]->picnum;
+        pSprite[j]->picnum = pSprite[i]->picnum;
+        pSprite[i]->picnum = tempPicnum;
+
+        const uint8_t tempPal = pSprite[j]->pal;
+        pSprite[j]->pal = pSprite[i]->pal;
+        pSprite[i]->pal = tempPal;
+    }
+}
+
 bool byte_1A76C6, byte_1A76C7, byte_1A76C8;
 
 MAPHEADER2 byte_19AE44;

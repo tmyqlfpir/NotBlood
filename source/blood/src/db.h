@@ -375,5 +375,6 @@ char dbIsBannedSpriteType(int nType);
 char dbIsBannedSprite(spritetype *pSprite, XSPRITE* pXSprite);
 void dbRandomizerMode(spritetype *pSprite);
 void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite);
+void dbShuffleEnemy(void);
 unsigned int dbReadMapCRC(const char *pPath);
 int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short *pSector, unsigned int *pCRC);

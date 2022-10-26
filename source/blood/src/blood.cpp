@@ -671,6 +671,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
         gGameOptions.nEnemySpeed = 0;
+        gGameOptions.bEnemyShuffle = false;
         gGameOptions.bPitchforkOnly = false;
         gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////
@@ -751,7 +752,9 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             continue;
         }
     }
-    
+    if (gGameOptions.bEnemyShuffle)
+        dbShuffleEnemy();
+
     #ifdef NOONE_EXTENSIONS
     if (!gModernMap)
         OSD_Printf("> Modern types erased: %d.\n", modernTypesErased);
@@ -907,6 +910,7 @@ void StartNetworkLevel(void)
         gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
         gGameOptions.nEnemySpeed = 0;
+        gGameOptions.bEnemyShuffle = false;
         gGameOptions.bPitchforkOnly = false;
         gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////
