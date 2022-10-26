@@ -2495,7 +2495,7 @@ void UpdateFrame(void)
 void viewDimScreen(void)
 {
     if (bMenuBackDimCrcMatch && (gGameMenuMgr.pActiveMenu != &menuOptionsDisplayColor)) // if current menu is not on color correction menu, dim screen
-        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(128),0,kMenuBackDim,0,0,RS_STRETCH,192); // stretch black menu tile across entire screen
+        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(128),0,kMenuBackDim,0,0,RS_STRETCH|RS_NOCLIP,192); // stretch black menu tile across entire screen
 }
 
 void viewDrawInterface(ClockTicks arg)
