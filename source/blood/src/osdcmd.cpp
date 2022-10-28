@@ -1048,6 +1048,7 @@ int32_t registerosdcommands(void)
 //        { "hud_althud", "enable/disable alternate mini-hud", (void *)&ud.althud, CVAR_BOOL, 0, 1 },
 //        { "hud_custom", "change the custom hud", (void *)&ud.statusbarcustom, CVAR_INT, 0, ud.statusbarrange },
 //        { "hud_position", "aligns the status bar to the bottom/top", (void *)&ud.hudontop, CVAR_BOOL, 0, 1 },
+        { "hud_bgnewborder", "enable/disable new hud bottom border background image (only for r_size 5)", (void *)&gHudBgNewBorder, CVAR_BOOL, 0, 1 },
         { "hud_bgscale", "enable/disable hud background image scaling for resolution", (void *)&gHudBgScale, CVAR_BOOL, 0, 1 },
         { "hud_bgvanilla", "enable/disable hud vanilla background image override (0: default, 1: use new tile, 2: use original tile)", (void *)&gHudBgVanilla, CVAR_INT, 0, 2 },
 //        { "hud_bgstretch", "enable/disable background image stretching in wide resolutions", (void *)&ud.bgstretch, CVAR_BOOL, 0, 1 },

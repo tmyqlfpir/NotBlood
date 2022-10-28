@@ -2263,6 +2263,7 @@ void viewPrecacheTiles(void)
     tilePrecacheTile(2578, 0);
     tilePrecacheTile(2586, 0);
     tilePrecacheTile(2602, 0);
+    tilePrecacheTile(kHudFullBackTile, 0);
     for (int i = 0; i < 10; i++)
     {
         tilePrecacheTile(2190 + i, 0);
@@ -2450,9 +2451,22 @@ void UpdateFrame(void)
     const char bVanilla = !gHudBgVanilla ? VanillaMode() : (gHudBgVanilla == 2);
     const int nPalette = !bVanilla ? playerColorPalHud(gView->teamId) : 0;
 
-    const int nTile = !VanillaMode() ? kBackTile : kBackTileVanilla;
+    if (gHudBgNewBorder && (gViewSize == 5))
+    {
+        const int nTile = kHudFullBackTile;
+        const int nHalfScreen = klabs(gViewX1S-gViewX0S)>>1;
+        for (int i = 0; i <= nHalfScreen; i += (int)tilesiz[nTile].x) // extend new bottom border across screen
+        {
+            DrawStatMaskedSprite(nTile, -i, 172, 16, nPalette); // left side
+            DrawStatMaskedSprite(nTile, i+320, 172, 16, nPalette); // right side
+        }
+        return;
+    }
+
+    const int nTile = !bVanilla ? kBackTile : kBackTileVanilla;
     int nScale = 65536;
     int nWidth = 0, nHeight = 0;
+
     if (gHudBgScale) // scale background tiles to match hud pixel density scale
     {
         nWidth = tilesiz[nTile].x;

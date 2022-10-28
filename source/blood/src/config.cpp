@@ -127,6 +127,7 @@ int32_t gUpscaleFactor;
 int32_t gRenderScale;
 int32_t gLevelStats;
 int32_t gHudRatio;
+int32_t gHudBgNewBorder;
 int32_t gHudBgScale;
 int32_t gHudBgVanilla;
 int32_t gPowerupDuration;
@@ -419,6 +420,7 @@ void CONFIG_SetDefaults(void)
     //ud.idplayers              = 1;
     gLevelStats = 0;
     gHudRatio = 1;
+    gHudBgNewBorder = 1;
     gHudBgScale = 1;
     gHudBgVanilla = 0;
     gPowerupDuration = 4;

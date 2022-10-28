@@ -89,6 +89,8 @@ enum INTERPOLATE_TYPE {
 
 #define kFontNum 5
 
+#define kHudFullBackTile 9286
+
 struct FONT {
     int tile, xSize, ySize, space, yoff;
 };
