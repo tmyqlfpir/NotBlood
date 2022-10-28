@@ -2447,7 +2447,8 @@ void viewResizeView(int size)
 
 void UpdateFrame(void)
 {
-    const int nPalette = !VanillaMode() ? playerColorPalHud(gView->teamId) : 0;
+    const char bVanilla = !gHudBgVanilla ? VanillaMode() : (gHudBgVanilla == 2);
+    const int nPalette = !bVanilla ? playerColorPalHud(gView->teamId) : 0;
 
     const int nTile = !VanillaMode() ? kBackTile : kBackTileVanilla;
     int nScale = 65536;

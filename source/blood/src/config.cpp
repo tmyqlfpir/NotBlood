@@ -128,6 +128,7 @@ int32_t gRenderScale;
 int32_t gLevelStats;
 int32_t gHudRatio;
 int32_t gHudBgScale;
+int32_t gHudBgVanilla;
 int32_t gPowerupDuration;
 int32_t gPowerupTicks;
 int32_t gShowCompleteTime;
@@ -419,6 +420,7 @@ void CONFIG_SetDefaults(void)
     gLevelStats = 0;
     gHudRatio = 1;
     gHudBgScale = 1;
+    gHudBgVanilla = 0;
     gPowerupDuration = 4;
     gPowerupTicks = 100;
     gShowCompleteTime = 1;

@@ -208,6 +208,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable crosshair (0: off, 1: on, 2: on [autoaim])
 * hud_bgscale
    - Enable/disable hud background image scaling for resolution
+* hud_bgvanilla
+   - Enable/disable hud vanilla background image override (0: default, 1: use new tile, 2: use original tile)
 * hud_stats
    - Set aspect ratio screen position for hud (0: native, 1: 4:3, 2: 16:10, 3: 16:9, 3: 21:9)
 * hud_ratio
