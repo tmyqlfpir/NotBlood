@@ -112,7 +112,6 @@ struct INTERPOLATE {
     INTERPOLATE_TYPE type;
 };
 
-int pcBackground;
 int gViewMode = 3;
 int gViewSize = 2;
 
@@ -278,11 +277,6 @@ void viewGetFontInfo(int id, const char *unk1, int *pXSize, int *pYSize)
         if (pYSize)
             *pYSize = pFont->ySize;
     }
-}
-
-void viewUpdatePages(void)
-{
-    pcBackground = numpages;
 }
 
 void viewToggle(int viewMode)
@@ -1308,8 +1302,6 @@ WEAPONICON gWeaponIcon[] = {
     { -1, 0 },
 };
 
-int dword_14C508;
-
 void viewDrawStats(PLAYER *pPlayer, int x, int y)
 {
     COLORSTR colorStr;
@@ -1682,11 +1674,6 @@ void viewDrawPack(PLAYER *pPlayer, int x, int y)
             x += tilesiz[gPackIcons[nPack]].x + 1;
         }
     }
-    if (pPlayer->packItemTime != dword_14C508)
-    {
-        viewUpdatePages();
-    }
-    dword_14C508 = pPlayer->packItemTime;
 }
 
 void DrawPackItemInStatusBar(PLAYER *pPlayer, int x, int y, int x2, int y2, int nStat)
@@ -2453,7 +2440,6 @@ void viewResizeView(int size)
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     viewSetRenderScale(0);
     viewUpdateHudRatio();
-    viewUpdatePages();
 }
 
 #define kBackTile 253
@@ -2500,11 +2486,8 @@ void viewDimScreen(void)
 
 void viewDrawInterface(ClockTicks arg)
 {
-    if (gViewMode == 3 && ((gViewSize >= 4) || (gViewSize <= 3 && gGameOptions.nGameType != kGameTypeSinglePlayer)))
-    {
+    if ((gViewMode == 3) && (gViewSize > 4))
         UpdateFrame();
-        pcBackground--;
-    }
     UpdateStatusBar(arg);
 }
 

@@ -149,7 +149,6 @@ void CGameMenuMgr::Draw(void)
     if (pActiveMenu)
     {
         pActiveMenu->Draw();
-        viewUpdatePages();
     }
 
     if (m_postPop)

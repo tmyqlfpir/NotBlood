@@ -124,7 +124,6 @@ extern int32_t gShowFps, gFramePeriod;
 static inline double calcFrameDelay(unsigned int const maxFPS) { return maxFPS ? timerGetPerformanceFrequency() / (double)maxFPS : 0.0; }
 
 void viewGetFontInfo(int id, const char *unk1, int *pXSize, int *pYSize);
-void viewUpdatePages(void);
 void viewToggle(int viewMode);
 void viewInitializePrediction(void);
 void viewUpdatePrediction(GINPUT *pInput);

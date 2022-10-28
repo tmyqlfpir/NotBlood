@@ -422,8 +422,6 @@ void CGameMessageMgr::Display(void)
                 {
                     int height;
                     gMenuTextMgr.GetFontInfo(nFont, pMessage->text, &height, NULL);
-                    if (x+height > gViewX1S)
-                        viewUpdatePages();
                 }
                 y += fontHeight;
                 shade = ClipLow(shade-64/initialNrOfDisplayedMsgs, -128);
@@ -467,8 +465,6 @@ void CGameMessageMgr::Display(void)
                 {
                     int height;
                     gMenuTextMgr.GetFontInfo(nFont, pMessage->text, &height, NULL);
-                    if (x+height > gViewX1S)
-                        viewUpdatePages();
                 }
                 y += fontHeight;
                 shade = ClipLow(shade-64/messagesToDisplayCount, -128);
@@ -578,7 +574,6 @@ void CPlayerMsg::Draw(void)
     if (gViewSize >= 1)
         y += tilesiz[2229].y*((gNetPlayers+3)/4);
     viewDrawText(0, buffer, x+1,y+1, -128, 0, 0, false, 256);
-    viewUpdatePages();
 }
 
 bool CPlayerMsg::AddChar(char ch)
