@@ -2450,8 +2450,9 @@ void UpdateFrame(void)
 {
     const char bVanilla = !gHudBgVanilla ? VanillaMode() : (gHudBgVanilla == 2);
     const int nPalette = !bVanilla ? playerColorPalHud(gView->teamId) : 0;
+    const char bDrawNewBottomBorder = gHudBgNewBorder && (gViewSize == 5);
 
-    if (gHudBgNewBorder && (gViewSize == 5))
+    if (bDrawNewBottomBorder)
     {
         const int nTile = kHudFullBackTile;
         const int nHalfScreen = klabs(gViewX1S-gViewX0S)>>1;
@@ -2460,7 +2461,6 @@ void UpdateFrame(void)
             DrawStatMaskedSprite(nTile, -i, 172, 16, nPalette); // left side
             DrawStatMaskedSprite(nTile, i+320, 172, 16, nPalette); // right side
         }
-        return;
     }
 
     const int nTile = !bVanilla ? kBackTile : kBackTileVanilla;
@@ -2483,14 +2483,20 @@ void UpdateFrame(void)
     }
 
     viewTileSprite(nTile, 0, nPalette, 0, 0, xdim, gViewY0-3, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 0, nPalette, 0, gViewY1+4, xdim, ydim, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 0, nPalette, 0, gViewY0-3, gViewX0-3, gViewY1+4, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 0, nPalette, gViewX1+4, gViewY0-3, xdim, gViewY1+4, nWidth, nHeight, nScale);
+    if (!bDrawNewBottomBorder) // don't render rest of border tiles for full hud mode
+    {
+        viewTileSprite(nTile, 0, nPalette, 0, gViewY1+4, xdim, ydim, nWidth, nHeight, nScale);
+        viewTileSprite(nTile, 0, nPalette, 0, gViewY0-3, gViewX0-3, gViewY1+4, nWidth, nHeight, nScale);
+        viewTileSprite(nTile, 0, nPalette, gViewX1+4, gViewY0-3, xdim, gViewY1+4, nWidth, nHeight, nScale);
+    }
 
-    viewTileSprite(nTile, 20, nPalette, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1, nWidth, nHeight, nScale);
     viewTileSprite(nTile, 20, nPalette, gViewX0, gViewY0-3, gViewX1+4, gViewY0, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4, nWidth, nHeight, nScale);
+    if (!bDrawNewBottomBorder) // don't render rest of border tiles for full hud mode
+    {
+        viewTileSprite(nTile, 20, nPalette, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1, nWidth, nHeight, nScale);
+        viewTileSprite(nTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4, nWidth, nHeight, nScale);
+        viewTileSprite(nTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4, nWidth, nHeight, nScale);
+    }
 }
 
 void viewDimScreen(void)
@@ -2501,7 +2507,7 @@ void viewDimScreen(void)
 
 void viewDrawInterface(ClockTicks arg)
 {
-    if ((gViewMode == 3) && (gViewSize > 4))
+    if ((gViewMode == 3) && ((gViewSize > 4) || (gViewSize <= 4 && gGameOptions.nGameType != kGameTypeSinglePlayer)))
         UpdateFrame();
     UpdateStatusBar(arg);
 }
