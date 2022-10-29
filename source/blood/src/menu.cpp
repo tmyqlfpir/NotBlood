@@ -52,8 +52,6 @@ void SetCDVol(CGameMenuItemSlider *);
 void SetMonoStereo(CGameMenuItemZBool *);
 void SetCrosshair(CGameMenuItemZCycle *);
 void SetCenterHoriz(CGameMenuItemZBool *);
-void SetShowPlayerNames(CGameMenuItemZBool *);
-void SetShowWeapons(CGameMenuItemZCycle *);
 
 void SetMonsters(CGameMenuItemZCycle*);
 void SetQuadDamagePowerup(CGameMenuItemZBool*);
@@ -230,12 +228,6 @@ const char *pzCrosshairStrings[] = {
     "OFF",
     "ON",
     "ON (AUTO AIM)"
-};
-
-const char *pzShowWeaponStrings[] = {
-    "OFF",
-    "SPRITE",
-    "VOXEL"
 };
 
 const char *pzMonsterStrings[] =
@@ -518,7 +510,7 @@ CGameMenu menuOptionsDisplayMode;
 CGameMenu menuOptionsDisplayPolymost;
 #endif
 CGameMenu menuOptionsSound;
-CGameMenu menuOptionsPlayer;
+CGameMenu menuOptionsOnline;
 CGameMenu menuOptionsControl;
 
 void SetupOptionsSound(CGameMenuItemChain *pItem);
@@ -527,7 +519,7 @@ CGameMenuItemTitle itemOptionsTitle("OPTIONS", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsChainGame("GAME SETUP", 1, 0, 50, 320, 1, &menuOptionsGame, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainDisplay("DISPLAY SETUP", 1, 0, 70, 320, 1, &menuOptionsDisplay, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainSound("SOUND SETUP", 1, 0, 90, 320, 1, &menuOptionsSound, -1, SetupOptionsSound, 0);
-CGameMenuItemChain itemOptionsChainPlayer("PLAYER SETUP", 1, 0, 110, 320, 1, &menuOptionsPlayer, -1, NULL, 0);
+CGameMenuItemChain itemOptionsChainOnline("ONLINE SETUP", 1, 0, 110, 320, 1, &menuOptionsOnline, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainControl("CONTROL SETUP", 1, 0, 130, 320, 1, &menuOptionsControl, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainEnhancements("ENHANCEMENTS", 1, 0, 150, 320, 1, &menuOptionsGameEnhancements, -1, NULL, 0);
 
@@ -626,19 +618,17 @@ CGameMenuItemZCycle itemEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 145
 CGameMenuItemZEdit itemEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 155, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
-CGameMenuItemZBool itemOptionsGameBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 37, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameShowWeapons("SHOW WEAPONS:", 3, 66, 47, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
-CGameMenuItemZBool itemOptionsGameBoolSlopeTilting("SLOPE TILTING:", 3, 66, 57, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
-CGameMenuItemZBool itemOptionsGameBoolViewBobbing("VIEW BOBBING:", 3, 66, 67, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
-CGameMenuItemZBool itemOptionsGameBoolViewSwaying("VIEW SWAYING:", 3, 66, 77, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameBoolWeaponSwaying("WEAPON SWAYING:", 3, 66, 87, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
-CGameMenuItemZCycle itemOptionsGameBoolWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 97, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
-CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 107, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
-CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 117, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
-CGameMenuItemZBool itemOptionsGameWeaponFastSwitch("FAST WEAPON SWITCH:", 3, 66, 127, 180, 0, SetWeaponFastSwitch, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 137, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
-CGameMenuItemZBool itemOptionsGameLockSaving("LOCK MANUAL SAVING:", 3, 66, 147, 180, 0, SetLockSaving, "AUTOSAVES ONLY", "NEVER");
-CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 157, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
+CGameMenuItemZBool itemOptionsGameBoolSlopeTilting("SLOPE TILTING:", 3, 66, 47, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
+CGameMenuItemZBool itemOptionsGameBoolViewBobbing("VIEW BOBBING:", 3, 66, 57, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
+CGameMenuItemZBool itemOptionsGameBoolViewSwaying("VIEW SWAYING:", 3, 66, 67, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameBoolWeaponSwaying("WEAPON SWAYING:", 3, 66, 77, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
+CGameMenuItemZCycle itemOptionsGameBoolWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 87, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
+CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 97, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
+CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 107, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
+CGameMenuItemZBool itemOptionsGameWeaponFastSwitch("FAST WEAPON SWITCH:", 3, 66, 117, 180, 0, SetWeaponFastSwitch, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE:", 3, 66, 127, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
+CGameMenuItemZBool itemOptionsGameLockSaving("LOCK MANUAL SAVING:", 3, 66, 137, 180, 0, SetLockSaving, "AUTOSAVES ONLY", "NEVER");
+CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 147, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
@@ -870,6 +860,8 @@ CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 170, 180
 
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
 void UpdatePlayerSkill(CGameMenuItemZCycle *pItem);
+void SetShowPlayerNames(CGameMenuItemZBool *);
+void SetShowWeapons(CGameMenuItemZCycle *);
 void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem);
 void UpdatePlayerColorMessages(CGameMenuItemZBool *pItem);
 void UpdatePlayerKillMessage(CGameMenuItemZBool *pItem);
@@ -889,13 +881,21 @@ const char *pzPlayerSkillStrings[] = {
     "+2",
 };
 
-CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
-CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 65, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
-CGameMenuItemZCycle itemOptionsPlayerSkill("HEALTH HANDICAP:", 3, 66, 75, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
-CGameMenuItemZBool itemOptionsPlayerChatSound("CHAT BEEP:", 3, 66, 90, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
-CGameMenuItemZBool itemOptionsPlayerColorMsg("COLORED MESSAGES:", 3, 66, 100, 180, true, UpdatePlayerColorMessages, NULL, NULL);
-CGameMenuItemZBool itemOptionsPlayerKillMsg("SHOW KILLS ON HUD:", 3, 66, 110, 180, true, UpdatePlayerKillMessage, NULL, NULL);
-CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 120, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
+const char *pzShowWeaponStrings[] = {
+    "OFF",
+    "SPRITE",
+    "VOXEL"
+};
+
+CGameMenuItemTitle itemOptionsOnlineTitle("ONLINE SETUP", 1, 160, 20, 2038);
+CGameMenuItemZEdit itemOptionsOnlineName("PLAYER NAME:", 3, 66, 65, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
+CGameMenuItemZCycle itemOptionsOnlineSkill("HEALTH HANDICAP:", 3, 66, 75, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
+CGameMenuItemZBool itemOptionsOnlineBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 90, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
+CGameMenuItemZCycle itemOptionsOnlineShowWeapons("SHOW WEAPONS:", 3, 66, 100, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
+CGameMenuItemZBool itemOptionsOnlineChatSound("MESSAGE BEEP:", 3, 66, 110, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
+CGameMenuItemZBool itemOptionsOnlineColorMsg("COLORED MESSAGES:", 3, 66, 120, 180, true, UpdatePlayerColorMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsOnlineKillMsg("SHOW KILLS ON HUD:", 3, 66, 130, 180, true, UpdatePlayerKillMessage, NULL, NULL);
+CGameMenuItemZCycle itemOptionsOnlineMultiKill("MULTI KILL MESSAGES:", 3, 66, 140, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
 
 #define JOYSTICKITEMSPERPAGE 16 // this must be an even value, as double tap inputs rely on odd index position
 #define MAXJOYSTICKBUTTONPAGES (max(1, (MAXJOYBUTTONSANDHATS*2 / JOYSTICKITEMSPERPAGE))) // we double all buttons/hats so each input can be bind for double tap
@@ -1489,15 +1489,13 @@ void SetupOptionsMenu(void)
     menuOptions.Add(&itemOptionsChainGame, true);
     menuOptions.Add(&itemOptionsChainDisplay, false);
     menuOptions.Add(&itemOptionsChainSound, false);
-    menuOptions.Add(&itemOptionsChainPlayer, false);
+    menuOptions.Add(&itemOptionsChainOnline, false);
     menuOptions.Add(&itemOptionsChainControl, false);
     menuOptions.Add(&itemOptionsChainEnhancements, false);
     menuOptions.Add(&itemBloodQAV, false);
 
     menuOptionsGame.Add(&itemOptionsGameTitle, false);
-    menuOptionsGame.Add(&itemOptionsGameBoolShowPlayerNames, true);
-    menuOptionsGame.Add(&itemOptionsGameShowWeapons, false);
-    menuOptionsGame.Add(&itemOptionsGameBoolSlopeTilting, false);
+    menuOptionsGame.Add(&itemOptionsGameBoolSlopeTilting, true);
     menuOptionsGame.Add(&itemOptionsGameBoolViewBobbing, false);
     menuOptionsGame.Add(&itemOptionsGameBoolViewSwaying, false);
     menuOptionsGame.Add(&itemOptionsGameBoolWeaponSwaying, false);
@@ -1511,10 +1509,6 @@ void SetupOptionsMenu(void)
     itemOptionsGameAutosaveMode.bDisableForNet = 1;
     itemOptionsGameLockSaving.bDisableForNet = 1;
     itemOptionsGameBoolVanillaMode.bDisableForNet = 1;
-    itemOptionsGameBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's names";
-    itemOptionsGameBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
-    itemOptionsGameShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
-    itemOptionsGameShowWeapons.tooltip_pzTextLower = "over their head";
     itemOptionsGameBoolSlopeTilting.tooltip_pzTextUpper = "Tilt view when looking";
     itemOptionsGameBoolSlopeTilting.tooltip_pzTextLower = "towards a slope";
     itemOptionsGameBoolWeaponInterpolation.tooltip_pzTextUpper = "Set QAV interpolation for";
@@ -1567,8 +1561,6 @@ void SetupOptionsMenu(void)
 
     //menuOptionsGame.Add(&itemOptionsGameChainParentalLock, false);
     menuOptionsGame.Add(&itemBloodQAV, false);
-    itemOptionsGameBoolShowPlayerNames.at20 = gShowPlayerNames;
-    itemOptionsGameShowWeapons.m_nFocus = gShowWeapon;
     itemOptionsGameBoolSlopeTilting.at20 = gSlopeTilting;
     itemOptionsGameBoolViewBobbing.at20 = gViewVBobbing;
     itemOptionsGameBoolViewSwaying.at20 = gViewHBobbing;
@@ -1744,28 +1736,35 @@ void SetupOptionsMenu(void)
     menuOptionsSoundSF2.Add(&itemOptionsSoundSF2Title, true);
     menuOptionsSoundSF2.Add(&itemOptionsSoundSF2FS, true);
 
-    menuOptionsPlayer.Add(&itemOptionsPlayerTitle, false);
-    menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
-    menuOptionsPlayer.Add(&itemOptionsPlayerSkill, false);
-    menuOptionsPlayer.Add(&itemOptionsPlayerChatSound, false);
-    menuOptionsPlayer.Add(&itemOptionsPlayerColorMsg, false);
-    menuOptionsPlayer.Add(&itemOptionsPlayerKillMsg, false);
-    menuOptionsPlayer.Add(&itemOptionsPlayerMultiKill, false);
-    menuOptionsPlayer.Add(&itemBloodQAV, false);
-    itemOptionsPlayerSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
-    itemOptionsPlayerSkill.tooltip_pzTextLower = "(only for multiplayer)";
-    itemOptionsPlayerColorMsg.tooltip_pzTextUpper = "Color player names in messages";
-    itemOptionsPlayerColorMsg.tooltip_pzTextLower = "(only for multiplayer)";
-    itemOptionsPlayerKillMsg.tooltip_pzTextUpper = "Show player killed on screen";
-    itemOptionsPlayerKillMsg.tooltip_pzTextLower = "(for bloodbath/teams multiplayer)";
-    itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
-    itemOptionsPlayerMultiKill.tooltip_pzTextLower = "(for bloodbath/teams multiplayer)";
+    menuOptionsOnline.Add(&itemOptionsOnlineTitle, false);
+    menuOptionsOnline.Add(&itemOptionsOnlineName, true);
+    menuOptionsOnline.Add(&itemOptionsOnlineSkill, false);
+    menuOptionsOnline.Add(&itemOptionsOnlineBoolShowPlayerNames, false);
+    menuOptionsOnline.Add(&itemOptionsOnlineShowWeapons, false);
+    menuOptionsOnline.Add(&itemOptionsOnlineChatSound, false);
+    menuOptionsOnline.Add(&itemOptionsOnlineColorMsg, false);
+    menuOptionsOnline.Add(&itemOptionsOnlineKillMsg, false);
+    menuOptionsOnline.Add(&itemOptionsOnlineMultiKill, false);
+    menuOptionsOnline.Add(&itemBloodQAV, false);
+    itemOptionsOnlineSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
+    itemOptionsOnlineBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's name";
+    itemOptionsOnlineBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
+    itemOptionsOnlineShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
+    itemOptionsOnlineShowWeapons.tooltip_pzTextLower = "over their head";
+    itemOptionsOnlineChatSound.tooltip_pzTextUpper = "Play beep sound for chat messages";
+    itemOptionsOnlineColorMsg.tooltip_pzTextUpper = "Color player names for chat messages";
+    itemOptionsOnlineKillMsg.tooltip_pzTextUpper = "Show player killed on screen";
+    itemOptionsOnlineKillMsg.tooltip_pzTextLower = "(for bloodbath/teams mode)";
+    itemOptionsOnlineMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
+    itemOptionsOnlineMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
 
-    itemOptionsPlayerSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
-    itemOptionsPlayerChatSound.at20 = gChatSnd;
-    itemOptionsPlayerColorMsg.at20 = gColorMsg;
-    itemOptionsPlayerKillMsg.at20 = gKillMsg;
-    itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
+    itemOptionsOnlineSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
+    itemOptionsOnlineBoolShowPlayerNames.at20 = gShowPlayerNames;
+    itemOptionsOnlineShowWeapons.m_nFocus = gShowWeapon;
+    itemOptionsOnlineChatSound.at20 = gChatSnd;
+    itemOptionsOnlineColorMsg.at20 = gColorMsg;
+    itemOptionsOnlineKillMsg.at20 = gKillMsg;
+    itemOptionsOnlineMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
 }
 
 void SetupControlsMenu(void)
@@ -2184,16 +2183,6 @@ void SetRandomizerSeed(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
         Bstrncpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
 }
 ////
-
-void SetShowPlayerNames(CGameMenuItemZBool *pItem)
-{
-    gShowPlayerNames = pItem->at20;
-}
-
-void SetShowWeapons(CGameMenuItemZCycle *pItem)
-{
-    gShowWeapon = pItem->m_nFocus;
-}
 
 void SetSlopeTilting(CGameMenuItemZBool *pItem)
 {
@@ -2997,6 +2986,16 @@ void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
     gSkill = 4 - (pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
     if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         netBroadcastPlayerInfoUpdate(myconnectindex);
+}
+
+void SetShowPlayerNames(CGameMenuItemZBool *pItem)
+{
+    gShowPlayerNames = pItem->at20;
+}
+
+void SetShowWeapons(CGameMenuItemZCycle *pItem)
+{
+    gShowWeapon = pItem->m_nFocus;
 }
 
 void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem)
