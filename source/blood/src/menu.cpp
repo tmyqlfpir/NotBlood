@@ -51,7 +51,6 @@ void SetSoundVol(CGameMenuItemSlider *);
 void SetCDVol(CGameMenuItemSlider *);
 void SetMonoStereo(CGameMenuItemZBool *);
 void SetCrosshair(CGameMenuItemZCycle *);
-void SetCenterHoriz(CGameMenuItemZBool *);
 
 void SetMonsters(CGameMenuItemZCycle*);
 void SetQuadDamagePowerup(CGameMenuItemZBool*);
@@ -66,6 +65,8 @@ void SetHitscanProjectiles(CGameMenuItemZBool*);
 void SetRandomizerMode(CGameMenuItemZCycle*);
 void SetRandomizerSeed(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
 
+void SetHudSize(CGameMenuItemSlider *pItem);
+void SetCenterHoriz(CGameMenuItemZBool *);
 void SetSlopeTilting(CGameMenuItemZBool *);
 void SetViewBobbing(CGameMenuItemZBool *);
 void SetViewSwaying(CGameMenuItemZBool *);
@@ -713,14 +714,15 @@ CGameMenuItemSliderFloat itemOptionsDisplayColorVisibility("VISIBILITY:", 3, 66,
 CGameMenuItemChain itemOptionsDisplayColorReset("RESET TO DEFAULTS", 3, 66, 180, 180, 0, NULL, 0, ResetVideoColor, 0);
 
 CGameMenuItemTitle itemOptionsDisplayViewTitle("VIEW SETUP", 1, 160, 20, 2038);
-CGameMenuItemZBool itemOptionsDisplayViewBoolCenterHoriz("CENTER HORIZON LINE:", 3, 66, 60, 180, gCenterHoriz, SetCenterHoriz, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayViewBoolSlopeTilting("SLOPE TILTING:", 3, 66, 70, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayViewBoolViewBobbing("VIEW BOBBING:", 3, 66, 80, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayViewBoolViewSwaying("VIEW SWAYING:", 3, 66, 90, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayViewWeaponSwaying("WEAPON SWAYING:", 3, 66, 100, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayViewWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 110, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayViewMirrorMode("MIRROR MODE:", 3, 66, 120, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
-CGameMenuItemZBool itemOptionsDisplayViewBoolSlowRoomFlicker("SLOW DOWN FLICKERING LIGHTS:", 3, 66, 130, 180, gSlowRoomFlicker, SetSlowRoomFlicker, NULL, NULL);
+CGameMenuItemSlider itemOptionsDisplayViewHudSize("HUD SIZE:", 3, 66, 60, 180, &gViewSize, 0, 9, 1, SetHudSize, -1, -1, kMenuSliderValue);
+CGameMenuItemZBool itemOptionsDisplayViewBoolCenterHoriz("CENTER HORIZON LINE:", 3, 66, 70, 180, gCenterHoriz, SetCenterHoriz, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayViewBoolSlopeTilting("SLOPE TILTING:", 3, 66, 80, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayViewBoolViewBobbing("VIEW BOBBING:", 3, 66, 90, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayViewBoolViewSwaying("VIEW SWAYING:", 3, 66, 100, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayViewWeaponSwaying("WEAPON SWAYING:", 3, 66, 110, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayViewWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 120, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayViewMirrorMode("MIRROR MODE:", 3, 66, 130, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
+CGameMenuItemZBool itemOptionsDisplayViewBoolSlowRoomFlicker("SLOW DOWN FLICKERING LIGHTS:", 3, 66, 140, 180, gSlowRoomFlicker, SetSlowRoomFlicker, NULL, NULL);
 
 #ifdef USE_OPENGL
 const char *pzTextureModeStrings[] = {
@@ -1675,7 +1677,8 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayColorBrightness.pPreDrawCallback = PreDrawDisplayColor;
 
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewTitle, false);
-    menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolCenterHoriz, true);
+    menuOptionsDisplayView.Add(&itemOptionsDisplayViewHudSize, true);
+    menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolCenterHoriz, false);
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolSlopeTilting, false);
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolViewBobbing, false);
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolViewSwaying, false);
@@ -2044,11 +2047,6 @@ void SetCrosshair(CGameMenuItemZCycle *pItem)
     gAimReticle = pItem->m_nFocus % ARRAY_SSIZE(pzCrosshairStrings);
 }
 
-void SetCenterHoriz(CGameMenuItemZBool *pItem)
-{
-    gCenterHoriz = pItem->at20;
-}
-
 void ResetKeys(CGameMenuItemChain *)
 {
     CONFIG_SetDefaultKeys(keydefaults);
@@ -2192,6 +2190,17 @@ void SetRandomizerSeed(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
         Bstrncpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
 }
 ////
+
+void SetHudSize(CGameMenuItemSlider *pItem)
+{
+    gViewSize = pItem->nValue;
+    viewResizeView(gViewSize);
+}
+
+void SetCenterHoriz(CGameMenuItemZBool *pItem)
+{
+    gCenterHoriz = pItem->at20;
+}
 
 void SetSlopeTilting(CGameMenuItemZBool *pItem)
 {
