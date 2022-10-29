@@ -462,6 +462,8 @@ void fxBloodBits(int nSprite) // 14
     }
     if (Chance(0x5000))
     {
+        if (!gGameOptions.bSectorBehavior || VanillaMode()) // restore sector (resolves optimization bug)
+            nSector = pSprite->sectnum;
         spritetype *pFX = gFX.fxSpawn(FX_36, nSector, x, y, floorZ-64);
         if (pFX)
         {

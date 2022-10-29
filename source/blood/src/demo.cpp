@@ -160,6 +160,15 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST098.DEM", (int32_t)0x00003061, 0xB813201F, 0x0000043C, {(int32_t)0x0000957B, (int32_t)0x0001362C, (int32_t)0xFFFFE9E4}, 1},
     {"/validatedemos/TEST099.DEM", (int32_t)0x00000D8E, 0xCC24C186, 0x00000000, {(int32_t)0x0000143E, (int32_t)0x0000F753, (int32_t)0x0001F5A4}, 1},
     {"/validatedemos/TEST100.DEM", (int32_t)0x000050EE, 0x4A970C28, 0x00000128, {(int32_t)0x00001872, (int32_t)0x0000B208, (int32_t)0xFFFF0D50}, 1},
+    {"/validatedemos/TEST101.DEM", (int32_t)0x00000DF2, 0x6059C7F7, 0x000004A4, {(int32_t)0x000017EB, (int32_t)0x000035CA, (int32_t)0xFFFFF1E4}, 1},
+    {"/validatedemos/TEST102.DEM", (int32_t)0x000018C9, 0x972B0857, 0x00000053, {(int32_t)0x000016CF, (int32_t)0x00003540, (int32_t)0xFFFFF150}, 1},
+    {"/validatedemos/TEST103.DEM", (int32_t)0x000005D9, 0x79F3760B, 0x00000000, {(int32_t)0x00001B3F, (int32_t)0xFFFFAC41, (int32_t)0x000041A4}, 0},
+    {"/validatedemos/TEST104.DEM", (int32_t)0x00000ED3, 0xC1E67725, 0x00000000, {(int32_t)0x000029C1, (int32_t)0x000054BD, (int32_t)0x000069A4}, 0},
+    {"/validatedemos/TEST105.DEM", (int32_t)0x000007A2, 0x48007932, 0x00000000, {(int32_t)0x0000267F, (int32_t)0xFFFFFC17, (int32_t)0x000041A4}, 0},
+    {"/validatedemos/TEST106.DEM", (int32_t)0x000008E5, 0x195F6658, 0x00000000, {(int32_t)0x0000113F, (int32_t)0x000034C1, (int32_t)0x000019A4}, 0},
+    {"/validatedemos/TEST107.DEM", (int32_t)0x000017D4, 0x5C2E2774, 0x00000000, {(int32_t)0x0000180D, (int32_t)0x000021C1, (int32_t)0xFFFFD9A4}, 0},
+    {"/validatedemos/TEST108.DEM", (int32_t)0x000045C3, 0x79AE9FDD, 0x0000029D, {(int32_t)0x000011AD, (int32_t)0xFFFFB247, (int32_t)0x00002550}, 0},
+    {"/validatedemos/TEST109.DEM", (int32_t)0x000038B4, 0x2197456B, 0x00000000, {(int32_t)0x0000196A, (int32_t)0xFFFF5C13, (int32_t)0xFFFFF9A4}, 1},
 };
 
 int nBuild = 0;
