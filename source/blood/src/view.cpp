@@ -1304,17 +1304,19 @@ WEAPONICON gWeaponIcon[] = {
 
 void viewDrawStats(PLAYER *pPlayer, int x, int y)
 {
-    COLORSTR colorStr;
+    COLORSTR colorStr, colorStrKills, colorStrSecrets;
     const int nFont = 3;
     char buffer[128];
     if (!gLevelStats)
         return;
 
     colorStr.nPal1 = 2; // set text group palette
-    colorStr.nPal2 = 0;
+    colorStr.nPal2 = 8; // 8: gold
     colorStr.nColor1[0] = 0; // color first two characters of stat string
     colorStr.nColor1[1] = 2;
-    colorStr.nColor2[0] = colorStr.nColor2[1] = -1;
+    colorStr.nColor2[0] = colorStr.nColor2[1] = -1; // unused
+    colorStrKills = colorStrSecrets = colorStr;
+
     int nHeight;
     viewGetFontInfo(nFont, NULL, NULL, &nHeight);
     sprintf(buffer, "T:%d:%02d.%02d",
@@ -1325,13 +1327,22 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
     viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
     y += nHeight+1;
     if (gGameOptions.nGameType != kGameTypeTeams)
+    {
         sprintf(buffer, "K:%d/%d", gKillMgr.at4, max(gKillMgr.at4, gKillMgr.at0));
+        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (gKillMgr.at4 >= gKillMgr.at0)) // if killed all enemies in level, set counter to gold
+            colorStrKills.nColor2[0] = 2; // set valid start position for gold color
+    }
     else
         sprintf(buffer, "K:%d", pPlayer->fragCount);
-    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
-    y += nHeight+1;
-    sprintf(buffer, "S:%d/%d", gSecretMgr.nNormalSecretsFound, max(gSecretMgr.nNormalSecretsFound, gSecretMgr.nAllSecrets)); // if we found more than there are, increase the total - some levels have a bugged counter
-    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
+    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrKills);
+    if (gGameOptions.nGameType <= kGameTypeCoop) // only show secrets counter for single-player/co-op mode
+    {
+        y += nHeight+1;
+        sprintf(buffer, "S:%d/%d", gSecretMgr.nNormalSecretsFound, max(gSecretMgr.nNormalSecretsFound, gSecretMgr.nAllSecrets)); // if we found more than there are, increase the total - some levels have a bugged counter
+        if (gSecretMgr.nNormalSecretsFound >= gSecretMgr.nAllSecrets) // if all secrets found, set counter to gold
+            colorStrSecrets.nColor2[0] = 2; // set valid start position for gold color
+        viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrSecrets);
+    }
 }
 
 struct POWERUPDISPLAY
