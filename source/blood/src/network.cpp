@@ -69,7 +69,7 @@ char gNetAddress[32];
 // PORT-TODO: Use different port?
 int gNetPort = kNetDefaultPort;
 
-const short word_1328AC = 0x21D;
+const short kNetVersion = 0x21E;
 
 PKT_STARTGAME gPacketStartGame;
 
@@ -528,7 +528,7 @@ void netGetPackets(void)
         case 252:
             pPacket += 4;
             memcpy(&gPacketStartGame, pPacket, sizeof(PKT_STARTGAME));
-            if (gPacketStartGame.version != word_1328AC)
+            if (gPacketStartGame.version != kNetVersion)
                 ThrowError("\nThese versions of Blood cannot play together.\n");
             gStartNewGame = 1;
             SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
@@ -607,7 +607,7 @@ void netBroadcastNewGame(void)
 {
     if (numplayers < 2)
         return;
-    gPacketStartGame.version = word_1328AC;
+    gPacketStartGame.version = kNetVersion;
     char *pPacket = packet;
     PutPacketByte(pPacket, 252);
     PutPacketDWord(pPacket, myconnectindex);
