@@ -365,7 +365,8 @@ void UpdateAimVector(PLAYER * pPlayer)
     WEAPONTRACK *pWeaponTrack = &gWeaponTrack[pPlayer->curWeapon];
     int nTarget = -1;
     pPlayer->aimTargetsCount = 0;
-    if (gProfile[pPlayer->nPlayer].nAutoAim == 1 || (gProfile[pPlayer->nPlayer].nAutoAim == 2 && !pWeaponTrack->bIsProjectile) || pPlayer->curWeapon == kWeaponVoodoo || pPlayer->curWeapon == kWeaponLifeLeech)
+    const char bAutoAim = (gProfile[pPlayer->nPlayer].nAutoAim == 1) || (gProfile[pPlayer->nPlayer].nAutoAim == 2 && !pWeaponTrack->bIsProjectile) || ((pPlayer->curWeapon == kWeaponPitchfork) && WeaponsNotBlood() && !(powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup) && !VanillaMode());
+    if (bAutoAim || (pPlayer->curWeapon == kWeaponVoodoo) || (pPlayer->curWeapon == kWeaponLifeLeech))
     {
         if (gGameOptions.bSectorBehavior && !VanillaMode()) // check for ror so autoaim can work peering above water
             CheckLink(&x, &y, &z, &nSector);

@@ -112,6 +112,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Napalm balls, proxy bundles, armed spray cans or pod projectiles
 * Weapon behavior
    - Select between original weapon behavior, NBlood's V1.X behavior or NotBlood's tweaked weapon set which include:
+   - Autoaim is always enabled for pitchfork
    - Adjust pitch offset for spray/missile firing
    - Adds a charge up stab for pitchfork's alt fire
    - Makes lifeleech throwable and increases damage while in sentry mode
