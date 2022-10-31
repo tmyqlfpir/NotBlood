@@ -1656,9 +1656,11 @@ void ProcessInput(PLAYER *pPlayer)
                     if (gDemo.bRecording)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
-                    return; // return so ProcessFrame() can restart single-player
+                    if (gRestoreLastSave)
+                        return; // return so ProcessFrame() can restart single-player
                 }
-                playerStart(pPlayer->nPlayer);
+                else
+                    playerStart(pPlayer->nPlayer);
             }
             pInput->keyFlags.useItem = 0;
             pInput->keyFlags.action = 0;
@@ -2500,7 +2502,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         FragPlayer(pPlayer, nSource);
         trTriggerSprite(nSprite, pXSprite, kCmdOff, nSource);
 
-        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode(true)) // if died in single-player and not playing demo
+        if (gRestoreLastSave && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording) // if died in single-player and not playing demo
         {
             extern short gQuickLoadSlot; // from menu.h
             bool bAutosavedInSession = gAutosaveInCurLevel;

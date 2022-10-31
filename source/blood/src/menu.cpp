@@ -601,6 +601,7 @@ void SetWeaponSwitch(CGameMenuItemZCycle *pItem);
 void SetWeaponFastSwitch(CGameMenuItemZBool *pItem);
 void SetAutosaveMode(CGameMenuItemZCycle *pItem);
 void SetLockSaving(CGameMenuItemZBool *pItem);
+void SetRestoreLastSave(CGameMenuItemZBool *pItem);
 void SetVanillaMode(CGameMenuItemZCycle *pItem);
 
 ///////////////
@@ -625,7 +626,8 @@ CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 70, 180
 CGameMenuItemZBool itemOptionsGameWeaponFastSwitch("FAST WEAPON SWITCH:", 3, 66, 80, 180, 0, SetWeaponFastSwitch, NULL, NULL);
 CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE TRIGGER:", 3, 66, 100, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
 CGameMenuItemZBool itemOptionsGameLockSaving("LOCK MANUAL SAVING:", 3, 66, 110, 180, 0, SetLockSaving, "AUTOSAVES ONLY", "NEVER");
-CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 120, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
+CGameMenuItemZBool itemOptionsGameRestoreLastSave("ASK TO RESTORE LAST SAVE:", 3, 66, 120, 180, 0, SetRestoreLastSave, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 130, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
@@ -1506,14 +1508,15 @@ void SetupOptionsMenu(void)
     menuOptionsGame.Add(&itemOptionsGameWeaponFastSwitch, false);
     menuOptionsGame.Add(&itemOptionsGameAutosaveMode, false);
     menuOptionsGame.Add(&itemOptionsGameLockSaving, false);
+    menuOptionsGame.Add(&itemOptionsGameRestoreLastSave, false);
     menuOptionsGame.Add(&itemOptionsGameBoolVanillaMode, false);
-    itemOptionsGameAutosaveMode.bDisableForNet = 1;
     itemOptionsGameLockSaving.bDisableForNet = 1;
     itemOptionsGameBoolVanillaMode.bDisableForNet = 1;
     itemOptionsGameWeaponFastSwitch.tooltip_pzTextUpper = "Allow weapon switching while";
     itemOptionsGameWeaponFastSwitch.tooltip_pzTextLower = "weapon is being lowered/raised";
     itemOptionsGameAutosaveMode.tooltip_pzTextUpper = "Set when autosave will trigger";
     itemOptionsGameLockSaving.tooltip_pzTextUpper = "Disable manual saving/save scumming";
+    itemOptionsGameRestoreLastSave.tooltip_pzTextUpper = "Prompt to restore last save game on death";
     itemOptionsGameBoolVanillaMode.tooltip_pzTextUpper = "Disable all non-vanilla features/enhancements";
     itemOptionsGameBoolVanillaMode.tooltip_pzTextLower = "(v1.21 DOS compatibility mode)";
 
@@ -1563,6 +1566,7 @@ void SetupOptionsMenu(void)
     itemOptionsGameWeaponFastSwitch.at20 = !!gWeaponFastSwitch;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
     itemOptionsGameLockSaving.at20 = !!gLockManualSaving;
+    itemOptionsGameRestoreLastSave.at20 = !!gRestoreLastSave;
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
     SetGameVanillaMode(gVanilla); // enable/disable menu items depending on current vanilla mode state
 
@@ -2387,6 +2391,11 @@ void SetLockSaving(CGameMenuItemZBool *pItem)
     gLockManualSaving = pItem->at20;
 
     itemMainSave3.bEnable = !gLockManualSaving; // hide save option in main menu if lock saving mode is set
+}
+
+void SetRestoreLastSave(CGameMenuItemZBool *pItem)
+{
+    gRestoreLastSave = pItem->at20;
 }
 
 void SetGameVanillaMode(char nState)

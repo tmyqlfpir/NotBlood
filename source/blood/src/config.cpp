@@ -83,6 +83,7 @@ int32_t gAutoAim;
 int32_t gWeaponSwitch;
 int32_t gWeaponFastSwitch;
 int32_t gLockManualSaving;
+int32_t gRestoreLastSave;
 int32_t gAutosave;
 bool gAutosaveInCurLevel;
 int32_t gAutoRun;
@@ -512,6 +513,7 @@ void CONFIG_SetDefaults(void)
     gWeaponSwitch = 2;
     gWeaponFastSwitch = 0;
     gLockManualSaving = 0;
+    gRestoreLastSave = 1;
     gAutosave = 1;
     gAutosaveInCurLevel = false;
 
@@ -840,6 +842,7 @@ int CONFIG_ReadSetup(void)
     ///////
     SCRIPT_GetNumber(scripthandle, "Game Options", "Autosave", &gAutosave);
     SCRIPT_GetNumber(scripthandle, "Game Options", "LockManualSaving", &gLockManualSaving);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "RestoreLastSave", &gRestoreLastSave);
     SCRIPT_GetNumber(scripthandle, "Game Options", "VanillaMode", &gVanilla);
     SCRIPT_GetNumber(scripthandle, "Game Options", "MonsterSettings", &gMonsterSettings);
     SCRIPT_GetNumber(scripthandle, "Game Options", "QuadDamagePowerup", &gQuadDamagePowerup);
@@ -1132,6 +1135,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     ///////
     SCRIPT_PutNumber(scripthandle, "Game Options", "Autosave", gAutosave, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "LockManualSaving", gLockManualSaving, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "RestoreLastSave", gRestoreLastSave, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "VanillaMode", gVanilla, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "MonsterSettings", gMonsterSettings, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "QuadDamagePowerup", gQuadDamagePowerup, FALSE, FALSE);
