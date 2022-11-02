@@ -3695,7 +3695,7 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
 {
     const int32_t nStat = r_usenewaspect ? RS_AUTO : RS_AUTO | RS_STRETCH;
     const char bBannedWeapon = (pPlayer->curWeapon == kWeaponNone) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT);
-    const char bShowAutoAimTarget = (gAimReticle == 2) && (gProfile[pPlayer->nPlayer].nAutoAim) && pPlayer->aimTargetsCount && !bBannedWeapon;
+    const char bShowAutoAimTarget = (gAimReticle == 2) && pPlayer->aimTargetsCount && !bBannedWeapon;
     const char bPaused = !((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != kGameTypeSinglePlayer))) || gDemo.bPlaying);
     int q16SlopeTilt = fix16_from_float(0.82f);
     int cX = 160;
