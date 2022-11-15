@@ -1328,7 +1328,7 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
     if (gGameOptions.nGameType != kGameTypeTeams)
     {
         sprintf(buffer, "K:%d/%d", gKillMgr.at4, max(gKillMgr.at4, gKillMgr.at0));
-        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (gKillMgr.at4 >= gKillMgr.at0)) // if killed all enemies in level, set counter to gold
+        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && gKillMgr.at0 && (gKillMgr.at4 >= gKillMgr.at0)) // if killed all enemies in level, set counter to gold
             colorStrKills.nColor2[0] = 2; // set valid start position for gold color
     }
     else
@@ -1338,7 +1338,7 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
     {
         y += nHeight+1;
         sprintf(buffer, "S:%d/%d", gSecretMgr.nNormalSecretsFound, max(gSecretMgr.nNormalSecretsFound, gSecretMgr.nAllSecrets)); // if we found more than there are, increase the total - some levels have a bugged counter
-        if (gSecretMgr.nNormalSecretsFound >= gSecretMgr.nAllSecrets) // if all secrets found, set counter to gold
+        if (gSecretMgr.nAllSecrets && (gSecretMgr.nNormalSecretsFound >= gSecretMgr.nAllSecrets)) // if all secrets found, set counter to gold
             colorStrSecrets.nColor2[0] = 2; // set valid start position for gold color
         viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrSecrets);
     }
