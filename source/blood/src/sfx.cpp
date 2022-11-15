@@ -53,7 +53,7 @@ int gSoundUnderwaterPitch = 0; // modify pitch when underwater
 BONKLE Bonkle[256];
 BONKLE *BonkleCache[256];
 
-static int nBonkles;
+int nBonkles;
 
 void sfxInit(void)
 {
