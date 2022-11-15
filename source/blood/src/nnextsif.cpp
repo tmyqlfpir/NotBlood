@@ -152,14 +152,14 @@ static char xAvail = false;											// x-object indicator
 
 /** INTERFACE functions
 ********************************************************************************/
-static void _fastcall Unserialize(int nSerial, int* oType, int* oIndex);
-static char _fastcall Cmp(int val, int nArg1, int nArg2);
-static int _fastcall  Serialize(int oType, int oIndex);
-static void _fastcall Push(int oType, int oIndex);
-static void _fastcall TriggerObject(int nSerial);
+static void __fastcall Unserialize(int nSerial, int* oType, int* oIndex);
+static char __fastcall Cmp(int val, int nArg1, int nArg2);
+static int __fastcall  Serialize(int oType, int oIndex);
+static void __fastcall Push(int oType, int oIndex);
+static void __fastcall TriggerObject(int nSerial);
 static void Error(const char* pFormat, ...);
 static void ReceiveObjects(EVENT* pFrom);
-static char _fastcall Cmp(int val);
+static char __fastcall Cmp(int val);
 static char DefaultResult();
 static void Restore();
 
@@ -1666,7 +1666,7 @@ static char CheckObject()
     return false;
 }
 
-static void _fastcall Push(int oType, int oIndex)
+static void __fastcall Push(int oType, int oIndex)
 {
     // focus on object
     pXCond->targetX = Serialize(oType, oIndex);
@@ -1708,7 +1708,7 @@ static void Restore()
     }
 }
 
-static int _fastcall Serialize(int oType, int oIndex)
+static int __fastcall Serialize(int oType, int oIndex)
 {
     switch (oType)
     {
@@ -1721,7 +1721,7 @@ static int _fastcall Serialize(int oType, int oIndex)
     return -1;
 }
 
-static void _fastcall Unserialize(int nSerial, int* oType, int* oIndex)
+static void __fastcall Unserialize(int nSerial, int* oType, int* oIndex)
 {
     if (rngok(nSerial, kSerialSector, kSerialWall))
     {
@@ -1744,7 +1744,7 @@ static void _fastcall Unserialize(int nSerial, int* oType, int* oIndex)
     }
 }
 
-static char _fastcall Cmp(int val)
+static char __fastcall Cmp(int val)
 {
     if (cmpOp & 0x2000)
         return (cmpOp & CSTAT_SPRITE_BLOCK) ? (val > arg1) : (val >= arg1); // blue sprite
@@ -1756,7 +1756,7 @@ static char _fastcall Cmp(int val)
         return (val == arg1);
 }
 
-static char _fastcall Cmp(int val, int nArg1, int nArg2)
+static char __fastcall Cmp(int val, int nArg1, int nArg2)
 {
     arg1 = nArg1;
     arg2 = nArg2;
@@ -1824,7 +1824,7 @@ static void ReceiveObjects(EVENT* pFrom)
     }
 }
 
-static void _fastcall TriggerObject(int nSerial)
+static void __fastcall TriggerObject(int nSerial)
 {
     int oType, oIndex;
     Unserialize(nSerial, &oType, &oIndex);
