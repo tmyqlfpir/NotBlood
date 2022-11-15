@@ -361,7 +361,7 @@ public:
     OBJECT* Ptr() { return &db[0]; }
     int Length() { return externalCount; }
 
-    int Add(int nType, int nIndex, BOOL check = FALSE)
+    int Add(int nType, int nIndex, bool check = FALSE)
     {
         int retn = -1;
         if (check && (retn = Find(nType, nIndex)) >= 0)
