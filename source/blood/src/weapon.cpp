@@ -365,10 +365,13 @@ void UpdateAimVector(PLAYER * pPlayer)
     WEAPONTRACK *pWeaponTrack = &gWeaponTrack[pPlayer->curWeapon];
     int nTarget = -1;
     pPlayer->aimTargetsCount = 0;
+    const char bAutoAim = (gProfile[pPlayer->nPlayer].nAutoAim == 1) || (gProfile[pPlayer->nPlayer].nAutoAim >= 2 && !pWeaponTrack->bIsProjectile);
     char bOnlyTargetRatsEels = gProfile[pPlayer->nPlayer].nAutoAim == 3;
-    char bAutoAim = (gProfile[pPlayer->nPlayer].nAutoAim == 1) || (gProfile[pPlayer->nPlayer].nAutoAim >= 2 && !pWeaponTrack->bIsProjectile);
     if (!bAutoAim && WeaponsNotBlood() && !VanillaMode()) // use autoaim for pitchfork, or tommygun alt fire
+    {
         bAutoAim = ((pPlayer->curWeapon == kWeaponPitchfork) && !(powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup)) || ((pPlayer->curWeapon == kWeaponTommy) && (pPlayer->weaponQav == 73 || pPlayer->weaponQav == 67));
+        bOnlyTargetRatsEels = 0; // overrides rats/eels only targeting mode
+    }
     if (bAutoAim || (pPlayer->curWeapon == kWeaponVoodoo) || (pPlayer->curWeapon == kWeaponLifeLeech))
     {
         if (gGameOptions.bSectorBehavior && !VanillaMode()) // check for ror so autoaim can work peering above water
