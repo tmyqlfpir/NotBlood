@@ -523,7 +523,8 @@ CGameMenuItemChain itemOptionsChainEnhancements("ENHANCEMENTS", 1, 0, 150, 320, 
 const char *pzAutoAimStrings[] = {
     "NEVER",
     "ALWAYS",
-    "HITSCAN ONLY"
+    "HITSCAN ONLY",
+    "HITSCAN RATS/EELS ONLY"
 };
 
 const char *pzWeaponSwitchStrings[] = {
