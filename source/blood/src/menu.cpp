@@ -524,7 +524,7 @@ const char *pzAutoAimStrings[] = {
     "NEVER",
     "ALWAYS",
     "HITSCAN ONLY",
-    "HITSCAN RATS ONLY"
+    "HITSCAN RATS/EELS ONLY"
 };
 
 const char *pzWeaponSwitchStrings[] = {

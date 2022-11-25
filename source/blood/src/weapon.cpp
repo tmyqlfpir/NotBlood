@@ -365,7 +365,7 @@ void UpdateAimVector(PLAYER * pPlayer)
     WEAPONTRACK *pWeaponTrack = &gWeaponTrack[pPlayer->curWeapon];
     int nTarget = -1;
     pPlayer->aimTargetsCount = 0;
-    char bOnlyTargetRats = gProfile[pPlayer->nPlayer].nAutoAim == 3;
+    char bOnlyTargetRatsEels = gProfile[pPlayer->nPlayer].nAutoAim == 3;
     char bAutoAim = (gProfile[pPlayer->nPlayer].nAutoAim == 1) || (gProfile[pPlayer->nPlayer].nAutoAim >= 2 && !pWeaponTrack->bIsProjectile);
     if (!bAutoAim && WeaponsNotBlood() && !VanillaMode()) // use autoaim for pitchfork, or tommygun alt fire
         bAutoAim = ((pPlayer->curWeapon == kWeaponPitchfork) && !(powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup)) || ((pPlayer->curWeapon == kWeaponTommy) && (pPlayer->weaponQav == 73 || pPlayer->weaponQav == 67));
@@ -385,7 +385,7 @@ void UpdateAimVector(PLAYER * pPlayer)
                 continue;
             if (!(pSprite->flags&8))
                 continue;
-            if (bOnlyTargetRats && (pSprite->type != kDudeRat))
+            if (bOnlyTargetRatsEels && (pSprite->type != kDudeRat) && (pSprite->type != kDudeBoneEel))
                 continue;
             int x2 = pSprite->x;
             int y2 = pSprite->y;
@@ -441,7 +441,7 @@ void UpdateAimVector(PLAYER * pPlayer)
                     continue;
                 if (!(pSprite->flags&8))
                     continue;
-                if (bOnlyTargetRats && (pSprite->type != kDudeRat))
+                if (bOnlyTargetRatsEels && (pSprite->type != kDudeRat) && (pSprite->type != kDudeBoneEel))
                     continue;
                 int x2 = pSprite->x;
                 int y2 = pSprite->y;
