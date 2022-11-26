@@ -87,6 +87,7 @@ struct PKT_STARTGAME {
     bool bFriendlyFire;
     char nSpawnProtection;
     char nSpawnWeapon;
+    char nFlareBurstCount;
     char szRandomizerSeed[9];
     unsigned int uSpriteBannedFlags;
 };

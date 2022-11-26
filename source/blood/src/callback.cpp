@@ -94,7 +94,8 @@ void FlareBurst(int nSprite) // 2
     spritetype *pSprite = &sprite[nSprite];
     int nAngle = getangle(xvel[nSprite], yvel[nSprite]);
     int nRadius = 0x55555;
-    for (int i = 0; i < 8; i++)
+    const int nFlares = !VanillaMode() ? (gFlareBurstCount + 1) * 4 : 8;
+    for (int i = 0; i < nFlares; i++)
     {
         spritetype *pSpawn = actSpawnSprite(pSprite, 5);
         pSpawn->picnum = 2424;
@@ -103,7 +104,7 @@ void FlareBurst(int nSprite) // 2
         pSpawn->type = kMissileFlareAlt;
         pSpawn->clipdist = 2;
         pSpawn->owner = pSprite->owner;
-        int nAngle2 = (i<<11)/8;
+        int nAngle2 = (i<<11)/nFlares;
         int dx = 0;
         int dy = mulscale30r(nRadius, Sin(nAngle2));
         int dz = mulscale30r(nRadius, -Cos(nAngle2));

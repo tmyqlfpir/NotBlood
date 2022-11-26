@@ -163,6 +163,7 @@ int gEnemyRandomTNT;
 int gWeaponsVer;
 int gSectorBehavior;
 int gHitscanProjectiles;
+int gFlareBurstCount;
 int gRandomizerMode;
 char gzRandomizerSeed[9];
 /////////
@@ -528,6 +529,7 @@ void CONFIG_SetDefaults(void)
     gWeaponsVer = 0;
     gSectorBehavior = 0;
     gHitscanProjectiles = 0;
+    gFlareBurstCount = 1;
     gRandomizerMode = 0;
     Bmemset(gzRandomizerSeed, 0, sizeof(gzRandomizerSeed));
 
@@ -854,6 +856,7 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsVer", &gWeaponsVer);
     SCRIPT_GetNumber(scripthandle, "Game Options", "SectorBehavior", &gSectorBehavior);
     SCRIPT_GetNumber(scripthandle, "Game Options", "HitscanProjectiles", &gHitscanProjectiles);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "FlareBurstCount", &gFlareBurstCount);
     SCRIPT_GetNumber(scripthandle, "Game Options", "RandomizerMode", &gRandomizerMode);
 
     Bmemset(tempbuf, 0, sizeof(tempbuf));
@@ -1147,6 +1150,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsVer", gWeaponsVer, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "SectorBehavior", gSectorBehavior, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "HitscanProjectiles", gHitscanProjectiles, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "FlareBurstCount", gFlareBurstCount, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "RandomizerMode", gRandomizerMode, FALSE, FALSE);
     gzRandomizerSeed[sizeof(gzRandomizerSeed)-1] = '\0';
     SCRIPT_PutString(scripthandle, "Game Options", "RandomizerSeed", &gzRandomizerSeed[0]);

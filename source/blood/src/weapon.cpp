@@ -1523,6 +1523,7 @@ void AltFireFlare(int nTrigger, PLAYER *pPlayer)
 {
     spritetype *pSprite = pPlayer->pSprite;
     int offset = 0;
+    const int nFlares = !VanillaMode() ? (gFlareBurstCount + 1) * 4 : 8;
     switch (nTrigger)
     {
     case 2:
@@ -1533,7 +1534,7 @@ void AltFireFlare(int nTrigger, PLAYER *pPlayer)
         break;
     }
     playerFireMissile(pPlayer, offset, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFlareAlt);
-    UseAmmo(pPlayer, 1, 8);
+    UseAmmo(pPlayer, 1, nFlares);
     sfxPlay3DSound(pSprite, 420, 2, 0);
     pPlayer->visibility = 45;
     pPlayer->flashEffect = 1;

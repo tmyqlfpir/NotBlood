@@ -143,6 +143,7 @@ extern int gEnemyRandomTNT;
 extern int gWeaponsVer;
 extern int gSectorBehavior;
 extern int gHitscanProjectiles;
+extern int gFlareBurstCount;
 extern int gRandomizerMode;
 extern char gzRandomizerSeed[9];
 //////
