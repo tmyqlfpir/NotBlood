@@ -40,8 +40,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "nnexts.h"
 #include "nnextsif.h"
 
-#define LENGTH(x) 					        (sizeof(x) / sizeof(x[0]))
-#define EVTIME2TICKS(x)                     ((x * 120) / 10)
 #define kSerialStep					        100000
 
 #define kPushRange                          3
@@ -152,14 +150,14 @@ static char xAvail = false;											// x-object indicator
 
 /** INTERFACE functions
 ********************************************************************************/
-static void __fastcall Unserialize(int nSerial, int* oType, int* oIndex);
-static char __fastcall Cmp(int val, int nArg1, int nArg2);
-static int __fastcall  Serialize(int oType, int oIndex);
-static void __fastcall Push(int oType, int oIndex);
-static void __fastcall TriggerObject(int nSerial);
+static void Unserialize(int nSerial, int* oType, int* oIndex);
+static char Cmp(int val, int nArg1, int nArg2);
+static int  Serialize(int oType, int oIndex);
+static void Push(int oType, int oIndex);
+static void TriggerObject(int nSerial);
 static void Error(const char* pFormat, ...);
 static void ReceiveObjects(EVENT* pFrom);
-static char __fastcall Cmp(int val);
+static char Cmp(int val);
 static char DefaultResult();
 static void Restore();
 
@@ -1666,7 +1664,7 @@ static char CheckObject()
     return false;
 }
 
-static void __fastcall Push(int oType, int oIndex)
+static void Push(int oType, int oIndex)
 {
     // focus on object
     pXCond->targetX = Serialize(oType, oIndex);
@@ -1708,7 +1706,7 @@ static void Restore()
     }
 }
 
-static int __fastcall Serialize(int oType, int oIndex)
+static int Serialize(int oType, int oIndex)
 {
     switch (oType)
     {
@@ -1721,7 +1719,7 @@ static int __fastcall Serialize(int oType, int oIndex)
     return -1;
 }
 
-static void __fastcall Unserialize(int nSerial, int* oType, int* oIndex)
+static void Unserialize(int nSerial, int* oType, int* oIndex)
 {
     if (rngok(nSerial, kSerialSector, kSerialWall))
     {
@@ -1744,7 +1742,7 @@ static void __fastcall Unserialize(int nSerial, int* oType, int* oIndex)
     }
 }
 
-static char __fastcall Cmp(int val)
+static char Cmp(int val)
 {
     if (cmpOp & 0x2000)
         return (cmpOp & CSTAT_SPRITE_BLOCK) ? (val > arg1) : (val >= arg1); // blue sprite
@@ -1756,7 +1754,7 @@ static char __fastcall Cmp(int val)
         return (val == arg1);
 }
 
-static char __fastcall Cmp(int val, int nArg1, int nArg2)
+static char Cmp(int val, int nArg1, int nArg2)
 {
     arg1 = nArg1;
     arg2 = nArg2;
@@ -1824,7 +1822,7 @@ static void ReceiveObjects(EVENT* pFrom)
     }
 }
 
-static void __fastcall TriggerObject(int nSerial)
+static void TriggerObject(int nSerial)
 {
     int oType, oIndex;
     Unserialize(nSerial, &oType, &oIndex);
@@ -2044,7 +2042,7 @@ void conditionsTrackingProcess()
         while (--t >= 0)
         {
             evn.type = o->type; evn.index = o->index;
-            useCondition(&sprite[pXSpr->reference], pXSpr, evn);
+            useCondition(&sprite[pXSpr->reference], pXSpr, &evn);
             o++;
         }
     }
@@ -2143,10 +2141,10 @@ void conditionsError(XSPRITE* pXSprite, const char* pFormat, ...)
 }
 
 
-void useCondition(spritetype* pSource, XSPRITE* pXSource, EVENT event)
+void useCondition(spritetype* pSource, XSPRITE* pXSource, EVENT* pEvn)
 {
     // if it's a tracking condition, it must ignore all the commands sent from objects
-    if (pXSource->busyTime && event.funcID != kCallbackMax)
+    if (pXSource->busyTime && pEvn->funcID != kCallbackMax)
         return;
 
     bool ok = false;
@@ -2164,20 +2162,20 @@ void useCondition(spritetype* pSource, XSPRITE* pXSource, EVENT event)
             if (delayBefore)
             {
                 // start waiting
-                evPost(pCond->index, EVOBJ_SPRITE, EVTIME2TICKS(pXCond->waitTime), (COMMAND_ID)kCmdRepeat, event.causer);
+                evPost(pCond->index, EVOBJ_SPRITE, EVTIME2TICKS(pXCond->waitTime), (COMMAND_ID)kCmdRepeat, pEvn->causer);
                 pXCond->restState = 1;
 
                 if (flag8)
-                    ReceiveObjects(&event); // receive current objects and hold it
+                    ReceiveObjects(pEvn); // receive current objects and hold it
 
                 return;
             }
             else
             {
-                ReceiveObjects(&event); // receive current objects and continue
+                ReceiveObjects(pEvn); // receive current objects and continue
             }
         }
-        else if (event.cmd == kCmdRepeat)
+        else if (pEvn->cmd == kCmdRepeat)
         {
             // finished the waiting
             if (delayBefore)
@@ -2186,14 +2184,14 @@ void useCondition(spritetype* pSource, XSPRITE* pXSource, EVENT event)
         else
         {
             if ((delayBefore && !flag8) || (!delayBefore && flag8))
-                ReceiveObjects(&event); // continue receiving actual objects while waiting
+                ReceiveObjects(pEvn); // continue receiving actual objects while waiting
 
             return;
         }
     }
     else
     {
-        ReceiveObjects(&event); // receive current objects and continue
+        ReceiveObjects(pEvn); // receive current objects and continue
     }
 
     if (pXCond->restState == 0)
@@ -2203,7 +2201,7 @@ void useCondition(spritetype* pSource, XSPRITE* pXSource, EVENT event)
         {
             cmpOp = pCond->cstat;       PUSH = rngok(pXCond->command, kCmdPush, kCmdPush + kPushRange);
             arg1 = pXCond->data2;		arg2 = pXCond->data3;
-            arg3 = pXCond->data4;		pEvent = &event;
+            arg3 = pXCond->data4;		pEvent = pEvn;
 
             Unserialize(pXCond->targetX, &objType, &objIndex);
             pEntry = &gConditions[pXCond->data1];
@@ -2221,7 +2219,7 @@ void useCondition(spritetype* pSource, XSPRITE* pXSource, EVENT event)
             if (pXCond->waitTime && !delayBefore) // delay after checking
             {
                 // start waiting
-                evPost(pCond->index, EVOBJ_SPRITE, EVTIME2TICKS(pXCond->waitTime), (COMMAND_ID)kCmdRepeat, event.causer);
+                evPost(pCond->index, EVOBJ_SPRITE, EVTIME2TICKS(pXCond->waitTime), (COMMAND_ID)kCmdRepeat, pEvn->causer);
                 pXCond->restState = 1;
                 return;
             }
@@ -2231,7 +2229,7 @@ void useCondition(spritetype* pSource, XSPRITE* pXSource, EVENT event)
             pXCond->state = 0;
         }
     }
-    else if (event.cmd == kCmdRepeat)
+    else if (pEvn->cmd == kCmdRepeat)
     {
         pXCond->restState = 0;
     }
