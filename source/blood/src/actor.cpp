@@ -5767,35 +5767,31 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             }
             #ifdef NOONE_EXTENSIONS
             // add impulse for sprites from physics list
-            if (gPhysSpritesCount > 0 && pVectorData->impulse) {
-                
-                if (xspriRangeIsFine(pSprite->extra)) {
-                    
-                    XSPRITE* pXSprite = &xsprite[pSprite->extra];
-                    if (pXSprite->physAttr & kPhysDebrisVector) {
-                        
+            if (gPhysSpritesList.Length() && pVectorData->impulse && xspriRangeIsFine(pSprite->extra))
+            {
+                XSPRITE* pXSprite = &xsprite[pSprite->extra];
+                if (pXSprite->physAttr & kPhysDebrisVector)
+                {
                     int impulse = divscale6(pVectorData->impulse, ClipLow(gSpriteMass[pSprite->extra].mass, 10));
                     xvel[nSprite] += mulscale16(a4, impulse) * boost;
                     yvel[nSprite] += mulscale16(a5, impulse) * boost;
                     zvel[nSprite] += mulscale16(a6, impulse) * boostz;
 
-                    if (pVectorData->burnTime != 0) {
-                        if (!xsprite[nXSprite].burnTime) evPost(nSprite, 3, 0, kCallbackFXFlameLick);
-                        actBurnSprite(actSpriteIdToOwnerId(nShooter), &xsprite[nXSprite], pVectorData->burnTime);
+                    if (pVectorData->burnTime != 0)
+                    {
+                        if (!pXSprite->burnTime)
+                            evPost(nSprite, 3, 0, kCallbackFXFlameLick);
+
+                        actBurnSprite(actSpriteIdToOwnerId(nShooter), pXSprite, pVectorData->burnTime);
                     }
 
-                        if (pSprite->type >= kThingBase && pSprite->type < kThingMax) {
-                            pSprite->statnum = kStatThing; // temporary change statnum property
-                            actDamageSprite(nShooter, pSprite, pVectorData->dmgType, pVectorData->dmg << 4);
-                            pSprite->statnum = kStatDecoration; // return statnum property back
+                    if (IsThingSprite(pSprite))
+                    {
+                        pSprite->statnum = kStatThing; // temporary change statnum property
+                        actDamageSprite(nShooter, pSprite, pVectorData->dmgType, pVectorData->dmg << 4);
+                        pSprite->statnum = kStatDecoration; // return statnum property back
+                    }
                 }
-
-            }
-
-
-                }
-
-
             }
             #endif
             break;
