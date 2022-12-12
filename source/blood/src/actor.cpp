@@ -6580,7 +6580,7 @@ void actProcessSprites(void)
             pDb = pList->Last(); len = pList->Length();
 
             // trigger sprites from impact list
-            while (--len >= 0)
+            while (--len >= 0 && *pDb != kListEndDefault)
             {
                 pSpr = &sprite[*pDb];
                 if (!(pSpr->flags & kHitagFree))
