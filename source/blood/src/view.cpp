@@ -2512,7 +2512,7 @@ void viewDimScreen(void)
 {
     const int shadow_pal = 5;
     if (gGameMenuMgr.pActiveMenu != &menuOptionsDisplayColor) // if current menu is not on color correction menu, dim screen
-        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(64),0,0,127,shadow_pal,RS_STRETCH|RS_NOCLIP,192); // stretch tile across entire screen
+        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(127),0,0,127,shadow_pal,RS_STRETCH|RS_NOCLIP,192); // stretch tile across entire screen
 }
 
 void viewDrawInterface(ClockTicks arg)
