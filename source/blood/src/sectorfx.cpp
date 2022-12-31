@@ -167,11 +167,6 @@ void DoSectorLighting(void)
                 nAmp = mulscale16(nAmp, pXSector->busy);
             }
             int nFreq = pXSector->freq;
-            if (gSlowRoomFlicker && (nFreq > 50)) // if lights are too fast, limit and reduce amplitude by 4
-            {
-                nFreq = 50;
-                nAmp >>= 2;
-            }
             int nShade = GetWaveValue(nPhase, (pXSector->phase*8)+(nFreq*(int)totalclock), nAmp);
             if (pXSector->shadeFloor)
             {
