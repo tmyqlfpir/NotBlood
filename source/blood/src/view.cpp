@@ -4070,12 +4070,12 @@ void viewDrawScreen(void)
     if (gViewMode == 3 || gViewMode == 4 || gOverlayMap)
     {
         char bDoLighting = !gSlowRoomFlicker;
-        static ClockTicks nLastFrameClock = 0;
         if (gSlowRoomFlicker) // slow down sector lighting
         {
             const int kSectorLightingSpeed = kTicsPerFrame*2; // process sector lighting at half speed
+            static ClockTicks nLastFrameClock = 0;
             const ClockTicks nDelta = (gFrameClock - nLastFrameClock);
-            bDoLighting = (nDelta >= kSectorLightingSpeed) || (nDelta <= -kSectorLightingSpeed);
+            bDoLighting = (nDelta < 0) || (nDelta >= kSectorLightingSpeed);
             if (bDoLighting)
                 nLastFrameClock = gFrameClock;
         }
