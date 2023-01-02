@@ -2233,7 +2233,7 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gGameOptions.nGameType == kGameTypeSinglePlayer) return;
 
-    if (gGameOptions.nGameType >= kGameTypeTeams)
+    if (gGameOptions.nGameType >= kGameTypeBloodBath)
     {
         viewDrawKillMsg(arg);
         viewDrawMultiKill(arg);
