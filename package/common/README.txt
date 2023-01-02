@@ -139,6 +139,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Add room over room sector transversal for shadow rendering
    - Support wall sprites moving along with elevators
    - Fix bullet hole being placed across sky tile walls
+   - Use Raze phase calculation for smoother elevator rides
 * Hitscan projectiles
    - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
    - Projectile speed is adjusted depending on difficulty and if bullet is underwater
