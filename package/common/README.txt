@@ -97,6 +97,8 @@ It should be noted that vanilla mode does not work with modern maps
 * Projectiles behavior (Raze)
    - For all missiles/projectiles, use the more accurate eduke32's clipmove() function
    - Leave all hitbox sizes as original
+* Napalm gravity falloff
+   - For player spawned napalm projectiles, make gravity affect their trajectory path
 * Enemy behavior
    - Fixes various original 1.21 bugs with enemies such as:
    - Tiny Caleb using the wrong burning sprite

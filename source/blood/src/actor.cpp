@@ -5360,9 +5360,16 @@ int MoveMissile(spritetype *pSprite)
     gHitInfo.hitsect = -1;
     gHitInfo.hitwall = -1;
     gHitInfo.hitsprite = -1;
-    if (pSprite->type == kMissileFlameSpray)
-        actAirDrag(pSprite, 0x1000);
     int nSprite = pSprite->index;
+    if (pSprite->type == kMissileFlameSpray)
+    {
+        actAirDrag(pSprite, 0x1000);
+    }
+    else if ((pSprite->type == kMissileFireballNapalm) && gGameOptions.bNapalmFalloff && IsPlayerSprite(pOwner) && !VanillaMode()) // apply gravity for player napalm projectile
+    {
+        pSprite->z += 455;
+        zvel[nSprite] += 58254;
+    }
     if (pXSprite->target != -1 && (xvel[nSprite] || yvel[nSprite] || zvel[nSprite]))
     {
         spritetype *pTarget = &sprite[pXSprite->target];

@@ -620,6 +620,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
         gGameOptions.nProjectileBehavior = gProjectileBehavior;
+        gGameOptions.bNapalmFalloff = gNapalmFalloff;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gWeaponsVer;
@@ -660,6 +661,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
         gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
+        gGameOptions.bNapalmFalloff = gPacketStartGame.bNapalmFalloff;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
@@ -899,6 +901,7 @@ void StartNetworkLevel(void)
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
         gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
+        gGameOptions.bNapalmFalloff = gPacketStartGame.bNapalmFalloff;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;

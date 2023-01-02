@@ -138,6 +138,7 @@ extern int gQuadDamagePowerup;
 extern int gDamageInvul;
 extern int gExplosionBehavior;
 extern int gProjectileBehavior;
+extern int gNapalmFalloff;
 extern int gEnemyBehavior;
 extern int gEnemyRandomTNT;
 extern int gWeaponsVer;
