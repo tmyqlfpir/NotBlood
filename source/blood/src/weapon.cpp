@@ -1776,21 +1776,39 @@ void FireNapalm(int nTrigger, PLAYER *pPlayer)
         offset = 50;
         break;
     }
-    playerFireMissile(pPlayer, offset, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
+    spritetype *pMissile = playerFireMissile(pPlayer, offset, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
     sfxPlay3DSound(pSprite, 480, 2, 0);
     UseAmmo(pPlayer, 4, 1);
     pPlayer->flashEffect = 1;
+    if (pMissile && gGameOptions.bNapalmFalloff && !VanillaMode()) // adjust projectile speed and pitch
+    {
+        const int nSprite = pMissile->index;
+        xvel[nSprite] += (xvel[nSprite]>>4) + (xvel[nSprite]>>5);
+        yvel[nSprite] += (yvel[nSprite]>>4) + (yvel[nSprite]>>5);
+        zvel[nSprite] -= 58254<<3;
+    }
 }
 
 void FireNapalm2(int nTrigger, PLAYER *pPlayer)
 {
     UNREFERENCED_PARAMETER(nTrigger);
     spritetype *pSprite = pPlayer->pSprite;
-    playerFireMissile(pPlayer, -120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
-    playerFireMissile(pPlayer, 120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
+    spritetype *pMissile1 = playerFireMissile(pPlayer, -120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
+    spritetype *pMissile2 = playerFireMissile(pPlayer, 120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
     sfxPlay3DSound(pSprite, 480, 2, 0);
     UseAmmo(pPlayer, 4, 2);
     pPlayer->flashEffect = 1;
+    if (pMissile1 && pMissile2 && gGameOptions.bNapalmFalloff && !VanillaMode()) // adjust projectile speed and pitch
+    {
+        int nSprite = pMissile1->index;
+        xvel[nSprite] += (xvel[nSprite]>>4) + (xvel[nSprite]>>5);
+        yvel[nSprite] += (yvel[nSprite]>>4) + (yvel[nSprite]>>5);
+        zvel[nSprite] -= 58254<<3;
+        nSprite = pMissile2->index;
+        xvel[nSprite] += (xvel[nSprite]>>4) + (xvel[nSprite]>>5);
+        yvel[nSprite] += (yvel[nSprite]>>4) + (yvel[nSprite]>>5);
+        zvel[nSprite] -= 58254<<3;
+    }
 }
 
 void AltFireNapalm(int nTrigger, PLAYER *pPlayer)
@@ -2916,9 +2934,12 @@ void WeaponProcess(PLAYER *pPlayer) {
             return;
         case kWeaponNapalm:
             if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode()))
-                // by NoOne: allow napalm launcher alt fire act like in v1.0x versions
-                if (WeaponsV10x() && !VanillaMode()) StartQAV(pPlayer, 123, nClientFireNapalm2, 0);
-                else StartQAV(pPlayer, 122, nClientAltFireNapalm, 0);
+            {
+                if (WeaponsV10x() && !VanillaMode()) // by NoOne: allow napalm launcher alt fire act like in v1.0x versions
+                    StartQAV(pPlayer, 123, nClientFireNapalm2, 0);
+                else
+                    StartQAV(pPlayer, 122, nClientAltFireNapalm, 0);
+            }
             else
                 StartQAV(pPlayer, 91, (WeaponsV10x() && !VanillaMode()) ? nClientFireNapalm : nClientAltFireNapalm, 0);
             return;

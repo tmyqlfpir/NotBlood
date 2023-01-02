@@ -58,6 +58,7 @@ struct GAMEOPTIONS {
     bool bDamageInvul;
     int nExplosionBehavior;
     int nProjectileBehavior;
+    bool bNapalmFalloff;
     bool bEnemyBehavior;
     bool bEnemyRandomTNT;
     int nWeaponsVer;

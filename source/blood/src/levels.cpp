@@ -72,6 +72,7 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bDamageInvul;
     0,     // int nExplosionBehavior;
     0,     // int nProjectileBehavior;
+    0,     // bool bNapalmFalloff;
     0,     // bool bEnemyBehavior;
     0,     // bool bEnemyRandomTNT;
     1,     // int nWeaponsVer;
