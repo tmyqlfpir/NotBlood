@@ -80,7 +80,7 @@ unsigned int GetWaveValue(unsigned int nPhase, int nType)
     case 2:
         return 0x10000-(Cos((nPhase<<9)>>16)>>14);
     case 3:
-        return Sin((nPhase<<9)>>16)>>14;
+        return !VanillaMode() ? 0x10000-(Sin((-(65536<<9)+(nPhase<<10))>>16)>>14) : Sin((nPhase<<9)>>16)>>14;
     }
     return nPhase;
 }
