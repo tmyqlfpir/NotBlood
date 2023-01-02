@@ -74,11 +74,11 @@ unsigned int GetWaveValue(unsigned int nPhase, int nType)
     switch (nType)
     {
     case 0:
-        return 0x8000-(Cos((nPhase<<10)>>16)>>15);
+        return fix16_from_float(0.5)-(Cos((nPhase<<10)>>16)>>15);
     case 1:
         return nPhase;
     case 2:
-        return 0x10000-(Cos((nPhase<<9)>>16)>>14);
+        return fix16_from_float(1)-(Cos((nPhase<<9)>>16)>>14);
     case 3:
         if (gGameOptions.bSectorBehavior && !VanillaMode()) // use improved phase calculation from raze
             return fix16_from_float(0.5)+(Sin(((fix16_from_float(-1)<<9)+(nPhase<<10))>>16)>>15);
