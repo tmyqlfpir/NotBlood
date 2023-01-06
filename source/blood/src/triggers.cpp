@@ -80,8 +80,6 @@ unsigned int GetWaveValue(unsigned int nPhase, int nType)
     case 2:
         return fix16_from_float(1)-(Cos((nPhase<<9)>>16)>>14);
     case 3:
-        if (gGameOptions.bSectorBehavior && !VanillaMode()) // use improved phase calculation from raze
-            return fix16_from_float(0.5)+(Sin(((fix16_from_float(-1)<<9)+(nPhase<<10))>>16)>>15);
         return Sin((nPhase<<9)>>16)>>14;
     }
     return nPhase;
@@ -1471,6 +1469,8 @@ int VDoorBusy(unsigned int nSector, unsigned int a2, int causerID)
         nWave = pXSector->busyWaveA;
     else
         nWave = pXSector->busyWaveB;
+    if ((nWave == 3) && gGameOptions.bSectorBehavior && !VanillaMode()) // use better wave type for elevator (from raze)
+        nWave = 0;
     ZTranslateSector(nSector, pXSector, a2, nWave);
     pXSector->busy = a2;
     if (pXSector->command == kCmdLink && pXSector->txID)
