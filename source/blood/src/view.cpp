@@ -999,7 +999,7 @@ void viewAddInterpolation(void *data, INTERPOLATE_TYPE type)
     {
         ThrowError("Too many interpolations");
     }
-    else if (!bInterpWarnVanilla && VanillaMode() && (nInterpolations >= kMaxInterpolationsVanilla))
+    else if (!bInterpWarnVanilla && (nInterpolations >= kMaxInterpolationsVanilla) && VanillaMode())
     {
         OSD_Printf("Warning: Interpolations over vanilla limit (%d/%d)\n", nInterpolations, kMaxInterpolationsVanilla);
         bInterpWarnVanilla = 1;
