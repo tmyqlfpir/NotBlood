@@ -108,7 +108,7 @@ static void ThrowSeqCallback(int, int nXSprite)
     XSPRITE *pXSprite = &xsprite[nXSprite];
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
-    if (sectRangeIsFine(pSprite->sectnum)) // invalid sector, abort
+    if (!sectRangeIsFine(pSprite->sectnum)) // invalid sector, abort
         return;
     actFireThing(pSprite, 0, 0, gDudeSlope[nXSprite]-7500, kThingBone, 0xeeeee);
 }
