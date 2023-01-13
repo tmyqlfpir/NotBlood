@@ -1802,7 +1802,7 @@ void SetupOptionsMenu(void)
     itemOptionsOnlineMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
 
     itemOptionsOnlineSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
-    itemOptionsOnlineTeamPreference.m_nFocus = gPlayerTeamPreference & ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
+    itemOptionsOnlineTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
     itemOptionsOnlineBoolShowPlayerNames.at20 = gShowPlayerNames;
     itemOptionsOnlineShowWeapons.m_nFocus = gShowWeapon;
     itemOptionsOnlineChatSound.at20 = gChatSnd;
