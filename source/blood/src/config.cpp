@@ -112,6 +112,7 @@ int32_t gMessageFont;
 int32_t gbAdultContent;
 char gzAdultPassword[9];
 int32_t gStereo;
+int32_t gPlayerTeamPreference;
 int32_t gShowPlayerNames;
 int32_t gShowWeapon;
 int32_t gMouseSensitivity;
@@ -507,6 +508,7 @@ void CONFIG_SetDefaults(void)
     gbAdultContent = 0;
     gzAdultPassword[0] = '\0';
     gStereo = 1;
+    gPlayerTeamPreference = 0;
     gShowPlayerNames = 1;
     gShowWeapon = 2;
 

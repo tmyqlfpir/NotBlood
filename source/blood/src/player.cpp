@@ -814,6 +814,36 @@ void playerResetPosture(PLAYER* pPlayer) {
         gCrouchToggleState = 0;
 }
 
+static void playerResetTeamId(int nPlayer, int bNewLevel)
+{
+    char buffer[80];
+    PLAYER* pPlayer = &gPlayer[nPlayer];
+    const int nOldTeamId = pPlayer->teamId;
+    pPlayer->teamId = nPlayer;
+
+    if (gGameOptions.nGameType == kGameTypeTeams)
+    {
+        if (gGameOptions.bAutoTeams || (gProfile[nPlayer].nTeamPreference == 0)) // game is set to auto teams/player team preference is set to none
+            pPlayer->teamId = nPlayer&1;
+        else
+            pPlayer->teamId = gProfile[nPlayer].nTeamPreference-1; // set to player team preference
+
+        if (pPlayer->teamId != nOldTeamId) // if player changed teams, reset co-op camera and print message
+        {
+            gViewIndex = myconnectindex;
+            gView = &gPlayer[myconnectindex];
+
+            if (!bNewLevel)
+            {
+                const int nPalPlayer = gColorMsg && !VanillaMode() ? playerColorPalMessage(nOldTeamId) : 0;
+                const int nPalTeam = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
+                sprintf(buffer, "\r%s\r switched to \r%s\r", gProfile[nPlayer].name, (pPlayer->teamId&1) == 1 ? "Red Team" : "Blue Team");
+                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPalPlayer, nPalTeam);
+            }
+        }
+    }
+}
+
 const int nZoneRandList[kMaxPlayers][kMaxPlayers] = {
     {0, 7, 6, 5, 4, 3, 2, 1},
     {1, 2, 3, 4, 5, 6, 7, 0},
@@ -837,10 +867,12 @@ void playerStart(int nPlayer, int bNewLevel)
     if ((numplayers > 1) && (gGameOptions.nGameType != kGameTypeSinglePlayer))
         gProfile[nPlayer] = gProfileNet[nPlayer];
 
+    playerResetTeamId(nPlayer, bNewLevel);
+
     // normal start position
     if (gGameOptions.nGameType <= kGameTypeCoop)
         pStartZone = &gStartZone[nPlayer];
-    
+
     #ifdef NOONE_EXTENSIONS
     // let's check if there is positions of teams is specified
     // if no, pick position randomly, just like it works in vanilla.
@@ -968,8 +1000,10 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->aimTarget = -1;
     pPlayer->zViewVel = pPlayer->zWeaponVel;
     if (!(gGameOptions.nGameType == kGameTypeCoop && gGameOptions.nKeySettings && !bNewLevel))
+    {
         for (int i = 0; i < 8; i++)
             pPlayer->hasKey[i] = gGameOptions.nGameType >= kGameTypeBloodBath;
+    }
     pPlayer->hasFlag = 0;
     for (int i = 0; i < 8; i++)
         pPlayer->used2[i] = -1;
@@ -1123,9 +1157,7 @@ void playerInit(int nPlayer, unsigned int a2)
     if (!(a2&1))
         memset((void *)pPlayer, 0, sizeof(PLAYER));
     pPlayer->nPlayer = nPlayer;
-    pPlayer->teamId = nPlayer;
-    if (gGameOptions.nGameType == kGameTypeTeams)
-        pPlayer->teamId = nPlayer&1;
+    playerResetTeamId(nPlayer, 1);
     playerResetScores(nPlayer);
 
     if (!(a2&1))
@@ -1345,7 +1377,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                     gPlayer[i].hasKey[pItem->type-99] = 1;
                 }
                 if (pPlayer != gMe) { // display message if network player collected key
-                    sprintf(buffer, "%s picked up %s", gProfile[pPlayer->nPlayer].name, gItemText[pItem->type - kItemBase]);            
+                    sprintf(buffer, "%s picked up %s", gProfile[pPlayer->nPlayer].name, gItemText[pItem->type - kItemBase]);
                     viewSetMessage(buffer, 0, MESSAGE_PRIORITY_PICKUP);
                 }
             }

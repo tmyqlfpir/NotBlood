@@ -649,6 +649,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
         gGameOptions.bFriendlyFire = gPacketStartGame.bFriendlyFire;
         gGameOptions.nKeySettings = gPacketStartGame.keySettings;
+        gGameOptions.bAutoTeams = gPacketStartGame.bAutoTeams;
         gGameOptions.nSpawnProtection = gPacketStartGame.nSpawnProtection;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
         if (gPacketStartGame.userMap)
@@ -889,6 +890,7 @@ void StartNetworkLevel(void)
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
         gGameOptions.bFriendlyFire = gPacketStartGame.bFriendlyFire;
         gGameOptions.nKeySettings = gPacketStartGame.keySettings;
+        gGameOptions.bAutoTeams = gPacketStartGame.bAutoTeams;
         gGameOptions.nSpawnProtection = gPacketStartGame.nSpawnProtection;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
         if (gPacketStartGame.userMap)

@@ -264,6 +264,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable wall/floor aligned transparent voxels
 * skill
    - Changes the skill handicap for multiplayer (default: 2, range: 0-4)
+* team
+   - Set preferred team in multiplayer (0: none, 1: blue, 2: red)
 * snd_earangle
    - Set the listening ear offset (15-90 degrees)
 * snd_speed
