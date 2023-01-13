@@ -98,6 +98,7 @@ int32_t gWeaponInterpolate;
 int32_t gViewHBobbing;
 int32_t gViewVBobbing;
 int32_t gWeaponHBobbing;
+int32_t gSlowRoomFlicker;
 int32_t gFollowMap;
 int32_t gOverlayMap;
 int32_t gRotateMap;
@@ -111,6 +112,7 @@ int32_t gMessageFont;
 int32_t gbAdultContent;
 char gzAdultPassword[9];
 int32_t gStereo;
+int32_t gPlayerTeamPreference;
 int32_t gShowPlayerNames;
 int32_t gShowWeapon;
 int32_t gMouseSensitivity;
@@ -492,6 +494,7 @@ void CONFIG_SetDefaults(void)
     gViewHBobbing = 1;
     gViewVBobbing = 1;
     gWeaponHBobbing = 1;
+    gSlowRoomFlicker = 0;
     gFollowMap = 1;
     gOverlayMap = 0;
     gRotateMap = 0;
@@ -505,6 +508,7 @@ void CONFIG_SetDefaults(void)
     gbAdultContent = 0;
     gzAdultPassword[0] = '\0';
     gStereo = 1;
+    gPlayerTeamPreference = 0;
     gShowPlayerNames = 1;
     gShowWeapon = 2;
 

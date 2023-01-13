@@ -206,6 +206,7 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.bPitchforkOnly = false;
     gameOptions.bFriendlyFire = true;
     gameOptions.nKeySettings = 0;
+    gameOptions.bAutoTeams = 1;
     gameOptions.nSpawnProtection = 0;
     gameOptions.nSpawnWeapon = 0;
     gameOptions.uSpriteBannedFlags = BANNED_NONE;

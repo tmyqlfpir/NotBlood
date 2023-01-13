@@ -37,7 +37,6 @@ int gFrame;
 //int volatile gGameClock;
 int gFrameRate;
 int gGamma = 0;
-int gSlowRoomFlicker;
 
 char *gVersionString;
 char gVersionStringBuf[16];
