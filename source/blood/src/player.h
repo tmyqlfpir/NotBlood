@@ -183,7 +183,7 @@ struct PLAYER
     int                 deathTime;
     int                 pwUpTime[kMaxPowerUps];
     int                 fragCount;
-    int                 fragInfo[8];
+    int                 fragInfo[kMaxPlayers];
     int                 teamId;
     int                 fraggerId;
     int                 underwaterTime;
