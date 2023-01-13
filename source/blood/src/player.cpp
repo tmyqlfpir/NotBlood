@@ -828,7 +828,7 @@ static void playerResetTeamId(int nPlayer, int bNewLevel)
         else
             pPlayer->teamId = gProfile[nPlayer].nTeamPreference-1; // set to player team preference
 
-        if (pPlayer->teamId != nOldTeamId) // if player changed teams, reset co-op camera and print message
+        if (!bNewLevel && (pPlayer->teamId != nOldTeamId)) // if player changed teams during mid-match, reset co-op camera and print message
         {
             gViewIndex = myconnectindex;
             gView = &gPlayer[myconnectindex];
