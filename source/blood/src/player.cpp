@@ -833,13 +833,10 @@ static void playerResetTeamId(int nPlayer, int bNewLevel)
             gViewIndex = myconnectindex;
             gView = &gPlayer[myconnectindex];
 
-            if (!bNewLevel)
-            {
-                const int nPalPlayer = gColorMsg && !VanillaMode() ? playerColorPalMessage(nOldTeamId) : 0;
-                const int nPalTeam = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
-                sprintf(buffer, "\r%s\r switched to \r%s\r", gProfile[nPlayer].name, (pPlayer->teamId&1) == 1 ? "Red Team" : "Blue Team");
-                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPalPlayer, nPalTeam);
-            }
+            const int nPalPlayer = gColorMsg && !VanillaMode() ? playerColorPalMessage(nOldTeamId) : 0;
+            const int nPalTeam = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
+            sprintf(buffer, "\r%s\r switched to \r%s\r", gProfile[nPlayer].name, (pPlayer->teamId&1) == 1 ? "Red Team" : "Blue Team");
+            viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPalPlayer, nPalTeam);
         }
     }
 }
