@@ -45,7 +45,6 @@ extern int gFrame;
 //extern ClockTicks gGameClock;
 extern int gFrameRate;
 extern int gGamma;
-extern int gSlowRoomFlicker;
 
 extern Resource gSysRes;
 const char *GetVersionString(void);

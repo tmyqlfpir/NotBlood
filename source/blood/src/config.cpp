@@ -98,6 +98,7 @@ int32_t gWeaponInterpolate;
 int32_t gViewHBobbing;
 int32_t gViewVBobbing;
 int32_t gWeaponHBobbing;
+int32_t gSlowRoomFlicker;
 int32_t gFollowMap;
 int32_t gOverlayMap;
 int32_t gRotateMap;
@@ -492,6 +493,7 @@ void CONFIG_SetDefaults(void)
     gViewHBobbing = 1;
     gViewVBobbing = 1;
     gWeaponHBobbing = 1;
+    gSlowRoomFlicker = 0;
     gFollowMap = 1;
     gOverlayMap = 0;
     gRotateMap = 0;
