@@ -2389,6 +2389,17 @@ void viewUpdateHudRatio(void)
         xscalectfhud = xscalehud;
 }
 
+void viewUpdateSkyRatio(void)
+{
+    psky_t *pSky = tileSetupSky(0);
+    if (!pSky)
+        return;
+    if (gFov >= 90)
+        pSky->yscale = divscale16(mulscale16(fix16_from_float(1), fix16_from_float(float(gFov)/90.f)), yxaspect);
+    else
+        pSky->yscale = 65536;
+}
+
 void viewResizeView(int size)
 {
     int xdimcorrect = ClipHigh(scale(ydim, 4, 3), xdim);
@@ -2450,6 +2461,7 @@ void viewResizeView(int size)
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     viewSetRenderScale(0);
     viewUpdateHudRatio();
+    viewUpdateSkyRatio();
 }
 
 #define kBackTile 253
