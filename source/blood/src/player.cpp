@@ -828,18 +828,15 @@ static void playerResetTeamId(int nPlayer, int bNewLevel)
         else
             pPlayer->teamId = gProfile[nPlayer].nTeamPreference-1; // set to player team preference
 
-        if (pPlayer->teamId != nOldTeamId) // if player changed teams, reset co-op camera and print message
+        if (!bNewLevel && (pPlayer->teamId != nOldTeamId)) // if player changed teams during mid-match, reset co-op camera and print message
         {
             gViewIndex = myconnectindex;
             gView = &gPlayer[myconnectindex];
 
-            if (!bNewLevel)
-            {
-                const int nPalPlayer = gColorMsg && !VanillaMode() ? playerColorPalMessage(nOldTeamId) : 0;
-                const int nPalTeam = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
-                sprintf(buffer, "\r%s\r switched to \r%s\r", gProfile[nPlayer].name, (pPlayer->teamId&1) == 1 ? "Red Team" : "Blue Team");
-                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPalPlayer, nPalTeam);
-            }
+            const int nPalPlayer = gColorMsg && !VanillaMode() ? playerColorPalMessage(nOldTeamId) : 0;
+            const int nPalTeam = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
+            sprintf(buffer, "\r%s\r switched to \r%s\r", gProfile[nPlayer].name, (pPlayer->teamId&1) == 1 ? "Red Team" : "Blue Team");
+            viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPalPlayer, nPalTeam);
         }
     }
 }
