@@ -69,7 +69,7 @@ char gNetAddress[32];
 // PORT-TODO: Use different port?
 int gNetPort = kNetDefaultPort;
 
-const short kNetVersion = 0x21F;
+const short kNetVersion = 0x220;
 
 PKT_STARTGAME gPacketStartGame;
 
@@ -574,6 +574,7 @@ void netBroadcastPlayerInfo(int nPlayer)
     pProfile->nAutoAim = gAutoAim;
     pProfile->nWeaponSwitch = gWeaponSwitch;
     pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
+    pProfile->nTeamPreference = gPlayerTeamPreference;
     pProfile->nWeaponHBobbing = gWeaponHBobbing;
     gProfileNet[nPlayer] = gProfile[nPlayer];
     if (numplayers < 2)
@@ -592,6 +593,7 @@ void netBroadcastPlayerInfoUpdate(int nPlayer)
     pProfile->nAutoAim = gAutoAim;
     pProfile->nWeaponSwitch = gWeaponSwitch;
     pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
+    pProfile->nTeamPreference = gPlayerTeamPreference;
     pProfile->nWeaponHBobbing = gWeaponHBobbing;
     if (numplayers < 2)
         return;

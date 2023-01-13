@@ -1145,6 +1145,7 @@ int32_t registerosdcommands(void)
 //        { "snd_speech", "enables/disables player speech", (void *)&ud.config.VoiceToggle, CVAR_INT, 0, 5 },
 //
 //        { "team","change team in multiplayer", (void *)&ud.team, CVAR_INT|CVAR_MULTI, 0, 3 },
+        { "team", "set preferred team in multiplayer (0: none, 1: blue, 2: red)", (void *)&gPlayerTeamPreference, CVAR_INT, 0, 2 },
 //
 //#ifdef EDUKE32_TOUCH_DEVICES
 //        { "touch_sens_move_x","touch input sensitivity for moving forward/back", (void *)&droidinput.forward_sens, CVAR_FLOAT, 1, 9 },

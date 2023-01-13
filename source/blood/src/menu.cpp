@@ -435,8 +435,10 @@ CGameMenu menuMultiUserMaps;
 CGameMenuItemTitle itemNetStartUserMapTitle("USER MAP", 1, 160, 20, 2038);
 CGameMenuFileSelect menuMultiUserMap("", 3, 0, 0, 0, "./", "*.map", zUserMapName);
 
+void SetNetGameMode(CGameMenuItemZCycle *pItem);
+
 CGameMenuItemTitle itemNetStartTitle("MULTIPLAYER", 1, 160, 20, 2038);
-CGameMenuItemZCycle itemNetStart1("GAME:", 3, 66, 35, 180, 0, 0, zNetGameTypes, 3, 0);
+CGameMenuItemZCycle itemNetStart1("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zNetGameTypes, 3, 0);
 CGameMenuItemZCycle itemNetStart2("EPISODE:", 3, 66, 45, 180, 0, SetupNetLevels, NULL, 0, 0);
 CGameMenuItemZCycle itemNetStart3("LEVEL:", 3, 66, 55, 180, 0, NetClearUserMap, NULL, 0, 0);
 CGameMenuItemZCycle itemNetStart4("DIFFICULTY:", 3, 66, 65, 180, 0, 0, zDiffStrings, ARRAY_SSIZE(zDiffStrings), 0);
@@ -445,11 +447,12 @@ CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrin
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetStart9("KEYS SETTING:", 3, 66, 115, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemZCycle itemNetStart10("SPAWN PROTECTION:", 3, 66, 125, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
-CGameMenuItemZCycle itemNetStart11("SPAWN WITH WEAPON:", 3, 66, 135, 180, 0, 0, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
-CGameMenuItemChain itemNetStart12("USER MAP", 3, 66, 150, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
-CGameMenuItemChain itemNetStart13("ENHANCEMENTS", 3, 66, 160, 320, 0, &menuNetworkGameEnhancements, -1, NULL, 0);
-CGameMenuItemChain itemNetStart14("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
+CGameMenuItemZBool itemNetStart10("AUTO TEAMS:", 3, 66, 115, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetStart11("SPAWN PROTECTION:", 3, 66, 125, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
+CGameMenuItemZCycle itemNetStart12("SPAWN WITH WEAPON:", 3, 66, 135, 180, 0, 0, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
+CGameMenuItemChain itemNetStart13("USER MAP", 3, 66, 150, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
+CGameMenuItemChain itemNetStart14("ENHANCEMENTS", 3, 66, 160, 320, 0, &menuNetworkGameEnhancements, -1, NULL, 0);
+CGameMenuItemChain itemNetStart15("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
 
 ///////////////
 CGameMenuItemChain itemNetEnhancementBannedItems("SET ITEMS", 3, 0, 37, 320, 1, &menuBannedItems, -1, NULL, 0);
@@ -872,6 +875,7 @@ CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 170, 180
 
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
 void UpdatePlayerSkill(CGameMenuItemZCycle *pItem);
+void UpdatePlayerTeamPreference(CGameMenuItemZCycle *pItem);
 void SetShowPlayerNames(CGameMenuItemZBool *);
 void SetShowWeapons(CGameMenuItemZCycle *);
 void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem);
@@ -893,6 +897,12 @@ const char *pzPlayerSkillStrings[] = {
     "+2",
 };
 
+const char *pzPlayerTeamPreferenceStrings[] = {
+    "NONE",
+    "BLUE",
+    "RED"
+};
+
 const char *pzShowWeaponStrings[] = {
     "OFF",
     "SPRITE",
@@ -902,12 +912,13 @@ const char *pzShowWeaponStrings[] = {
 CGameMenuItemTitle itemOptionsOnlineTitle("ONLINE SETUP", 1, 160, 20, 2038);
 CGameMenuItemZEdit itemOptionsOnlineName("PLAYER NAME:", 3, 66, 60, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
 CGameMenuItemZCycle itemOptionsOnlineSkill("HEALTH HANDICAP:", 3, 66, 70, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
-CGameMenuItemZBool itemOptionsOnlineBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 90, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
-CGameMenuItemZCycle itemOptionsOnlineShowWeapons("SHOW WEAPONS:", 3, 66, 100, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
-CGameMenuItemZBool itemOptionsOnlineChatSound("MESSAGE BEEP:", 3, 66, 110, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
-CGameMenuItemZBool itemOptionsOnlineColorMsg("COLORED MESSAGES:", 3, 66, 120, 180, true, UpdatePlayerColorMessages, NULL, NULL);
-CGameMenuItemZBool itemOptionsOnlineKillMsg("SHOW KILLS ON HUD:", 3, 66, 130, 180, true, UpdatePlayerKillMessage, NULL, NULL);
-CGameMenuItemZCycle itemOptionsOnlineMultiKill("MULTI KILL MESSAGES:", 3, 66, 140, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
+CGameMenuItemZCycle itemOptionsOnlineTeamPreference("TEAM PREFERENCE:", 3, 66, 80, 180, 0, UpdatePlayerTeamPreference, pzPlayerTeamPreferenceStrings, ARRAY_SIZE(pzPlayerTeamPreferenceStrings), 0);
+CGameMenuItemZBool itemOptionsOnlineBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 100, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
+CGameMenuItemZCycle itemOptionsOnlineShowWeapons("SHOW WEAPONS:", 3, 66, 110, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
+CGameMenuItemZBool itemOptionsOnlineChatSound("MESSAGE BEEP:", 3, 66, 120, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
+CGameMenuItemZBool itemOptionsOnlineColorMsg("COLORED MESSAGES:", 3, 66, 130, 180, true, UpdatePlayerColorMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsOnlineKillMsg("SHOW KILLS ON HUD:", 3, 66, 140, 180, true, UpdatePlayerKillMessage, NULL, NULL);
+CGameMenuItemZCycle itemOptionsOnlineMultiKill("MULTI KILL MESSAGES:", 3, 66, 150, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
 
 #define JOYSTICKITEMSPERPAGE 16 // this must be an even value, as double tap inputs rely on odd index position
 #define MAXJOYSTICKBUTTONPAGES (max(1, (MAXJOYBUTTONSANDHATS*2 / JOYSTICKITEMSPERPAGE))) // we double all buttons/hats so each input can be bind for double tap
@@ -1287,6 +1298,7 @@ void SetupNetStartMenu(void)
     menuNetStart.Add(&itemNetStart12, false);
     menuNetStart.Add(&itemNetStart13, false);
     menuNetStart.Add(&itemNetStart14, false);
+    menuNetStart.Add(&itemNetStart15, false);
     menuMultiUserMaps.Add(&itemNetStartUserMapTitle, true);
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
 
@@ -1335,7 +1347,8 @@ void SetupNetStartMenu(void)
     itemNetStart5.SetTextIndex(0);
     itemNetStart6.SetTextIndex(1);
     itemNetStart7.SetTextIndex(1);
-    itemNetStart10.SetTextIndex(1);
+    itemNetStart11.SetTextIndex(1);
+    SetNetGameMode(&itemNetStart1); // hide friendly fire/keys menu items depending on game mode
 
     ///////
     itemNetEnhancementBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
@@ -1767,6 +1780,7 @@ void SetupOptionsMenu(void)
     menuOptionsOnline.Add(&itemOptionsOnlineTitle, false);
     menuOptionsOnline.Add(&itemOptionsOnlineName, true);
     menuOptionsOnline.Add(&itemOptionsOnlineSkill, false);
+    menuOptionsOnline.Add(&itemOptionsOnlineTeamPreference, false);
     menuOptionsOnline.Add(&itemOptionsOnlineBoolShowPlayerNames, false);
     menuOptionsOnline.Add(&itemOptionsOnlineShowWeapons, false);
     menuOptionsOnline.Add(&itemOptionsOnlineChatSound, false);
@@ -1775,6 +1789,7 @@ void SetupOptionsMenu(void)
     menuOptionsOnline.Add(&itemOptionsOnlineMultiKill, false);
     menuOptionsOnline.Add(&itemBloodQAV, false);
     itemOptionsOnlineSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
+    itemOptionsOnlineTeamPreference.tooltip_pzTextUpper = "Set player's preferred team for team mode";
     itemOptionsOnlineBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's name";
     itemOptionsOnlineBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
     itemOptionsOnlineShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
@@ -1787,6 +1802,7 @@ void SetupOptionsMenu(void)
     itemOptionsOnlineMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
 
     itemOptionsOnlineSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
+    itemOptionsOnlineTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
     itemOptionsOnlineBoolShowPlayerNames.at20 = gShowPlayerNames;
     itemOptionsOnlineShowWeapons.m_nFocus = gShowWeapon;
     itemOptionsOnlineChatSound.at20 = gChatSnd;
@@ -2892,6 +2908,16 @@ void PreDrawDisplayPolymost(CGameMenuItem *pItem)
 }
 #endif
 
+void SetNetGameMode(CGameMenuItemZCycle *pItem)
+{
+    itemNetStart8.bEnable = (pItem->m_nFocus+1) != kGameTypeBloodBath;
+    itemNetStart8.bNoDraw = !itemNetStart8.bEnable;
+    itemNetStart9.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
+    itemNetStart9.bNoDraw = !itemNetStart9.bEnable;
+    itemNetStart10.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
+    itemNetStart10.bNoDraw = !itemNetStart10.bEnable;
+}
+
 void UpdateSoundToggle(CGameMenuItemZBool *pItem)
 {
     SoundToggle = pItem->at20;
@@ -3033,6 +3059,13 @@ void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
 void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
 {
     gSkill = 4 - (pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
+    if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
+        netBroadcastPlayerInfoUpdate(myconnectindex);
+}
+
+void UpdatePlayerTeamPreference(CGameMenuItemZCycle *pItem)
+{
+    gPlayerTeamPreference = pItem->m_nFocus % ARRAY_SIZE(pzPlayerTeamPreferenceStrings);
     if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         netBroadcastPlayerInfoUpdate(myconnectindex);
 }
@@ -3623,8 +3656,9 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.respawnSettings = 0;
     gPacketStartGame.bFriendlyFire = itemNetStart8.at20;
     gPacketStartGame.keySettings = itemNetStart9.m_nFocus;
-    gPacketStartGame.nSpawnProtection = itemNetStart10.m_nFocus;
-    gPacketStartGame.nSpawnWeapon = itemNetStart11.m_nFocus;
+    gPacketStartGame.bAutoTeams = itemNetStart10.at20;
+    gPacketStartGame.nSpawnProtection = itemNetStart11.m_nFocus;
+    gPacketStartGame.nSpawnWeapon = itemNetStart12.m_nFocus;
     ////
     SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
     gPacketStartGame.bQuadDamagePowerup = itemNetEnhancementBoolQuadDamagePowerup.at20;

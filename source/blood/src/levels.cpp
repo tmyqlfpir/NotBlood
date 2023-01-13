@@ -88,6 +88,7 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bPitchforkOnly;
     0,     // bool bFriendlyFire;
     1,     // char nKeySettings;
+    1,     // char bAutoTeams;
     0,     // char nSpawnProtection;
     0,     // char nSpawnWeapon;
     0,     // unsigned short uSpriteBannedFlags;

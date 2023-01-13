@@ -74,6 +74,7 @@ struct GAMEOPTIONS {
     bool bPitchforkOnly;
     bool bFriendlyFire;
     char nKeySettings;
+    char bAutoTeams;
     char nSpawnProtection;
     char nSpawnWeapon;
     unsigned int uSpriteBannedFlags;
