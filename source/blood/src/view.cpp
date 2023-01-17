@@ -3049,9 +3049,10 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
     {
         tspritetype *pTSprite = &tsprite[nTSprite];
         //int nXSprite = pTSprite->extra;
-        int nXSprite = sprite[pTSprite->owner].extra;
+        int nSprite = pTSprite->owner;
+        int nXSprite = sprite[nSprite].extra;
         XSPRITE *pTXSprite = NULL;
-        if ((qsprite_filler[pTSprite->owner] > gDetail) || (pTSprite->sectnum == -1))
+        if ((qsprite_filler[nSprite] > gDetail) || (sprite[nSprite].sectnum == -1))
         {
             pTSprite->xrepeat = 0;
             continue;
@@ -3066,7 +3067,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             continue;
         }
 
-        int nSprite = pTSprite->owner;
         if (gViewInterpolate && TestBitString(gInterpolateSprite, nSprite) && !(pTSprite->flags&512))
         {
             LOCATION *pPrevLoc = &gPrevSpriteLoc[nSprite];
@@ -3184,7 +3184,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         {
             int const nRootTile = pTSprite->picnum;
 #if 0
-            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+pTSprite->owner);
+            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+nSprite);
             if (tiletovox[nAnimTile] != -1)
             {
                 pTSprite->yoffset += picanm[nAnimTile].yofs;
@@ -3202,7 +3202,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         if ((pTSprite->cstat&48) != 48 && usemodels && !(spriteext[nSprite].flags&SPREXT_NOTMD))
         {
             int const nRootTile = pTSprite->picnum;
-            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+pTSprite->owner);
+            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+nSprite);
 
             if (usemodels && tile2model[Ptile2tile(nAnimTile, pTSprite->pal)].modelid >= 0 &&
                 tile2model[Ptile2tile(nAnimTile, pTSprite->pal)].framenum >= 0)
@@ -3237,7 +3237,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         }
         nShade += tileShade[pTSprite->picnum];
         pTSprite->shade = ClipRange(nShade, -128, 127);
-        if ((pTSprite->flags&kHitagRespawn) && sprite[pTSprite->owner].owner == 3)
+        if ((pTSprite->flags&kHitagRespawn) && sprite[nSprite].owner == 3)
         {
             dassert(pTXSprite != NULL);
             pTSprite->xrepeat = 48;
@@ -3491,7 +3491,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
             }
             
-            if (pTSprite->owner != gView->pSprite->index || gViewPos != VIEWPOS_0) {
+            if (nSprite != gView->pSprite->index || gViewPos != VIEWPOS_0) {
                 if (getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) >= cZ) {
                     viewAddEffect(nTSprite, kViewEffectShadow);
                 }

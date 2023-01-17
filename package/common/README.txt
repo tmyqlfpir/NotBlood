@@ -211,6 +211,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable item slot switching to activated item (always enabled in multiplayer)
 * crosshair
    - Enable/disable crosshair (0: off, 1: on, 2: on [autoaim])
+* detail
+   - Change the detail graphics setting (0-4)
 * hud_bgnewborder
    - Enable/disable new hud bottom border background image (only for r_size 5)
 * hud_bgscale
