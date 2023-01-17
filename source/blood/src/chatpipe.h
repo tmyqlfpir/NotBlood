@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------------
 /*
 Copyright (C) 2010-2019 EDuke32 developers and contributors
-Copyright (C) 2019 Nuke.YKT
+Copyright (C) 2023, 2023 - Jordon Moss (Aka. StrikerTheHedgefox)
 
 This file is part of NBlood.
 
