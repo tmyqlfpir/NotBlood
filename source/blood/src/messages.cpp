@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "common_game.h"
 #include "blood.h"
 #include "config.h"
+#include "chatpipe.h"
 #include "demo.h"
 #include "eventq.h"
 #include "globals.h"
@@ -607,6 +608,7 @@ void CPlayerMsg::Send(void)
         netBroadcastMessage(myconnectindex, text);
         if (!VanillaMode() && (gGameOptions.nGameType != kGameTypeSinglePlayer))
         {
+            ChatPipe_SendMessage(text);
             char *myName = gProfile[myconnectindex].name;
             char szTemp[128];
             sprintf(szTemp, "%s: %s", myName, text);

@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "asound.h"
 #include "db.h"
 #include "blood.h"
+#include "chatpipe.h"
 #include "choke.h"
 #include "config.h"
 #include "controls.h"
@@ -1805,6 +1806,8 @@ int app_main(int argc, char const * const * argv)
 
     if (!g_useCwd)
         G_AddSearchPaths();
+
+    ChatPipe_Create();
 
     // used with binds for fast function lookup
     hash_init(&h_gamefuncs);

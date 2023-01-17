@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "controls.h"
 #include "globals.h"
 #include "network.h"
+#include "chatpipe.h"
 #include "menu.h"
 #include "player.h"
 #include "seq.h"
@@ -341,6 +342,7 @@ void netGetPackets(void)
     short nPlayer;
     short nSize;
     char buffer[128];
+    ChatPipe_Poll();
     while ((nSize = netGetPacket(&nPlayer, packet)) > 0)
     {
         char *pPacket = packet;
