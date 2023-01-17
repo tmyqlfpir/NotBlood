@@ -1083,6 +1083,7 @@ int32_t registerosdcommands(void)
 //
         { "horizcenter", "enable/disable centered horizon line", (void *)&gCenterHoriz, CVAR_BOOL, 0, 1 },
         { "deliriumblur", "enable/disable delirium blur effect(polymost)", (void *)&gDeliriumBlur, CVAR_BOOL, 0, 1 },
+        { "detail", "change the detail graphics setting (0-4)", (void *)&gDetail, CVAR_INT|CVAR_FUNCPTR, 0, 4 },
         { "fov", "change the field of view", (void *)&gFov, CVAR_INT|CVAR_FUNCPTR, 75, 140 },
         { "in_joystick","enables input from the joystick if it is present",(void *)&gSetup.usejoystick, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
         { "in_rumble","enables rumble for joystick if it is present",(void *)&gSetup.joystickrumble, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
