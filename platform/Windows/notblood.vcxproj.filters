@@ -99,6 +99,9 @@
     <ClCompile Include="..\..\source\blood\src\callback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\blood\src\chatpipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\blood\src\fx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -295,6 +298,9 @@
     <ClInclude Include="..\..\source\blood\src\screen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\blood\src\screenpals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\blood\src\qheap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -347,6 +353,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\blood\src\callback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\blood\src\chatpipe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\blood\src\fx.h">

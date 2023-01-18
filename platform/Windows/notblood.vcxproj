@@ -204,6 +204,7 @@
     <ClCompile Include="..\..\source\blood\src\barf.cpp" />
     <ClCompile Include="..\..\source\blood\src\blood.cpp" />
     <ClCompile Include="..\..\source\blood\src\callback.cpp" />
+    <ClCompile Include="..\..\source\blood\src\chatpipe.cpp" />
     <ClCompile Include="..\..\source\blood\src\choke.cpp" />
     <ClCompile Include="..\..\source\blood\src\common.cpp" />
     <ClCompile Include="..\..\source\blood\src\config.cpp" />
@@ -315,6 +316,7 @@
     <ClInclude Include="..\..\source\blood\src\barf.h" />
     <ClInclude Include="..\..\source\blood\src\blood.h" />
     <ClInclude Include="..\..\source\blood\src\callback.h" />
+    <ClInclude Include="..\..\source\blood\src\chatpipe.h" />
     <ClInclude Include="..\..\source\blood\src\choke.h" />
     <ClInclude Include="..\..\source\blood\src\common_game.h" />
     <ClInclude Include="..\..\source\blood\src\config.h" />
@@ -357,6 +359,7 @@
     <ClInclude Include="..\..\source\blood\src\replace.h" />
     <ClInclude Include="..\..\source\blood\src\resource.h" />
     <ClInclude Include="..\..\source\blood\src\screen.h" />
+    <ClInclude Include="..\..\source\blood\src\screenpals.h" />
     <ClInclude Include="..\..\source\blood\src\sectorfx.h" />
     <ClInclude Include="..\..\source\blood\src\seq.h" />
     <ClInclude Include="..\..\source\blood\src\sfx.h" />
