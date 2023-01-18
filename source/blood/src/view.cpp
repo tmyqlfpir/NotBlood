@@ -1324,16 +1324,22 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
         ((gLevelTime%kTicsPerSec)*33)/10
         );
     viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
-    y += nHeight+1;
-    if (gGameOptions.nGameType != kGameTypeTeams)
+    if ((gGameOptions.nMonsterSettings > 0) && (max(gKillMgr.at4, gKillMgr.at0) > 0))
     {
+        y += nHeight+1;
         sprintf(buffer, "K:%d/%d", gKillMgr.at4, max(gKillMgr.at4, gKillMgr.at0));
-        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && gKillMgr.at0 && (gKillMgr.at4 >= gKillMgr.at0)) // if killed all enemies in level, set counter to gold
+        if (gKillMgr.at0 && (gKillMgr.at4 >= gKillMgr.at0)) // if killed all enemies in level, set counter to gold
             colorStrKills.nColor2[0] = 2; // set valid start position for gold color
+        viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrKills);
     }
+#if 0
     else
+    {
+        y += nHeight+1;
         sprintf(buffer, "K:%d", pPlayer->fragCount);
-    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrKills);
+        viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrKills);
+    }
+#endif
     if (gGameOptions.nGameType <= kGameTypeCoop) // only show secrets counter for single-player/co-op mode
     {
         y += nHeight+1;
