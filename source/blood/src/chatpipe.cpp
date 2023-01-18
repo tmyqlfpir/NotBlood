@@ -52,7 +52,7 @@ static bool ChatPipe_ParseJSON(const char* data)
 			const char* strUser = sjson_get_string(jRoot, "user", NULL);
 			const char* strText = sjson_get_string(jRoot, "text", NULL);
 			
-			snprintf(cpTempBuf, MAXUSERQUOTELEN, "^23[LOBBY] ^15%s: ^12%s", strUser, strText);
+			snprintf(cpTempBuf, MAXUSERQUOTELEN, "[LOBBY] %s: %s", strUser, strText);
 			viewSetMessage(cpTempBuf);
 			success = true;
 		}
@@ -60,7 +60,7 @@ static bool ChatPipe_ParseJSON(const char* data)
 		{
 			const char* strUser = sjson_get_string(jRoot, "user", NULL);
 
-			snprintf(cpTempBuf, MAXUSERQUOTELEN, "^23[LOBBY] ^15%s ^08has joined the lobby.", strUser);
+			snprintf(cpTempBuf, MAXUSERQUOTELEN, "[LOBBY] %s has joined the lobby.", strUser);
 			viewSetMessage(cpTempBuf);
 			success = true;
 		}
@@ -68,8 +68,8 @@ static bool ChatPipe_ParseJSON(const char* data)
 		{
 			const char* strUser = sjson_get_string(jRoot, "user", NULL);
 
-			snprintf(cpTempBuf, MAXUSERQUOTELEN, "^23[LOBBY] ^15%s ^10has left the lobby.", strUser);
-			viewSetMessage(cpTempBuf);
+			snprintf(cpTempBuf, MAXUSERQUOTELEN, "[LOBBY] %s has left the lobby.", strUser);
+			viewSetMessage(cpTempBuf, 0, MESSAGE_PRIORITY_NORMAL);
 			success = true;
 		}
 
@@ -184,7 +184,7 @@ void ChatPipe_Create(void)
 		return;
 	}
 
-	Pipe.handle = CreateNamedPipe("\\\\.\\pipe\\NetDuke32", 
+	Pipe.handle = CreateNamedPipe("\\\\.\\pipe\\NotBlood", 
 		PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED, 
 		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, 
 		1, 
