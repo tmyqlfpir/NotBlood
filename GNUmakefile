@@ -562,6 +562,7 @@ blood_game_objs := \
 	asound.cpp \
 	barf.cpp \
 	callback.cpp \
+	chatpipe.cpp \
 	choke.cpp \
 	common.cpp \
 	config.cpp \
