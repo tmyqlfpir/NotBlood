@@ -31,6 +31,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "chatpipe.h"
 #include "view.h"
 
+#ifdef defined(NETCODE_DISABLE) // non-netcode build
+void ChatPipe_Create(void)
+{
+    
+}
+
+void ChatPipe_SendMessage(const char* message)
+{
+    UNREFERENCED_PARAMETER(message);
+}
+
+void ChatPipe_Poll(void) // Called once per game loop
+{
+    
+}
+#else
+
 static void ChatPipe_WriteToPipe(const char* message);
 char cpTempBuf[CHATPIPE_BUFSIZE] = "";
 
@@ -102,7 +119,7 @@ void ChatPipe_SendMessage(const char* message)
     sjson_destroy_context(jsonCtx);
 }
 
-#if defined(_WIN32) && !defined(NETCODE_DISABLE) // Windows implementation
+#if defined(_WIN32) // Windows implementation
 struct {
     HANDLE handle;
     OVERLAPPED overlapRead, overlapWrite;
@@ -351,7 +368,7 @@ void ChatPipe_Poll(void) // Called once per game loop
     
     return;
 }
-#elif !defined(NETCODE_DISABLE) // Linux stuff
+#else // Linux stuff
 
 static void ChatPipe_WriteToPipe(const char* message)
 {
@@ -366,19 +383,5 @@ void ChatPipe_Poll(void) // Called once per game loop
 {
 }
 
-#else // dummy code
-
-static void ChatPipe_WriteToPipe(const char* message)
-{
-    UNREFERENCED_PARAMETER(message);
-}
-
-void ChatPipe_Create(void)
-{
-}
-
-void ChatPipe_Poll(void) // Called once per game loop
-{
-}
-
+#endif
 #endif
