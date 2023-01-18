@@ -86,7 +86,7 @@ static bool ChatPipe_ParseJSON(const char* data)
         }
 
         if (success)
-            viewSetMessageColor(cpTempBuf, 0, MESSAGE_PRIORITY_NORMAL, 9, kFlagBluePal);
+            viewSetMessageColor(cpTempBuf, 0, MESSAGE_PRIORITY_NORMAL, gColorMsg ? 9 : 0, gColorMsg ? kFlagBluePal : 0);
         sjson_delete_node(jsonCtx, jRoot);
     }
 
