@@ -31,334 +31,331 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "chatpipe.h"
 #include "view.h"
 
-#define MAXUSERQUOTELEN 256
-
 static void ChatPipe_WriteToPipe(const char* message);
-char cpTempBuf[CHATPIPE_BUFSIZE];
+char cpTempBuf[CHATPIPE_BUFSIZE] = "";
 
 // Platform-agnostic functions.
 
 static bool ChatPipe_ParseJSON(const char* data)
 {
-	sjson_context* jsonCtx = sjson_create_context(0, 0, NULL);
-	sjson_node* jRoot = sjson_decode(jsonCtx, data);
-	bool success = false;
+    sjson_context* jsonCtx = sjson_create_context(0, 0, NULL);
+    sjson_node* jRoot = sjson_decode(jsonCtx, data);
+    bool success = false;
 
-	if (jRoot)
-	{
-		const char* strEvent = sjson_get_string(jRoot, "event", NULL);
-		if (!Bstrcasecmp(strEvent, "message"))
-		{
-			const char* strUser = sjson_get_string(jRoot, "user", NULL);
-			const char* strText = sjson_get_string(jRoot, "text", NULL);
-			
-			snprintf(cpTempBuf, MAXUSERQUOTELEN, "[LOBBY] %s: %s", strUser, strText);
-			viewSetMessage(cpTempBuf);
-			success = true;
-		}
-		else if (!Bstrcasecmp(strEvent, "join"))
-		{
-			const char* strUser = sjson_get_string(jRoot, "user", NULL);
+    if (jRoot)
+    {
+        const char* strEvent = sjson_get_string(jRoot, "event", NULL);
+        if (!Bstrcasecmp(strEvent, "message"))
+        {
+            const char* strUser = sjson_get_string(jRoot, "user", NULL);
+            const char* strText = sjson_get_string(jRoot, "text", NULL);
+            
+            snprintf(cpTempBuf, kMaxMessageTextLength, "\r[LOBBY]\r \r%s\r: %s\n", strUser, strText);
+            success = true;
+        }
+        else if (!Bstrcasecmp(strEvent, "join"))
+        {
+            const char* strUser = sjson_get_string(jRoot, "user", NULL);
 
-			snprintf(cpTempBuf, MAXUSERQUOTELEN, "[LOBBY] %s has joined the lobby.", strUser);
-			viewSetMessage(cpTempBuf);
-			success = true;
-		}
-		else if (!Bstrcasecmp(strEvent, "leave"))
-		{
-			const char* strUser = sjson_get_string(jRoot, "user", NULL);
+            snprintf(cpTempBuf, kMaxMessageTextLength, "\r[LOBBY]\r \r%s\r has joined the lobby.\n", strUser);
+            success = true;
+        }
+        else if (!Bstrcasecmp(strEvent, "leave"))
+        {
+            const char* strUser = sjson_get_string(jRoot, "user", NULL);
 
-			snprintf(cpTempBuf, MAXUSERQUOTELEN, "[LOBBY] %s has left the lobby.", strUser);
-			viewSetMessage(cpTempBuf, 0, MESSAGE_PRIORITY_NORMAL);
-			success = true;
-		}
+            snprintf(cpTempBuf, kMaxMessageTextLength, "\r[LOBBY]\r \r%s\r has left the lobby.\n", strUser);
+            success = true;
+        }
 
-		sjson_delete_node(jsonCtx, jRoot);
-	}
+        if (success)
+            viewSetMessageColor(cpTempBuf, 0, MESSAGE_PRIORITY_NORMAL, 9, kFlagBluePal);
+        sjson_delete_node(jsonCtx, jRoot);
+    }
 
 #ifdef DEBUGGINGAIDS
-	if(success)
-		LOG_F(INFO, "%s: JSON parse succeded!", __func__);
-	else
-		LOG_F(INFO, "%s: JSON parse failed, or unknown message!", __func__);
+    if(success)
+        LOG_F(INFO, "%s: JSON parse succeded!", __func__);
+    else
+        LOG_F(INFO, "%s: JSON parse failed, or unknown message!", __func__);
 #endif
 
-	sjson_destroy_context(jsonCtx);
-	return success;
+    sjson_destroy_context(jsonCtx);
+    return success;
 }
 
 void ChatPipe_SendMessage(const char* message)
 {
-	sjson_context* jsonCtx = sjson_create_context(0, 0, NULL);
-	sjson_node* jRoot = sjson_mkobject(jsonCtx);
-	
-	sjson_put_string(jsonCtx, jRoot, "event", "message");
-	//sjson_put_string(jsonCtx, jRoot, "user", g_player[myconnectindex].user_name);
-	OSD_StripColors(cpTempBuf, message);
-	sjson_put_string(jsonCtx, jRoot, "text", cpTempBuf);
-	
-	char* jEncoded = sjson_stringify(jsonCtx, jRoot, NULL);
-	ChatPipe_WriteToPipe(jEncoded);
+    sjson_context* jsonCtx = sjson_create_context(0, 0, NULL);
+    sjson_node* jRoot = sjson_mkobject(jsonCtx);
+    
+    sjson_put_string(jsonCtx, jRoot, "event", "message");
+    //sjson_put_string(jsonCtx, jRoot, "user", g_player[myconnectindex].user_name);
+    OSD_StripColors(cpTempBuf, message);
+    sjson_put_string(jsonCtx, jRoot, "text", cpTempBuf);
+    
+    char* jEncoded = sjson_stringify(jsonCtx, jRoot, NULL);
+    ChatPipe_WriteToPipe(jEncoded);
 
-	sjson_free_string(jsonCtx, jEncoded);
-	sjson_delete_node(jsonCtx, jRoot);
-	sjson_destroy_context(jsonCtx);
+    sjson_free_string(jsonCtx, jEncoded);
+    sjson_delete_node(jsonCtx, jRoot);
+    sjson_destroy_context(jsonCtx);
 }
 
 #if defined(_WIN32) && !defined(NETCODE_DISABLE) // Windows implementation
 struct {
-	HANDLE handle;
-	OVERLAPPED overlapRead, overlapWrite;
-	DWORD state;
-	DWORD bytesRead;
-	DWORD bytesToWrite;
-	char readBuffer[CHATPIPE_BUFSIZE];
-	char writeBuffer[CHATPIPE_BUFSIZE];
-	int readFlag;
-	int writeFlag;
+    HANDLE handle;
+    OVERLAPPED overlapRead, overlapWrite;
+    DWORD state;
+    DWORD bytesRead;
+    DWORD bytesToWrite;
+    char readBuffer[CHATPIPE_BUFSIZE];
+    char writeBuffer[CHATPIPE_BUFSIZE];
+    int readFlag;
+    int writeFlag;
 } Pipe;
 
 HANDLE waitEvent;
 
 enum chatPipeState_t
 {
-	PIPESTATE_CONNECTING,
-	PIPESTATE_READY,
+    PIPESTATE_CONNECTING,
+    PIPESTATE_READY,
 };
 
 static bool ChatPipe_Connect(void)
 {
-	bool pipeConnected = ConnectNamedPipe(Pipe.handle, &Pipe.overlapRead);
+    bool pipeConnected = ConnectNamedPipe(Pipe.handle, &Pipe.overlapRead);
 
-	DWORD error = GetLastError();
-	if (pipeConnected) // Overlapped ConnectNamedPipe should return zero
-	{
-		LOG_F(ERROR, "%s: Chat pipe connection failed with %ld", __func__, error);
-		return false;
-	}
+    DWORD error = GetLastError();
+    if (pipeConnected) // Overlapped ConnectNamedPipe should return zero
+    {
+        LOG_F(ERROR, "%s: Chat pipe connection failed with %ld", __func__, error);
+        return false;
+    }
 
-	if (error == ERROR_IO_PENDING)
-	{
-		LOG_F(INFO, "%s: Chat pipe connection pending...", __func__);
-		return true;
-	}
-	else if (error == ERROR_PIPE_CONNECTED)
-	{
-		//a client has already connected between creating the pipe and
-		//waiting for a client to connect. This is rare but can happen.
-		//When it does, the overlapped wait does not begin, so the overlapped
-		//event would not be signalled. We trigger it manually so that the normal
-		//workflow continues
-		SetEvent(Pipe.overlapRead.hEvent);
-		return false;
-	}
-	else
-	{
-		LOG_F(ERROR, "%s: Chat pipe connection failed with %ld", __func__, error);
-		return false;
-	}
+    if (error == ERROR_IO_PENDING)
+    {
+        LOG_F(INFO, "%s: Chat pipe connection pending...", __func__);
+        return true;
+    }
+    else if (error == ERROR_PIPE_CONNECTED)
+    {
+        //a client has already connected between creating the pipe and
+        //waiting for a client to connect. This is rare but can happen.
+        //When it does, the overlapped wait does not begin, so the overlapped
+        //event would not be signalled. We trigger it manually so that the normal
+        //workflow continues
+        SetEvent(Pipe.overlapRead.hEvent);
+        return false;
+    }
+    else
+    {
+        LOG_F(ERROR, "%s: Chat pipe connection failed with %ld", __func__, error);
+        return false;
+    }
 
-	return false;
+    return false;
 }
 
 static void ChatPipe_Reconnect()
 {
-	// Disconnect the pipe instance. 
+    // Disconnect the pipe instance. 
 
-	if (!DisconnectNamedPipe(Pipe.handle))
-	{
-		LOG_F(ERROR, "%s: DisconnectNamedPipe failed with %ld.", __func__, GetLastError());
-	}
+    if (!DisconnectNamedPipe(Pipe.handle))
+    {
+        LOG_F(ERROR, "%s: DisconnectNamedPipe failed with %ld.", __func__, GetLastError());
+    }
 
-	// Call a subroutine to connect to the new client. 
-	Pipe.state = ChatPipe_Connect() ? PIPESTATE_CONNECTING : PIPESTATE_READY;
-	Pipe.readFlag = 0;
-	Pipe.writeFlag = 0;
+    // Call a subroutine to connect to the new client. 
+    Pipe.state = ChatPipe_Connect() ? PIPESTATE_CONNECTING : PIPESTATE_READY;
+    Pipe.readFlag = 0;
+    Pipe.writeFlag = 0;
 }
 
 void ChatPipe_Create(void)
 {
-	if (Pipe.handle != NULL)
-	{
-		LOG_F(ERROR, "%s: Already have a chat pipe!", __func__);
-		return;
-	}
+    if (Pipe.handle != NULL)
+    {
+        LOG_F(ERROR, "%s: Already have a chat pipe!", __func__);
+        return;
+    }
 
-	Pipe.handle = CreateNamedPipe("\\\\.\\pipe\\NotBlood", 
-		PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED, 
-		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, 
-		1, 
-		CHATPIPE_BUFSIZE,
-		CHATPIPE_BUFSIZE,
-		CHATPIPE_TIMEOUT,
-		NULL);
+    Pipe.handle = CreateNamedPipe("\\\\.\\pipe\\NotBlood", 
+        PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED, 
+        PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, 
+        1, 
+        CHATPIPE_BUFSIZE,
+        CHATPIPE_BUFSIZE,
+        CHATPIPE_TIMEOUT,
+        NULL);
 
-	if (Pipe.handle == NULL || Pipe.handle == INVALID_HANDLE_VALUE)
-	{
-		LOG_F(ERROR, "%s: Chat pipe creation failed", __func__);
-		return;
-	}
+    if (Pipe.handle == NULL || Pipe.handle == INVALID_HANDLE_VALUE)
+    {
+        LOG_F(ERROR, "%s: Chat pipe creation failed", __func__);
+        return;
+    }
 
-	waitEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	Pipe.overlapRead.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	Pipe.overlapWrite.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+    waitEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+    Pipe.overlapRead.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+    Pipe.overlapWrite.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-	Pipe.state = ChatPipe_Connect() ? PIPESTATE_CONNECTING : PIPESTATE_READY;
-	Pipe.readFlag = 0;
-	Pipe.writeFlag = 0;
+    Pipe.state = ChatPipe_Connect() ? PIPESTATE_CONNECTING : PIPESTATE_READY;
+    Pipe.readFlag = 0;
+    Pipe.writeFlag = 0;
 }
 
 static void ChatPipe_WriteToPipe(const char* message)
 {
-	DWORD byteCnt;
+    DWORD byteCnt;
 
-	snprintf(Pipe.writeBuffer, sizeof(Pipe.writeBuffer), "%s", message);
-	Pipe.bytesToWrite = (strlen(Pipe.writeBuffer)) * sizeof(char);
+    snprintf(Pipe.writeBuffer, sizeof(Pipe.writeBuffer), "%s", message);
+    Pipe.bytesToWrite = (strlen(Pipe.writeBuffer)) * sizeof(char);
 
-	bool success = WriteFile(
-		Pipe.handle,
-		Pipe.writeBuffer,
-		Pipe.bytesToWrite,
-		&byteCnt,
-		&Pipe.overlapWrite);
+    bool success = WriteFile(
+        Pipe.handle,
+        Pipe.writeBuffer,
+        Pipe.bytesToWrite,
+        &byteCnt,
+        &Pipe.overlapWrite);
 
-	DWORD error_code = GetLastError();
+    DWORD error_code = GetLastError();
 
-	if (!success && error_code != ERROR_IO_PENDING)
-	{
-		LOG_F(ERROR, "%s: WriteFile failed, error code: %ld", __func__, error_code);
-		ChatPipe_Reconnect(); // An error occurred; disconnect from the client. 
-		return;
-	}
+    if (!success && error_code != ERROR_IO_PENDING)
+    {
+        LOG_F(ERROR, "%s: WriteFile failed, error code: %ld", __func__, error_code);
+        ChatPipe_Reconnect(); // An error occurred; disconnect from the client. 
+        return;
+    }
 
-	Pipe.writeFlag++;
+    Pipe.writeFlag++;
 }
 
 static void ChatPipe_ReadFromPipe()
 {
-	bool success = ReadFile(
-		Pipe.handle,
-		Pipe.readBuffer,
-		CHATPIPE_BUFSIZE,
-		&Pipe.bytesRead,
-		&Pipe.overlapRead);
+    bool success = ReadFile(
+        Pipe.handle,
+        Pipe.readBuffer,
+        CHATPIPE_BUFSIZE,
+        &Pipe.bytesRead,
+        &Pipe.overlapRead);
 
-	DWORD error_code = ::GetLastError();
-	if (!success && error_code != ERROR_IO_PENDING)
-	{
-		LOG_F(ERROR, "%s: ReadFile failed, error code: %ld", __func__, error_code);
-		ChatPipe_Reconnect(); // An error occurred; disconnect from the client. 
-		return;
-	}
+    DWORD error_code = ::GetLastError();
+    if (!success && error_code != ERROR_IO_PENDING)
+    {
+        LOG_F(ERROR, "%s: ReadFile failed, error code: %ld", __func__, error_code);
+        ChatPipe_Reconnect(); // An error occurred; disconnect from the client. 
+        return;
+    }
 
-	Pipe.readFlag++;
+    Pipe.readFlag++;
 
-	return;
+    return;
 }
 
 void ChatPipe_OnWriteComplete()
 {
-	Pipe.writeFlag--;
+    Pipe.writeFlag--;
 
 #ifdef DEBUGGINGAIDS
-	LOG_F(INFO, "%s: Write completed. (%ld bytes)", __func__, Pipe.overlapWrite.InternalHigh);
+    LOG_F(INFO, "%s: Write completed. (%ld bytes)", __func__, Pipe.overlapWrite.InternalHigh);
 #endif
 }
 
 void ChatPipe_OnReadComplete()
 {
-	Pipe.readFlag--;
-	DWORD byteCnt;
-	BOOL ol_result = ::GetOverlappedResult(Pipe.handle, &Pipe.overlapRead, &byteCnt, FALSE);
-	if (!ol_result) {
-		DWORD code = ::GetLastError();
-		if (code != ERROR_MORE_DATA) {
-			LOG_F(ERROR, "GetOverlappedResult failed, last error: %ld", code);
-			ChatPipe_Reconnect();
-			return;
-		}
+    Pipe.readFlag--;
+    DWORD byteCnt;
+    BOOL ol_result = ::GetOverlappedResult(Pipe.handle, &Pipe.overlapRead, &byteCnt, FALSE);
+    if (!ol_result) {
+        DWORD code = ::GetLastError();
+        if (code != ERROR_MORE_DATA) {
+            LOG_F(ERROR, "GetOverlappedResult failed, last error: %ld", code);
+            ChatPipe_Reconnect();
+            return;
+        }
 
-		LOG_F(INFO, "%s: Recieved messaged too large! (%ld > %d bytes)", __func__, byteCnt, CHATPIPE_BUFSIZE);
-		ChatPipe_ReadFromPipe();
-		return;
-	}
+        LOG_F(INFO, "%s: Recieved messaged too large! (%ld > %d bytes)", __func__, byteCnt, CHATPIPE_BUFSIZE);
+        ChatPipe_ReadFromPipe();
+        return;
+    }
 
-	Pipe.readBuffer[byteCnt] = '\0';
+    Pipe.readBuffer[byteCnt] = '\0';
 
-	if (byteCnt > 0)
-	{
-		char* p = Pipe.readBuffer;
-
-#ifdef DEBUGGINGAIDS
-		LOG_F(INFO, "%s: Got messages! (%ld bytes)", __func__, byteCnt);
-#endif
-
-		for (DWORD i = 0; i < byteCnt;) // Bullshit hack because for some reason simultaneous messages get concatenated...
-		{
-			strcpy(cpTempBuf, p);
+    if (byteCnt > 0)
+    {
+        char* p = Pipe.readBuffer;
 
 #ifdef DEBUGGINGAIDS
-			LOG_F(INFO, "DATA: %s", cpTempBuf);
+        LOG_F(INFO, "%s: Got messages! (%ld bytes)", __func__, byteCnt);
 #endif
 
-			if (!ChatPipe_ParseJSON(cpTempBuf))
-				break;
+        for (DWORD i = 0; i < byteCnt;) // Bullshit hack because for some reason simultaneous messages get concatenated...
+        {
+            strcpy(cpTempBuf, p);
 
-			i += strlen(p) + 1;
-			p += strlen(p) + 1;
-		}
-	}
+#ifdef DEBUGGINGAIDS
+            LOG_F(INFO, "DATA: %s", cpTempBuf);
+#endif
 
-	if(Pipe.state == PIPESTATE_CONNECTING)
-	{
-		LOG_F(INFO, "%s: Connection established.", __func__);
-		Pipe.state = PIPESTATE_READY;
-	}
-	
-	ChatPipe_ReadFromPipe();
+            if (!ChatPipe_ParseJSON(cpTempBuf))
+                break;
+
+            i += strlen(p) + 1;
+            p += strlen(p) + 1;
+        }
+    }
+
+    if(Pipe.state == PIPESTATE_CONNECTING)
+    {
+        LOG_F(INFO, "%s: Connection established.", __func__);
+        Pipe.state = PIPESTATE_READY;
+    }
+    
+    ChatPipe_ReadFromPipe();
 }
 
 void ChatPipe_Poll(void) // Called once per game loop
 {
-	if (Pipe.handle == NULL)
-		return;
-	
-	HANDLE handles[3] = { waitEvent, Pipe.overlapRead.hEvent, Pipe.overlapWrite.hEvent };
+    if (Pipe.handle == NULL)
+        return;
+    
+    HANDLE handles[3] = { waitEvent, Pipe.overlapRead.hEvent, Pipe.overlapWrite.hEvent };
 
-	DWORD waitResult;
+    DWORD waitResult;
 
-	//if (!(waitResult > 0 && waitResult != WAIT_TIMEOUT))
-		//return;
+    //if (!(waitResult > 0 && waitResult != WAIT_TIMEOUT))
+        //return;
 
-	do
-	{
-		waitResult = WaitForMultipleObjects(3, handles, FALSE, 0);
-		//LOG_F(INFO, "%s: waitResult: %ld", __func__, waitResult);
-		switch (waitResult)
-		{
-			case WAIT_OBJECT_0:
-				break;
-			case WAIT_OBJECT_0 + 1:
-				ChatPipe_OnReadComplete();
-				break;
-			case WAIT_OBJECT_0 + 2:
-				ChatPipe_OnWriteComplete();
-				break;
-			case WAIT_TIMEOUT:
-				break;
-			default:
-				LOG_F(ERROR, "WaitForMultipleObjects failed, error code: %ld", GetLastError());
-				break;
-		}
-	} while (waitResult > 0 && waitResult != WAIT_TIMEOUT);
-	
-	return;
+    do
+    {
+        waitResult = WaitForMultipleObjects(3, handles, FALSE, 0);
+        //LOG_F(INFO, "%s: waitResult: %ld", __func__, waitResult);
+        switch (waitResult)
+        {
+            case WAIT_OBJECT_0:
+                break;
+            case WAIT_OBJECT_0 + 1:
+                ChatPipe_OnReadComplete();
+                break;
+            case WAIT_OBJECT_0 + 2:
+                ChatPipe_OnWriteComplete();
+                break;
+            case WAIT_TIMEOUT:
+                break;
+            default:
+                LOG_F(ERROR, "WaitForMultipleObjects failed, error code: %ld", GetLastError());
+                break;
+        }
+    } while (waitResult > 0 && waitResult != WAIT_TIMEOUT);
+    
+    return;
 }
 #elif !defined(NETCODE_DISABLE) // Linux stuff
 
 static void ChatPipe_WriteToPipe(const char* message)
 {
-	UNREFERENCED_PARAMETER(message);
+    UNREFERENCED_PARAMETER(message);
 }
 
 void ChatPipe_Create(void)
@@ -373,7 +370,7 @@ void ChatPipe_Poll(void) // Called once per game loop
 
 static void ChatPipe_WriteToPipe(const char* message)
 {
-	UNREFERENCED_PARAMETER(message);
+    UNREFERENCED_PARAMETER(message);
 }
 
 void ChatPipe_Create(void)
