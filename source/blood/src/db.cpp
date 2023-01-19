@@ -310,6 +310,7 @@ int InsertSprite(int nSector, int nStat)
     pSprite->extra = -1;
     pSprite->index = nSprite;
     xvel[nSprite] = yvel[nSprite] = zvel[nSprite] = 0;
+    qsprite_filler[nSprite] = 0;
 
 #ifdef POLYMER
     gPolymerLight[nSprite].lightId = -1;
