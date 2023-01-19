@@ -607,7 +607,7 @@ void packPrevItem(PLAYER *pPlayer)
 {
     if (pPlayer->packItemTime > 0)
     {
-        for (int nPrev = ClipLow(pPlayer->packItemId-1,kPackMedKit); nPrev >= kPackMedKit; nPrev--)
+        for (int nPrev = ClipLow(pPlayer->packItemId-1,kPackBase); nPrev >= kPackBase; nPrev--)
         {
             if (pPlayer->packSlots[nPrev].curAmount)
             {
