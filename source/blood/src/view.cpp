@@ -1303,6 +1303,7 @@ WEAPONICON gWeaponIcon[] = {
 
 void viewDrawStats(PLAYER *pPlayer, int x, int y)
 {
+    UNREFERENCED_PARAMETER(pPlayer);
     COLORSTR colorStr, colorStrKills, colorStrSecrets;
     const int nFont = 3;
     char buffer[128];
