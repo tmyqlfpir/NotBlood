@@ -6893,6 +6893,7 @@ spritetype * actSpawnSprite(int nSector, int x, int y, int z, int nStat, char a6
         if (!VanillaMode())
             xsprite[nXSprite].target = -1;
     }
+    qsprite_filler[nSprite] = 0;
     return pSprite;
 }
 
