@@ -21,10 +21,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 //-------------------------------------------------------------------------
 #pragma once
-#include "build.h"
-
-#define CHATPIPE_BUFSIZE 4096
-#define CHATPIPE_TIMEOUT 5000
 
 void ChatPipe_Create(void);
 void ChatPipe_SendMessage(const char* message);

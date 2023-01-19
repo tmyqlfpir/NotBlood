@@ -31,10 +31,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "chatpipe.h"
 #include "view.h"
 
-#ifdef defined(NETCODE_DISABLE) // non-netcode build
+#ifdef NETCODE_DISABLE // non-netcode build
 void ChatPipe_Create(void)
 {
-    
+    return;
 }
 
 void ChatPipe_SendMessage(const char* message)
@@ -42,16 +42,21 @@ void ChatPipe_SendMessage(const char* message)
     UNREFERENCED_PARAMETER(message);
 }
 
-void ChatPipe_Poll(void) // Called once per game loop
+void ChatPipe_Poll(void)
 {
-    
+    return;
 }
 #else
 
-static void ChatPipe_WriteToPipe(const char* message);
+#define CHATPIPE_BUFSIZE 4096
+#define CHATPIPE_TIMEOUT 5000
+
+// Global vars
 char cpTempBuf[CHATPIPE_BUFSIZE] = "";
+char bPipeActive = 0;
 
 // Platform-agnostic functions.
+static void ChatPipe_WriteToPipe(const char* message);
 
 static bool ChatPipe_ParseJSON(const char* data)
 {
@@ -66,7 +71,7 @@ static bool ChatPipe_ParseJSON(const char* data)
         {
             const char* strUser = sjson_get_string(jRoot, "user", NULL);
             const char* strText = sjson_get_string(jRoot, "text", NULL);
-            
+
             snprintf(cpTempBuf, kMaxMessageTextLength, "\r[LOBBY]\r \r%s\r: %s\n", strUser, strText);
             success = true;
         }
@@ -103,14 +108,17 @@ static bool ChatPipe_ParseJSON(const char* data)
 
 void ChatPipe_SendMessage(const char* message)
 {
+    if (!bPipeActive)
+        return;
+
     sjson_context* jsonCtx = sjson_create_context(0, 0, NULL);
     sjson_node* jRoot = sjson_mkobject(jsonCtx);
-    
+
     sjson_put_string(jsonCtx, jRoot, "event", "message");
     //sjson_put_string(jsonCtx, jRoot, "user", g_player[myconnectindex].user_name);
     OSD_StripColors(cpTempBuf, message);
     sjson_put_string(jsonCtx, jRoot, "text", cpTempBuf);
-    
+
     char* jEncoded = sjson_stringify(jsonCtx, jRoot, NULL);
     ChatPipe_WriteToPipe(jEncoded);
 
@@ -192,6 +200,8 @@ static void ChatPipe_Reconnect()
 
 void ChatPipe_Create(void)
 {
+    bPipeActive = 0;
+
     if (Pipe.handle != NULL)
     {
         LOG_F(ERROR, "%s: Already have a chat pipe!", __func__);
@@ -207,7 +217,7 @@ void ChatPipe_Create(void)
         CHATPIPE_TIMEOUT,
         NULL);
 
-    if (Pipe.handle == NULL || Pipe.handle == INVALID_HANDLE_VALUE)
+    if ((Pipe.handle == NULL) || (Pipe.handle == INVALID_HANDLE_VALUE))
     {
         LOG_F(ERROR, "%s: Chat pipe creation failed", __func__);
         return;
@@ -220,6 +230,8 @@ void ChatPipe_Create(void)
     Pipe.state = ChatPipe_Connect() ? PIPESTATE_CONNECTING : PIPESTATE_READY;
     Pipe.readFlag = 0;
     Pipe.writeFlag = 0;
+
+    bPipeActive = 1;
 }
 
 static void ChatPipe_WriteToPipe(const char* message)
@@ -328,15 +340,15 @@ void ChatPipe_OnReadComplete()
         LOG_F(INFO, "%s: Connection established.", __func__);
         Pipe.state = PIPESTATE_READY;
     }
-    
+
     ChatPipe_ReadFromPipe();
 }
 
 void ChatPipe_Poll(void) // Called once per game loop
 {
-    if (Pipe.handle == NULL)
+    if (!bPipeActive || (Pipe.handle == NULL) || (Pipe.handle == INVALID_HANDLE_VALUE))
         return;
-    
+
     HANDLE handles[3] = { waitEvent, Pipe.overlapRead.hEvent, Pipe.overlapWrite.hEvent };
 
     DWORD waitResult;
@@ -364,11 +376,11 @@ void ChatPipe_Poll(void) // Called once per game loop
                 LOG_F(ERROR, "WaitForMultipleObjects failed, error code: %ld", GetLastError());
                 break;
         }
-    } while (waitResult > 0 && waitResult != WAIT_TIMEOUT);
-    
+    } while ((waitResult > 0) && (waitResult != WAIT_TIMEOUT));
+
     return;
 }
-#else // Linux stuff
+#else // Unix/Linux stuff
 
 static void ChatPipe_WriteToPipe(const char* message)
 {
@@ -377,10 +389,12 @@ static void ChatPipe_WriteToPipe(const char* message)
 
 void ChatPipe_Create(void)
 {
+    return;
 }
 
 void ChatPipe_Poll(void) // Called once per game loop
 {
+    return;
 }
 
 #endif
