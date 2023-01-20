@@ -1509,6 +1509,7 @@ void PickUp(PLAYER *pPlayer, spritetype *pSprite)
 
     pPlayer->pickupEffect = 30;
     if (pPlayer == gMe) {
+        if ((nType == kItemShroomDelirium) && (pSprite->cstat&CSTAT_SPRITE_INVISIBLE) && !VanillaMode()) return; // do not print text for invisible delirium shrooms
         if (customMsg > 0) trTextOver(customMsg - 1);
         else viewSetMessage(buffer, 0, MESSAGE_PRIORITY_PICKUP);
     }
