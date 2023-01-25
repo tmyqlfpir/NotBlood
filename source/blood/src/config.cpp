@@ -383,6 +383,7 @@ void CONFIG_SetDefaults(void)
     gSetup.quickstart       = 0;
     gSetup.fullscreen       = 1;
     gSetup.usemouse         = 1;
+    Bstrcpy(gSetup.lastini, BloodIniFile);
 
     //ud.config.AmbienceToggle  = 1;
     //ud.config.AutoAim         = 1;
@@ -894,6 +895,8 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Setup", "ForceSetup", &gSetup.forcesetup);
     SCRIPT_GetNumber(scripthandle, "Setup", "NoAutoLoad", &gSetup.noautoload);
     SCRIPT_GetNumber(scripthandle, "Setup", "QuickStart", &gSetup.quickstart);
+    SCRIPT_GetString(scripthandle, "Setup", "LastINI", &gSetup.lastini[0]);
+    gSetup.lastini[BMAX_PATH-1] = '\0';
 
     int32_t cachesize;
     SCRIPT_GetNumber(scripthandle, "Setup", "CacheSize", &cachesize);
@@ -1027,6 +1030,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Setup", "ForceSetup", gSetup.forcesetup, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "NoAutoLoad", gSetup.noautoload, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "QuickStart", gSetup.quickstart, FALSE, FALSE);
+    SCRIPT_PutString(scripthandle, "Setup", "LastINI", &gSetup.lastini[0]);
 
 #ifdef POLYMER
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "Polymer", glrendmode == REND_POLYMER, FALSE, FALSE);
