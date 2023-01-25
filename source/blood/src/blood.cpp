@@ -1852,6 +1852,7 @@ int app_main(int argc, char const * const * argv)
             engineUnInit();
             Bexit(0);
         }
+        Bstrcpy(gSetup.lastini, pINISelected->zName);
     }
 #endif
 
@@ -2955,7 +2956,7 @@ void ScanINIFiles(void)
     pINISelected = pINIChain;
     for (auto pIter = pINIChain; pIter; pIter = pIter->pNext)
     {
-        if (!Bstrncasecmp(BloodIniFile, pIter->zName, BMAX_PATH))
+        if (!Bstrncasecmp(gSetup.lastini, pIter->zName, BMAX_PATH))
         {
             pINISelected = pIter;
             break;
