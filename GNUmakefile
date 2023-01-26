@@ -238,9 +238,14 @@ engine_src := $(engine_root)/src
 engine_inc := $(engine_root)/include
 engine_obj := $(obj)/$(engine)
 
-engine_cflags := -I$(engine_src) -I$(mimalloc_inc) -I$(imgui_inc)
+engine_cflags := -I$(engine_src) -I$(imgui_inc)
 
-engine_deps := mimalloc
+engine_deps :=
+
+ifneq (0,$(USE_MIMALLOC))
+    engine_cflags += -I$(mimalloc_inc)
+    engine_deps += mimalloc
+endif
 
 ifneq (1,$(SDL_TARGET))
     engine_deps += imgui
@@ -454,7 +459,10 @@ tools_obj := $(obj)/$(tools)
 
 tools_cflags := $(engine_cflags)
 
-tools_deps := engine_tools mimalloc
+tools_deps := engine_tools
+ifneq (0,$(USE_MIMALLOC))
+    tools_deps += mimalloc
+endif
 
 tools_targets := \
     arttool \
@@ -650,11 +658,14 @@ COMPILERFLAGS += \
     -I$(mact_inc) \
     -I$(audiolib_inc) \
     -I$(glad_inc) \
-    -I$(mimalloc_inc) \
     -I$(imgui_inc) \
     -I$(libsmackerdec_inc) \
     -I$(hmpplay_inc) \
     -MP -MMD \
+
+ifneq (0,$(USE_MIMALLOC))
+    COMPILERFLAGS += -I$(mimalloc_inc)
+endif
 
 ifneq (0,$(USE_PHYSFS))
     COMPILERFLAGS += -I$(physfs_inc) -DUSE_PHYSFS
@@ -675,10 +686,13 @@ libraries := \
     glad \
     imgui \
     libxmplite \
-    mimalloc \
     mact \
     libsmackerdec \
     hmpplay \
+
+ifneq (0,$(USE_MIMALLOC))
+    libraries += mimalloc
+endif
 
 ifneq (0,$(USE_PHYSFS))
     libraries += physfs
