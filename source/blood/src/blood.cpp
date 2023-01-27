@@ -2961,6 +2961,8 @@ void ScanINIFiles(void)
             pINISelected = pIter;
             break;
         }
+        else if (!Bstrncasecmp(BloodIniFile, pIter->zName, BMAX_PATH)) // fallback to selecting blood.ini if last ini was not found
+            pINISelected = pIter;
     }
 }
 
