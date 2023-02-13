@@ -43,7 +43,7 @@ extern CGameMenu menuHelp;
 
 extern CGameMenu menuOptions;
 extern CGameMenu menuOptionsGame;
-extern CGameMenu menuOptionsGameEnhancements;
+extern CGameMenu menuOptionsGameMutators;
 extern CGameMenu menuOptionsDisplay;
 extern CGameMenu menuOptionsDisplayColor;
 extern CGameMenu menuOptionsDisplayMode;

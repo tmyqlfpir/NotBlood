@@ -26,7 +26,7 @@ A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-en
 * Adjustable spawn protection
 * UT99 style multi kill alerts
 
-### Enhancements (Optional)
+### Mutators (Optional)
 * Replaced sector based damage logic for player explosions
 * Difficulty based invulnerability timer for player damage
 * Raymarching collision testing for player projectiles
@@ -79,7 +79,7 @@ This feature sets the game to match v1.21 DOS compatibility, and removes any bug
 The vanilla mode option can be found within game settings, and is only available for single-player
 It should be noted that vanilla mode does not work with modern maps
 
-### Enhancements Options
+### Mutator Options
 * Replace guns akimbo with quad damage
    - Replaces the guns akimbo powerup with Quake's quad damage (lasts 22 seconds)
 * Player damage invulnerability
@@ -143,7 +143,7 @@ It should be noted that vanilla mode does not work with modern maps
 * Hitscan projectiles
    - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
    - Projectile speed is adjusted depending on difficulty and if bullet is underwater
-   - This enhancement does not support custom modern map enemies
+   - This mutator does not support custom modern map enemies
 * Randomizer mode
    - Set the enemy/pickups randomizer mode
    - The randomizer does not support custom modern map enemies
