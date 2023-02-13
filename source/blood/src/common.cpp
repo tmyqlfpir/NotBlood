@@ -274,53 +274,10 @@ void G_LoadGroups(int32_t autoload)
     pathsearchmode = bakpathsearchmode;
 }
 
-#ifndef EDUKE32_TOUCH_DEVICES
-#if defined __linux__ || defined EDUKE32_BSD
-static void Blood_Add_GOG_OUWB_Linux(const char * path)
-{
-    char buf[BMAX_PATH];
-
-    Bsnprintf(buf, sizeof(buf), "%s/data", path);
-    addsearchpath(buf);
-}
-#endif
-
-#if defined EDUKE32_OSX || defined __linux__ || defined EDUKE32_BSD
-static void Blood_AddSteamPaths(const char *basepath)
-{
-    char buf[BMAX_PATH];
-
-    // Blood: Fresh Supply - Steam
-    Bsnprintf(buf, sizeof(buf), "%s/steamapps/common/Blood", basepath);
-    addsearchpath(buf);
-
-    // Blood: One Unit Whole Blood - Steam
-    Bsnprintf(buf, sizeof(buf), "%s/steamapps/common/One Unit Whole Blood", basepath);
-    addsearchpath(buf);
-}
-#endif
-#endif
-
 void G_AddSearchPaths(void)
 {
 #ifndef EDUKE32_TOUCH_DEVICES
 #if defined __linux__ || defined EDUKE32_BSD
-    char buf[BMAX_PATH];
-    char *homepath = Bgethomedir();
-
-    Bsnprintf(buf, sizeof(buf), "%s/.steam/steam", homepath);
-    Blood_AddSteamPaths(buf);
-
-    Bsnprintf(buf, sizeof(buf), "%s/.steam/steam/steamapps/libraryfolders.vdf", homepath);
-    Paths_ParseSteamLibraryVDF(buf, Blood_AddSteamPaths);
-
-    // Blood: One Unit Whole Blood - GOG.com
-    Bsnprintf(buf, sizeof(buf), "%s/GOG Games/Blood One Unit Whole Blood", homepath);
-    Blood_Add_GOG_OUWB_Linux(buf);
-    Paths_ParseXDGDesktopFilesFromGOG(homepath, "Blood_One_Unit_Whole_Blood", Blood_Add_GOG_OUWB_Linux);
-
-    Xfree(homepath);
-
     addsearchpath("/usr/share/games/notblood");
     addsearchpath("/usr/local/share/games/notblood");
 #elif defined EDUKE32_OSX
@@ -328,15 +285,6 @@ void G_AddSearchPaths(void)
     int32_t i;
     char *applications[] = { osx_getapplicationsdir(0), osx_getapplicationsdir(1) };
     char *support[] = { osx_getsupportdir(0), osx_getsupportdir(1) };
-
-    for (i = 0; i < 2; i++)
-    {
-        Bsnprintf(buf, sizeof(buf), "%s/Steam", support[i]);
-        Blood_AddSteamPaths(buf);
-
-        Bsnprintf(buf, sizeof(buf), "%s/Steam/steamapps/libraryfolders.vdf", support[i]);
-        Paths_ParseSteamLibraryVDF(buf, Blood_AddSteamPaths);
-    }
 
     for (i = 0; i < 2; i++)
     {
@@ -348,58 +296,6 @@ void G_AddSearchPaths(void)
     {
         Xfree(applications[i]);
         Xfree(support[i]);
-    }
-#elif defined (_WIN32)
-    char buf[BMAX_PATH] = {0};
-    DWORD bufsize;
-    bool found = false;
-
-    // Blood: One Unit Whole Blood - Steam
-    bufsize = sizeof(buf);
-    if (!found && Paths_ReadRegistryValue(R"(SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 299030)", "InstallLocation", buf, &bufsize))
-    {
-        addsearchpath(buf);
-        found = true;
-    }
-
-    // Blood: One Unit Whole Blood - GOG.com
-    bufsize = sizeof(buf);
-    if (!found && Paths_ReadRegistryValue(R"(SOFTWARE\GOG.com\Games\1207658856)", "path", buf, &bufsize))
-    {
-        addsearchpath(buf);
-        found = true;
-    }
-    bufsize = sizeof(buf);
-    if (!found && Paths_ReadRegistryValue("SOFTWARE\\GOG.com\\GOGONEUNITONEBLOOD", "PATH", buf, &bufsize))
-    {
-        addsearchpath(buf);
-        found = true;
-    }
-
-    // Blood: Fresh Supply - Steam
-    bufsize = sizeof(buf);
-    if (!found && Paths_ReadRegistryValue(R"(SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1010750)", "InstallLocation", buf, &bufsize))
-    {
-        char * const suffix = buf + bufsize - 1;
-        DWORD const remaining = sizeof(buf) - bufsize;
-
-        addsearchpath(buf);
-        strncpy(suffix, "/addons/Cryptic Passage", remaining);
-        addsearchpath(buf);
-        found = true;
-    }
-
-    // Blood: Fresh Supply - GOG.com
-    bufsize = sizeof(buf);
-    if (!found && Paths_ReadRegistryValue(R"(SOFTWARE\GOG.com\Games\1374469660)", "path", buf, &bufsize))
-    {
-        char * const suffix = buf + bufsize - 1;
-        DWORD const remaining = sizeof(buf) - bufsize;
-
-        addsearchpath(buf);
-        strncpy(suffix, "/addons/Cryptic Passage", remaining);
-        addsearchpath(buf);
-        found = true;
     }
 #endif
 #endif
