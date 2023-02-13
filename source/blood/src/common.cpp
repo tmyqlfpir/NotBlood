@@ -298,6 +298,7 @@ void G_AddSearchPaths(void)
         Xfree(support[i]);
     }
 #endif
+#endif
 }
 
 void G_CleanupSearchPaths(void)
