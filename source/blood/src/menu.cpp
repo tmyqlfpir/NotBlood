@@ -304,7 +304,7 @@ CGameMenu menuHelp;
 CGameMenu menuNetwork;
 CGameMenu menuNetworkHost;
 CGameMenu menuNetworkJoin;
-CGameMenu menuNetworkGameEnhancements;
+CGameMenu menuNetworkGameMutators;
 
 CGameMenuItemQAV itemBloodQAV("", 3, 160, 100, "BDRIP", true);
 CGameMenuItemQAV itemCreditsQAV("", 3, 160, 100, "CREDITS", false, true);
@@ -452,23 +452,23 @@ CGameMenuItemZBool itemNetStart10("AUTO TEAMS:", 3, 66, 115, 180, true, 0, NULL,
 CGameMenuItemZCycle itemNetStart11("SPAWN PROTECTION:", 3, 66, 125, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
 CGameMenuItemZCycle itemNetStart12("SPAWN WITH WEAPON:", 3, 66, 135, 180, 0, 0, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
 CGameMenuItemChain itemNetStart13("USER MAP", 3, 66, 150, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
-CGameMenuItemChain itemNetStart14("ENHANCEMENTS", 3, 66, 160, 320, 0, &menuNetworkGameEnhancements, -1, NULL, 0);
+CGameMenuItemChain itemNetStart14("MUTATORS", 3, 66, 160, 320, 0, &menuNetworkGameMutators, -1, NULL, 0);
 CGameMenuItemChain itemNetStart15("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
 
 ///////////////
-CGameMenuItemChain itemNetEnhancementBannedItems("SET ITEMS", 3, 0, 37, 320, 1, &menuBannedItems, -1, NULL, 0);
-CGameMenuItemZBool itemNetEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 50, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 60, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 70, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
-CGameMenuItemZCycle itemNetEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 80, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
-CGameMenuItemZBool itemNetEnhancementNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 90, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 100, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
-CGameMenuItemZBool itemNetEnhancementBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 110, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 120, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
-CGameMenuItemZBool itemNetEnhancementSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 130, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
-CGameMenuItemZBool itemNetEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 140, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 150, 180, 0, NULL, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
-CGameMenuItemZEdit itemNetEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 160, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
+CGameMenuItemChain itemNetMutatorBannedItems("SET ITEMS", 3, 0, 37, 320, 1, &menuBannedItems, -1, NULL, 0);
+CGameMenuItemZBool itemNetMutatorBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 50, 180, false, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 60, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 70, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
+CGameMenuItemZCycle itemNetMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 80, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
+CGameMenuItemZBool itemNetMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 90, 180, false, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 100, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemNetMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 110, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 120, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
+CGameMenuItemZBool itemNetMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 130, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemNetMutatorBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 140, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetMutatorRandomizerMode("RANDOMIZER MODE:", 3, 66, 150, 180, 0, NULL, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
+CGameMenuItemZEdit itemNetMutatorRandomizerSeed("RANDOMIZER SEED:", 3, 66, 160, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
 CGameMenuItemText itemLoadingText("LOADING...", 1, 160, 100, 1);
@@ -504,7 +504,7 @@ const char *gResolutionName[MAXVALIDMODES];
 
 CGameMenu menuOptions;
 CGameMenu menuOptionsGame;
-CGameMenu menuOptionsGameEnhancements;
+CGameMenu menuOptionsGameMutators;
 CGameMenu menuOptionsDisplay;
 CGameMenu menuOptionsDisplayView;
 CGameMenu menuOptionsDisplayColor;
@@ -524,7 +524,7 @@ CGameMenuItemChain itemOptionsChainDisplay("DISPLAY SETUP", 1, 0, 70, 320, 1, &m
 CGameMenuItemChain itemOptionsChainSound("SOUND SETUP", 1, 0, 90, 320, 1, &menuOptionsSound, -1, SetupOptionsSound, 0);
 CGameMenuItemChain itemOptionsChainOnline("ONLINE SETUP", 1, 0, 110, 320, 1, &menuOptionsOnline, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainControl("CONTROL SETUP", 1, 0, 130, 320, 1, &menuOptionsControl, -1, NULL, 0);
-CGameMenuItemChain itemOptionsChainEnhancements("ENHANCEMENTS", 1, 0, 150, 320, 1, &menuOptionsGameEnhancements, -1, NULL, 0);
+CGameMenuItemChain itemOptionsChainMutators("MUTATORS", 1, 0, 150, 320, 1, &menuOptionsGameMutators, -1, NULL, 0);
 
 const char *pzAutoAimStrings[] = {
     "NEVER",
@@ -612,20 +612,20 @@ void SetRestoreLastSave(CGameMenuItemZBool *pItem);
 void SetVanillaMode(CGameMenuItemZCycle *pItem);
 
 ///////////////
-CGameMenuItemTitle itemGameEnhancementsTitle("ENHANCEMENTS", 1, 160, 20, 2038);
-CGameMenuItemZCycle itemEnhancementMonsterSettings("MONSTERS:", 3, 66, 35, 180, 0, SetMonsters, pzMonsterStrings, ARRAY_SSIZE(pzMonsterStrings), 0);
-CGameMenuItemZBool itemEnhancementBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, false, SetQuadDamagePowerup, NULL, NULL);
-CGameMenuItemZBool itemEnhancementBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 55, 180, false, SetDamageInvul, NULL, NULL);
-CGameMenuItemZCycle itemEnhancementExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
-CGameMenuItemZCycle itemEnhancementProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
-CGameMenuItemZBool itemEnhancementNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 85, 180, false, SetNapalmFalloff, NULL, NULL);
-CGameMenuItemZBool itemEnhancementEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, false, SetEnemyBehavior, "NOTBLOOD", "ORIGINAL");
-CGameMenuItemZBool itemEnhancementBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, false, SetEnemyRandomTNT, NULL, NULL);
-CGameMenuItemZCycle itemEnhancementWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
-CGameMenuItemZBool itemEnhancementSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 125, 180, false, SetSectorBehavior, "NOTBLOOD", "ORIGINAL");
-CGameMenuItemZBool itemEnhancementBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 135, 180, false, SetHitscanProjectiles, NULL, NULL);
-CGameMenuItemZCycle itemEnhancementRandomizerMode("RANDOMIZER MODE:", 3, 66, 145, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
-CGameMenuItemZEdit itemEnhancementRandomizerSeed("RANDOMIZER SEED:", 3, 66, 155, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
+CGameMenuItemTitle itemGameMutatorsTitle("MUTATORS", 1, 160, 20, 2038);
+CGameMenuItemZCycle itemMutatorMonsterSettings("MONSTERS:", 3, 66, 35, 180, 0, SetMonsters, pzMonsterStrings, ARRAY_SSIZE(pzMonsterStrings), 0);
+CGameMenuItemZBool itemMutatorBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, false, SetQuadDamagePowerup, NULL, NULL);
+CGameMenuItemZBool itemMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 55, 180, false, SetDamageInvul, NULL, NULL);
+CGameMenuItemZCycle itemMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
+CGameMenuItemZCycle itemMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
+CGameMenuItemZBool itemMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 85, 180, false, SetNapalmFalloff, NULL, NULL);
+CGameMenuItemZBool itemMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, false, SetEnemyBehavior, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, false, SetEnemyRandomTNT, NULL, NULL);
+CGameMenuItemZCycle itemMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
+CGameMenuItemZBool itemMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 125, 180, false, SetSectorBehavior, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemMutatorBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 135, 180, false, SetHitscanProjectiles, NULL, NULL);
+CGameMenuItemZCycle itemMutatorRandomizerMode("RANDOMIZER MODE:", 3, 66, 145, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
+CGameMenuItemZEdit itemMutatorRandomizerSeed("RANDOMIZER SEED:", 3, 66, 155, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
 CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
@@ -1305,43 +1305,43 @@ void SetupNetStartMenu(void)
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
 
     //////////////////////
-    menuNetworkGameEnhancements.Add(&itemGameEnhancementsTitle, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementBannedItems, true);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolQuadDamagePowerup, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolDamageInvul, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementExplosionBehavior, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementProjectileBehavior, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementNapalmFalloff, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementEnemyBehavior, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolEnemyRandomTNT, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementWeaponsVer, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementSectorBehavior, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementBoolHitscanProjectiles, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerMode, false);
-    menuNetworkGameEnhancements.Add(&itemNetEnhancementRandomizerSeed, false);
-    menuNetworkGameEnhancements.Add(&itemBloodQAV, false);
-    itemNetEnhancementBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
-    itemNetEnhancementBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
-    itemNetEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
-    itemNetEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
-    itemNetEnhancementBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
-    itemNetEnhancementExplosionBehavior.tooltip_pzTextUpper = "Uses enhanced explosion calculation";
-    itemNetEnhancementProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
-    itemNetEnhancementProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
-    itemNetEnhancementNapalmFalloff.tooltip_pzTextUpper = "Set napalm projectiles to";
-    itemNetEnhancementNapalmFalloff.tooltip_pzTextLower = "be affected by gravity";
-    itemNetEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
-    itemNetEnhancementBoolEnemyRandomTNT.tooltip_pzTextUpper = "Set cultist to have a chance of";
-    itemNetEnhancementBoolEnemyRandomTNT.tooltip_pzTextLower = "throwing random projectiles";
-    itemNetEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
-    itemNetEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
-    itemNetEnhancementSectorBehavior.tooltip_pzTextUpper = "Improve room over room sector handling";
-    itemNetEnhancementSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: firing above water)";
-    itemNetEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
-    itemNetEnhancementBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
-    itemNetEnhancementRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
-    itemNetEnhancementRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
-    itemNetEnhancementRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
+    menuNetworkGameMutators.Add(&itemGameMutatorsTitle, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorBannedItems, true);
+    menuNetworkGameMutators.Add(&itemNetMutatorBoolQuadDamagePowerup, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorBoolDamageInvul, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorExplosionBehavior, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorProjectileBehavior, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorNapalmFalloff, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorEnemyBehavior, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorBoolEnemyRandomTNT, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorWeaponsVer, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorSectorBehavior, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorBoolHitscanProjectiles, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorRandomizerMode, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorRandomizerSeed, false);
+    menuNetworkGameMutators.Add(&itemBloodQAV, false);
+    itemNetMutatorBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
+    itemNetMutatorBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
+    itemNetMutatorBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
+    itemNetMutatorBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
+    itemNetMutatorBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
+    itemNetMutatorExplosionBehavior.tooltip_pzTextUpper = "Uses enhanced explosion calculation";
+    itemNetMutatorProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
+    itemNetMutatorProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
+    itemNetMutatorNapalmFalloff.tooltip_pzTextUpper = "Set napalm projectiles to";
+    itemNetMutatorNapalmFalloff.tooltip_pzTextLower = "be affected by gravity";
+    itemNetMutatorEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
+    itemNetMutatorBoolEnemyRandomTNT.tooltip_pzTextUpper = "Set cultist to have a chance of";
+    itemNetMutatorBoolEnemyRandomTNT.tooltip_pzTextLower = "throwing random projectiles";
+    itemNetMutatorWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
+    itemNetMutatorWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
+    itemNetMutatorSectorBehavior.tooltip_pzTextUpper = "Improve room over room sector handling";
+    itemNetMutatorSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: firing above water)";
+    itemNetMutatorBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
+    itemNetMutatorBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
+    itemNetMutatorRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
+    itemNetMutatorRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
+    itemNetMutatorRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
     //////////////////////
 
     itemNetStart1.SetTextIndex(1);
@@ -1353,17 +1353,17 @@ void SetupNetStartMenu(void)
     SetNetGameMode(&itemNetStart1); // hide friendly fire/keys menu items depending on game mode
 
     ///////
-    itemNetEnhancementBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
-    itemNetEnhancementBoolDamageInvul.at20 = !!gDamageInvul;
-    itemNetEnhancementExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
-    itemNetEnhancementProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
-    itemNetEnhancementNapalmFalloff.at20 = !!gNapalmFalloff;
-    itemNetEnhancementEnemyBehavior.at20 = !!gEnemyBehavior;
-    itemNetEnhancementBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
-    itemNetEnhancementWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
-    itemNetEnhancementSectorBehavior.at20 = !!gSectorBehavior;
-    itemNetEnhancementBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
-    itemNetEnhancementRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
+    itemNetMutatorBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
+    itemNetMutatorBoolDamageInvul.at20 = !!gDamageInvul;
+    itemNetMutatorExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
+    itemNetMutatorProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
+    itemNetMutatorNapalmFalloff.at20 = !!gNapalmFalloff;
+    itemNetMutatorEnemyBehavior.at20 = !!gEnemyBehavior;
+    itemNetMutatorBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
+    itemNetMutatorWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
+    itemNetMutatorSectorBehavior.at20 = !!gSectorBehavior;
+    itemNetMutatorBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
+    itemNetMutatorRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bstrncpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(gPacketStartGame.szRandomizerSeed));
     ///////
 
@@ -1522,7 +1522,7 @@ void SetupOptionsMenu(void)
     menuOptions.Add(&itemOptionsChainSound, false);
     menuOptions.Add(&itemOptionsChainOnline, false);
     menuOptions.Add(&itemOptionsChainControl, false);
-    menuOptions.Add(&itemOptionsChainEnhancements, false);
+    menuOptions.Add(&itemOptionsChainMutators, false);
     menuOptions.Add(&itemBloodQAV, false);
 
     menuOptionsGame.Add(&itemOptionsGameTitle, false);
@@ -1540,49 +1540,49 @@ void SetupOptionsMenu(void)
     itemOptionsGameAutosaveMode.tooltip_pzTextUpper = "Set when autosave will trigger";
     itemOptionsGameLockSaving.tooltip_pzTextUpper = "Disable manual saving/save scumming";
     itemOptionsGameRestoreLastSave.tooltip_pzTextUpper = "Prompt to restore last save game on death";
-    itemOptionsGameBoolVanillaMode.tooltip_pzTextUpper = "Disable all non-vanilla features/enhancements";
+    itemOptionsGameBoolVanillaMode.tooltip_pzTextUpper = "Disable all non-vanilla features/mutators";
     itemOptionsGameBoolVanillaMode.tooltip_pzTextLower = "(v1.21 DOS compatibility mode)";
 
     //////////////////////
-    menuOptionsGameEnhancements.Add(&itemGameEnhancementsTitle, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementMonsterSettings, true);
-    menuOptionsGameEnhancements.Add(&itemEnhancementBoolQuadDamagePowerup, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementBoolDamageInvul, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementExplosionBehavior, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementProjectileBehavior, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementNapalmFalloff, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementEnemyBehavior, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementBoolEnemyRandomTNT, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementWeaponsVer, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementSectorBehavior, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementBoolHitscanProjectiles, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerMode, false);
-    menuOptionsGameEnhancements.Add(&itemEnhancementRandomizerSeed, false);
-    menuOptionsGameEnhancements.Add(&itemBloodQAV, false);
-    itemOptionsChainEnhancements.bDisableForNet = 1;
-    itemEnhancementMonsterSettings.tooltip_pzTextUpper = "Set the monster settings";
-    itemEnhancementMonsterSettings.tooltip_pzTextLower = "for single-player mode";
-    itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
-    itemEnhancementBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
-    itemEnhancementBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
-    itemEnhancementBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
-    itemEnhancementExplosionBehavior.tooltip_pzTextUpper = "Uses enhanced explosion calculation";
-    itemEnhancementProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
-    itemEnhancementProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
-    itemEnhancementNapalmFalloff.tooltip_pzTextUpper = "Set napalm projectiles to";
-    itemEnhancementNapalmFalloff.tooltip_pzTextLower = "be affected by gravity";
-    itemEnhancementEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
-    itemEnhancementBoolEnemyRandomTNT.tooltip_pzTextUpper = "Set cultist to have a chance of";
-    itemEnhancementBoolEnemyRandomTNT.tooltip_pzTextLower = "throwing random projectiles";
-    itemEnhancementWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
-    itemEnhancementWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
-    itemEnhancementSectorBehavior.tooltip_pzTextUpper = "Improve room over room sector handling";
-    itemEnhancementSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: firing above water)";
-    itemEnhancementBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
-    itemEnhancementBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
-    itemEnhancementRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
-    itemEnhancementRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
-    itemEnhancementRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
+    menuOptionsGameMutators.Add(&itemGameMutatorsTitle, false);
+    menuOptionsGameMutators.Add(&itemMutatorMonsterSettings, true);
+    menuOptionsGameMutators.Add(&itemMutatorBoolQuadDamagePowerup, false);
+    menuOptionsGameMutators.Add(&itemMutatorBoolDamageInvul, false);
+    menuOptionsGameMutators.Add(&itemMutatorExplosionBehavior, false);
+    menuOptionsGameMutators.Add(&itemMutatorProjectileBehavior, false);
+    menuOptionsGameMutators.Add(&itemMutatorNapalmFalloff, false);
+    menuOptionsGameMutators.Add(&itemMutatorEnemyBehavior, false);
+    menuOptionsGameMutators.Add(&itemMutatorBoolEnemyRandomTNT, false);
+    menuOptionsGameMutators.Add(&itemMutatorWeaponsVer, false);
+    menuOptionsGameMutators.Add(&itemMutatorSectorBehavior, false);
+    menuOptionsGameMutators.Add(&itemMutatorBoolHitscanProjectiles, false);
+    menuOptionsGameMutators.Add(&itemMutatorRandomizerMode, false);
+    menuOptionsGameMutators.Add(&itemMutatorRandomizerSeed, false);
+    menuOptionsGameMutators.Add(&itemBloodQAV, false);
+    itemOptionsChainMutators.bDisableForNet = 1;
+    itemMutatorMonsterSettings.tooltip_pzTextUpper = "Set the monster settings";
+    itemMutatorMonsterSettings.tooltip_pzTextLower = "for single-player mode";
+    itemMutatorBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
+    itemMutatorBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
+    itemMutatorBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
+    itemMutatorBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
+    itemMutatorExplosionBehavior.tooltip_pzTextUpper = "Uses enhanced explosion calculation";
+    itemMutatorProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
+    itemMutatorProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
+    itemMutatorNapalmFalloff.tooltip_pzTextUpper = "Set napalm projectiles to";
+    itemMutatorNapalmFalloff.tooltip_pzTextLower = "be affected by gravity";
+    itemMutatorEnemyBehavior.tooltip_pzTextUpper = "Fix various original bugs with enemies";
+    itemMutatorBoolEnemyRandomTNT.tooltip_pzTextUpper = "Set cultist to have a chance of";
+    itemMutatorBoolEnemyRandomTNT.tooltip_pzTextLower = "throwing random projectiles";
+    itemMutatorWeaponsVer.tooltip_pzTextUpper = "Check readme.txt for full";
+    itemMutatorWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
+    itemMutatorSectorBehavior.tooltip_pzTextUpper = "Improve room over room sector handling";
+    itemMutatorSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: firing above water)";
+    itemMutatorBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
+    itemMutatorBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
+    itemMutatorRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
+    itemMutatorRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
+    itemMutatorRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
     /////////////////////
 
     //menuOptionsGame.Add(&itemOptionsGameChainParentalLock, false);
@@ -1597,18 +1597,18 @@ void SetupOptionsMenu(void)
     SetGameVanillaMode(gVanilla); // enable/disable menu items depending on current vanilla mode state
 
     ///////
-    itemEnhancementMonsterSettings.m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
-    itemEnhancementBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
-    itemEnhancementBoolDamageInvul.at20 = !!gDamageInvul;
-    itemEnhancementExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
-    itemEnhancementProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
-    itemEnhancementNapalmFalloff.at20 = !!gNapalmFalloff;
-    itemEnhancementEnemyBehavior.at20 = !!gEnemyBehavior;
-    itemEnhancementBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
-    itemEnhancementWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
-    itemEnhancementSectorBehavior.at20 = !!gSectorBehavior;
-    itemEnhancementBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
-    itemEnhancementRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
+    itemMutatorMonsterSettings.m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
+    itemMutatorBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
+    itemMutatorBoolDamageInvul.at20 = !!gDamageInvul;
+    itemMutatorExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
+    itemMutatorProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
+    itemMutatorNapalmFalloff.at20 = !!gNapalmFalloff;
+    itemMutatorEnemyBehavior.at20 = !!gEnemyBehavior;
+    itemMutatorBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
+    itemMutatorWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
+    itemMutatorSectorBehavior.at20 = !!gSectorBehavior;
+    itemMutatorBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
+    itemMutatorRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bstrncpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(szRandomizerSeedMenu));
     ///////
 
@@ -2444,7 +2444,7 @@ void SetGameVanillaMode(char nState)
     gVanilla = nState % ARRAY_SSIZE(pzVanillaModeStrings);
     itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
-    itemOptionsChainEnhancements.bEnable = !gVanilla;
+    itemOptionsChainMutators.bEnable = !gVanilla;
 }
 
 void SetVanillaMode(CGameMenuItemZCycle *pItem)
@@ -3669,17 +3669,17 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.nSpawnWeapon = itemNetStart12.m_nFocus;
     ////
     SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
-    gPacketStartGame.bQuadDamagePowerup = itemNetEnhancementBoolQuadDamagePowerup.at20;
-    gPacketStartGame.bDamageInvul = itemNetEnhancementBoolDamageInvul.at20;
-    gPacketStartGame.nExplosionBehavior = itemNetEnhancementExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
-    gPacketStartGame.nProjectileBehavior = itemNetEnhancementProjectileBehavior.m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
-    gPacketStartGame.bNapalmFalloff = itemNetEnhancementNapalmFalloff.at20;
-    gPacketStartGame.bEnemyBehavior = itemNetEnhancementEnemyBehavior.at20;
-    gPacketStartGame.bEnemyRandomTNT = itemNetEnhancementBoolEnemyRandomTNT.at20;
-    gPacketStartGame.nWeaponsVer = itemNetEnhancementWeaponsVer.m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
-    gPacketStartGame.bSectorBehavior = itemNetEnhancementSectorBehavior.at20;
-    gPacketStartGame.bHitscanProjectiles = itemNetEnhancementBoolHitscanProjectiles.at20;
-    gPacketStartGame.randomizerMode = itemNetEnhancementRandomizerMode.m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
+    gPacketStartGame.bQuadDamagePowerup = itemNetMutatorBoolQuadDamagePowerup.at20;
+    gPacketStartGame.bDamageInvul = itemNetMutatorBoolDamageInvul.at20;
+    gPacketStartGame.nExplosionBehavior = itemNetMutatorExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
+    gPacketStartGame.nProjectileBehavior = itemNetMutatorProjectileBehavior.m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
+    gPacketStartGame.bNapalmFalloff = itemNetMutatorNapalmFalloff.at20;
+    gPacketStartGame.bEnemyBehavior = itemNetMutatorEnemyBehavior.at20;
+    gPacketStartGame.bEnemyRandomTNT = itemNetMutatorBoolEnemyRandomTNT.at20;
+    gPacketStartGame.nWeaponsVer = itemNetMutatorWeaponsVer.m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
+    gPacketStartGame.bSectorBehavior = itemNetMutatorSectorBehavior.at20;
+    gPacketStartGame.bHitscanProjectiles = itemNetMutatorBoolHitscanProjectiles.at20;
+    gPacketStartGame.randomizerMode = itemNetMutatorRandomizerMode.m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bstrncpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
     if (gPacketStartGame.szRandomizerSeed[0] == '\0') // if no seed entered, generate new one before sending packet
         sprintf(gPacketStartGame.szRandomizerSeed, "%08X", QRandom2(gGameMenuMgr.m_mousepos.x*gGameMenuMgr.m_mousepos.y));
