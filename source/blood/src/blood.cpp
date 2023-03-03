@@ -1444,6 +1444,7 @@ void PrintHelp(void)
 void ParseOptions(void)
 {
     int option;
+    char bCustomModDir = 0;
     while ((option = GetOptions(switches)) != -1)
     {
         switch (option)
@@ -1553,6 +1554,8 @@ void ParseOptions(void)
                 ThrowError("Missing argument");
             levelOverrideINI(OptArgv[0]);
             bNoDemo = 1;
+            if (!bCustomModDir) // reset custom mod directory if given ini command (and only if game_dir argument has not been parsed before)
+                Bsprintf(g_modDir,"/");
             break;
         case 26:
             if (OptArgc < 1)
@@ -1654,6 +1657,7 @@ void ParseOptions(void)
                 ThrowError("Missing argument");
             Bstrncpyz(g_modDir, OptArgv[0], sizeof(g_modDir));
             G_AddPath(OptArgv[0]);
+            bCustomModDir = 1;
             break;
         case 37:
             gCommandSetup = true;
@@ -2956,7 +2960,7 @@ void ScanINIFiles(void)
     pINISelected = pINIChain;
     for (auto pIter = pINIChain; pIter; pIter = pIter->pNext)
     {
-        if (!Bstrncasecmp(gSetup.lastini, pIter->zName, BMAX_PATH))
+        if (!bINIOverride && !Bstrncasecmp(gSetup.lastini, pIter->zName, BMAX_PATH))
         {
             pINISelected = pIter;
             break;
