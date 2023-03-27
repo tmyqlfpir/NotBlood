@@ -189,6 +189,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable colored player names in messages
 * cl_killmsg
    - Enable/disable kill messages
+* cl_killobituaries
+   - Enable/disable random obituary kill messages
 * cl_multikill
    - Enable/disable multi kill messages (0: disable, 1: enable, 2: enable + audio alert)
 * cl_weaponhbob

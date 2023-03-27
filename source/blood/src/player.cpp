@@ -2197,7 +2197,9 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         }
         if (gGameOptions.nGameType == kGameTypeTeams)
             gPlayerScores[pKiller->teamId]--;
-        const int nMessage = Random(5);
+        int nMessage = Random(5);
+        if (!gKillObituary) // always use generic suicide message instead of obituary
+            nMessage = 4;
         const int nSound = !bKillingSpreeStopped ? gSuicide[nMessage].nSound : gKillingSpreeSuicide.nSound;
         const char* pzMessage = !bKillingSpreeStopped ? gSuicide[nMessage].pzMessage : gKillingSpreeSuicide.pzMessage;
         if (gMe->handTime <= 0)
@@ -2206,7 +2208,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
                 sprintf(buffer, pzMessage, gProfile[nKiller].name);
             else if (pKiller == gMe)
                 sprintf(buffer, "You killed yourself!");
-            if (gGameOptions.nGameType != kGameTypeSinglePlayer && nSound >= 0 && pKiller == gMe)
+            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && (nSound >= 0) && (pKiller == gMe) && gKillObituary)
                 sndStartSample(nSound, 255, 2, 0);
         }
     }
@@ -2269,11 +2271,13 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
             }
             gMultiKillsTicks[nKiller] = gFrameClock;
         }
-        const int nMessage = Random(25);
+        int nMessage = Random(25);
+        if (!gKillObituary) // always use generic kill message instead of obituary
+            nMessage = 10;
         const int nSound = !bKillingSpreeStopped ? gVictory[nMessage].nSound : gKillingSpreeFrag.nSound;
         const char* pzMessage = !bKillingSpreeStopped ? gVictory[nMessage].pzMessage : gKillingSpreeFrag.pzMessage;
         sprintf(buffer, pzMessage, gProfile[nKiller].name, gProfile[nVictim].name);
-        if (gGameOptions.nGameType != kGameTypeSinglePlayer && nSound >= 0 && pKiller == gMe)
+        if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && (nSound >= 0) && (pKiller == gMe) && gKillObituary)
             sndStartSample(nSound, 255, 2, 0);
     }
     int nPal1 = 0, nPal2 = 0;
