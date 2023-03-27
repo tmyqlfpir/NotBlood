@@ -90,6 +90,7 @@ int32_t gAutoRun;
 int32_t gCalebTalk;
 int32_t gChatSnd;
 int32_t gColorMsg;
+int32_t gKillObituary;
 int32_t gKillMsg;
 int32_t gMultiKill;
 int32_t gViewInterpolate;
@@ -487,6 +488,7 @@ void CONFIG_SetDefaults(void)
     gCalebTalk = 0;
     gChatSnd = 1;
     gColorMsg = 1;
+    gKillObituary = 1;
     gKillMsg = 1;
     gMultiKill = 2;
     gViewInterpolate = 1;

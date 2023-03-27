@@ -882,6 +882,7 @@ void SetShowPlayerNames(CGameMenuItemZBool *);
 void SetShowWeapons(CGameMenuItemZCycle *);
 void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem);
 void UpdatePlayerColorMessages(CGameMenuItemZBool *pItem);
+void UpdatePlayerKillObituaryMessages(CGameMenuItemZBool *pItem);
 void UpdatePlayerKillMessage(CGameMenuItemZBool *pItem);
 void UpdatePlayerMultiKill(CGameMenuItemZCycle *pItem);
 
@@ -919,8 +920,9 @@ CGameMenuItemZBool itemOptionsOnlineBoolShowPlayerNames("SHOW PLAYER NAMES:", 3,
 CGameMenuItemZCycle itemOptionsOnlineShowWeapons("SHOW WEAPONS:", 3, 66, 110, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
 CGameMenuItemZBool itemOptionsOnlineChatSound("MESSAGE BEEP:", 3, 66, 120, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
 CGameMenuItemZBool itemOptionsOnlineColorMsg("COLORED MESSAGES:", 3, 66, 130, 180, true, UpdatePlayerColorMessages, NULL, NULL);
-CGameMenuItemZBool itemOptionsOnlineKillMsg("SHOW KILLS ON HUD:", 3, 66, 140, 180, true, UpdatePlayerKillMessage, NULL, NULL);
-CGameMenuItemZCycle itemOptionsOnlineMultiKill("MULTI KILL MESSAGES:", 3, 66, 150, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
+CGameMenuItemZBool itemOptionsOnlineObituaryMsg("USE OBITUARY MESSAGES:", 3, 66, 140, 180, true, UpdatePlayerKillObituaryMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsOnlineKillMsg("SHOW KILLS ON HUD:", 3, 66, 150, 180, true, UpdatePlayerKillMessage, NULL, NULL);
+CGameMenuItemZCycle itemOptionsOnlineMultiKill("MULTI KILL MESSAGES:", 3, 66, 160, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
 
 #define JOYSTICKITEMSPERPAGE 16 // this must be an even value, as double tap inputs rely on odd index position
 #define MAXJOYSTICKBUTTONPAGES (max(1, (MAXJOYBUTTONSANDHATS*2 / JOYSTICKITEMSPERPAGE))) // we double all buttons/hats so each input can be bind for double tap
@@ -1788,6 +1790,7 @@ void SetupOptionsMenu(void)
     menuOptionsOnline.Add(&itemOptionsOnlineShowWeapons, false);
     menuOptionsOnline.Add(&itemOptionsOnlineChatSound, false);
     menuOptionsOnline.Add(&itemOptionsOnlineColorMsg, false);
+    menuOptionsOnline.Add(&itemOptionsOnlineObituaryMsg, false);
     menuOptionsOnline.Add(&itemOptionsOnlineKillMsg, false);
     menuOptionsOnline.Add(&itemOptionsOnlineMultiKill, false);
     menuOptionsOnline.Add(&itemBloodQAV, false);
@@ -1799,6 +1802,7 @@ void SetupOptionsMenu(void)
     itemOptionsOnlineShowWeapons.tooltip_pzTextLower = "over their head";
     itemOptionsOnlineChatSound.tooltip_pzTextUpper = "Play beep sound for chat messages";
     itemOptionsOnlineColorMsg.tooltip_pzTextUpper = "Color player names for chat messages";
+    itemOptionsOnlineObituaryMsg.tooltip_pzTextUpper = "Use random obituary kill messages";
     itemOptionsOnlineKillMsg.tooltip_pzTextUpper = "Show player killed on screen";
     itemOptionsOnlineKillMsg.tooltip_pzTextLower = "(for bloodbath/teams mode)";
     itemOptionsOnlineMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
@@ -1810,6 +1814,7 @@ void SetupOptionsMenu(void)
     itemOptionsOnlineShowWeapons.m_nFocus = gShowWeapon;
     itemOptionsOnlineChatSound.at20 = gChatSnd;
     itemOptionsOnlineColorMsg.at20 = gColorMsg;
+    itemOptionsOnlineObituaryMsg.at20 = gKillObituary;
     itemOptionsOnlineKillMsg.at20 = gKillMsg;
     itemOptionsOnlineMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
 }
@@ -3096,6 +3101,11 @@ void UpdatePlayerChatMessageSound(CGameMenuItemZBool *pItem)
 void UpdatePlayerColorMessages(CGameMenuItemZBool *pItem)
 {
     gColorMsg = pItem->at20;
+}
+
+void UpdatePlayerKillObituaryMessages(CGameMenuItemZBool *pItem)
+{
+    gKillObituary = pItem->at20;
 }
 
 void UpdatePlayerKillMessage(CGameMenuItemZBool *pItem)
