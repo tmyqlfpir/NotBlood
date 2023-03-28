@@ -258,7 +258,7 @@ static void SortRXBucket(int nCount)
     }
 }
 
-static struct {
+struct {
     short nIndex;
     char nType;
     char nSecretType;
@@ -266,9 +266,9 @@ static struct {
 
 void evSecretInit(void)
 {
-    int nSize = ARRAY_SIZE(gSecretsFound);
+    int i, nSize = ARRAY_SIZE(gSecretsFound);
 
-    for (int i = 0; i < nSize; i++)
+    for (i = 0; i < nSize; i++)
     {
         gSecretsFound[i].nIndex = -1;
         gSecretsFound[i].nType = -1;
@@ -276,7 +276,7 @@ void evSecretInit(void)
     }
 }
 
-static char evSecretNew(int nIndex, char nType, char nSecretType)
+char evSecretNew(int nIndex, char nType, char nSecretType)
 {
     int i, nSize = ARRAY_SIZE(gSecretsFound);
 
@@ -685,7 +685,7 @@ void EventQLoadSave::Load()
     }
     Read(rxBucket, sizeof(rxBucket));
     Read(bucketHead, sizeof(bucketHead));
-    evSecretInit();
+    Read(&gSecretsFound, sizeof(gSecretsFound));
 }
 
 void EventQLoadSave::Save()
@@ -709,6 +709,7 @@ void EventQLoadSave::Save()
     }
     Write(rxBucket, sizeof(rxBucket));
     Write(bucketHead, sizeof(bucketHead));
+    Write(&gSecretsFound, sizeof(gSecretsFound));
 }
 
 static EventQLoadSave *myLoadSave;
