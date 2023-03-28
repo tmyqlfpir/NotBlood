@@ -258,6 +258,49 @@ static void SortRXBucket(int nCount)
     }
 }
 
+static struct {
+    short nIndex;
+    char nType;
+    char nSecretType;
+} gSecretsFound[64];
+
+void evSecretInit(void)
+{
+    int nSize = ARRAY_SIZE(gSecretsFound);
+
+    for (int i = 0; i < nSize; i++)
+    {
+        gSecretsFound[i].nIndex = -1;
+        gSecretsFound[i].nType = -1;
+        gSecretsFound[i].nSecretType = -1;
+    }
+}
+
+static char evSecretNew(int nIndex, char nType, char nSecretType)
+{
+    int i, nSize = ARRAY_SIZE(gSecretsFound);
+
+    for (i = 0; i < nSize; i++)
+    {
+        if (gSecretsFound[i].nIndex == -1) // reached end of list, add newly found secret to list
+        {
+            gSecretsFound[i].nIndex = nIndex;
+            gSecretsFound[i].nType = nType;
+            gSecretsFound[i].nSecretType = nSecretType;
+            return 1; // this secret is new, return true
+        }
+
+        if (gSecretsFound[i].nType != nType)
+            continue;
+        if (gSecretsFound[i].nIndex != nIndex)
+            continue;
+        if (gSecretsFound[i].nSecretType != nSecretType)
+            continue;
+        return 0; // this secret has been found already, return false
+    }
+    return 1; // this secret cannot be checked if it has been found or not, as the list is full - so consider it newly found
+}
+
 unsigned short bucketHead[1024+1];
 
 void evInit(void)
@@ -321,6 +364,7 @@ void evInit(void)
             j++;
     }
     bucketHead[i] = j;
+    evSecretInit();
 }
 
 char evGetSourceState(int nType, int nIndex)
@@ -395,6 +439,7 @@ void evSend(int nIndex, int nType, int rxId, COMMAND_ID command, int causerID)
         else viewSetSystemMessage("Invalid Total-Secrets command by xobject #%d (object type %d)", nIndex, nType);
         break;
     case kChannelSecretFound:
+        if (!VanillaMode() && !evSecretNew(nIndex, (char)nType, (char)(command - kCmdNumberic) == 1)) break; // secret already found, don't count it
         if (command >= kCmdNumberic) levelTriggerSecret(command - kCmdNumberic);
         else viewSetSystemMessage("Invalid Trigger-Secret command by xobject #%d (object type %d)", nIndex, nType);
         break;
@@ -640,6 +685,7 @@ void EventQLoadSave::Load()
     }
     Read(rxBucket, sizeof(rxBucket));
     Read(bucketHead, sizeof(bucketHead));
+    evSecretInit();
 }
 
 void EventQLoadSave::Save()
