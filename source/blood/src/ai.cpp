@@ -1600,9 +1600,9 @@ void aiProcessDudes(void) {
 void aiInit(void) {
     memset(cumulDamage, 0, sizeof(cumulDamage));
     memset(gDudeSlope, 0, sizeof(gDudeSlope));
-    memset(gDudeExtra, 0, sizeof(gDudeExtra));
+    memset((void *)&gDudeExtra, 0, sizeof(gDudeExtra));
     memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
-    memset(gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
+    memset((void *)&gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
     memset(gSpritePrevSect, -1, sizeof(gSpritePrevSect));
     for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
         aiInitSprite(&sprite[nSprite]);
@@ -1898,9 +1898,9 @@ void AILoadSave::Load(void)
 {
     Read(cumulDamage, sizeof(cumulDamage));
     Read(gDudeSlope, sizeof(gDudeSlope));
-    Read(gDudeExtra, sizeof(gDudeExtra));
+    Read(&gDudeExtra, sizeof(gDudeExtra));
     memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
-    memset(gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
+    memset((void *)&gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
     memset(gSpritePrevSect, -1, sizeof(gSpritePrevSect));
 }
 
@@ -1908,7 +1908,7 @@ void AILoadSave::Save(void)
 {
     Write(cumulDamage, sizeof(cumulDamage));
     Write(gDudeSlope, sizeof(gDudeSlope));
-    Write(gDudeExtra, sizeof(gDudeExtra));
+    Write(&gDudeExtra, sizeof(gDudeExtra));
 }
 
 static AILoadSave *myLoadSave;
