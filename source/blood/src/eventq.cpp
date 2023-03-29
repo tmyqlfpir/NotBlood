@@ -258,10 +258,10 @@ static void SortRXBucket(int nCount)
     }
 }
 
-struct {
+struct SECRETFOUND {
     short nIndex;
     char nType;
-    char nSecretType;
+    char bSuperSecret;
 } gSecretsFound[64];
 
 void evSecretInit(void)
@@ -272,31 +272,25 @@ void evSecretInit(void)
     {
         gSecretsFound[i].nIndex = -1;
         gSecretsFound[i].nType = -1;
-        gSecretsFound[i].nSecretType = -1;
+        gSecretsFound[i].bSuperSecret = -1;
     }
 }
 
-char evSecretNew(int nIndex, char nType, char nSecretType)
+char evSecretNew(int nIndex, char nType, char bSuperSecret)
 {
     int i, nSize = ARRAY_SIZE(gSecretsFound);
+    const SECRETFOUND curSecret = {(short)nIndex, nType, bSuperSecret};
 
     for (i = 0; i < nSize; i++)
     {
         if (gSecretsFound[i].nIndex == -1) // reached end of list, add newly found secret to list
         {
-            gSecretsFound[i].nIndex = nIndex;
-            gSecretsFound[i].nType = nType;
-            gSecretsFound[i].nSecretType = nSecretType;
+            gSecretsFound[i] = curSecret;
             return 1; // this secret is new, return true
         }
 
-        if (gSecretsFound[i].nType != nType)
-            continue;
-        if (gSecretsFound[i].nIndex != nIndex)
-            continue;
-        if (gSecretsFound[i].nSecretType != nSecretType)
-            continue;
-        return 0; // this secret has been found already, return false
+        if ((gSecretsFound[i].nIndex == curSecret.nIndex) && (gSecretsFound[i].nType == curSecret.nType) && (gSecretsFound[i].bSuperSecret == curSecret.bSuperSecret))
+            return 0; // this secret has been discovered before, return false
     }
     return 1; // this secret cannot be checked if it has been found or not, as the list is full - so consider it newly found
 }
