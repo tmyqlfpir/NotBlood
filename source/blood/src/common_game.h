@@ -363,7 +363,7 @@ enum {
     kDudeBurningTinyCaleb = 252,
     kDudeBurningBeast = 253,
     kDudeVanillaMax = 254,
-    kDudeMax = 256,
+    kDudeMax,
     
     kMissileBase = 300,
     kMissileButcherKnife = kMissileBase,
@@ -479,8 +479,10 @@ kAiStateSearch          =  3,
 kAiStateChase           =  4,
 kAiStateRecoil          =  5,
 kAiStateAttack          =  6,
+kAiStateKnockout,
+kAiStateIdleSleep,
 #ifdef NOONE_EXTENSIONS
-kAiStatePatrolBase      =  7,
+kAiStatePatrolBase,
 kAiStatePatrolWaitL     =  kAiStatePatrolBase,
 kAiStatePatrolWaitC,
 kAiStatePatrolWaitW,
@@ -671,6 +673,20 @@ inline int ksgnf(float f)
     if (f > 0)
         return 1;
     return 0;
+}
+
+inline int IncRotate(int n, int mod)
+{
+    if (++n >= mod)
+        n = 0;
+    return n;
+}
+
+inline int DecRotate(int n, int mod)
+{
+    if (--n < 0)
+        n += mod;
+    return n;
 }
 
 inline int IncBy(int a, int b)
