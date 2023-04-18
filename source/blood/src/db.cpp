@@ -879,7 +879,7 @@ void dbRandomizerMode(spritetype *pSprite)
     {
         const int type = pSprite->type;
 #ifdef NOONE_EXTENSIONS
-        if ((type == kDudeModernCustom) || (type == kDudeModernCustomBurning)) // ignore custom dude types
+        if (type == kDudeModernCustom) // ignore custom dude types
             return;
 #endif
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother)) // filter problematic enemy types

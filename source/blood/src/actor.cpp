@@ -2586,7 +2586,7 @@ void actInit(bool bSaveLoad) {
             DeleteSprite(nSprite);
             nSprite = headspritestat[kStatDude]; // start all over again until only player sprites are left
         }
-        }
+    }
     else
     {
         gKillMgr.CountTotalKills();
@@ -5545,17 +5545,10 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
             }
             if (pSprite->statnum == kStatDude)
             {
-                int t = getDudeInfo(pSprite->type)->mass;
-                
                 #ifdef NOONE_EXTENSIONS
-                if (IsDudeSprite(pSprite)) {
-                    switch (pSprite->type) {
-                        case kDudeModernCustom:
-                        case kDudeModernCustomBurning:
-                            t = getSpriteMassBySize(pSprite);
-                            break;
-                    }
-                }
+                int t = (IsCustomDude(pSprite)) ? cdudeGet(pSprite->index)->mass : getDudeInfo(pSprite->type)->mass;
+                #else
+                int t = getDudeInfo(pSprite->type)->mass;
                 #endif
 
                 if (t > 0 && pVectorData->impulse)
