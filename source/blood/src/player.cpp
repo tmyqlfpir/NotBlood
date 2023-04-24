@@ -2659,8 +2659,9 @@ void PlayerSurvive(int, int nXSprite)
                 viewSetMessage("I LIVE...AGAIN!!");
             else
             {
-                sprintf(buffer, "%s lives again!", gProfile[pPlayer->nPlayer].name);
-                viewSetMessage(buffer);
+                int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
+                sprintf(buffer, "\r%s\r lives again!", gProfile[pPlayer->nPlayer].name);
+                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 0);
             }
             pPlayer->input.newWeapon = kWeaponPitchfork;
         }
