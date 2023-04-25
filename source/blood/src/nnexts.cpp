@@ -209,6 +209,7 @@ DUDEINFO_EXTRA gDudeInfoExtra[] = {
 
 };
 
+
 AISTATE genPatrolStates[] = {
 
     //-------------------------------------------------------------------------------
