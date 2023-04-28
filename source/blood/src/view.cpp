@@ -4216,7 +4216,7 @@ void viewDrawScreen(void)
             CalcPosition(gView->pSprite, (int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum, fix16_to_int(cA), q16horiz);
         }
         const char bLink = CheckLink((int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum);
-        if (!bLink && gViewInterpolate && !VanillaMode() && (nSectnum != 1)) // double check current sector for interpolated movement (fixes ROR glitch such as E3M5's scanning room doorway)
+        if (!bLink && gViewInterpolate && !VanillaMode() && (nSectnum != -1)) // double check current sector for interpolated movement (fixes ROR glitch such as E3M5's scanning room doorway)
         {
             int nFoundSect = nSectnum;
             if (FindSector(cX, cY, cZ, &nFoundSect) && (nFoundSect != nSectnum) && AreSectorsNeighbors(nSectnum, nFoundSect, 1)) // if newly found sector is connected to current sector, set as view sector
@@ -4229,7 +4229,17 @@ void viewDrawScreen(void)
         int tiltcs = 0, tiltdim = 320;
         const char bCrystalBall = (powerupCheck(gView, kPwUpCrystalBall) > 0) && (gNetPlayers > 1);
 #ifdef USE_OPENGL
-        renderSetRollAngle(0);
+        if (gRollAngle)
+        {
+            int nXVel = gViewInterpolate ? interpolate(predictOld.at5c, predict.at5c, gInterpolate) : predict.at5c;
+            int nYVel = gViewInterpolate ? interpolate(predictOld.at60, predict.at60, gInterpolate) : predict.at60;
+            int nAng = fix16_to_int(gViewAngle)&kAngMask;
+            RotateVector(&nXVel, &nYVel, -nAng);
+            nAng = 13 + (5 - gRollAngle);
+            renderSetRollAngle(nYVel>>nAng);
+        }
+        else
+            renderSetRollAngle(0);
 #endif
         if (v78 || bDelirium)
         {
