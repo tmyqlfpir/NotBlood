@@ -4230,14 +4230,14 @@ void viewDrawScreen(void)
         const char bCrystalBall = (powerupCheck(gView, kPwUpCrystalBall) > 0) && (gNetPlayers > 1);
 #ifdef USE_OPENGL
         int nRollAngle = 0;
-        if (gRollAngle)
+        if (gRollAngle && !gNoClip)
         {
             int nXVel = gViewInterpolate ? interpolate(predictOld.at5c, predict.at5c, gInterpolate) : predict.at5c;
             int nYVel = gViewInterpolate ? interpolate(predictOld.at60, predict.at60, gInterpolate) : predict.at60;
             const int nAng = fix16_to_int(gViewAngle)&kAngMask;
             RotateVector(&nXVel, &nYVel, -nAng);
             nRollAngle = 13 + (5 - gRollAngle);
-            nRollAngle = nYVel>>nRollAngle;
+            nRollAngle = ClipRange(nYVel>>nRollAngle, -(kAng15+kAng5), kAng15+kAng5);
         }
         renderSetRollAngle(nRollAngle);
 #endif
