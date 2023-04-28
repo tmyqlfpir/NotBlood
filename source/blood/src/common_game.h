@@ -766,7 +766,12 @@ inline float ClipRangeF(float a, float b, float c)
 
 inline int interpolate(int a, int b, int c)
 {
-    return a+mulscale16(b-a,c);
+    extern bool VanillaMode(const bool bDemoState = false);
+    if (VanillaMode())
+        return a+mulscale16(b-a,c);
+    float result = (float)b - (float)a;
+    result = (float)a + (result * (float)c / 65536.0f);
+    return (int)result;
 }
 
 inline int interpolateang(int a, int b, int c)
