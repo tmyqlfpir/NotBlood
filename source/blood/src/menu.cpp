@@ -788,6 +788,7 @@ void UpdateGlowTex(CGameMenuItemZBool *pItem);
 void Update3DModels(CGameMenuItemZBool *pItem);
 void UpdateDeliriumBlur(CGameMenuItemZBool *pItem);
 void UpdateTexColorIndex(CGameMenuItemZBool *pItem);
+void UpdateRollAngle(CGameMenuItemSlider *pItem);
 #ifdef USE_OPENGL
 void PreDrawDisplayPolymost(CGameMenuItem *pItem);
 CGameMenuItemTitle itemOptionsDisplayPolymostTitle("POLYMOST SETUP", 1, 160, 20, 2038);
@@ -802,6 +803,7 @@ CGameMenuItemZBool itemOptionsDisplayPolymostGlowTex("GLOW TEXTURES:", 3, 66, 13
 CGameMenuItemZBool itemOptionsDisplayPolymost3DModels("3D MODELS:", 3, 66, 140, 180, 0, Update3DModels, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayPolymostDeliriumBlur("DELIRIUM EFFECT BLUR:", 3, 66, 150, 180, 0, UpdateDeliriumBlur, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayPolymostUseColorIndexedTex("RENDER WITH COLOR INDEXING:", 3, 66, 160, 180, 0, UpdateTexColorIndex, NULL, NULL);
+CGameMenuItemSlider itemOptionsDisplayPolymostRollAngle("VIEW ROLLING:", 3, 66, 170, 180, &gRollAngle, 0, 5, 1, UpdateRollAngle, -1, -1, kMenuSliderValue);
 #endif
 
 void UpdateSoundToggle(CGameMenuItemZBool *pItem);
@@ -1748,6 +1750,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymost3DModels, false);
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostDeliriumBlur, false);
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostUseColorIndexedTex, false);
+    menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostRollAngle, false);
     menuOptionsDisplayPolymost.Add(&itemBloodQAV, false);
 
     itemOptionsDisplayPolymostTexQuality.pPreDrawCallback = PreDrawDisplayPolymost;
@@ -2904,6 +2907,11 @@ void UpdateDeliriumBlur(CGameMenuItemZBool *pItem)
 void UpdateTexColorIndex(CGameMenuItemZBool *pItem)
 {
     r_useindexedcolortextures = pItem->at20;
+}
+
+void UpdateRollAngle(CGameMenuItemSlider *pItem)
+{
+    gRollAngle = pItem->nValue;
 }
 
 void PreDrawDisplayPolymost(CGameMenuItem *pItem)

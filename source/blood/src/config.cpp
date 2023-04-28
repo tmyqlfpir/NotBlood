@@ -139,6 +139,7 @@ int32_t gPowerupTicks;
 int32_t gShowCompleteTime;
 int32_t gShowMapTitle;
 int32_t gFov;
+int32_t gRollAngle;
 int32_t gCenterHoriz;
 int32_t gDeliriumBlur;
 int32_t gShowWeaponSelect;
@@ -477,6 +478,7 @@ void CONFIG_SetDefaults(void)
     //ud.weaponsway             = 1;
     //ud.weaponswitch           = 3;  // new+empty
     gFov = 90;
+    gRollAngle = 0;
     gCenterHoriz = 1;
     gDeliriumBlur = 1;
     gViewSize = 2;

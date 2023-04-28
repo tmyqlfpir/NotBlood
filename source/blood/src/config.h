@@ -119,6 +119,7 @@ extern int32_t gPowerupTicks;
 extern int32_t gShowCompleteTime;
 extern int32_t gShowMapTitle;
 extern int32_t gFov;
+extern int32_t gRollAngle;
 extern int32_t gCenterHoriz;
 extern int32_t gDeliriumBlur;
 extern int32_t gShowWeaponSelect;
