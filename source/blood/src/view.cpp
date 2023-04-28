@@ -959,6 +959,8 @@ void viewBackupView(int nPlayer)
     pView->at30 = pPlayer->q16ang;
     pView->at50 = pPlayer->pSprite->x;
     pView->at54 = pPlayer->pSprite->y;
+    pView->at5c = xvel[pPlayer->pSprite->index];
+    pView->at60 = yvel[pPlayer->pSprite->index];
     pView->at38 = pPlayer->zView;
     pView->at34 = pPlayer->zWeapon-pPlayer->zView-0xc00;
     pView->at24 = pPlayer->q16horiz;
@@ -4232,12 +4234,28 @@ void viewDrawScreen(void)
         int nRollAngle = 0;
         if (gRollAngle && !gNoClip)
         {
-            int nXVel = gViewInterpolate ? interpolate(predictOld.at5c, predict.at5c, gInterpolate) : predict.at5c;
-            int nYVel = gViewInterpolate ? interpolate(predictOld.at60, predict.at60, gInterpolate) : predict.at60;
-            const int nAng = fix16_to_int(gViewAngle)&kAngMask;
-            RotateVector(&nXVel, &nYVel, -nAng);
-            nRollAngle = 13 + (5 - gRollAngle);
-            nRollAngle = ClipRange(nYVel>>nRollAngle, -(kAng15+kAng5), kAng15+kAng5);
+            int nXVel = xvel[gView->pSprite->index], nYVel = yvel[gView->pSprite->index];
+            if (gViewInterpolate)
+            {
+                if (numplayers > 1 && gView == gMe && gPrediction && gMe->pXSprite->health > 0)
+                {
+                    nXVel = interpolate(predictOld.at5c, predict.at5c, gInterpolate);
+                    nYVel = interpolate(predictOld.at60, predict.at60, gInterpolate);
+                }
+                else
+                {
+                    VIEW *pView = &gPrevView[gViewIndex];
+                    nXVel = interpolate(pView->at5c, nXVel, gInterpolate);
+                    nYVel = interpolate(pView->at60, nYVel, gInterpolate);
+                }
+            }
+            if ((nXVel != 0) || (nYVel != 0))
+            {
+                const int nAng = fix16_to_int(gViewAngle)&kAngMask;
+                RotateVector(&nXVel, &nYVel, -nAng);
+                nRollAngle = 13 + (5 - gRollAngle);
+                nRollAngle = ClipRange(nYVel>>nRollAngle, -(kAng15+kAng5), kAng15+kAng5);
+            }
         }
         renderSetRollAngle(nRollAngle);
 #endif
