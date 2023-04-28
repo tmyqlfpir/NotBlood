@@ -1309,7 +1309,7 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
     COLORSTR colorStr, colorStrKills, colorStrSecrets;
     const int nFont = 3;
     char buffer[128];
-    if (!gLevelStats)
+    if (!gLevelStats || (gLevelStatsOnlyOnMap && (gViewMode == 3)))
         return;
 
     colorStr.nPal1 = 2; // set text group palette
