@@ -287,9 +287,9 @@ void scrFadeAmount(int amount)
 {
 	for (int i = 0; i < 256; i++)
 	{
-		curDAC[i].red = interpolate(fromDAC[i].red, toRGB.red, amount);
-        curDAC[i].green = interpolate(fromDAC[i].green, toRGB.green, amount);
-        curDAC[i].blue = interpolate(fromDAC[i].blue, toRGB.blue, amount);
+		curDAC[i].red = interpolate(fromDAC[i].red, toRGB.red, amount, 1);
+        curDAC[i].green = interpolate(fromDAC[i].green, toRGB.green, amount, 1);
+        curDAC[i].blue = interpolate(fromDAC[i].blue, toRGB.blue, amount, 1);
 	}
 	gSetDacRange(0, 256, curDAC);
 }

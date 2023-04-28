@@ -539,12 +539,12 @@ void fakeProcessInput(PLAYER *pPlayer, GINPUT *pInput)
         if (nSector2 == nSector)
         {
             int z2 = getflorzofslope(nSector2, x2, y2);
-            predict.at28 = interpolate(predict.at28, fix16_from_int(z1-z2)>>3, 0x4000);
+            predict.at28 = interpolate(predict.at28, fix16_from_int(z1-z2)>>3, 0x4000, 1);
         }
     }
     else
     {
-        predict.at28 = interpolate(predict.at28, 0, 0x4000);
+        predict.at28 = interpolate(predict.at28, 0, 0x4000, 1);
         if (klabs(predict.at28) < 4)
             predict.at28 = 0;
     }
@@ -578,7 +578,7 @@ void fakePlayerProcess(PLAYER *pPlayer, GINPUT *pInput)
 
     int nSpeed = approxDist(predict.at5c, predict.at60);
 
-    predict.at3c = interpolate(predict.at3c, predict.at64, 0x7000);
+    predict.at3c = interpolate(predict.at3c, predict.at64, 0x7000, 1);
     int dz = predict.at58-pPosture->eyeAboveZ-predict.at38;
     if (dz > 0)
         predict.at3c += mulscale16(dz<<8, 0xa000);
@@ -586,7 +586,7 @@ void fakePlayerProcess(PLAYER *pPlayer, GINPUT *pInput)
         predict.at3c += mulscale16(dz<<8, 0x1800);
     predict.at38 += predict.at3c>>8;
 
-    predict.at44 = interpolate(predict.at44, predict.at64, 0x5000);
+    predict.at44 = interpolate(predict.at44, predict.at64, 0x5000, 1);
     dz = predict.at58-pPosture->weaponAboveZ-predict.at40;
     if (dz > 0)
         predict.at44 += mulscale16(dz<<8, 0x8000);
