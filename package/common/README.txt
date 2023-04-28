@@ -225,6 +225,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable hud vanilla background image override (0: default, 1: use new tile, 2: use original tile)
 * hud_stats
    - Set aspect ratio screen position for hud (0: native, 1: 4:3, 2: 16:10, 3: 16:9, 3: 21:9)
+* hud_statsautomaponly
+   - Enable/disable showing level statistics display only on map view
 * hud_ratio
    - Enable/disable level statistics display (0: off, 1: on [default], 2: on [4:3], 3: on [16:10], 4: on [16:9], 5: on [21:9])
 * hud_powerupdurationticks
