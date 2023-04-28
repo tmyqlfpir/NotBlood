@@ -1013,6 +1013,7 @@ int32_t registerosdcommands(void)
         { "cl_hitscantransparent", "enable/disable transparent bullet sprites for hitscan projectiles option", (void *)&gTransparentHitscanProjectiles, CVAR_BOOL, 0, 1 },
         { "cl_particlesduration", "enable/disable extended particle duration modification (single-player only - turned off for modern maps)", (void *)&gParticlesDuration, CVAR_BOOL, 0, 1 },
 
+        { "cl_rollangle", "sets how much your screen tilts when strafing (polymost)", (void *)&gRollAngle, CVAR_INT, 0, 5 },
         { "cl_runmode", "enable/disable modernized run key operation", (void *)&gRunKeyMode, CVAR_BOOL, 0, 1 },
 //
 //        { "cl_showcoords", "show your position in the game world", (void *)&ud.coords, CVAR_INT, 0,

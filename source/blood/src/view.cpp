@@ -4229,7 +4229,17 @@ void viewDrawScreen(void)
         int tiltcs = 0, tiltdim = 320;
         const char bCrystalBall = (powerupCheck(gView, kPwUpCrystalBall) > 0) && (gNetPlayers > 1);
 #ifdef USE_OPENGL
-        renderSetRollAngle(0);
+        int nRollAngle = 0;
+        if (gRollAngle)
+        {
+            int nXVel = gViewInterpolate ? interpolate(predictOld.at5c, predict.at5c, gInterpolate) : predict.at5c;
+            int nYVel = gViewInterpolate ? interpolate(predictOld.at60, predict.at60, gInterpolate) : predict.at60;
+            const int nAng = fix16_to_int(gViewAngle)&kAngMask;
+            RotateVector(&nXVel, &nYVel, -nAng);
+            nRollAngle = 13 + (5 - gRollAngle);
+            nRollAngle = nYVel>>nRollAngle;
+        }
+        renderSetRollAngle(nRollAngle);
 #endif
         if (v78 || bDelirium)
         {
@@ -4256,7 +4266,7 @@ void viewDrawScreen(void)
             }
 #ifdef USE_OPENGL
             else
-                renderSetRollAngle(v78);
+                renderSetRollAngle(v78+nRollAngle);
 #endif
         }
         else if (bCrystalBall)
