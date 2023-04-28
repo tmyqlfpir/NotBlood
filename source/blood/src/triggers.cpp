@@ -876,14 +876,14 @@ void TranslateSector(int nSector, int a2, int a3, int a4, int a5, int a6, int a7
     int x, y;
     int nXSector = sector[nSector].extra;
     XSECTOR *pXSector = &xsector[nXSector];
-    int v20 = interpolate(a6, a9, a2);
-    int vc = interpolate(a6, a9, a3);
+    int v20 = interpolate(a6, a9, a2, 1);
+    int vc = interpolate(a6, a9, a3, 1);
     int v28 = vc - v20;
-    int v24 = interpolate(a7, a10, a2);
-    int v8 = interpolate(a7, a10, a3);
+    int v24 = interpolate(a7, a10, a2, 1);
+    int v8 = interpolate(a7, a10, a3, 1);
     int v2c = v8 - v24;
-    int v44 = interpolate(a8, a11, a2);
-    int vbp = interpolate(a8, a11, a3);
+    int v44 = interpolate(a8, a11, a2, 1);
+    int vbp = interpolate(a8, a11, a3, 1);
     int v14 = vbp - v44;
     int nWall = sector[nSector].wallptr;
     char bIsolatedSector = 1; // used to check if sector translation is likely for a moving shadow sector

@@ -1964,12 +1964,12 @@ void ProcessInput(PLAYER *pPlayer)
         if (nSector2 == nSector)
         {
             int z2 = getflorzofslope(nSector2, x2, y2);
-            pPlayer->q16slopehoriz = interpolate(pPlayer->q16slopehoriz, fix16_from_int(z1-z2)>>3, 0x4000);
+            pPlayer->q16slopehoriz = interpolate(pPlayer->q16slopehoriz, fix16_from_int(z1-z2)>>3, 0x4000, 1);
         }
     }
     else
     {
-        pPlayer->q16slopehoriz = interpolate(pPlayer->q16slopehoriz, F16(0), 0x4000);
+        pPlayer->q16slopehoriz = interpolate(pPlayer->q16slopehoriz, F16(0), 0x4000, 1);
         if (klabs(pPlayer->q16slopehoriz) < 4)
             pPlayer->q16slopehoriz = 0;
     }
@@ -2057,14 +2057,14 @@ void playerProcess(PLAYER *pPlayer)
     }
     ProcessInput(pPlayer);
     int nSpeed = approxDist(xvel[nSprite], yvel[nSprite]);
-    pPlayer->zViewVel = interpolate(pPlayer->zViewVel, zvel[nSprite], 0x7000);
+    pPlayer->zViewVel = interpolate(pPlayer->zViewVel, zvel[nSprite], 0x7000, 1);
     int dz = pPlayer->pSprite->z-pPosture->eyeAboveZ-pPlayer->zView;
     if (dz > 0)
         pPlayer->zViewVel += mulscale16(dz<<8, 0xa000);
     else
         pPlayer->zViewVel += mulscale16(dz<<8, 0x1800);
     pPlayer->zView += pPlayer->zViewVel>>8;
-    pPlayer->zWeaponVel = interpolate(pPlayer->zWeaponVel, zvel[nSprite], 0x5000);
+    pPlayer->zWeaponVel = interpolate(pPlayer->zWeaponVel, zvel[nSprite], 0x5000, 1);
     dz = pPlayer->pSprite->z-pPosture->weaponAboveZ-pPlayer->zWeapon;
     if (dz > 0)
         pPlayer->zWeaponVel += mulscale16(dz<<8, 0x8000);
