@@ -3011,8 +3011,8 @@ void LoadExtraArts(void)
     }
 }
 
-static char bVanilla = 0;
-static char bDemoState = 0;
+static bool bVanilla = 0;
+static bool bDemoState = 0;
 
 void VanillaModeUpdate(void)
 {
@@ -3022,18 +3022,16 @@ void VanillaModeUpdate(void)
     bDemoState = gDemo.bPlaying || gDemo.bRecording;
 
     if (gVanilla == 2) // vanilla mode override, always return true (except for multiplayer)
-        bVanilla = bSinglePlayer ? 2 : 0;
+        bVanilla = bSinglePlayer;
     else  // fallback on single-player global vanilla mode settings
         bVanilla = bDemoState || (gVanilla && bSinglePlayer);
 }
 
 bool VanillaMode(const bool bDemoCheck)
 {
-    if (bVanilla == 2) // vanilla mode override
-        return true;
     if (bDemoCheck) // only check if demo recording/playing is active
         return bDemoState;
-    return bVanilla; // fallback on global vanilla mode settings
+    return bVanilla;
 }
 
 bool WeaponsNotBlood(void) {
