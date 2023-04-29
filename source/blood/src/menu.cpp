@@ -2450,9 +2450,11 @@ void SetRestoreLastSave(CGameMenuItemZBool *pItem)
 void SetGameVanillaMode(char nState)
 {
     gVanilla = nState % ARRAY_SSIZE(pzVanillaModeStrings);
-    itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
+    itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
+    itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     itemOptionsChainMutators.bEnable = !gVanilla;
+    VanillaModeUpdate();
 }
 
 void SetVanillaMode(CGameMenuItemZCycle *pItem)
