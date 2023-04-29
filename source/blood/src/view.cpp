@@ -1991,13 +1991,12 @@ void UpdateStatusBar(ClockTicks arg)
 
     const int nPalette = playerColorPalHud(pPlayer->teamId);
     int nThrowPower = pPlayer->throwPower;
-    const char bVanilla = VanillaMode();
-    if (!bVanilla && gViewInterpolate && (pPlayer->throwPower > 0) && (pPlayer->throwPower > pPlayer->throwPowerOld))
+    if (!VanillaMode() && gViewInterpolate && (pPlayer->throwPower > 0) && (pPlayer->throwPower > pPlayer->throwPowerOld))
         nThrowPower = interpolate(pPlayer->throwPowerOld, pPlayer->throwPower, gInterpolate);
 
     if (gViewSize < 0) return;
 
-    char bDrawWeaponHud = gShowWeaponSelect && !bVanilla;
+    char bDrawWeaponHud = gShowWeaponSelect && !VanillaMode();
     if (bDrawWeaponHud && (gViewSize > 3)) // if hud size above 3, draw weapon select bar behind hud
     {
         viewDrawWeaponSelect(pPlayer, pXSprite);
@@ -2214,7 +2213,7 @@ void UpdateStatusBar(ClockTicks arg)
             TileHGauge(2208, 44, 190, pPlayer->armor[2], 3200);
             DrawStatNumber("%3d", pPlayer->armor[2]>>4, 2230, 50, 193, 0, 0);
         }
-        sprintf(gTempStr, "v%s", bVanilla ? "1.21" : GetVersionString());
+        sprintf(gTempStr, "v%s", VanillaMode() ? "1.21" : GetVersionString());
         viewDrawText(3, gTempStr, 20, 191, 32, 0, 1, 0);
 
         for (int i = 0; i < 6; i++)
@@ -2250,7 +2249,7 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gGameOptions.nGameType == kGameTypeTeams)
     {
-        if (bVanilla)
+        if (VanillaMode())
         {
             viewDrawCtfHudVanilla(arg);
         }
@@ -2478,8 +2477,8 @@ void viewResizeView(int size)
 
 void UpdateFrame(void)
 {
-    const char bVanilla = !gHudBgVanilla ? VanillaMode() : (gHudBgVanilla == 2);
-    const int nPalette = !bVanilla ? playerColorPalHud(gView->teamId) : 0;
+    const char bOrigTile = !gHudBgVanilla ? VanillaMode() : (gHudBgVanilla == 2);
+    const int nPalette = !bOrigTile ? playerColorPalHud(gView->teamId) : 0;
     const char bDrawNewBottomBorder = gHudBgNewBorder && (gViewSize == 5);
 
     if (bDrawNewBottomBorder)
@@ -2493,7 +2492,7 @@ void UpdateFrame(void)
         }
     }
 
-    const int nTile = !bVanilla ? kBackTile : kBackTileVanilla;
+    const int nTile = !bOrigTile ? kBackTile : kBackTileVanilla;
     int nScale = 65536;
     int nWidth = 0, nHeight = 0;
 
