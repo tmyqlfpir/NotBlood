@@ -3011,14 +3011,14 @@ void LoadExtraArts(void)
     }
 }
 
-static bool bVanilla = 0;
-static bool bDemoState = 0;
+static bool bVanilla = false;
+static bool bDemoState = false;
 
 void VanillaModeUpdate(void)
 {
     const bool bSinglePlayer = (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1);
 
-    bVanilla = 0;
+    bVanilla = false;
     bDemoState = gDemo.bPlaying || gDemo.bRecording;
 
     if (gVanilla == 2) // vanilla mode override, always return true (except for multiplayer)
