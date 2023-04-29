@@ -586,7 +586,7 @@ int gDoQuickSave = 0;
 
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
-    const bool triggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == kGameTypeSinglePlayer) && gameOptions->uGameFlags&kGameFlagContinuing; // if demo isn't active and not in multiplayer session and we switched to new level
+    const bool bTriggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == kGameTypeSinglePlayer) && gameOptions->uGameFlags&kGameFlagContinuing; // if demo isn't active and not in multiplayer session and we switched to new level
     EndLevel();
     gInput = {};
     gStartNewGame = 0;
@@ -596,6 +596,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     if (gDemo.bRecording && gGameStarted)
         gDemo.Close();
     netWaitForEveryone(0);
+    VanillaModeUpdate();
     if (gGameOptions.nGameType == kGameTypeSinglePlayer)
     {
         if (!(gGameOptions.uGameFlags&kGameFlagContinuing))
@@ -865,7 +866,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     gGameStarted = 1;
     ready2send = 1;
     gAutosaveInCurLevel = false;
-    if (triggerAutosave)
+    if (bTriggerAutosave)
         AutosaveGame(true); // create autosave at start of the new level
 }
 
@@ -1171,6 +1172,7 @@ bool gRestartGame = false;
 void ProcessFrame(void)
 {
     char buffer[128];
+    VanillaModeUpdate();
     for (int i = connecthead; i >= 0; i = connectpoint2[i])
     {
         if (gDemo.bRecording) // quantize to demo formatted input
@@ -1832,6 +1834,7 @@ int app_main(int argc, char const * const * argv)
     CONFIG_ReadSetup();
     if (bCustomName)
         strcpy(szPlayerName, gPName);
+    VanillaModeUpdate();
 
     if (enginePreInit())
     {
@@ -2048,6 +2051,7 @@ RESTART:
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     gQuitGame = 0;
     gRestartGame = 0;
+    VanillaModeUpdate();
     if (gGameOptions.nGameType != kGameTypeSinglePlayer)
     {
         KB_ClearKeysDown();
@@ -2226,6 +2230,7 @@ RESTART:
         gQuitRequest = 0;
         gRestartGame = 0;
         gGameStarted = 0;
+        VanillaModeUpdate();
         levelSetupOptions(0,0);
         while (gGameMenuMgr.m_bActive)
         {
@@ -3006,12 +3011,29 @@ void LoadExtraArts(void)
     }
 }
 
-bool VanillaMode(const bool bDemoState) {
+static char bVanilla = 0;
+static char bDemoState = 0;
+
+void VanillaModeUpdate(void)
+{
+    const bool bSinglePlayer = (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1);
+
+    bVanilla = 0;
+    bDemoState = gDemo.bPlaying || gDemo.bRecording;
+
     if (gVanilla == 2) // vanilla mode override, always return true (except for multiplayer)
-        return (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1);
-    if (bDemoState) // only check if demo recording/playing is active
-        return gDemo.bPlaying || gDemo.bRecording;
-    return (gDemo.bPlaying || gDemo.bRecording) || (gVanilla && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)); // fallback on single-player global vanilla mode settings
+        bVanilla = bSinglePlayer ? 2 : 0;
+    else  // fallback on single-player global vanilla mode settings
+        bVanilla = bDemoState || (gVanilla && bSinglePlayer);
+}
+
+bool VanillaMode(const bool bDemoCheck)
+{
+    if (bVanilla == 2) // vanilla mode override
+        return true;
+    if (bDemoCheck) // only check if demo recording/playing is active
+        return bDemoState;
+    return bVanilla; // fallback on global vanilla mode settings
 }
 
 bool WeaponsNotBlood(void) {

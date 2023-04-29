@@ -764,10 +764,10 @@ inline float ClipRangeF(float a, float b, float c)
     return a;
 }
 
-inline int interpolate(int a, int b, int c, char bOldMethod = 0)
+inline int interpolate(int a, int b, int c, char bOrigCal = 0)
 {
-    extern bool VanillaMode(const bool bDemoState = false);
-    if (bOldMethod || VanillaMode())
+    extern bool VanillaMode(const bool bDemoCheck = false);
+    if (bOrigCal || VanillaMode())
         return a+mulscale16(b-a,c);
     float result = (float)b - (float)a;
     result = (float)a + (result * (float)c / 65536.0f);
