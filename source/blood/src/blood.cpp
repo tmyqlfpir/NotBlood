@@ -127,6 +127,14 @@ bool gSaveGameActive;
 int gCacheMiss;
 int gMenuPicnum = 2518; // default menu picnum
 
+int gMultiModeInit = -1;
+int gMultiEpisodeInit = -1;
+int gMultiLevelInit = -1;
+int gMultiDiffInit = -1;
+int gMultiMonsters = -1;
+int gMultiWeapons = -1;
+int gMultiItems = -1;
+
 enum gametokens
 {
     T_INCLUDE = 0,
@@ -1370,6 +1378,12 @@ SWITCH switches[] = {
     { "c", 43, 1 },
     { "conf", 43, 1 },
     { "noconsole", 43, 0 },
+    { "mp_mode", 45, 1 },
+    { "mp_level", 46, 2 },
+    { "mp_diff", 47, 1 },
+    { "mp_dudes", 48, 1 },
+    { "mp_weapons", 49, 1 },
+    { "mp_items", 50, 1 },
     { NULL, 0, 0 }
 };
 
@@ -1393,8 +1407,8 @@ void PrintHelp(void)
         "-mh [file.def]\tInclude an additional definitions module\n"
         "-noautoload\tDisable loading from autoload directory\n"
         "-nodemo\t\tNo Demos\n"
-        "-nodudes\tNo monsters\n"
-        "-playback\tPlay back a demo\n"
+        "-nodudes\t\tNo monsters\n"
+        "-playback\t\tPlay back a demo\n"
         "-pname\t\tOverride player name setting from config file\n"
         "-record\t\tRecord demo\n"
         "-validate\t\tRun DOS 1.21 compatibility unit test\n"
@@ -1406,6 +1420,12 @@ void PrintHelp(void)
         "-skill\t\tSet player handicap; Range:0..4; Default:2; (NOT difficulty level.)\n"
         "-snd\t\tSpecify an RFF Sound file name\n"
         "-usecwd\t\tRead data and configuration from current directory\n"
+        "-mp_mode\tSet game mode for multiplayer (0: co-op, 1: bloodbath, 2: teams)\n"
+        "-mp_level\t\tSet level for multiplayer (e.g: 1 3)\n"
+        "-mp_diff\t\tSet difficulty for multiplayer (0-4)\n"
+        "-mp_dudes\tSet monster settings for multiplayer (0: none, 1: spawn, 2: respawn)\n"
+        "-mp_weapons\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
+        "-mp_items\t\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
         ;
 #ifdef WM_MSGBOX_WINDOW
     Bsnprintf(tempbuf, sizeof(tempbuf), APPNAME " %s", s_buildRev);
@@ -1698,6 +1718,37 @@ void ParseOptions(void)
             gCommandSetup = false;
             levelOverrideINI("TEST.INI");
             strcpy(g_modDir, "/validatedemos");
+            break;
+        case 45: // mp_mode
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiModeInit = ClipRange(atoi(OptArgv[0]), 0, 2);
+            break;
+        case 46: // mp_level
+            if (OptArgc < 2)
+                ThrowError("Missing argument");
+            gMultiEpisodeInit = ClipRange(atoi(OptArgv[0]), 1, kMaxEpisodes)-1;
+            gMultiLevelInit = ClipRange(atoi(OptArgv[1]), 1, kMaxLevels)-1;
+            break;
+        case 47: // mp_difficulty
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiDiffInit = ClipRange(atoi(OptArgv[0]), 0, 4);
+            break;
+        case 48: // mp_dudes
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiMonsters = ClipRange(atoi(OptArgv[0]), 0, 2);
+            break;
+        case 49: // mp_weapons
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiWeapons = ClipRange(atoi(OptArgv[0]), 0, 3);
+            break;
+        case 50: // mp_items
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiItems = ClipRange(atoi(OptArgv[0]), 0, 2);
             break;
         }
     }

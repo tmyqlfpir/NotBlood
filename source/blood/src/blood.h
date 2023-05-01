@@ -72,6 +72,14 @@ extern int gCacheMiss;
 extern int gDoQuickSave;
 extern int gMenuPicnum;
 
+extern int gMultiModeInit;
+extern int gMultiEpisodeInit;
+extern int gMultiLevelInit;
+extern int gMultiDiffInit;
+extern int gMultiMonsters;
+extern int gMultiWeapons;
+extern int gMultiItems;
+
 void QuitGame(void);
 void PreloadCache(void);
 void StartLevel(GAMEOPTIONS *gameOptions);
