@@ -64,3 +64,4 @@ void SetGameVanillaMode(char nState);
 void QuickSaveGame(void);
 void AutosaveGame(bool bLevelStartSave);
 void QuickLoadGame(void);
+void StartNetGame(CGameMenuItemChain *);

@@ -97,6 +97,7 @@ unsigned int nMaxAlloc = 0x4000000;
 bool bCustomName = false;
 char bAddUserMap = false;
 bool bNoDemo = false;
+bool bQuickNetStart = false;
 bool bQuickStart = false;
 bool bNoAutoLoad = false;
 
@@ -1349,7 +1350,7 @@ SWITCH switches[] = {
     { "vector", 17, 1 },
     { "quick", 18, 0 },
     //{ "getopt", 19, 1 },
-    //{ "auto", 20, 1 },
+    { "auto", 20, 0 },
     { "pname", 21, 1 },
     { "noresend", 22, 0 },
     { "silentaim", 23, 0 },
@@ -1396,6 +1397,7 @@ void PrintHelp(void)
         "Files can be of type [grp|zip|map|def]\n"
         "\n"
         "-art [file.art]\tSpecify an art base file name\n"
+        "-auto\t\tAutomatic Network start. Implies -quick\n"
         "-cachesize #\tSet cache size in kB\n"
         "-cfg [file.cfg]\tUse an alternate configuration file\n"
         "-client [host]\tConnect to a multiplayer game\n"
@@ -1418,16 +1420,16 @@ void PrintHelp(void)
 #ifdef STARTUP_SETUP_WINDOW
         "-setup/nosetup\tEnable or disable startup window\n"
 #endif
-        "-skill\t\tSet player handicap; Range:0..4; Default:2; (NOT difficulty level.)\n"
+        "-skill [0-4]\t\tSet player handicap; Range:0..4; Default:2; (NOT difficulty level.)\n"
         "-snd\t\tSpecify an RFF Sound file name\n"
         "-usecwd\t\tRead data and configuration from current directory\n"
-        "-mp_mode\tSet game mode for multiplayer (0: co-op, 1: bloodbath, 2: teams)\n"
-        "-mp_level\t\tSet level for multiplayer (e.g: 1 3)\n"
-        "-mp_diff\t\tSet difficulty for multiplayer (0-4)\n"
-        "-mp_dudes\tSet monster settings for multiplayer (0: none, 1: spawn, 2: respawn)\n"
-        "-mp_weapons\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
-        "-mp_items\t\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
-        "-mp_map\t\tSet user map path for multiplayer (e.g: dm_01.map)\n"
+        "-mp_mode [0-2]\tSet game mode for multiplayer (0: co-op, 1: bloodbath, 2: teams)\n"
+        "-mp_level [E M]\tSet level for multiplayer (e.g: 1 3)\n"
+        "-mp_diff [0-4]\tSet difficulty for multiplayer (0-4)\n"
+        "-mp_dudes [0-2]\tSet monster settings for multiplayer (0: none, 1: spawn, 2: respawn)\n"
+        "-mp_weapons [0-3]\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
+        "-mp_items [0-4]\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
+        "-mp_map [file.map]\tSet user map path for multiplayer\n"
         ;
 #ifdef WM_MSGBOX_WINDOW
     Bsnprintf(tempbuf, sizeof(tempbuf), APPNAME " %s", s_buildRev);
@@ -1440,7 +1442,7 @@ void PrintHelp(void)
     // NUKE-TODO:
     puts("-?            This help");
     //puts("-8250         Enforce obsolete UART I/O");
-    //puts("-auto         Automatic Network start. Implies -quick");
+    puts("-auto         Automatic Network start. Implies -quick");
     //puts("-getopt       Use network game options from file.  Implies -auto");
     puts("-broadcast    Set network to broadcast packet mode");
     puts("-masterslave  Set network to master/slave packet mode");
@@ -1490,16 +1492,10 @@ void ParseOptions(void)
             break;
         //case 19:
         //    byte_148eec = 1;
-        //case 20:
-        //    if (OptArgc < 1)
-        //        ThrowError("Missing argument");
-        //    strncpy(byte_148ef0, OptArgv[0], 13);
-        //    byte_148ef0[12] = 0;
-        //    bQuickStart = 1;
-        //    byte_148eeb = 1;
-        //    if (gGameOptions.gameType == kGameTypeSinglePlayer)
-        //        gGameOptions.gameType = kGameTypeBloodBath;
-        //    break;
+        case 20: // auto
+            bQuickNetStart = 1;
+            bQuickStart = 1;
+            break;
         case 25:
             bNoDemo = 1;
             break;
@@ -2246,6 +2242,14 @@ RESTART:
                     if (gGameStarted) // dim background
                         viewDimScreen();
                     gGameMenuMgr.Draw();
+                    if (bQuickNetStart)
+                    {
+                        if (gGameMenuMgr.pActiveMenu == &menuNetStart)
+                        {
+                            StartNetGame(NULL);
+                            bQuickNetStart = false;
+                        }
+                    }
                 }
                 break;
             case INPUT_MODE_2:
