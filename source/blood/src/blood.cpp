@@ -1428,7 +1428,7 @@ void PrintHelp(void)
         "-mp_diff [0-4]\tSet difficulty for multiplayer (0-4)\n"
         "-mp_dudes [0-2]\tSet monster settings for multiplayer (0: none, 1: spawn, 2: respawn)\n"
         "-mp_weapons [0-3]\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
-        "-mp_items [0-4]\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
+        "-mp_items [0-2]\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
         "-mp_map [file.map]\tSet user map path for multiplayer\n"
         ;
 #ifdef WM_MSGBOX_WINDOW
