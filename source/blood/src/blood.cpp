@@ -1384,6 +1384,7 @@ SWITCH switches[] = {
     { "mp_dudes", 48, 1 },
     { "mp_weapons", 49, 1 },
     { "mp_items", 50, 1 },
+    { "mp_map", 51, 1 },
     { NULL, 0, 0 }
 };
 
@@ -1426,6 +1427,7 @@ void PrintHelp(void)
         "-mp_dudes\tSet monster settings for multiplayer (0: none, 1: spawn, 2: respawn)\n"
         "-mp_weapons\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
         "-mp_items\t\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
+        "-mp_map\t\tSet user map path for multiplayer (e.g: dm_01.map)\n"
         ;
 #ifdef WM_MSGBOX_WINDOW
     Bsnprintf(tempbuf, sizeof(tempbuf), APPNAME " %s", s_buildRev);
@@ -1749,6 +1751,11 @@ void ParseOptions(void)
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gMultiItems = ClipRange(atoi(OptArgv[0]), 0, 2);
+            break;
+        case 51: // mp_map
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            Bstrncpyz(zUserMapName, OptArgv[0], sizeof(zUserMapName));
             break;
         }
     }

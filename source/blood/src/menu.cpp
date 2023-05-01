@@ -272,7 +272,7 @@ const char *pzEnemySpeeds[] = {
     "3.0x",
 };
 
-char zUserMapName[BMAX_PATH];
+char zUserMapName[BMAX_PATH] = "";
 const char *zEpisodeNames[6];
 const char *zLevelNames[6][16];
 static char szRandomizerSeedMenu[9];
@@ -3709,7 +3709,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.uSpriteBannedFlags = SetBannedSprites(0);
     ////
     Bstrncpy(gPacketStartGame.userMapName, zUserMapName, sizeof(zUserMapName));
-    gPacketStartGame.userMap = gPacketStartGame.userMapName[0] != 0;
+    gPacketStartGame.userMap = gPacketStartGame.userMapName[0] != '\0';
 
     netBroadcastNewGame();
     gStartNewGame = 1;
