@@ -1348,11 +1348,13 @@ void SetupNetStartMenu(void)
     itemNetMutatorRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
     //////////////////////
 
-    itemNetStart1.SetTextIndex(1);
-    itemNetStart4.SetTextIndex(2);
-    itemNetStart5.SetTextIndex(0);
-    itemNetStart6.SetTextIndex(1);
-    itemNetStart7.SetTextIndex(1);
+    itemNetStart1.SetTextIndex(gMultiModeInit != -1 ? gMultiModeInit : 1);
+    itemNetStart2.SetTextIndex(gMultiEpisodeInit != -1 ? gMultiEpisodeInit : 0);
+    itemNetStart3.SetTextIndex(gMultiLevelInit != -1 ? gMultiLevelInit : 0);
+    itemNetStart4.SetTextIndex(gMultiDiffInit != -1 ? gMultiDiffInit : 2);
+    itemNetStart5.SetTextIndex(gMultiMonsters != -1 ? gMultiMonsters : 0);
+    itemNetStart6.SetTextIndex(gMultiWeapons != -1 ? gMultiWeapons : 1);
+    itemNetStart7.SetTextIndex(gMultiItems != -1 ? gMultiItems : 1);
     itemNetStart11.SetTextIndex(1);
     SetNetGameMode(&itemNetStart1); // hide friendly fire/keys menu items depending on game mode
 
