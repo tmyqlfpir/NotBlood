@@ -1356,6 +1356,7 @@ void SetupNetStartMenu(void)
     itemNetStart5.SetTextIndex(gMultiMonsters != -1 ? gMultiMonsters : 0);
     itemNetStart6.SetTextIndex(gMultiWeapons != -1 ? gMultiWeapons : 1);
     itemNetStart7.SetTextIndex(gMultiItems != -1 ? gMultiItems : 1);
+    itemNetStart10.at20 = !gPlayerTeamPreference;
     itemNetStart11.SetTextIndex(1);
     SetNetGameMode(&itemNetStart1); // hide friendly fire/keys menu items depending on game mode
 
