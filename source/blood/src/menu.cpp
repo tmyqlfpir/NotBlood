@@ -1350,6 +1350,7 @@ void SetupNetStartMenu(void)
 
     itemNetStart1.SetTextIndex(gMultiModeInit != -1 ? gMultiModeInit : 1);
     itemNetStart2.SetTextIndex(gMultiEpisodeInit != -1 ? gMultiEpisodeInit : 0);
+    SetupLevelMenuItem(gMultiEpisodeInit != -1 ? gMultiEpisodeInit : 0);
     itemNetStart3.SetTextIndex(gMultiLevelInit != -1 ? gMultiLevelInit : 0);
     itemNetStart4.SetTextIndex(gMultiDiffInit != -1 ? gMultiDiffInit : 2);
     itemNetStart5.SetTextIndex(gMultiMonsters != -1 ? gMultiMonsters : 0);
