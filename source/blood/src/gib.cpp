@@ -292,8 +292,10 @@ int ChanceToCount(int a1, int a2)
 void GibFX(spritetype *pSprite, GIBFX *pGFX, CGibPosition *pPos, CGibVelocity *pVel)
 {
     int nSector = pSprite->sectnum;
+#if 0
     if (gbAdultContent && gGameOptions.nGameType == kGameTypeSinglePlayer && pGFX->at0 == FX_13)
         return;
+#endif
     CGibPosition gPos(pSprite->x, pSprite->y, pSprite->z);
     if (pPos)
         gPos = *pPos;
@@ -358,12 +360,14 @@ void GibFX(spritetype *pSprite, GIBFX *pGFX, CGibPosition *pPos, CGibVelocity *p
 
 void GibThing(spritetype *pSprite, GIBTHING *pGThing, CGibPosition *pPos, CGibVelocity *pVel)
 {
+#if 0
     if (gbAdultContent && gGameOptions.nGameType == kGameTypeSinglePlayer)
         switch (pGThing->at0) {
             case kThingBloodBits:
             case kThingZombieHead:
                 return;
         }
+#endif
 
     if (pGThing->chance == 65536 || Chance(pGThing->chance))
     {

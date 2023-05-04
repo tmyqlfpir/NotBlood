@@ -89,8 +89,6 @@ extern int32_t gMessageState;
 extern int32_t gMessageCount;
 extern int32_t gMessageTime;
 extern int32_t gMessageFont;
-extern int32_t gbAdultContent;
-extern char gzAdultPassword[9];
 extern int32_t gStereo;
 extern int32_t gPlayerTeamPreference;
 extern int32_t gShowPlayerNames;
