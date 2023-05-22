@@ -344,9 +344,6 @@ void levelAddUserMap(const char *pzMap)
     strncpy(buffer, pzMap, BMAX_PATH);
     ChangeExtension(buffer, ".DEF");
 
-    int const bakpathsearchmode = pathsearchmode;
-    pathsearchmode = 1;
-
     IniFile UserINI(buffer);
     int nEpisode = ClipRange(UserINI.GetKeyInt(NULL, "Episode", 0), 0, 5);
     EPISODEINFO *pEpisodeInfo = &gEpisodeInfo[nEpisode];
@@ -369,7 +366,6 @@ void levelAddUserMap(const char *pzMap)
     gGameOptions.uMapCRC = dbReadMapCRC(pLevelInfo->Filename);
     strcpy(gGameOptions.zLevelName, pLevelInfo->Filename);
     MenuSetupEpisodeInfo();
-    pathsearchmode = bakpathsearchmode;
 }
 
 void levelGetNextLevels(int nEpisode, int nLevel, int *pnEndingA, int *pnEndingB)
