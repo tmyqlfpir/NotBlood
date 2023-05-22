@@ -199,14 +199,10 @@ void ConcatPath(const char *pzPath1, const char *pzPath2, char *pzConcatPath)
 
 int strcicmp(char const *pzStrA, char const *pzStrB)
 {
-    int const nLengthA = Bstrlen(pzStrA), nLengthB = Bstrlen(pzStrB);
-    if (nLengthA != nLengthB) // not the same length
-        return 1;
-    for(int i = 0; i < nLengthA; i++)
+    for (int i = 0;; i++)
     {
         int const diff = Btolower((unsigned char)pzStrA[i]) - Btolower((unsigned char)pzStrB[i]);
-        if (diff != 0)
+        if ((diff != 0) || (pzStrA[i] == '\0'))
             return diff;
     }
-    return 0;
 }
