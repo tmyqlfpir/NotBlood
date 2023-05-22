@@ -1492,9 +1492,6 @@ unsigned int dbReadMapCRC(const char *pPath)
     pNode = gSysRes.Lookup(pPath, "MAP");
     if (!pNode)
     {
-        char name2[BMAX_PATH];
-        Bstrncpy(name2, pPath, BMAX_PATH);
-        ChangeExtension(name2, "");
         pNode = gSysRes.Lookup(name2, "MAP");
     }
 
