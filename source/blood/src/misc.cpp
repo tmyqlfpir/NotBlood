@@ -200,7 +200,7 @@ void ConcatPath(const char *pzPath1, const char *pzPath2, char *pzConcatPath)
 int strcicmp(char const *a, char const *b)
 {
     for (;; a++, b++) {
-        int d = tolower((unsigned char)*a) - tolower((unsigned char)*b);
+        int d = Btolower((unsigned char)*a) - Btolower((unsigned char)*b);
         if (d != 0 || !*a)
             return d;
     }
