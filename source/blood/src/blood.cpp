@@ -2064,6 +2064,7 @@ int app_main(int argc, char const * const * argv)
         scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
     scrSetGamma(gGamma);
     viewResizeView(gViewSize);
+	vsync = videoSetVsync(vsync);
     initprintf("Initializing sound system\n");
     sndInit();
     sfxInit();
