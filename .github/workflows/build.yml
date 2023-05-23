@@ -27,6 +27,7 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood.exe ./upload
+        cp -a ./package/common/updater/w64/notbloodupdate ./upload/notbloodupdate.exe
     - uses: actions/upload-artifact@v2
       with:
         name: notblood-win64
