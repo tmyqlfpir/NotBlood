@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "trig.h"
 #include "view.h"
 
-void sub_2541C(int x, int y, int z, short a)
+void DrawMap(int x, int y, int z, short a)
 {
     int tmpydim = (xdim * 5) / 8;
     renderSetAspect(65536, divscale16(tmpydim * 320, xdim * 200));
@@ -165,7 +165,7 @@ CViewMap::CViewMap()
     bActive = 0;
 }
 
-void CViewMap::sub_25C38(int _x, int _y, int _angle, short zoom, char unk1)
+void CViewMap::Init(int _x, int _y, int _angle, short zoom, char unk1)
 {
     bActive = 1;
     x = _x;
@@ -176,9 +176,10 @@ void CViewMap::sub_25C38(int _x, int _y, int _angle, short zoom, char unk1)
     forward = 0;
     turn = 0;
     strafe = 0;
+    xoffset = 0;
 }
 
-void CViewMap::sub_25C74(void)
+void CViewMap::Draw(void)
 {
     char pBuffer[128];
     if (!bActive)
@@ -192,7 +193,7 @@ void CViewMap::sub_25C74(void)
     }
     videoClearScreen(0);
     renderDrawMapView(x,y,nZoom>>2,angle);
-    sub_2541C(x,y,nZoom>>2,angle);
+    DrawMap(x,y,nZoom>>2,angle);
 
     if (videoGetRenderMode() == REND_CLASSIC && (r_mirrormode & 1)) // mirror framebuffer for classic renderer
         videoMirrorDrawing();
@@ -207,18 +208,18 @@ void CViewMap::sub_25C74(void)
     if (gViewSize > 4)
         nViewY = gViewY1S-16;
     else
-        nViewY = gViewY0S+1;
-    viewDrawText(3, pBuffer, gViewX1S, nViewY, -128, 0, 2, 0, 256);
+        nViewY = gViewY0S + (!VanillaMode() ? 6 : 1);
+    viewDrawText(3, pBuffer, gViewX1S+xoffset, nViewY, -128, 0, 2, 0, 256);
 
     if (gViewMap.bFollowMode)
-        viewDrawText(3, "MAP FOLLOW MODE", gViewX1S, nViewY+8, -128, 0, 2, 0, 256);
+        viewDrawText(3, "MAP FOLLOW MODE", gViewX1S+xoffset, nViewY+8, -128, 0, 2, 0, 256);
     else
-        viewDrawText(3, "MAP SCROLL MODE", gViewX1S, nViewY+8, -128, 0, 2, 0, 256);
+        viewDrawText(3, "MAP SCROLL MODE", gViewX1S+xoffset, nViewY+8, -128, 0, 2, 0, 256);
     if (tm)
         viewResizeView(viewSize);
 }
 
-void CViewMap::sub_25DB0(spritetype *pSprite)
+void CViewMap::Process(spritetype *pSprite)
 {
     nZoom = gZoom;
     if (bFollowMode)
@@ -238,10 +239,10 @@ void CViewMap::sub_25DB0(spritetype *pSprite)
         strafe = 0;
         turn = 0;
     }
-    sub_25C74();
+    Draw();
 }
 
-void CViewMap::sub_25E84(int *_x, int *_y)
+void CViewMap::SetPos(int *_x, int *_y)
 {
     if (_x)
         *_x = x;

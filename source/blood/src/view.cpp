@@ -2358,7 +2358,7 @@ void viewInit(void)
         dword_172CE0[i][1] = mulscale16(wrand(), 2048);
         dword_172CE0[i][2] = mulscale16(wrand(), 2048);
     }
-    gViewMap.sub_25C38(0, 0, gZoom, 0, gFollowMap);
+    gViewMap.Init(0, 0, gZoom, 0, gFollowMap);
 
     g_frameDelay = calcFrameDelay(r_maxfps);
 
@@ -2387,7 +2387,7 @@ void viewUpdateHudRatio(void)
        xscalestats = viewCalculateOffetRatio(gLevelStats-2);
     if (gPowerupDuration > 1)
        xscalepowerups = viewCalculateOffetRatio(gPowerupDuration-2);
-    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = (gViewSize < 6) ? xscalehud : 0;
+    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = gViewMap.xoffset = (gViewSize < 6) ? xscalehud : 0;
 
     if (gPowerupDuration)
         xscalectfhud = xscalepowerups;
@@ -4701,7 +4701,7 @@ RORHACK:
     }
     if (gViewMode == 4)
     {
-        gViewMap.sub_25DB0(gView->pSprite);
+        gViewMap.Process(gView->pSprite);
     }
     viewDrawInterface(delta);
     int zn = ((gView->zWeapon-gView->zView-(12<<8))>>7)+220;
