@@ -30,6 +30,7 @@ public:
     short angle;
     char bFollowMode;
     int forward, strafe;
+    int xoffset;
     fix16_t turn;
     CViewMap();
     void Init(int, int, int, short, char);

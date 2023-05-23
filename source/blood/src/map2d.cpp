@@ -176,6 +176,7 @@ void CViewMap::Init(int _x, int _y, int _angle, short zoom, char unk1)
     forward = 0;
     turn = 0;
     strafe = 0;
+    xoffset = 0;
 }
 
 void CViewMap::Draw(void)
@@ -207,13 +208,13 @@ void CViewMap::Draw(void)
     if (gViewSize > 4)
         nViewY = gViewY1S-16;
     else
-        nViewY = gViewY0S+1;
-    viewDrawText(3, pBuffer, gViewX1S, nViewY, -128, 0, 2, 0, 256);
+        nViewY = gViewY0S + (!VanillaMode() ? 6 : 1);
+    viewDrawText(3, pBuffer, gViewX1S+xoffset, nViewY, -128, 0, 2, 0, 256);
 
     if (gViewMap.bFollowMode)
-        viewDrawText(3, "MAP FOLLOW MODE", gViewX1S, nViewY+8, -128, 0, 2, 0, 256);
+        viewDrawText(3, "MAP FOLLOW MODE", gViewX1S+xoffset, nViewY+8, -128, 0, 2, 0, 256);
     else
-        viewDrawText(3, "MAP SCROLL MODE", gViewX1S, nViewY+8, -128, 0, 2, 0, 256);
+        viewDrawText(3, "MAP SCROLL MODE", gViewX1S+xoffset, nViewY+8, -128, 0, 2, 0, 256);
     if (tm)
         viewResizeView(viewSize);
 }
