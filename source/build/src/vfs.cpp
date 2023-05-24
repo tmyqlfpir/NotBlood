@@ -904,7 +904,7 @@ static int32_t kopen4loadinsensitive(const char *filename, char searchfirst)
         char *filepath = NULL;
         if (len >= 0) // filename has directory slashes
         {
-            filepath = (char *)Balloca(len+4); // allocate extra for first dot, first last, last slash and null terminator
+            filepath = (char *)Balloca(len+4); // allocate extra for first dot, first slash, last slash and null terminator
             filepath[len+1] = filepath[len+2] = filepath[len+3] = '\0';
             len++; // offset so it points to first character of file in filename string
 
