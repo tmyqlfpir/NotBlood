@@ -315,7 +315,7 @@ CGameMenuItemQAV itemHelp5QAV("", 3, 160, 100, "HELP5", false, true);
 
 CGameMenuItemTitle itemMainTitle("BLOOD", 1, 160, 20, 2038);
 CGameMenuItemChain itemMain1("NEW GAME", 1, 0, 45, 320, 1, &menuEpisode, -1, NULL, 0);
-CGameMenuItemChain itemMain2("MULTIPLAYER", 1, 0, 65, 320, 1, &menuNetwork, -1, NULL, 0);
+CGameMenuItemChain itemMain2("PLAY ONLINE", 1, 0, 65, 320, 1, &menuNetwork, -1, NULL, 0);
 CGameMenuItemChain itemMain3("OPTIONS", 1, 0, 85, 320, 1, &menuOptions, -1, NULL, 0);
 CGameMenuItemChain itemMain4("LOAD GAME", 1, 0, 105, 320, 1, &menuLoadGame, -1, NULL, 0);
 CGameMenuItemChain itemMain5("HELP", 1, 0, 125, 320, 1, &menuHelp, -1, NULL, 0);
