@@ -3579,8 +3579,11 @@ void QuickSaveGame(void)
     memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = kLoadSaveSlotQuick;
-    viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[kLoadSaveSlotQuick]);
-    videoNextPage();
+    if (VanillaMode())
+    {
+        viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[kLoadSaveSlotQuick]);
+        videoNextPage();
+    }
     LoadSave::SaveGame(strSaveGameName);
     gGameOptions.picEntry = gSavedOffset;
     gSaveGameOptions[kLoadSaveSlotQuick] = gGameOptions;
@@ -3653,8 +3656,11 @@ void QuickLoadGame(void)
         return;
     if (!LoadSavedInCurrentSession(gQuickLoadSlot)) // if save slot is from a different session, set autosave state to false
         gAutosaveInCurLevel = false;
-    viewLoadingScreen(gMenuPicnum, "Loading", "Loading Saved Game", strRestoreGameStrings[gQuickLoadSlot]);
-    videoNextPage();
+    if (VanillaMode())
+    {
+        viewLoadingScreen(gMenuPicnum, "Loading", "Loading Saved Game", strRestoreGameStrings[gQuickLoadSlot]);
+        videoNextPage();
+    }
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();
 }
