@@ -319,12 +319,26 @@ static INT_PTR CALLBACK ConfigPageProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, L
             return TRUE;
         case IDCDATA:
         {
+            char szPickedIni[BMAX_PATH] = "";
             if (HIWORD(wParam) != LBN_SELCHANGE) break;
             intptr_t i = ListBox_GetCurSel((HWND)lParam);
             if (i != CB_ERR) i = ListBox_GetItemData((HWND)lParam, i);
             if (i != CB_ERR)
             {
                 settings.ini = (INICHAIN const *)i;
+                if (settings.ini->zName)
+                {
+                    for (i = 0; (settings.ini->zName[i] != '.') && (settings.ini->zName[i] != '\0'); i++)
+                        szPickedIni[i] = settings.ini->zName[i];
+                }
+            }
+
+            if (szPickedIni[0] != '\0')
+            {
+                HWND hwnd = GetDlgItem(pages[TAB_CONFIG], IDCGAMEDIR);
+                i = ComboBox_SelectString(hwnd, 0, (LPSTR)szPickedIni);
+                if (i == CB_ERR) // could not find potential mod folder, reset back to none
+                    (void)ComboBox_SetCurSel(hwnd, 0);
             }
             return TRUE;
         }
