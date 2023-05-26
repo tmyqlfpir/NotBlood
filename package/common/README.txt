@@ -197,6 +197,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable view horizontal bobbing
 * cl_rollangle
    - Sets how much your screen tilts when strafing (polymost only)
+* cl_showloadsavebackdrop
+   - Enable/disable the menu backdrop for loading/saving game
 * cl_slopecrosshair
    - Enable/disable adjusting crosshair position for slope tilting
 * cl_slowroomflicker
