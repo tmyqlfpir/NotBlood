@@ -335,7 +335,23 @@ static INT_PTR CALLBACK ConfigPageProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, L
                         HWND hwnd = GetDlgItem(pages[TAB_CONFIG], IDCGAMEDIR);
                         i = ComboBox_SelectString(hwnd, 0, (LPSTR)szPickedIni);
                         if (i == CB_ERR) // could not find potential mod folder, reset back to none
+                        {
+                            settings.gamedir = NULL;
                             (void)ComboBox_SetCurSel(hwnd, 0);
+                        }
+                        else
+                        {
+                            i = ComboBox_GetItemData(hwnd, i);
+                            BUILDVFS_FIND_REC *dir = finddirs;
+                            for (int j = 1; dir != NULL; dir = dir->next, j++)
+                            {
+                                if (j == i)
+                                {
+                                    settings.gamedir = dir->name;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
