@@ -3550,8 +3550,11 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = nSlot;
-    viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[nSlot]);
-    videoNextPage();
+    if (gShowLoadingSavingBackground)
+    {
+        viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[nSlot]);
+        videoNextPage();
+    }
     gSaveGameNum = nSlot;
     LoadSave::SaveGame(strSaveGameName);
     gGameOptions.picEntry = gSavedOffset;
@@ -3579,7 +3582,7 @@ void QuickSaveGame(void)
     memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
     sprintf(gGameOptions.szSaveGameName, "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = kLoadSaveSlotQuick;
-    if (VanillaMode())
+    if (gShowLoadingSavingBackground)
     {
         viewLoadingScreen(gMenuPicnum, "Saving", "Saving Your Game", strRestoreGameStrings[kLoadSaveSlotQuick]);
         videoNextPage();
@@ -3636,8 +3639,11 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
         return;
     if (!gGameStarted || LoadSavedInCurrentSession(nSlot)) // if save slot is from a different session, set autosave state to false
         gAutosaveInCurLevel = false;
-    viewLoadingScreen(gMenuPicnum, "Loading", "Loading Saved Game", strRestoreGameStrings[nSlot]);
-    videoNextPage();
+    if (gShowLoadingSavingBackground)
+    {
+        viewLoadingScreen(gMenuPicnum, "Loading", "Loading Saved Game", strRestoreGameStrings[nSlot]);
+        videoNextPage();
+    }
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();
     gQuickLoadSlot = nSlot;
@@ -3656,7 +3662,7 @@ void QuickLoadGame(void)
         return;
     if (!LoadSavedInCurrentSession(gQuickLoadSlot)) // if save slot is from a different session, set autosave state to false
         gAutosaveInCurLevel = false;
-    if (VanillaMode())
+    if (gShowLoadingSavingBackground)
     {
         viewLoadingScreen(gMenuPicnum, "Loading", "Loading Saved Game", strRestoreGameStrings[gQuickLoadSlot]);
         videoNextPage();

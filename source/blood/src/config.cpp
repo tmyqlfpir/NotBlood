@@ -112,6 +112,7 @@ int32_t gMessageTime;
 int32_t gMessageFont;
 int32_t gStereo;
 int32_t gPlayerTeamPreference;
+int32_t gShowLoadingSavingBackground;
 int32_t gShowPlayerNames;
 int32_t gShowWeapon;
 int32_t gMouseSensitivity;
@@ -512,6 +513,7 @@ void CONFIG_SetDefaults(void)
     gMessageFont = 0;
     gStereo = 1;
     gPlayerTeamPreference = 0;
+    gShowLoadingSavingBackground = 0;
     gShowPlayerNames = 1;
     gShowWeapon = 2;
 
