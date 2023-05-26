@@ -139,7 +139,7 @@ int gViewXCenter, gViewYCenter;
 int gViewX0, gViewY0, gViewX1, gViewY1;
 int gViewX0S, gViewY0S, gViewX1S, gViewY1S;
 int xscale, xscalecorrect, yscale, xstep, ystep;
-int xscalehud = 0, xscalestats = 0, xscalepowerups = 0, xscalectfhud = 0;
+int xscalehud = 0, xscalestats = 0, yscalestats = 0, xscalepowerups = 0, xscalectfhud = 0;
 
 int gScreenTilt;
 
@@ -2232,7 +2232,7 @@ void UpdateStatusBar(ClockTicks arg)
         {
             TileHGauge(2260, 124, 175, nThrowPower, 65536);
         }
-        viewDrawStats(pPlayer, 2-xscalestats, 140);
+        viewDrawStats(pPlayer, 2-xscalestats, 140-yscalestats);
         viewDrawPowerUps(pPlayer);
     }
 
@@ -2380,13 +2380,24 @@ inline int viewCalculateOffetRatio(int nRatio)
 
 void viewUpdateHudRatio(void)
 {
-    xscalehud = xscalestats = xscalepowerups = 0;
+    const char bFullHud = (gViewSize > 3);
+    xscalehud = xscalestats = yscalestats = xscalepowerups = 0;
+
     if (gHudRatio > 0)
-       xscalehud = viewCalculateOffetRatio(gHudRatio-1);
+        xscalehud = viewCalculateOffetRatio(gHudRatio-1);
     if (gLevelStats > 1)
-       xscalestats = viewCalculateOffetRatio(gLevelStats-2);
+        xscalestats = viewCalculateOffetRatio(gLevelStats-2);
+    if (gLevelStats && bFullHud) // calculate level stats y position for full hud
+    {
+        const int kScreenRatio = scale(320, xscale, yscale);
+        if ((gLevelStats == 2) || (kScreenRatio <= 300)) // adjust level stats y pos when resolution ratio is less than 16:10
+            yscalestats = 30;
+        else if ((gLevelStats == 3) || (kScreenRatio <= 330)) // adjust level stats y pos when resolution ratio is less than 16:10
+            yscalestats = 10;
+    }
     if (gPowerupDuration > 1)
-       xscalepowerups = viewCalculateOffetRatio(gPowerupDuration-2);
+        xscalepowerups = viewCalculateOffetRatio(gPowerupDuration-2);
+
     gPlayerMsg.xoffset = gGameMessageMgr.xoffset = gViewMap.xoffset = (gViewSize < 6) ? xscalehud : 0;
 
     if (gPowerupDuration)
