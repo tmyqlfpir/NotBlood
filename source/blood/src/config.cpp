@@ -403,7 +403,7 @@ void CONFIG_SetDefaults(void)
     gCustomPaletteInvert = 0;
     //ud.config.ShowWeapons     = 0;
     SoundToggle     = 1;
-    CDAudioToggle = 1;
+    CDAudioToggle = 0;
     DopplerToggle = 1;
     MusicDevice = ASS_SF2;
     Bstrcpy(SF2_BankFile, "notblood.sf2");
