@@ -1289,6 +1289,23 @@ struct WEAPONICON {
 WEAPONICON gWeaponIcon[] = {
     { -1, 0 },
     { -1, 0 }, // 1: pitchfork
+    { 524, 4 }, // 2: flare gun
+    { 559, 7 }, // 3: shotgun
+    { 558, 5 }, // 4: tommy gun
+    { 526, 11 }, // 5: napalm launcher
+    { 589, 7 }, // 6: dynamite
+    { 618, 6 }, // 7: spray can
+    { 539, 11 }, // 8: tesla gun
+    { 800, 0 }, // 9: life leech
+    { 525, 13 }, // 10: voodoo doll
+    { 811, 7 }, // 11: proxy bomb
+    { 810, 7 }, // 12: remote bomb
+    { -1, 0 },
+};
+
+WEAPONICON gWeaponIconVoxel[] = {
+    { -1, 0 },
+    { -1, 0 }, // 1: pitchfork
     { 524, 6 }, // 2: flare gun
     { 559, 6 }, // 3: shotgun
     { 558, 8 }, // 4: tommy gun
@@ -3014,7 +3031,6 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
         pNSprite->z = pTSprite->z-(32<<8);
-        pNSprite->z -= weaponIcon.zOffset<<8; // offset up
         if (pPlayer->posture == kPostureCrouch) // if player is crouching
             pNSprite->z += pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture].zOffset<<5;
         pNSprite->picnum = nTile;
@@ -3022,6 +3038,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->xrepeat = 32;
         pNSprite->yrepeat = 32;
         pNSprite->ang = (gCameraAng + kAng90) & kAngMask; // always face viewer
+        if (VanillaMode())
+            break;
         const int nVoxel = voxelIndex[nTile];
         if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
             pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
@@ -3039,7 +3057,10 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
                 pNSprite->ang = (gCameraAng + kAng180) & kAngMask;
             else if ((pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT)) // make proxy/remote tnt always face viewers like sprite
                 pNSprite->ang = (gCameraAng + kAng180 + kAng45) & kAngMask;
+            pNSprite->z -= gWeaponIconVoxel[pPlayer->curWeapon].zOffset<<8; // offset up
         }
+        else
+            pNSprite->z -= weaponIcon.zOffset<<8; // offset up
         break;
     }
     }
