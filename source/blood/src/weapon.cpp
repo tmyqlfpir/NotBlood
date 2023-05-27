@@ -1269,7 +1269,10 @@ void FireShotgun(int nTrigger, PLAYER *pPlayer)
     }
     int n = nTrigger<<4;
     if (powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active
-        n *= 4;
+    {
+        n <<= 2;
+        pPlayer->tiltEffect = nTrigger == 1 ? 40 : 75;
+    }
     for (int i = 0; i < n; i++)
     {
         int r1, r2, r3;
@@ -1317,8 +1320,11 @@ void FireTommy(int nTrigger, PLAYER *pPlayer)
                 int r3 = Random3(1200);
                 actFireVector(pPlayer->pSprite, 0, pPlayer->zWeapon-pPlayer->pSprite->z, aim->dx+r3, aim->dy+r2, aim->dz+r1, kVectorTommyregular);
                 if (i == 0)
+                {
                     SpawnBulletEject(pPlayer, -15, -45);
-                pPlayer->visibility = 20;
+                    pPlayer->tiltEffect = 30;
+                    pPlayer->visibility = 20;
+                }
                 break;
             }
             case 2:
@@ -1334,8 +1340,11 @@ void FireTommy(int nTrigger, PLAYER *pPlayer)
                 r3 = Random3(1200);
                 actFireVector(pPlayer->pSprite, 120, pPlayer->zWeapon-pPlayer->pSprite->z, aim->dx+r3, aim->dy+r2, aim->dz+r1, kVectorTommyregular);
                 if (i == 0)
+                {
                     SpawnBulletEject(pPlayer, 140, 45);
-                pPlayer->visibility = 30;
+                    pPlayer->tiltEffect = 50;
+                    pPlayer->visibility = 30;
+                }
                 break;
             }
             }
@@ -1450,11 +1459,10 @@ void AltFireSpread2(int nTrigger, PLAYER *pPlayer)
             r2 = Random2(30);
             if (i == 0)
                 SpawnBulletEject(pPlayer, r2, r1);
-            pPlayer->tiltEffect = 20;
-            pPlayer->visibility = 30;
-            if (i == 0)
-                UseAmmo(pPlayer, pPlayer->weaponAmmo, 1);
         }
+        UseAmmo(pPlayer, pPlayer->weaponAmmo, 1);
+        pPlayer->tiltEffect = 45;
+        pPlayer->visibility = 45;
     }
     else if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode()) && checkAmmo2(pPlayer, 3, 2))
     {
