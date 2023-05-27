@@ -1674,11 +1674,7 @@ int setvideomode_sdlcommonpost(int32_t x, int32_t y, int32_t c, int32_t fs, int3
 #ifndef EDUKE32_GLES
     if (!gammabrightness)
     {
-#ifdef USE_OPENGL
         if (nogl)
-#else
-        if (1)
-#endif
         {
 #if SDL_MAJOR_VERSION >= 2
             if (SDL_GetWindowGammaRamp(sdl_window, sysgamma[0], sysgamma[1], sysgamma[2]) == 0)
