@@ -34,6 +34,8 @@ extern char quitevent, appactive;
 extern char modechange;
 #ifdef USE_OPENGL
 extern char nogl;
+#else
+#define nogl (1)
 #endif
 
 extern int32_t vsync;
