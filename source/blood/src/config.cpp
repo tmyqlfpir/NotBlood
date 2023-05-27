@@ -515,7 +515,7 @@ void CONFIG_SetDefaults(void)
     gPlayerTeamPreference = 0;
     gShowLoadingSavingBackground = 0;
     gShowPlayerNames = 1;
-    gShowWeapon = 2;
+    gShowWeapon = 1;
 
     gMouseAimingFlipped = 0;
     gMouseAim = 1;
