@@ -325,31 +325,29 @@ static INT_PTR CALLBACK ConfigPageProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, L
             if (i != CB_ERR)
             {
                 settings.ini = (INICHAIN const *)i;
-                if (settings.ini->zName)
+
+                char szPickedIni[BMAX_PATH] = "";
+                for (i = 0; (settings.ini->zName[i] != '.') && (settings.ini->zName[i] != '\0'); i++)
+                    szPickedIni[i] = settings.ini->zName[i];
+                if (szPickedIni[0] != '\0')
                 {
-                    char szPickedIni[BMAX_PATH] = "";
-                    for (i = 0; (settings.ini->zName[i] != '.') && (settings.ini->zName[i] != '\0'); i++)
-                        szPickedIni[i] = settings.ini->zName[i];
-                    if (szPickedIni[0] != '\0')
+                    HWND hwnd = GetDlgItem(pages[TAB_CONFIG], IDCGAMEDIR);
+                    i = ComboBox_SelectString(hwnd, 0, (LPSTR)szPickedIni);
+                    if (i == CB_ERR) // could not find potential mod folder, reset back to none
                     {
-                        HWND hwnd = GetDlgItem(pages[TAB_CONFIG], IDCGAMEDIR);
-                        i = ComboBox_SelectString(hwnd, 0, (LPSTR)szPickedIni);
-                        if (i == CB_ERR) // could not find potential mod folder, reset back to none
+                        settings.gamedir = NULL;
+                        (void)ComboBox_SetCurSel(hwnd, 0);
+                    }
+                    else
+                    {
+                        i = ComboBox_GetItemData(hwnd, i);
+                        BUILDVFS_FIND_REC *dir = finddirs;
+                        for (int j = 1; dir != NULL; dir = dir->next, j++)
                         {
-                            settings.gamedir = NULL;
-                            (void)ComboBox_SetCurSel(hwnd, 0);
-                        }
-                        else
-                        {
-                            i = ComboBox_GetItemData(hwnd, i);
-                            BUILDVFS_FIND_REC *dir = finddirs;
-                            for (int j = 1; dir != NULL; dir = dir->next, j++)
+                            if (j == i)
                             {
-                                if (j == i)
-                                {
-                                    settings.gamedir = dir->name;
-                                    break;
-                                }
+                                settings.gamedir = dir->name;
+                                break;
                             }
                         }
                     }
