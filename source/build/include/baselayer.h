@@ -32,7 +32,9 @@ extern int32_t g_maskDrawMode;
 
 extern char quitevent, appactive;
 extern char modechange;
+#ifdef USE_OPENGL
 extern char nogl;
+#endif
 
 extern int32_t vsync;
 extern int32_t r_finishbeforeswap;
