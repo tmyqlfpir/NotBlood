@@ -184,23 +184,23 @@ jobs:
     - name: build
       run: make -j2 blood tools CLANG=1 POLYMER=0
 
-  # build-macos:
-    # name: "macOS"
-    # runs-on: macos-latest
-    # steps:
-    # - uses: actions/checkout@v2
-    # - name: install-prerequisites
-      # run: |
-        # brew install sdl2 libogg libvorbis flac libvpx make
-        # brew unlink lz4
-    # - name: build
-      # run: gmake -j2 blood tools
-    # - name: 'prepare files for upload'
-      # run: |
-        # mkdir -p ./upload
-        # cp ./notblood ./upload
-    # - uses: actions/upload-artifact@v2
-      # with:
-        # name: notblood-macos
-        # path: ./upload
-        # if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
+  build-macos:
+    name: "macOS"
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install-prerequisites
+      run: |
+        brew install sdl2 libogg libvorbis flac libvpx make
+        brew unlink lz4
+    - name: build
+      run: gmake -j2 blood tools
+    - name: 'prepare files for upload'
+      run: |
+        mkdir -p ./upload
+        cp ./notblood ./upload
+    - uses: actions/upload-artifact@v2
+      with:
+        name: notblood-macos
+        path: ./upload
+        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
