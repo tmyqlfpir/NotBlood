@@ -482,7 +482,7 @@ void CONFIG_SetDefaults(void)
     gRollAngle = 0;
     gCenterHoriz = 1;
     gDeliriumBlur = 1;
-    gViewSize = 2;
+    gViewSize = 3;
     gTurnSpeed = 92;
     gCenterViewOnDrop = 0;
     gCrouchToggle = 0;
