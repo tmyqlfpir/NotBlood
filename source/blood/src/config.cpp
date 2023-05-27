@@ -353,11 +353,7 @@ void CONFIG_SetDefaults(void)
     }
 #endif
 
-#ifdef USE_OPENGL
-    gSetup.bpp = 32;
-#else
     gSetup.bpp = 8;
-#endif
 
 #if defined(_WIN32)
     MixRate = 44100;
