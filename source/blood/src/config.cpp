@@ -496,7 +496,7 @@ void CONFIG_SetDefaults(void)
     gMultiKill = 2;
     gViewInterpolate = 1;
     gPanningInterpolate = 1;
-    gWeaponInterpolate = 0;
+    gWeaponInterpolate = 1;
     gViewHBobbing = 1;
     gViewVBobbing = 1;
     gWeaponHBobbing = 1;
