@@ -236,7 +236,7 @@ engine_excl := \
     startgtk.editor.cpp \
     startwin.editor.cpp \
     $(engine_editor_objs) \
-        
+
 ifeq (1,$(USE_OPENGL))
     engine_deps += glad
 else
@@ -248,14 +248,14 @@ else
         polymost.cpp \
         tilepacker.cpp \
         voxmodel.cpp \
-    
+
 endif
 
 ifeq ($(PLATFORM),WINDOWS)
     ifeq ($(STARTUP_WINDOW),1)
         engine_editor_objs += startwin.editor.cpp
     endif
-else    
+else
     engine_excl += winbits.cpp
 endif
 
@@ -273,7 +273,7 @@ ifeq ($(RENDERTYPE),SDL)
     else
         engine_excl += gtkbits.cpp dynamicgtk.cpp
     endif
-    
+
     engine_excl += winlayer.cpp rawinput.cpp
 else
     engine_excl += sdlayer.cpp
@@ -336,9 +336,9 @@ audiolib_deps :=
 
 audiolib_excl := \
     music_external.cpp \
-    
+
 ifneq ($(PLATFORM),WINDOWS)
-    audiolib_excl += driver_directsound.cpp driver_winmm.cpp 
+    audiolib_excl += driver_directsound.cpp driver_winmm.cpp
 endif
 ifneq ($(SUBPLATFORM),LINUX)
     audiolib_excl += driver_alsa.cpp
@@ -561,6 +561,7 @@ ifeq ($(RENDERTYPE),SDL)
     blood_game_rsrc_objs += game_icon.c
 endif
 
+
 #### Includes
 
 COMPILERFLAGS += \
@@ -581,6 +582,7 @@ endif
 ifneq (0,$(MICROPROFILE))
   COMPILERFLAGS += -DMICROPROFILE_ENABLED=1
 endif
+
 
 ##### Recipes
 
