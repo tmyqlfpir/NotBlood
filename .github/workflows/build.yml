@@ -109,7 +109,6 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood ./upload
-        touch ./upload/user_profiles_disabled
     - uses: actions/upload-artifact@v2
       with:
         name: notblood-linux-gcc
@@ -155,7 +154,6 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood ./upload
-        touch ./upload/user_profiles_disabled
     - uses: actions/upload-artifact@v2
       with:
         name: notblood-linux-clang
@@ -201,7 +199,6 @@ jobs:
       # run: |
         # mkdir -p ./upload
         # cp ./notblood ./upload
-        # touch ./upload/user_profiles_disabled
     # - uses: actions/upload-artifact@v2
       # with:
         # name: notblood-macos
