@@ -462,7 +462,7 @@ CGameMenuItemZBool itemNetMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY
 CGameMenuItemZCycle itemNetMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 70, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
 CGameMenuItemZCycle itemNetMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 80, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
 CGameMenuItemZBool itemNetMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 90, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 100, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemNetMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 100, 180, false, NULL, "NBLOOD", "ORIGINAL");
 CGameMenuItemZBool itemNetMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 110, 180, false, NULL, NULL, NULL);
 CGameMenuItemZCycle itemNetMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 120, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZBool itemNetMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 130, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
@@ -619,7 +619,7 @@ CGameMenuItemZBool itemMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:",
 CGameMenuItemZCycle itemMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
 CGameMenuItemZCycle itemMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
 CGameMenuItemZBool itemMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 85, 180, false, SetNapalmFalloff, NULL, NULL);
-CGameMenuItemZBool itemMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, false, SetEnemyBehavior, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, false, SetEnemyBehavior, "NBLOOD", "ORIGINAL");
 CGameMenuItemZBool itemMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, false, SetEnemyRandomTNT, NULL, NULL);
 CGameMenuItemZCycle itemMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZBool itemMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 125, 180, false, SetSectorBehavior, "NOTBLOOD", "ORIGINAL");
@@ -2708,9 +2708,10 @@ void SetupVideoModeMenu(CGameMenuItemChain *pItem)
             break;
         }
     }
+    const int kMaxFps = r_maxfps == -1 ? refreshfreq : r_maxfps;
     for (int i = 0; i < 8; i++)
     {
-        if (r_maxfps == nFrameLimitValues[i])
+        if (kMaxFps == nFrameLimitValues[i])
         {
             itemOptionsDisplayModeFrameLimit.m_nFocus = i;
             break;

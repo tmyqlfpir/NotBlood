@@ -353,11 +353,7 @@ void CONFIG_SetDefaults(void)
     }
 #endif
 
-#ifdef USE_OPENGL
-    gSetup.bpp = 32;
-#else
     gSetup.bpp = 8;
-#endif
 
 #if defined(_WIN32)
     MixRate = 44100;
@@ -407,7 +403,7 @@ void CONFIG_SetDefaults(void)
     gCustomPaletteInvert = 0;
     //ud.config.ShowWeapons     = 0;
     SoundToggle     = 1;
-    CDAudioToggle = 0;
+    CDAudioToggle = 1;
     DopplerToggle = 1;
     MusicDevice = ASS_SF2;
     Bstrcpy(SF2_BankFile, "notblood.sf2");
@@ -482,7 +478,7 @@ void CONFIG_SetDefaults(void)
     gRollAngle = 0;
     gCenterHoriz = 1;
     gDeliriumBlur = 1;
-    gViewSize = 2;
+    gViewSize = 3;
     gTurnSpeed = 92;
     gCenterViewOnDrop = 0;
     gCrouchToggle = 0;
@@ -496,7 +492,7 @@ void CONFIG_SetDefaults(void)
     gMultiKill = 2;
     gViewInterpolate = 1;
     gPanningInterpolate = 1;
-    gWeaponInterpolate = 0;
+    gWeaponInterpolate = 1;
     gViewHBobbing = 1;
     gViewVBobbing = 1;
     gWeaponHBobbing = 1;
@@ -515,7 +511,7 @@ void CONFIG_SetDefaults(void)
     gPlayerTeamPreference = 0;
     gShowLoadingSavingBackground = 0;
     gShowPlayerNames = 1;
-    gShowWeapon = 2;
+    gShowWeapon = 1;
 
     gMouseAimingFlipped = 0;
     gMouseAim = 1;
