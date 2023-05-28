@@ -8,7 +8,7 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="187"
+   width="188"
    height="20"
    id="svg3336"
    version="1.1"
@@ -39,12 +39,12 @@
      id="namedview3378"
      showgrid="false"
      inkscape:zoom="5.9262283"
-     inkscape:cx="104.9542"
+     inkscape:cx="102.16373"
      inkscape:cy="25.349424"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g3352" />
+     inkscape:current-layer="svg3336" />
   <title
      id="title3338">Download - Win/Linux</title>
   <defs
@@ -137,7 +137,7 @@
        id="g3365"
        style="font-size:11px;font-family:'DejaVu Sans', Verdana, Geneva, sans-serif">
       <path
-         d="M -1,0 100.939,0 C 102.629,0 104,1.343 104,3 l 0,14 c 0,1.657 -1.37,3 -3.061,3 L -1,20 -1,0 Z"
+         d="M -1,0 101.939,0 C 103.629,0 105,1.343 105,3 l 0,14 c 0,1.657 -1.37,3 -3.061,3 L -1,20 Z"
          id="state-bg"
          style="fill:url(#state-fill);fill-rule:nonzero"
          inkscape:connector-curvature="0"
