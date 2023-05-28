@@ -1688,7 +1688,7 @@ void ProcessInput(PLAYER *pPlayer)
                     if (gDemo.bRecording)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
-                    if (gRestoreLastSave)
+                    if (gRestoreLastSave || gGameOptions.bPermaDeath)
                         return; // return so ProcessFrame() can restart single-player
                 }
                 else
@@ -2538,10 +2538,12 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         FragPlayer(pPlayer, nSource);
         trTriggerSprite(nSprite, pXSprite, kCmdOff, nSource);
 
-        if (gRestoreLastSave && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording) // if died in single-player and not playing demo
+        if (gGameOptions.bPermaDeath && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording)
+            viewSetMessage("game over. press \"use\" or \"enter\" to quit");
+        else if (gRestoreLastSave && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording) // if died in single-player and not playing demo
         {
             extern short gQuickLoadSlot; // from menu.h
-            bool bAutosavedInSession = gAutosaveInCurLevel;
+            char bAutosavedInSession = gAutosaveInCurLevel;
             if (!bAutosavedInSession) // if player has not triggered autosave in current level, check if last manual save/load was in current level
                 bAutosavedInSession = LoadSavedInCurrentSession(gQuickLoadSlot) || LoadSavedInCurrentSession(kLoadSaveSlotQuick);
             if (bAutosavedInSession)
