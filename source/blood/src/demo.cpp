@@ -205,6 +205,7 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.nEnemySpeed = 0;
     gameOptions.bEnemyShuffle = false;
     gameOptions.bPitchforkOnly = false;
+    gameOptions.bPermaDeath = false;
     gameOptions.bFriendlyFire = true;
     gameOptions.nKeySettings = 0;
     gameOptions.bAutoTeams = 1;

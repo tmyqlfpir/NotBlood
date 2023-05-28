@@ -108,6 +108,7 @@ public:
     unsigned int bEnable : 1;
     unsigned int bNoDraw : 1;
     unsigned int bDisableForNet : 1;
+    unsigned int bDisableForPermaDeath : 1;
     const char* tooltip_pzTextUpper;
     const char* tooltip_pzTextLower;
     CGameMenuItem();

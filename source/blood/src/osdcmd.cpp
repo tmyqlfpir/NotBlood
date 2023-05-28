@@ -763,6 +763,8 @@ static int osdcmd_quicksave(osdcmdptr_t UNUSED(parm))
     UNREFERENCED_CONST_PARAMETER(parm);
     if (!gGameStarted || gDemo.bPlaying || gDemo.bRecording || gGameMenuMgr.m_bActive)
         OSD_Printf("quicksave: not in a game.\n");
+    else if (gGameOptions.bPermaDeath)
+        OSD_Printf("quicksave: in permadeath mode.\n");
     else gDoQuickSave = 1;
     return OSDCMD_OK;
 }

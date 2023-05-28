@@ -595,7 +595,7 @@ int gDoQuickSave = 0;
 
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
-    const bool bTriggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == kGameTypeSinglePlayer) && gameOptions->uGameFlags&kGameFlagContinuing; // if demo isn't active and not in multiplayer session and we switched to new level
+    const char bTriggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (gameOptions->uGameFlags&kGameFlagContinuing); // if demo isn't active and not in multiplayer session and we switched to new level
     EndLevel();
     gInput = {};
     gStartNewGame = 0;
@@ -687,6 +687,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nEnemySpeed = 0;
         gGameOptions.bEnemyShuffle = false;
         gGameOptions.bPitchforkOnly = false;
+        gGameOptions.bPermaDeath = false;
         gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////
     }
@@ -875,7 +876,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     gGameStarted = 1;
     ready2send = 1;
     gAutosaveInCurLevel = false;
-    if (bTriggerAutosave)
+    if (bTriggerAutosave && !gGameOptions.bPermaDeath)
         AutosaveGame(true); // create autosave at start of the new level
 }
 
@@ -928,6 +929,7 @@ void StartNetworkLevel(void)
         gGameOptions.nEnemySpeed = 0;
         gGameOptions.bEnemyShuffle = false;
         gGameOptions.bPitchforkOnly = false;
+        gGameOptions.bPermaDeath = false;
         gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////
     }
@@ -957,19 +959,21 @@ static void DoQuickSave(void)
 {
     if (gGameStarted && !gGameMenuMgr.m_bActive && gPlayer[myconnectindex].pXSprite->health != 0)
     {
-        if (gLockManualSaving) // if manual saving is locked
+        if (gLockManualSaving || gGameOptions.bPermaDeath) // if manual saving is locked
         {
             viewSetMessage("Quicksaving is locked!");
-            viewSetMessage("Change lock save settings to save...");
+            viewSetMessage(gGameOptions.bPermaDeath ? "Game is in permadeath mode..." : "Change lock save settings to save...");
             return;
         }
         QuickSaveGame();
     }
 }
 
-int DoRestoreSave(void)
+static int DoRestoreSave(void)
 {
     if (gGameOptions.nGameType != kGameTypeSinglePlayer || numplayers > 1) // in multiplayer game, do not save
+        return 0;
+    if (gGameOptions.bPermaDeath)
         return 0;
     if (LoadSavedInCurrentSession(gQuickLoadSlot)) // if quickload is set to save from current session, load save
     {
@@ -1028,7 +1032,7 @@ void LocalKeys(void)
     if (gDoQuickSave)
     {
         keyFlushScans();
-        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gDemo.bPlaying && !gDemo.bRecording) // if not in multiplayer session and not in demo playback, allow quicksave
+        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath && !gDemo.bPlaying && !gDemo.bRecording) // if not in multiplayer session and not in demo playback, allow quicksave
         {
             switch (gDoQuickSave)
             {
@@ -1103,12 +1107,12 @@ void LocalKeys(void)
             break;
         case sc_F2:
             keyFlushScans();
-            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == kGameTypeSinglePlayer && !gLockManualSaving)
+            if (!gGameMenuMgr.m_bActive && (gGameOptions.nGameType == kGameTypeSinglePlayer) && !gLockManualSaving && !gGameOptions.bPermaDeath)
                 gGameMenuMgr.Push(&menuSaveGame,-1);
-            else if (gLockManualSaving && gGameOptions.nGameType == kGameTypeSinglePlayer) // if manual saving is locked and not currently in multiplayer
+            else if ((gLockManualSaving || gGameOptions.bPermaDeath) && (gGameOptions.nGameType == kGameTypeSinglePlayer)) // if manual saving is locked and not currently in multiplayer
             {
                 viewSetMessage("Saving is locked!");
-                viewSetMessage("Change lock save settings to save...");
+                viewSetMessage(gGameOptions.bPermaDeath ? "Game is in permadeath mode..." : "Change lock save settings to save...");
             }
             break;
         case sc_F3:
@@ -1138,7 +1142,7 @@ void LocalKeys(void)
             return;
         case sc_F9:
             keyFlushScans();
-            if (gGameOptions.nGameType == kGameTypeSinglePlayer)
+            if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath)
                 DoQuickLoad();
             break;
         case sc_F10:
@@ -1231,6 +1235,12 @@ void ProcessFrame(void)
         if (gPlayer[i].input.keyFlags.restart) // if restart requested from ProcessInput()
         {
             gPlayer[i].input.keyFlags.restart = 0;
+            if (gGameOptions.bPermaDeath && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // quit to main menu
+            {
+                gQuitGame = true;
+                gRestartGame = true;
+                return;
+            }
             if (gPlayer[i].input.keyFlags.action && gGameOptions.nGameType == kGameTypeSinglePlayer && numplayers == 1) // if pressed action key and not in multiplayer session
             {
                 if (DoRestoreSave()) // attempt to load last save, if fail then restart current level
