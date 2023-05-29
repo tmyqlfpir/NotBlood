@@ -1734,6 +1734,67 @@ void videoBeginDrawing(void)
 
 
 //
+// mirrorTile() -- mirror input tile buffer
+//
+static uint8_t mirroredLine[1920*4] = {0};
+
+void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
+{
+    const size_t nSize = nWidth;
+    uint8_t *pBuff = mirroredLine;
+    const char bAllocBuff = nSize > sizeof(mirroredLine); // if bigger than static mirrored line, allocate from memory (very slow!)
+
+    if (!r_mirrormode || !pTile || !nSize)
+        return;
+    if (bAllocBuff)
+    {
+        pBuff = (uint8_t *)Xmalloc(nSize);
+        if (!pBuff)
+            return;
+    }
+
+    if (r_mirrormode & 1) // mirror mode (horiz)
+    {
+        uint8_t *pRow = pTile, *pEnd = &pTile[(nHeight-1)*nWidth], *pPixel;
+        while (pRow <= pEnd)
+        {
+            Bmemcpy(pBuff, pRow, nWidth);
+            for (pPixel = &pBuff[nWidth-1]; pPixel >= pBuff; pPixel--, pRow++)
+                *pRow = *pPixel;
+        }
+    }
+    if (r_mirrormode & 2) // mirror mode (vert)
+    {
+        uint8_t *pLow = pTile, *pHigh = &pTile[(nHeight-1)*nWidth];
+        for (; pLow < pHigh; pLow += nWidth, pHigh -= nWidth)
+        {
+            Bmemcpy(pBuff, pLow, nWidth);
+            Bmemcpy(pLow, pHigh, nWidth);
+            Bmemcpy(pHigh, pBuff, nWidth);
+        }
+    }
+    if (bAllocBuff)
+        Bfree(pBuff);
+}
+
+
+//
+// mirrorDrawing() -- mirrors the current framebuffer
+//
+void videoMirrorDrawing(void)
+{
+    if (!r_mirrormode)
+        return;
+    if (!frameplace)
+        return;
+    if ((xres <= 0) || (yres <= 0))
+        return;
+
+    videoMirrorTile((uint8_t *)frameplace, xres, yres);
+}
+
+
+//
 // enddrawing() -- unlocks the framebuffer
 //
 void videoEndDrawing(void)
