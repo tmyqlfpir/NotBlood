@@ -5,190 +5,156 @@ on:
     branches:
       - master
   pull_request: {}
+  merge_group: {}
 
 jobs:
 
-  build-windows-x86_64:
-    name: "Windows MSYS2 x86_64"
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-    - uses: actions/checkout@v2
-    - uses: msys2/setup-msys2@v2
-      with:
-        msystem: MINGW64
-        update: true
-        install: git mingw-w64-x86_64-toolchain make
-    - name: build
-      run: make -j2 blood SDLCONFIG=""
-    - name: 'prepare files for upload'
-      run: |
-        mkdir -p ./upload
-        cp ./notblood.exe ./upload
-        cp -a ./package/updater/w64/notbloodupdate ./upload/notbloodupdate.exe
-    - uses: actions/upload-artifact@v2
-      with:
-        name: notblood-win64
-        path: ./upload
-        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
-
-  build-windows-i686:
-    name: "Windows MSYS2 i686"
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-    - uses: actions/checkout@v2
-    - uses: msys2/setup-msys2@v2
-      with:
-        msystem: MINGW32
-        update: true
-        install: git mingw-w64-i686-toolchain make nasm
-    - name: build
-      run: make -j2 blood SDLCONFIG=""
-    - name: 'prepare files for upload'
-      run: |
-        mkdir -p ./upload
-        cp ./notblood.exe ./upload
-    - uses: actions/upload-artifact@v2
-      with:
-        name: notblood-win32
-        path: ./upload
-        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
-
-  build-windows-i686-winxp:
-    name: "Windows MSYS2 i686 WinXP"
+  build-windows-target:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: x86_64 GCC
+            sys: mingw64
+            env: x86_64
+            opt: SDLCONFIG=
+            additional-cmd: cp -a ./package/updater/w64/notbloodupdate ./upload/notbloodupdate.exe
+            zipname: win64
+          - name: i686 GCC
+            sys: mingw32
+            env: i686
+            pkg: nasm mingw-w64-i686-SDL
+            opt: SDLCONFIG=
+            additional-cmd: echo
+            zipname: win32
+          - name: i686 GCC WinXP
+            sys: mingw32
+            env: i686
+            pkg: nasm sed unzip mingw-w64-i686-SDL
+            opt: SDL_TARGET=1 USE_MIMALLOC=0 USE_LIBVPX=0 USE_OPENGL=0 NETCODE=0
+            additional-cmd: wget https://web.archive.org/web/20220310063221if_/https://a.tmp.ninja/rRpytNSd.zip -O temp.zip; unzip temp.zip -d ./upload; echo ADVAPI32.dll\0\0\0\0 with ZDVAPI32.dll\0\0\0\0; sed -i -b -e 's/\x41\x44\x56\x41\x50\x49\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/\x5A\x44\x56\x41\x50\x49\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/g' ./notblood.exe; echo KERNEL32.dll\0\0\0\0 with ZERNEL32.dll\0\0\0\0; sed -i -b -e 's/\x4B\x45\x52\x4E\x45\x4C\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/\x5A\x45\x52\x4E\x45\x4C\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/g' ./notblood.exe; echo WS2_32.dll\0\0 with ZS2_32.dll\0\0; sed -i -b -e 's/\x57\x53\x32\x5F\x33\x32\x2E\x64\x6C\x6C\x00\x00/\x5A\x53\x32\x5F\x33\x32\x2E\x64\x6C\x6C\x00\x00/g' ./notblood.exe
+            zipname: winxp
+    name: Windows MSYS2 ${{matrix.name}}
     runs-on: windows-latest
     defaults:
       run:
         shell: msys2 {0}
     steps:
     - uses: actions/checkout@v3
-      with:
-        ref: 'windows-xp'
     - uses: msys2/setup-msys2@v2
       with:
-        msystem: MINGW32
+        msystem: ${{matrix.sys}}
         update: true
-        install: git mingw-w64-i686-wget mingw-w64-i686-toolchain make nasm sed unzip mingw-w64-i686-SDL
+        cache: true
+        install: git mingw-w64-${{matrix.env}}-toolchain make ${{matrix.pkg}}
     - name: build
-      run: make -j2 blood SDL_TARGET=1 USE_MIMALLOC=0 USE_LIBVPX=0 USE_OPENGL=0 NETCODE=0
+      run: make -j2 blood ${{matrix.opt}}
     - name: 'prepare files for upload'
       run: |
         mkdir -p ./upload
-        wget https://web.archive.org/web/20220310063221if_/https://a.tmp.ninja/rRpytNSd.zip -O temp.zip
-        unzip temp.zip -d ./upload
-        echo ADVAPI32.dll\0\0\0\0 with ZDVAPI32.dll\0\0\0\0
-        sed -i -b -e 's/\x41\x44\x56\x41\x50\x49\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/\x5A\x44\x56\x41\x50\x49\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/g' ./notblood.exe
-        echo KERNEL32.dll\0\0\0\0 with ZERNEL32.dll\0\0\0\0
-        sed -i -b -e 's/\x4B\x45\x52\x4E\x45\x4C\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/\x5A\x45\x52\x4E\x45\x4C\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/g' ./notblood.exe
-        echo WS2_32.dll\0\0 with ZS2_32.dll\0\0
-        sed -i -b -e 's/\x57\x53\x32\x5F\x33\x32\x2E\x64\x6C\x6C\x00\x00/\x5A\x53\x32\x5F\x33\x32\x2E\x64\x6C\x6C\x00\x00/g' ./notblood.exe
+        ${{matrix.additional-cmd}}
         cp ./notblood.exe ./upload
     - uses: actions/upload-artifact@v2
       with:
-        name: notblood-winxp
+        name: notblood-${{matrix.zipname}}
         path: ./upload
-        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
+        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
-  build-linux-gcc:
-    name: "Linux GCC"
+  build-windows-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: x86_64 GCC without SDL
+            sys: mingw64
+            env: x86_64
+            opt: RENDERTYPE=WIN
+          - name: i686 GCC without SDL
+            sys: mingw32
+            env: i686
+            opt: RENDERTYPE=WIN
+            pkg: nasm
+    name: Windows MSYS2 ${{matrix.name}}
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{matrix.sys}}
+        update: true
+        cache: true
+        install: git mingw-w64-${{matrix.env}}-toolchain make ${{matrix.pkg}}
+    - name: build
+      run: make -j2 blood tools SDLCONFIG=
+
+  build-linux-target:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: GCC
+            pkg: libsdl2-dev
+            zipname: gcc
+          - name: Clang
+            pkg: libsdl2-dev clang
+            opt: CLANG=1
+            zipname: clang
+    name: Linux ${{matrix.name}}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install-prerequisites
       run: |
         sudo apt-get update
-        sudo apt-get -y install libsdl2-dev libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev
+        sudo apt-get -y install libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev ${{matrix.pkg}}
     - name: build
-      run: make -j2 blood tools
+      run: make -j2 blood tools ${{matrix.opt}}
     - name: 'prepare files for upload'
       run: |
         mkdir -p ./upload
         cp ./notblood ./upload
     - uses: actions/upload-artifact@v2
       with:
-        name: notblood-linux-gcc
+        name: notblood-linux-${{matrix.zipname}}
         path: ./upload
         if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
 
-  build-linux-gcc-sdl12:
-    name: "Linux GCC SDL 1.2"
+  build-linux-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: GCC SDL 1.2
+            pkg: libsdl1.2-dev
+            opt: SDL_TARGET=1
+          - name: GCC SDL 1.2 without GL/NoOne Extensions Disabled
+            pkg: libsdl1.2-dev
+            opt: SDL_TARGET=1 USE_OPENGL=0 NOONE_EXTENSIONS=0
+          - name: Clang without GL
+            pkg: libsdl2-dev clang
+            opt: CLANG=1 USE_OPENGL=0
+          - name: Clang without Polymer
+            pkg: libsdl2-dev clang
+            opt: CLANG=1 POLYMER=0
+    name: Linux ${{matrix.name}}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install-prerequisites
       run: |
         sudo apt-get update
-        sudo apt-get -y install libsdl1.2-dev libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev
+        sudo apt-get -y install libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev ${{matrix.pkg}}
     - name: build
-      run: make -j2 blood tools SDL_TARGET=1
-
-  build-linux-gcc-sdl12-noone-extensions:
-    name: "Linux GCC SDL 1.2 Software Only/NoOne Extensions Disabled"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: install-prerequisites
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install libsdl1.2-dev libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev
-    - name: build
-      run: make -j2 blood tools SDL_TARGET=1 USE_OPENGL=0 NOONE_EXTENSIONS=0
-
-  build-linux-clang:
-    name: "Linux Clang"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: install-prerequisites
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install libsdl2-dev libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev clang
-    - name: build
-      run: make -j2 blood tools CLANG=1
-    - name: 'prepare files for upload'
-      run: |
-        mkdir -p ./upload
-        cp ./notblood ./upload
-    - uses: actions/upload-artifact@v2
-      with:
-        name: notblood-linux-clang
-        path: ./upload
-        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
-
-  build-linux-clang-nogl:
-    name: "Linux Clang without GL"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: install-prerequisites
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install libsdl2-dev libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev clang
-    - name: build
-      run: make -j2 blood tools CLANG=1 USE_OPENGL=0
-
-  build-linux-clang-nopolymer:
-    name: "Linux Clang without Polymer"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: install-prerequisites
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install libsdl2-dev libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev clang
-    - name: build
-      run: make -j2 blood tools CLANG=1 POLYMER=0
+      run: make -j2 blood tools ${{matrix.opt}}
 
   build-macos:
     name: "macOS"
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install-prerequisites
       run: |
         brew install sdl2 libogg libvorbis flac libvpx make
