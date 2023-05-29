@@ -15,12 +15,14 @@ jobs:
       matrix:
         include:
           - name: x86_64 GCC
+            ref: master
             sys: mingw64
             env: x86_64
             opt: SDLCONFIG=
             additional-cmd: cp -a ./package/updater/w64/notbloodupdate ./upload/notbloodupdate.exe
             zipname: win64
           - name: i686 GCC
+            ref: master
             sys: mingw32
             env: i686
             pkg: nasm mingw-w64-i686-SDL
@@ -28,6 +30,7 @@ jobs:
             additional-cmd: echo
             zipname: win32
           - name: i686 GCC WinXP
+            ref: windows-xp
             sys: mingw32
             env: i686
             pkg: nasm sed unzip mingw-w64-i686-SDL
@@ -41,6 +44,8 @@ jobs:
         shell: msys2 {0}
     steps:
     - uses: actions/checkout@v3
+      with:
+        ref: ${{matrix.ref}}
     - uses: msys2/setup-msys2@v2
       with:
         msystem: ${{matrix.sys}}
