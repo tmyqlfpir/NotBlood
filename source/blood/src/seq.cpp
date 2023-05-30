@@ -39,10 +39,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "view.h"
 
 #define kMaxClients 256
-#define kMaxSequences 1024
+#define kMaxSequences (1024*4)
+#define kMaxSequencesVanilla 1024
 
 static ACTIVE activeList[kMaxSequences];
 static int activeCount = 0;
+static char bActiveListWarnVanilla = 0;
 static int nClients = 0;
 static void(*clientCallback[kMaxClients])(int, int);
 
@@ -411,6 +413,11 @@ void seqSpawn(int nSeq, int nType, int nXIndex, int nCallbackID)
     if (i == activeCount)
     {
         dassert(activeCount < kMaxSequences);
+        if (!bActiveListWarnVanilla && (activeCount >= kMaxSequencesVanilla) && VanillaMode())
+        {
+            OSD_Printf("Warning: Active SEQ list over vanilla limit (%d/%d)\n", activeCount, kMaxSequencesVanilla);
+            bActiveListWarnVanilla = 1;
+        }
         activeList[activeCount].type = nType;
         activeList[activeCount].xindex = nXIndex;
         activeCount++;
@@ -458,6 +465,7 @@ void seqKillAll(void)
             UnlockInstance(&siSprite[i]);
     }
     activeCount = 0;
+    bActiveListWarnVanilla = 0;
 }
 
 int seqGetStatus(int nType, int nXIndex)

@@ -72,6 +72,7 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bDamageInvul;
     0,     // int nExplosionBehavior;
     0,     // int nProjectileBehavior;
+    0,     // bool bNapalmFalloff;
     0,     // bool bEnemyBehavior;
     0,     // bool bEnemyRandomTNT;
     1,     // int nWeaponsVer;
@@ -83,12 +84,15 @@ GAMEOPTIONS gSingleGameOptions = {
     2,     // int nEnemyQuantity;
     2,     // int nEnemyHealth;
     0,     // int nEnemySpeed;
+    0,     // bool bEnemyShuffle;
     0,     // bool bPitchforkOnly;
+    0,     // bool bPermaDeath;
     0,     // bool bFriendlyFire;
     1,     // char nKeySettings;
+    1,     // char bAutoTeams;
     0,     // char nSpawnProtection;
     0,     // char nSpawnWeapon;
-    0,     // unsigned short uSpriteBannedFlags;
+    BANNED_NONE, // unsigned int uSpriteBannedFlags;
     "",    // char szUserMap[BMAX_PATH];
 };
 
@@ -126,6 +130,8 @@ void levelOverrideINI(const char *pzIni)
     strcpy(BloodIniFile, pzIni);
 }
 
+static char zSmkPath[BMAX_PATH], zWavPath[BMAX_PATH];
+
 void levelPlayIntroScene(int nEpisode)
 {
     gGameOptions.uGameFlags &= ~kGameFlagPlayIntro;
@@ -135,7 +141,12 @@ void levelPlayIntroScene(int nEpisode)
     ambKillAll();
     seqKillAll();
     EPISODEINFO *pEpisode = &gEpisodeInfo[nEpisode];
-    credPlaySmk(pEpisode->cutsceneASmkPath, pEpisode->cutsceneAWavPath, pEpisode->cutsceneAWavRsrcID);
+    if (!credPlaySmk(pEpisode->cutsceneASmkPath, pEpisode->cutsceneAWavPath, pEpisode->cutsceneAWavRsrcID)) // if failed (files not found), reattempt in movie directory
+    {
+        snprintf(zSmkPath, BMAX_PATH, "movie/%s", pEpisode->cutsceneASmkPath);
+        snprintf(zWavPath, BMAX_PATH, "movie/%s", pEpisode->cutsceneAWavPath);
+        credPlaySmk(zSmkPath, zWavPath, pEpisode->cutsceneAWavRsrcID);
+    }
     scrSetDac();
     viewResizeView(gViewSize);
     credReset();
@@ -154,7 +165,12 @@ void levelPlayEndScene(int nEpisode)
     ambKillAll();
     seqKillAll();
     EPISODEINFO *pEpisode = &gEpisodeInfo[nEpisode];
-    credPlaySmk(pEpisode->cutsceneBSmkPath, pEpisode->cutsceneBWavPath, pEpisode->cutsceneBWavRsrcID);
+    if (!credPlaySmk(pEpisode->cutsceneBSmkPath, pEpisode->cutsceneBWavPath, pEpisode->cutsceneBWavRsrcID)) // if failed (files not found), reattempt in movie directory
+    {
+        snprintf(zSmkPath, BMAX_PATH, "movie/%s", pEpisode->cutsceneBSmkPath);
+        snprintf(zWavPath, BMAX_PATH, "movie/%s", pEpisode->cutsceneBWavPath);
+        credPlaySmk(zSmkPath, zWavPath, pEpisode->cutsceneBWavRsrcID);
+    }
     scrSetDac();
     viewResizeView(gViewSize);
     credReset();

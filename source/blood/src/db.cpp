@@ -44,7 +44,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #endif
 
 #ifdef NOONE_EXTENSIONS
-bool gModernMap = false;
+uint8_t gModernMap = false;
 #endif // !NOONE_EXTENSIONS
 
 
@@ -310,6 +310,7 @@ int InsertSprite(int nSector, int nStat)
     pSprite->extra = -1;
     pSprite->index = nSprite;
     xvel[nSprite] = yvel[nSprite] = zvel[nSprite] = 0;
+    qsprite_filler[nSprite] = 0;
 
 #ifdef POLYMER
     gPolymerLight[nSprite].lightId = -1;
@@ -878,7 +879,7 @@ void dbRandomizerMode(spritetype *pSprite)
     {
         const int type = pSprite->type;
 #ifdef NOONE_EXTENSIONS
-        if ((type == kDudeModernCustom) || (type == kDudeModernCustomBurning)) // ignore custom dude types
+        if (type == kDudeModernCustom) // ignore custom dude types
             return;
 #endif
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother)) // filter problematic enemy types
@@ -1413,6 +1414,61 @@ void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
     }
 }
 
+void dbShuffleEnemy(void)
+{
+    int nSprites = 0;
+    spritetype *pSprite[kMaxSprites];
+
+    for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i]) // build table of sprites for shuffling logic
+    {
+        if (&sprite[i] == NULL)
+            continue;
+        if (!IsDudeSprite(&sprite[i]) || IsPlayerSprite(&sprite[i])) // not an enemy sprite, skip
+            continue;
+        const int type = sprite[i].type;
+        if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother) && (type != kDudeBoneEel)) // filter problematic enemy types
+        {
+            pSprite[nSprites] = &sprite[i];
+            nSprites++;
+        }
+    }
+    if (nSprites < 2) // only a single enemy in the level, abort
+        return;
+
+    for (int i = 0; i < nSprites - 1; i++) // shuffle enemies
+    {
+        const int j = qrand() % nSprites;
+
+        const int16_t tempType = pSprite[j]->type;
+        pSprite[j]->type = pSprite[i]->type;
+        pSprite[i]->type = tempType;
+
+        const int16_t tempPicnum = pSprite[j]->picnum;
+        pSprite[j]->picnum = pSprite[i]->picnum;
+        pSprite[i]->picnum = tempPicnum;
+
+        const uint8_t tempPal = pSprite[j]->pal;
+        pSprite[j]->pal = pSprite[i]->pal;
+        pSprite[i]->pal = tempPal;
+
+        const uint16_t tempCstat = pSprite[j]->cstat;
+        pSprite[j]->cstat = pSprite[i]->cstat;
+        pSprite[i]->cstat = tempCstat;
+
+        const int16_t tempAng = pSprite[j]->ang;
+        pSprite[j]->ang = pSprite[i]->ang;
+        pSprite[i]->ang = tempAng;
+
+        const int16_t tempOwner = pSprite[j]->owner;
+        pSprite[j]->owner = pSprite[i]->owner;
+        pSprite[i]->owner = tempOwner;
+
+        const int16_t tempInittype = pSprite[j]->inittype;
+        pSprite[j]->inittype = pSprite[i]->inittype;
+        pSprite[i]->inittype = tempInittype;
+    }
+}
+
 bool byte_1A76C6, byte_1A76C7, byte_1A76C8;
 
 MAPHEADER2 byte_19AE44;
@@ -1497,6 +1553,9 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
     memset(xsprite,0,kMaxXSprites*sizeof(XSPRITE));
     memset(sprite,0,kMaxSprites*sizeof(spritetype));
 
+    memset(qsprite_filler,0,sizeof(qsprite_filler));
+    memset(qsector_filler,0,sizeof(qsector_filler));
+
     #ifdef NOONE_EXTENSIONS
     gModernMap = false;
     #endif
@@ -1554,7 +1613,17 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         // indicate if the map requires modern features to work properly
         // for maps wich created in PMAPEDIT BETA13 or higher versions. Since only minor version changed,
         // the map is still can be loaded with vanilla BLOOD / MAPEDIT and should work in other ports too.
-        if ((header.version & 0x00ff) == 0x001) gModernMap = true;
+        int tmp = (header.version & 0x00ff);
+        
+        // get the modern features revision
+        switch (tmp) {
+            case 0x001:
+                gModernMap = 1;
+                break;
+            case 0x002:
+                gModernMap = 2;
+                break;
+        }
         #endif
 
     } else {
@@ -1973,8 +2042,18 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
             #ifdef NOONE_EXTENSIONS
             // indicate if the map requires modern features to work properly
             // for maps wich created in different editors (include vanilla MAPEDIT) or in PMAPEDIT version below than BETA13
-            if (!gModernMap && pXSprite->rxID == kChannelMapModernize && pXSprite->rxID == pXSprite->txID && pXSprite->command == kCmdModernFeaturesEnable)
-                gModernMap = true;
+            if (!gModernMap && pXSprite->rxID == pXSprite->txID && pXSprite->command == kCmdModernFeaturesEnable)
+            {
+                // get the modern features revision
+                switch (pXSprite->txID) {
+                case kChannelMapModernRev1:
+                    gModernMap = 1;
+                    break;
+                case kChannelMapModernRev2:
+                    gModernMap = 2;
+                    break;
+                }
+            }
             #endif
         }
 #if 0

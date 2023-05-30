@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define kMaxXSectors 4096
 
 #ifdef NOONE_EXTENSIONS
-extern bool gModernMap;
+extern uint8_t gModernMap;
 #endif // NOONE_EXTENSIONS
 
 
@@ -114,8 +114,10 @@ struct XSPRITE {
     unsigned int stateTimer : 16;       // ai timer
     AISTATE* aiState;                   // ai
     #ifdef NOONE_EXTENSIONS
-    signed int sysData1: 32;            // used to keep here various system data, so user can't change it in map editor
-    signed int sysData2: 32;            //
+    signed int sysData1 : 32;           // used to keep here various system data, so user can't change it in map editor
+    signed int sysData2 : 32;           //
+    signed int sysData3 : 32;           //
+    signed int sysData4 : 32;           //
     unsigned int physAttr : 32;         // currently used by additional physics sprites to keep it's attributes.
     #endif
     signed int scale;                   // used for scaling SEQ size on sprites
@@ -375,5 +377,6 @@ char dbIsBannedSpriteType(int nType);
 char dbIsBannedSprite(spritetype *pSprite, XSPRITE* pXSprite);
 void dbRandomizerMode(spritetype *pSprite);
 void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite);
+void dbShuffleEnemy(void);
 unsigned int dbReadMapCRC(const char *pPath);
 int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short *pSector, unsigned int *pCRC);

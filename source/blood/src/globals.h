@@ -35,6 +35,8 @@ typedef struct {
     int32_t bpp;
     int32_t forcesetup;
     int32_t noautoload;
+    int32_t quickstart;
+    char lastini[BMAX_PATH];
 } ud_setup_t;
 
 extern ud_setup_t gSetup;
@@ -44,7 +46,6 @@ extern int gFrame;
 //extern ClockTicks gGameClock;
 extern int gFrameRate;
 extern int gGamma;
-extern int gSlowRoomFlicker;
 
 extern Resource gSysRes;
 const char *GetVersionString(void);

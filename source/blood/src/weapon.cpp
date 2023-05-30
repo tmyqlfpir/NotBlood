@@ -365,7 +365,15 @@ void UpdateAimVector(PLAYER * pPlayer)
     WEAPONTRACK *pWeaponTrack = &gWeaponTrack[pPlayer->curWeapon];
     int nTarget = -1;
     pPlayer->aimTargetsCount = 0;
-    if (gProfile[pPlayer->nPlayer].nAutoAim == 1 || (gProfile[pPlayer->nPlayer].nAutoAim == 2 && !pWeaponTrack->bIsProjectile) || pPlayer->curWeapon == kWeaponVoodoo || pPlayer->curWeapon == kWeaponLifeLeech)
+    char bAutoAim = (gProfile[pPlayer->nPlayer].nAutoAim == 1) || (gProfile[pPlayer->nPlayer].nAutoAim == 2 && !pWeaponTrack->bIsProjectile);
+    char bOnlyTargetRatsEels = (gProfile[pPlayer->nPlayer].nAutoAim == 3) && !pWeaponTrack->bIsProjectile && (pPlayer->curWeapon != kWeaponVoodoo) && (pPlayer->curWeapon != kWeaponLifeLeech);
+    if (!bAutoAim && WeaponsNotBlood() && !VanillaMode()) // use autoaim for pitchfork, or tommygun alt fire
+    {
+        bAutoAim = ((pPlayer->curWeapon == kWeaponPitchfork) && !(powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup)) || ((pPlayer->curWeapon == kWeaponTommy) && (pPlayer->weaponQav == 73 || pPlayer->weaponQav == 67));
+        if (bAutoAim)
+            bOnlyTargetRatsEels = 0; // overrides rats/eels only targeting mode
+    }
+    if (bAutoAim || bOnlyTargetRatsEels || (pPlayer->curWeapon == kWeaponVoodoo) || (pPlayer->curWeapon == kWeaponLifeLeech))
     {
         if (gGameOptions.bSectorBehavior && !VanillaMode()) // check for ror so autoaim can work peering above water
             CheckLink(&x, &y, &z, &nSector);
@@ -380,6 +388,8 @@ void UpdateAimVector(PLAYER * pPlayer)
             if (pSprite->flags&32)
                 continue;
             if (!(pSprite->flags&8))
+                continue;
+            if (bOnlyTargetRatsEels && (pSprite->type != kDudeRat) && (pSprite->type != kDudeBoneEel))
                 continue;
             int x2 = pSprite->x;
             int y2 = pSprite->y;
@@ -435,6 +445,8 @@ void UpdateAimVector(PLAYER * pPlayer)
                     continue;
                 if (!(pSprite->flags&8))
                     continue;
+                if (bOnlyTargetRatsEels && (pSprite->type != kDudeRat) && (pSprite->type != kDudeBoneEel))
+                    continue;
                 int x2 = pSprite->x;
                 int y2 = pSprite->y;
                 int z2 = pSprite->z;
@@ -479,9 +491,9 @@ void UpdateAimVector(PLAYER * pPlayer)
     aim2 = aim;
     RotateVector((int*)&aim2.dx, (int*)&aim2.dy, -pPSprite->ang);
     aim2.dz -= pPlayer->slope;
-    pPlayer->relAim.dx = interpolate(pPlayer->relAim.dx, aim2.dx, pWeaponTrack->at0);
-    pPlayer->relAim.dy = interpolate(pPlayer->relAim.dy, aim2.dy, pWeaponTrack->at0);
-    pPlayer->relAim.dz = interpolate(pPlayer->relAim.dz, aim2.dz, pWeaponTrack->at4);
+    pPlayer->relAim.dx = interpolate(pPlayer->relAim.dx, aim2.dx, pWeaponTrack->at0, 1);
+    pPlayer->relAim.dy = interpolate(pPlayer->relAim.dy, aim2.dy, pWeaponTrack->at0, 1);
+    pPlayer->relAim.dz = interpolate(pPlayer->relAim.dz, aim2.dz, pWeaponTrack->at4, 1);
     pPlayer->aim = pPlayer->relAim;
     RotateVector((int*)&pPlayer->aim.dx, (int*)&pPlayer->aim.dy, pPSprite->ang);
     pPlayer->aim.dz += pPlayer->slope;
@@ -1257,7 +1269,10 @@ void FireShotgun(int nTrigger, PLAYER *pPlayer)
     }
     int n = nTrigger<<4;
     if (powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active
-        n *= 4;
+    {
+        n <<= 2;
+        pPlayer->tiltEffect = nTrigger == 1 ? 40 : 75;
+    }
     for (int i = 0; i < n; i++)
     {
         int r1, r2, r3;
@@ -1305,8 +1320,11 @@ void FireTommy(int nTrigger, PLAYER *pPlayer)
                 int r3 = Random3(1200);
                 actFireVector(pPlayer->pSprite, 0, pPlayer->zWeapon-pPlayer->pSprite->z, aim->dx+r3, aim->dy+r2, aim->dz+r1, kVectorTommyregular);
                 if (i == 0)
+                {
                     SpawnBulletEject(pPlayer, -15, -45);
-                pPlayer->visibility = 20;
+                    pPlayer->tiltEffect = 30;
+                    pPlayer->visibility = 20;
+                }
                 break;
             }
             case 2:
@@ -1322,8 +1340,11 @@ void FireTommy(int nTrigger, PLAYER *pPlayer)
                 r3 = Random3(1200);
                 actFireVector(pPlayer->pSprite, 120, pPlayer->zWeapon-pPlayer->pSprite->z, aim->dx+r3, aim->dy+r2, aim->dz+r1, kVectorTommyregular);
                 if (i == 0)
+                {
                     SpawnBulletEject(pPlayer, 140, 45);
-                pPlayer->visibility = 30;
+                    pPlayer->tiltEffect = 50;
+                    pPlayer->visibility = 30;
+                }
                 break;
             }
             }
@@ -1438,11 +1459,10 @@ void AltFireSpread2(int nTrigger, PLAYER *pPlayer)
             r2 = Random2(30);
             if (i == 0)
                 SpawnBulletEject(pPlayer, r2, r1);
-            pPlayer->tiltEffect = 20;
-            pPlayer->visibility = 30;
-            if (i == 0)
-                UseAmmo(pPlayer, pPlayer->weaponAmmo, 1);
         }
+        UseAmmo(pPlayer, pPlayer->weaponAmmo, 1);
+        pPlayer->tiltEffect = 45;
+        pPlayer->visibility = 45;
     }
     else if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode()) && checkAmmo2(pPlayer, 3, 2))
     {
@@ -1764,21 +1784,39 @@ void FireNapalm(int nTrigger, PLAYER *pPlayer)
         offset = 50;
         break;
     }
-    playerFireMissile(pPlayer, offset, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
+    spritetype *pMissile = playerFireMissile(pPlayer, offset, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
     sfxPlay3DSound(pSprite, 480, 2, 0);
     UseAmmo(pPlayer, 4, 1);
     pPlayer->flashEffect = 1;
+    if (pMissile && gGameOptions.bNapalmFalloff && !VanillaMode()) // adjust projectile speed and pitch
+    {
+        const int nSprite = pMissile->index;
+        xvel[nSprite] += (xvel[nSprite]>>4) + (xvel[nSprite]>>5);
+        yvel[nSprite] += (yvel[nSprite]>>4) + (yvel[nSprite]>>5);
+        zvel[nSprite] -= 58254<<3;
+    }
 }
 
 void FireNapalm2(int nTrigger, PLAYER *pPlayer)
 {
     UNREFERENCED_PARAMETER(nTrigger);
     spritetype *pSprite = pPlayer->pSprite;
-    playerFireMissile(pPlayer, -120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
-    playerFireMissile(pPlayer, 120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
+    spritetype *pMissile1 = playerFireMissile(pPlayer, -120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
+    spritetype *pMissile2 = playerFireMissile(pPlayer, 120, pPlayer->aim.dx, pPlayer->aim.dy, pPlayer->aim.dz, kMissileFireballNapalm);
     sfxPlay3DSound(pSprite, 480, 2, 0);
     UseAmmo(pPlayer, 4, 2);
     pPlayer->flashEffect = 1;
+    if (pMissile1 && pMissile2 && gGameOptions.bNapalmFalloff && !VanillaMode()) // adjust projectile speed and pitch
+    {
+        int nSprite = pMissile1->index;
+        xvel[nSprite] += (xvel[nSprite]>>4) + (xvel[nSprite]>>5);
+        yvel[nSprite] += (yvel[nSprite]>>4) + (yvel[nSprite]>>5);
+        zvel[nSprite] -= 58254<<3;
+        nSprite = pMissile2->index;
+        xvel[nSprite] += (xvel[nSprite]>>4) + (xvel[nSprite]>>5);
+        yvel[nSprite] += (yvel[nSprite]>>4) + (yvel[nSprite]>>5);
+        zvel[nSprite] -= 58254<<3;
+    }
 }
 
 void AltFireNapalm(int nTrigger, PLAYER *pPlayer)
@@ -2904,9 +2942,12 @@ void WeaponProcess(PLAYER *pPlayer) {
             return;
         case kWeaponNapalm:
             if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode()))
-                // by NoOne: allow napalm launcher alt fire act like in v1.0x versions
-                if (WeaponsV10x() && !VanillaMode()) StartQAV(pPlayer, 123, nClientFireNapalm2, 0);
-                else StartQAV(pPlayer, 122, nClientAltFireNapalm, 0);
+            {
+                if (WeaponsV10x() && !VanillaMode()) // by NoOne: allow napalm launcher alt fire act like in v1.0x versions
+                    StartQAV(pPlayer, 123, nClientFireNapalm2, 0);
+                else
+                    StartQAV(pPlayer, 122, nClientAltFireNapalm, 0);
+            }
             else
                 StartQAV(pPlayer, 91, (WeaponsV10x() && !VanillaMode()) ? nClientFireNapalm : nClientAltFireNapalm, 0);
             return;

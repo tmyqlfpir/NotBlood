@@ -763,6 +763,8 @@ static int osdcmd_quicksave(osdcmdptr_t UNUSED(parm))
     UNREFERENCED_CONST_PARAMETER(parm);
     if (!gGameStarted || gDemo.bPlaying || gDemo.bRecording || gGameMenuMgr.m_bActive)
         OSD_Printf("quicksave: not in a game.\n");
+    else if (gGameOptions.bPermaDeath)
+        OSD_Printf("quicksave: in permadeath mode.\n");
     else gDoQuickSave = 1;
     return OSDCMD_OK;
 }
@@ -977,7 +979,7 @@ int32_t registerosdcommands(void)
     {
         { "crosshair", "enable/disable crosshair (0: off, 1: on, 2: on [autoaim])", (void *)&gAimReticle, CVAR_INT, 0, 2 },
 
-        { "cl_autoaim", "enable/disable weapon autoaim", (void *)&gAutoAim, CVAR_INT|CVAR_MULTI, 0, 2 },
+        { "cl_autoaim", "enable/disable weapon autoaim", (void *)&gAutoAim, CVAR_INT|CVAR_MULTI, 0, 3 },
 //        { "cl_automsg", "enable/disable automatically sending messages to all players", (void *)&ud.automsg, CVAR_BOOL, 0, 1 },
         { "cl_autorun", "enable/disable autorun", (void *)&gAutoRun, CVAR_BOOL, 0, 1 },
 //
@@ -1002,6 +1004,7 @@ int32_t registerosdcommands(void)
         { "cl_interpolateweapon", "enable/disable view interpolation for drawn weapon (0: disable, 1: position, 2: position/qav animation)", (void *)&gWeaponInterpolate, CVAR_INT, 0, 2 },
         { "cl_colormsg", "enable/disable colored player names in messages", (void *)&gColorMsg, CVAR_BOOL, 0, 1 },
         { "cl_killmsg", "enable/disable kill messages", (void *)&gKillMsg, CVAR_BOOL, 0, 1 },
+        { "cl_killobituaries", "enable/disable random obituary kill messages", (void *)&gKillObituary, CVAR_BOOL, 0, 1 },
         { "cl_multikill", "enable/disable multi kill messages (0: disable, 1: enable, 2: enable + audio alert)", (void *)&gMultiKill, CVAR_INT, 0, 2 },
         { "cl_viewhbob", "enable/disable view horizontal bobbing", (void *)&gViewHBobbing, CVAR_BOOL, 0, 1 },
         { "cl_viewvbob", "enable/disable view vertical bobbing", (void *)&gViewVBobbing, CVAR_BOOL, 0, 1 },
@@ -1010,13 +1013,14 @@ int32_t registerosdcommands(void)
         { "cl_slopecrosshair", "enable/disable adjusting crosshair position for slope tilting", (void *)&gSlopeReticle, CVAR_BOOL, 0, 1 },
         { "cl_showplayernames", "enable/disable showing player names in multiplayer when looking at other players", (void *)&gShowPlayerNames, CVAR_BOOL, 0, 1 },
         { "cl_showweapon", "enable/disable show weapons (0: disable, 1: sprite, 2: voxel)", (void *)&gShowWeapon, CVAR_INT, 0, 2 },
+        { "cl_showloadsavebackdrop", "enable/disable the menu backdrop for loading/saving game", (void *)&gShowLoadingSavingBackground, CVAR_BOOL, 0, 1 },
         { "cl_slowroomflicker", "enable/disable slowed flickering speed for sectors (such as E1M4's snake pit room)", (void *)&gSlowRoomFlicker, CVAR_BOOL, 0, 1 },
         { "cl_shadowsfake3d", "enable/disable 3d projection for fake sprite shadows", (void *)&gShadowsFake3D, CVAR_BOOL, 0, 1 },
         { "cl_smoketrail3d", "enable/disable 3d smoke trail positioning for tnt/spray can (single-player only)", (void *)&gSmokeTrail3D, CVAR_BOOL, 0, 1 },
         { "cl_hitscantransparent", "enable/disable transparent bullet sprites for hitscan projectiles option", (void *)&gTransparentHitscanProjectiles, CVAR_BOOL, 0, 1 },
         { "cl_particlesduration", "enable/disable extended particle duration modification (single-player only - turned off for modern maps)", (void *)&gParticlesDuration, CVAR_BOOL, 0, 1 },
-        { "cl_quickstart", "enable/disable quick start mode (start to menu on launch/disable demo playback)", (void *)&gQuickStart, CVAR_BOOL, 0, 1 },
 
+        { "cl_rollangle", "sets how much your screen tilts when strafing (polymost)", (void *)&gRollAngle, CVAR_INT, 0, 5 },
         { "cl_runmode", "enable/disable modernized run key operation", (void *)&gRunKeyMode, CVAR_BOOL, 0, 1 },
 //
 //        { "cl_showcoords", "show your position in the game world", (void *)&ud.coords, CVAR_INT, 0,
@@ -1053,7 +1057,9 @@ int32_t registerosdcommands(void)
 //        { "hud_althud", "enable/disable alternate mini-hud", (void *)&ud.althud, CVAR_BOOL, 0, 1 },
 //        { "hud_custom", "change the custom hud", (void *)&ud.statusbarcustom, CVAR_INT, 0, ud.statusbarrange },
 //        { "hud_position", "aligns the status bar to the bottom/top", (void *)&ud.hudontop, CVAR_BOOL, 0, 1 },
+        { "hud_bgnewborder", "enable/disable new hud bottom border background image (only for r_size 5)", (void *)&gHudBgNewBorder, CVAR_BOOL, 0, 1 },
         { "hud_bgscale", "enable/disable hud background image scaling for resolution", (void *)&gHudBgScale, CVAR_BOOL, 0, 1 },
+        { "hud_bgvanilla", "enable/disable hud vanilla background image override (0: default, 1: use new tile, 2: use original tile)", (void *)&gHudBgVanilla, CVAR_INT, 0, 2 },
 //        { "hud_bgstretch", "enable/disable background image stretching in wide resolutions", (void *)&ud.bgstretch, CVAR_BOOL, 0, 1 },
         { "hud_messages", "enable/disable showing messages", (void *)&gMessageState, CVAR_BOOL, 0, 1 },
 //        { "hud_messagetime", "length of time to display multiplayer chat messages", (void *)&ud.msgdisptime, CVAR_INT, 0, 3600 },
@@ -1065,11 +1071,13 @@ int32_t registerosdcommands(void)
 //        { "hud_scale","changes the hud scale", (void *)&ud.statusbarscale, CVAR_INT|CVAR_FUNCPTR, 36, 100 },
 //        { "hud_showmapname", "enable/disable map name display on load", (void *)&hud_showmapname, CVAR_BOOL, 0, 1 },
         { "hud_stats", "enable/disable level statistics display (0: off, 1: on [default], 2: on [4:3], 3: on [16:10], 4: on [16:9], 5: on [21:9])", (void *)&gLevelStats, CVAR_INT, 0, 5 },
+        { "hud_statsautomaponly", "enable/disable showing level statistics display only on map view", (void *)&gLevelStatsOnlyOnMap, CVAR_BOOL, 0, 1 },
         { "hud_ratio", "set aspect ratio screen position for hud (0: native, 1: 4:3, 2: 16:10, 3: 16:9, 3: 21:9)", (void*)&gHudRatio, CVAR_INT, 0, 4 },
         { "hud_powerupduration", "enable/disable displaying the remaining time for power-ups (0: off, 1: on [default], 2: on [4:3], 3: on [16:10], 4: on [16:9], 5: on [21:9])", (void *)&gPowerupDuration, CVAR_INT, 0, 5 },
         { "hud_powerupdurationticks", "set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)", (void *)&gPowerupTicks, CVAR_INT, 20, 240 },
+        { "hud_showendtime", "enable/disable displaying the level completion time on end screen", (void*)&gShowCompleteTime, CVAR_BOOL, 0, 1 },
         { "hud_showmaptitle", "enable/disable displaying the map title at the beginning of the maps", (void*)& gShowMapTitle, CVAR_BOOL, 0, 1 },
-        { "hud_showweaponselect", "enable/disable weapon select bar display. (0: none, 1: bottom, 2: top)", (void*)&gShowWeaponSelect, CVAR_INT, 0, 2 },
+        { "hud_showweaponselect", "enable/disable weapon select bar display (0: none, 1: bottom, 2: top)", (void*)&gShowWeaponSelect, CVAR_INT, 0, 2 },
         { "hud_showweaponselecttimestart", "length of time for selected weapon bar to appear", (void*)&gShowWeaponSelectTimeStart, CVAR_INT, 2, 25 },
         { "hud_showweaponselecttimehold", "length of time to display selected weapon bar", (void*)&gShowWeaponSelectTimeHold, CVAR_INT, 10, 100 },
         { "hud_showweaponselecttimeend", "length of time for selected weapon weapon bar to disappear", (void*)&gShowWeaponSelectTimeEnd, CVAR_INT, 2, 25 },
@@ -1085,6 +1093,7 @@ int32_t registerosdcommands(void)
 //
         { "horizcenter", "enable/disable centered horizon line", (void *)&gCenterHoriz, CVAR_BOOL, 0, 1 },
         { "deliriumblur", "enable/disable delirium blur effect(polymost)", (void *)&gDeliriumBlur, CVAR_BOOL, 0, 1 },
+        { "detail", "change the detail graphics setting (0-4)", (void *)&gDetail, CVAR_INT|CVAR_FUNCPTR, 0, 4 },
         { "fov", "change the field of view", (void *)&gFov, CVAR_INT|CVAR_FUNCPTR, 75, 140 },
         { "in_joystick","enables input from the joystick if it is present",(void *)&gSetup.usejoystick, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
         { "in_rumble","enables rumble for joystick if it is present",(void *)&gSetup.joystickrumble, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
@@ -1147,6 +1156,7 @@ int32_t registerosdcommands(void)
 //        { "snd_speech", "enables/disables player speech", (void *)&ud.config.VoiceToggle, CVAR_INT, 0, 5 },
 //
 //        { "team","change team in multiplayer", (void *)&ud.team, CVAR_INT|CVAR_MULTI, 0, 3 },
+        { "team", "set preferred team in multiplayer (0: none, 1: blue, 2: red)", (void *)&gPlayerTeamPreference, CVAR_INT, 0, 2 },
 //
 //#ifdef EDUKE32_TOUCH_DEVICES
 //        { "touch_sens_move_x","touch input sensitivity for moving forward/back", (void *)&droidinput.forward_sens, CVAR_FLOAT, 1, 9 },
@@ -1156,9 +1166,9 @@ int32_t registerosdcommands(void)
 //        { "touch_invert", "invert look up/down touch input", (void *) &droidinput.invertLook, CVAR_INT, 0, 1 },
 //#endif
 //
-        { "vid_gamma","adjusts gamma component of gamma ramp",(void *)&g_videoGamma, CVAR_FLOAT|CVAR_FUNCPTR, 0, 10 },
-        { "vid_contrast","adjusts contrast component of gamma ramp",(void *)&g_videoContrast, CVAR_FLOAT|CVAR_FUNCPTR, 0, 10 },
-        { "vid_brightness","adjusts brightness component of gamma ramp",(void *)&g_videoBrightness, CVAR_FLOAT|CVAR_FUNCPTR, 0, 10 },
+        { "vid_gamma","gamma/brightness correction",(void *) &g_videoGamma, CVAR_FLOAT|CVAR_FUNCPTR, (int)floor(MIN_GAMMA), (int)ceil(MAX_GAMMA) },
+        { "vid_contrast","contrast correction",(void *) &g_videoContrast, CVAR_FLOAT|CVAR_FUNCPTR, (int)floor(MIN_CONTRAST), (int)ceil(MAX_CONTRAST) },
+        { "vid_saturation","saturation correction",(void *) &g_videoSaturation, CVAR_FLOAT|CVAR_FUNCPTR, (int)floor(MIN_SATURATION), (int)ceil(MAX_SATURATION) },
 //        { "wchoice","sets weapon autoselection order", (void *)ud.wchoice, CVAR_STRING|CVAR_FUNCPTR, 0, MAX_WEAPONS },
     };
 //

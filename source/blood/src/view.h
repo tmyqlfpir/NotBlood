@@ -76,9 +76,6 @@ enum INTERPOLATE_TYPE {
 #define kLoadScreenWideRight 9218
 #define kLoadScreenWideMiddle 9219
 
-#define kMenuBackDim 2038
-#define kMenuBackDimCRC 652733431
-
 #define kSBarNumberHealth 9220
 #define kSBarNumberAmmo 9230
 #define kSBarNumberInv 9240
@@ -88,6 +85,8 @@ enum INTERPOLATE_TYPE {
 #define kSBarNegative 9280
 
 #define kFontNum 5
+
+#define kHudFullBackTile 9286
 
 struct FONT {
     int tile, xSize, ySize, space, yoff;
@@ -125,7 +124,6 @@ extern int32_t gShowFps, gFramePeriod;
 static inline double calcFrameDelay(unsigned int const maxFPS) { return maxFPS ? timerGetPerformanceFrequency() / (double)maxFPS : 0.0; }
 
 void viewGetFontInfo(int id, const char *unk1, int *pXSize, int *pYSize);
-void viewUpdatePages(void);
 void viewToggle(int viewMode);
 void viewInitializePrediction(void);
 void viewUpdatePrediction(GINPUT *pInput);

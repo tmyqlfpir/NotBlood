@@ -53,6 +53,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "messages.h"
 #ifdef NOONE_EXTENSIONS
 #include "nnexts.h"
+#include "nnextsif.h"
 #endif
 
 PLAYER gPlayer[kMaxPlayers];
@@ -606,7 +607,7 @@ void packPrevItem(PLAYER *pPlayer)
 {
     if (pPlayer->packItemTime > 0)
     {
-        for (int nPrev = ClipLow(pPlayer->packItemId-1,kPackMedKit); nPrev >= kPackMedKit; nPrev--)
+        for (int nPrev = ClipLow(pPlayer->packItemId-1,kPackBase); nPrev >= kPackBase; nPrev--)
         {
             if (pPlayer->packSlots[nPrev].curAmount)
             {
@@ -813,6 +814,33 @@ void playerResetPosture(PLAYER* pPlayer) {
         gCrouchToggleState = 0;
 }
 
+static void playerResetTeamId(int nPlayer, int bNewLevel)
+{
+    char buffer[80];
+    PLAYER* pPlayer = &gPlayer[nPlayer];
+    const int nOldTeamId = pPlayer->teamId;
+    pPlayer->teamId = nPlayer;
+
+    if (gGameOptions.nGameType == kGameTypeTeams)
+    {
+        if (gGameOptions.bAutoTeams || (gProfile[nPlayer].nTeamPreference == 0)) // game is set to auto teams/player team preference is set to none
+            pPlayer->teamId = nPlayer&1;
+        else
+            pPlayer->teamId = gProfile[nPlayer].nTeamPreference-1; // set to player team preference
+
+        if (!bNewLevel && (pPlayer->teamId != nOldTeamId)) // if player changed teams during mid-match, reset co-op camera and print message
+        {
+            gViewIndex = myconnectindex;
+            gView = &gPlayer[myconnectindex];
+
+            const int nPalPlayer = gColorMsg && !VanillaMode() ? playerColorPalMessage(nOldTeamId) : 0;
+            const int nPalTeam = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
+            sprintf(buffer, "\r%s\r switched to \r%s\r", gProfile[nPlayer].name, (pPlayer->teamId&1) == 1 ? "Red Team" : "Blue Team");
+            viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPalPlayer, nPalTeam);
+        }
+    }
+}
+
 const int nZoneRandList[kMaxPlayers][kMaxPlayers] = {
     {0, 7, 6, 5, 4, 3, 2, 1},
     {1, 2, 3, 4, 5, 6, 7, 0},
@@ -836,10 +864,12 @@ void playerStart(int nPlayer, int bNewLevel)
     if ((numplayers > 1) && (gGameOptions.nGameType != kGameTypeSinglePlayer))
         gProfile[nPlayer] = gProfileNet[nPlayer];
 
+    playerResetTeamId(nPlayer, bNewLevel);
+
     // normal start position
     if (gGameOptions.nGameType <= kGameTypeCoop)
         pStartZone = &gStartZone[nPlayer];
-    
+
     #ifdef NOONE_EXTENSIONS
     // let's check if there is positions of teams is specified
     // if no, pick position randomly, just like it works in vanilla.
@@ -967,8 +997,10 @@ void playerStart(int nPlayer, int bNewLevel)
     pPlayer->aimTarget = -1;
     pPlayer->zViewVel = pPlayer->zWeaponVel;
     if (!(gGameOptions.nGameType == kGameTypeCoop && gGameOptions.nKeySettings && !bNewLevel))
+    {
         for (int i = 0; i < 8; i++)
             pPlayer->hasKey[i] = gGameOptions.nGameType >= kGameTypeBloodBath;
+    }
     pPlayer->hasFlag = 0;
     for (int i = 0; i < 8; i++)
         pPlayer->used2[i] = -1;
@@ -1005,18 +1037,19 @@ void playerStart(int nPlayer, int bNewLevel)
     playerQavSceneReset(pPlayer); // reset qav scene
     
     // assign or update player's sprite index for conditions
-    if (gModernMap) {
-
-        for (int nSprite = headspritestat[kStatModernPlayerLinker]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
+    if (gModernMap)
+    {
+        for (int nSprite = headspritestat[kStatModernPlayerLinker]; nSprite >= 0; nSprite = nextspritestat[nSprite])
+        {
             XSPRITE* pXCtrl = &xsprite[sprite[nSprite].extra];
-            if (pXCtrl->data1 == pPlayer->nPlayer + 1) {
+            if (!pXCtrl->data1 || pXCtrl->data1 == pPlayer->nPlayer + 1)
+            {
                 int nSpriteOld = pXCtrl->sysData1;
                 trPlayerCtrlLink(pXCtrl, pPlayer, (nSpriteOld < 0) ? true : false);
                 if (nSpriteOld > 0)
-                    condUpdateObjectIndex(OBJ_SPRITE, nSpriteOld, pXCtrl->sysData1);
+                    conditionsUpdateIndex(OBJ_SPRITE, nSpriteOld, pXCtrl->sysData1);
             }
         }
-
     }
 
     #endif
@@ -1121,9 +1154,7 @@ void playerInit(int nPlayer, unsigned int a2)
     if (!(a2&1))
         memset((void *)pPlayer, 0, sizeof(PLAYER));
     pPlayer->nPlayer = nPlayer;
-    pPlayer->teamId = nPlayer;
-    if (gGameOptions.nGameType == kGameTypeTeams)
-        pPlayer->teamId = nPlayer&1;
+    playerResetTeamId(nPlayer, 1);
     playerResetScores(nPlayer);
 
     if (!(a2&1))
@@ -1343,7 +1374,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                     gPlayer[i].hasKey[pItem->type-99] = 1;
                 }
                 if (pPlayer != gMe) { // display message if network player collected key
-                    sprintf(buffer, "%s picked up %s", gProfile[pPlayer->nPlayer].name, gItemText[pItem->type - kItemBase]);            
+                    sprintf(buffer, "%s picked up %s", gProfile[pPlayer->nPlayer].name, gItemText[pItem->type - kItemBase]);
                     viewSetMessage(buffer, 0, MESSAGE_PRIORITY_PICKUP);
                 }
             }
@@ -1478,6 +1509,7 @@ void PickUp(PLAYER *pPlayer, spritetype *pSprite)
 
     pPlayer->pickupEffect = 30;
     if (pPlayer == gMe) {
+        if ((nType == kItemShroomDelirium) && (pSprite->cstat&CSTAT_SPRITE_INVISIBLE) && !VanillaMode()) return; // do not print text for invisible delirium shrooms
         if (customMsg > 0) trTextOver(customMsg - 1);
         else viewSetMessage(buffer, 0, MESSAGE_PRIORITY_PICKUP);
     }
@@ -1656,9 +1688,11 @@ void ProcessInput(PLAYER *pPlayer)
                     if (gDemo.bRecording)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
-                    return; // return so ProcessFrame() can restart single-player
+                    if (gRestoreLastSave || gGameOptions.bPermaDeath)
+                        return; // return so ProcessFrame() can restart single-player
                 }
-                playerStart(pPlayer->nPlayer);
+                else
+                    playerStart(pPlayer->nPlayer);
             }
             pInput->keyFlags.useItem = 0;
             pInput->keyFlags.action = 0;
@@ -1930,12 +1964,12 @@ void ProcessInput(PLAYER *pPlayer)
         if (nSector2 == nSector)
         {
             int z2 = getflorzofslope(nSector2, x2, y2);
-            pPlayer->q16slopehoriz = interpolate(pPlayer->q16slopehoriz, fix16_from_int(z1-z2)>>3, 0x4000);
+            pPlayer->q16slopehoriz = interpolate(pPlayer->q16slopehoriz, fix16_from_int(z1-z2)>>3, 0x4000, 1);
         }
     }
     else
     {
-        pPlayer->q16slopehoriz = interpolate(pPlayer->q16slopehoriz, F16(0), 0x4000);
+        pPlayer->q16slopehoriz = interpolate(pPlayer->q16slopehoriz, F16(0), 0x4000, 1);
         if (klabs(pPlayer->q16slopehoriz) < 4)
             pPlayer->q16slopehoriz = 0;
     }
@@ -2023,14 +2057,14 @@ void playerProcess(PLAYER *pPlayer)
     }
     ProcessInput(pPlayer);
     int nSpeed = approxDist(xvel[nSprite], yvel[nSprite]);
-    pPlayer->zViewVel = interpolate(pPlayer->zViewVel, zvel[nSprite], 0x7000);
+    pPlayer->zViewVel = interpolate(pPlayer->zViewVel, zvel[nSprite], 0x7000, 1);
     int dz = pPlayer->pSprite->z-pPosture->eyeAboveZ-pPlayer->zView;
     if (dz > 0)
         pPlayer->zViewVel += mulscale16(dz<<8, 0xa000);
     else
         pPlayer->zViewVel += mulscale16(dz<<8, 0x1800);
     pPlayer->zView += pPlayer->zViewVel>>8;
-    pPlayer->zWeaponVel = interpolate(pPlayer->zWeaponVel, zvel[nSprite], 0x5000);
+    pPlayer->zWeaponVel = interpolate(pPlayer->zWeaponVel, zvel[nSprite], 0x5000, 1);
     dz = pPlayer->pSprite->z-pPosture->weaponAboveZ-pPlayer->zWeapon;
     if (dz > 0)
         pPlayer->zWeaponVel += mulscale16(dz<<8, 0x8000);
@@ -2163,7 +2197,9 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         }
         if (gGameOptions.nGameType == kGameTypeTeams)
             gPlayerScores[pKiller->teamId]--;
-        const int nMessage = Random(5);
+        int nMessage = Random(5);
+        if (!gKillObituary) // always use generic suicide message instead of obituary
+            nMessage = 4;
         const int nSound = !bKillingSpreeStopped ? gSuicide[nMessage].nSound : gKillingSpreeSuicide.nSound;
         const char* pzMessage = !bKillingSpreeStopped ? gSuicide[nMessage].pzMessage : gKillingSpreeSuicide.pzMessage;
         if (gMe->handTime <= 0)
@@ -2172,7 +2208,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
                 sprintf(buffer, pzMessage, gProfile[nKiller].name);
             else if (pKiller == gMe)
                 sprintf(buffer, "You killed yourself!");
-            if (gGameOptions.nGameType != kGameTypeSinglePlayer && nSound >= 0 && pKiller == gMe)
+            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && (nSound >= 0) && (pKiller == gMe) && gKillObituary)
                 sndStartSample(nSound, 255, 2, 0);
         }
     }
@@ -2235,11 +2271,13 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
             }
             gMultiKillsTicks[nKiller] = gFrameClock;
         }
-        const int nMessage = Random(25);
+        int nMessage = Random(25);
+        if (!gKillObituary) // always use generic kill message instead of obituary
+            nMessage = 10;
         const int nSound = !bKillingSpreeStopped ? gVictory[nMessage].nSound : gKillingSpreeFrag.nSound;
         const char* pzMessage = !bKillingSpreeStopped ? gVictory[nMessage].pzMessage : gKillingSpreeFrag.pzMessage;
         sprintf(buffer, pzMessage, gProfile[nKiller].name, gProfile[nVictim].name);
-        if (gGameOptions.nGameType != kGameTypeSinglePlayer && nSound >= 0 && pKiller == gMe)
+        if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && (nSound >= 0) && (pKiller == gMe) && gKillObituary)
             sndStartSample(nSound, 255, 2, 0);
     }
     int nPal1 = 0, nPal2 = 0;
@@ -2500,10 +2538,12 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         FragPlayer(pPlayer, nSource);
         trTriggerSprite(nSprite, pXSprite, kCmdOff, nSource);
 
-        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !VanillaMode(true)) // if died in single-player and not playing demo
+        if (gGameOptions.bPermaDeath && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording)
+            viewSetMessage("game over. press \"use\" or \"enter\" to quit");
+        else if (gRestoreLastSave && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording) // if died in single-player and not playing demo
         {
             extern short gQuickLoadSlot; // from menu.h
-            bool bAutosavedInSession = gAutosaveInCurLevel;
+            char bAutosavedInSession = gAutosaveInCurLevel;
             if (!bAutosavedInSession) // if player has not triggered autosave in current level, check if last manual save/load was in current level
                 bAutosavedInSession = LoadSavedInCurrentSession(gQuickLoadSlot) || LoadSavedInCurrentSession(kLoadSaveSlotQuick);
             if (bAutosavedInSession)
@@ -2621,8 +2661,9 @@ void PlayerSurvive(int, int nXSprite)
                 viewSetMessage("I LIVE...AGAIN!!");
             else
             {
-                sprintf(buffer, "%s lives again!", gProfile[pPlayer->nPlayer].name);
-                viewSetMessage(buffer);
+                int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
+                sprintf(buffer, "\r%s\r lives again!", gProfile[pPlayer->nPlayer].name);
+                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 0);
             }
             pPlayer->input.newWeapon = kWeaponPitchfork;
         }

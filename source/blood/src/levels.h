@@ -58,6 +58,7 @@ struct GAMEOPTIONS {
     bool bDamageInvul;
     int nExplosionBehavior;
     int nProjectileBehavior;
+    bool bNapalmFalloff;
     bool bEnemyBehavior;
     bool bEnemyRandomTNT;
     int nWeaponsVer;
@@ -69,9 +70,12 @@ struct GAMEOPTIONS {
     int nEnemyQuantity;
     int nEnemyHealth;
     int nEnemySpeed;
+    bool bEnemyShuffle;
     bool bPitchforkOnly;
+    bool bPermaDeath;
     bool bFriendlyFire;
     char nKeySettings;
+    char bAutoTeams;
     char nSpawnProtection;
     char nSpawnWeapon;
     unsigned int uSpriteBannedFlags;

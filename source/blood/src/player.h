@@ -56,7 +56,8 @@ enum
 // inventory pack
 enum
 {
-    kPackMedKit      = 0,
+    kPackBase        = 0,
+    kPackMedKit      = kPackBase,
     kPackDivingSuit  = 1,
     kPackCrystalBall = 2,
     kPackBeastVision = 3,
@@ -183,7 +184,7 @@ struct PLAYER
     int                 deathTime;
     int                 pwUpTime[kMaxPowerUps];
     int                 fragCount;
-    int                 fragInfo[8];
+    int                 fragInfo[kMaxPlayers];
     int                 teamId;
     int                 fraggerId;
     int                 underwaterTime;
@@ -234,6 +235,7 @@ struct PROFILE
     int nWeaponSwitch;
     int bWeaponFastSwitch;
     int skill;
+    int nTeamPreference;
     int nWeaponHBobbing;
     char name[MAXPLAYERNAME];
 };

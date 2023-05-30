@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <stdlib.h>
 #include <string.h>
 
+#include <cfloat>
+
 #include "compat.h"
 #include "a.h"
 #include "build.h"
@@ -112,7 +114,6 @@ struct INTERPOLATE {
     INTERPOLATE_TYPE type;
 };
 
-int pcBackground;
 int gViewMode = 3;
 int gViewSize = 2;
 
@@ -140,14 +141,13 @@ int gViewXCenter, gViewYCenter;
 int gViewX0, gViewY0, gViewX1, gViewY1;
 int gViewX0S, gViewY0S, gViewX1S, gViewY1S;
 int xscale, xscalecorrect, yscale, xstep, ystep;
-int xscalehud = 0, xscalestats = 0, xscalepowerups = 0, xscalectfhud = 0;
+int xscalehud = 0, xscalestats = 0, yscalestats = 0, xscalepowerups = 0, xscalectfhud = 0;
 
 int gScreenTilt;
 
 CGameMessageMgr gGameMessageMgr;
 
 bool bLoadScreenCrcMatch = false;
-bool bMenuBackDimCrcMatch = false;
 
 void RotateYZ(int *pX, int *pY, int *pZ, int ang)
 {
@@ -278,11 +278,6 @@ void viewGetFontInfo(int id, const char *unk1, int *pXSize, int *pYSize)
         if (pYSize)
             *pYSize = pFont->ySize;
     }
-}
-
-void viewUpdatePages(void)
-{
-    pcBackground = numpages;
 }
 
 void viewToggle(int viewMode)
@@ -546,12 +541,12 @@ void fakeProcessInput(PLAYER *pPlayer, GINPUT *pInput)
         if (nSector2 == nSector)
         {
             int z2 = getflorzofslope(nSector2, x2, y2);
-            predict.at28 = interpolate(predict.at28, fix16_from_int(z1-z2)>>3, 0x4000);
+            predict.at28 = interpolate(predict.at28, fix16_from_int(z1-z2)>>3, 0x4000, 1);
         }
     }
     else
     {
-        predict.at28 = interpolate(predict.at28, 0, 0x4000);
+        predict.at28 = interpolate(predict.at28, 0, 0x4000, 1);
         if (klabs(predict.at28) < 4)
             predict.at28 = 0;
     }
@@ -585,7 +580,7 @@ void fakePlayerProcess(PLAYER *pPlayer, GINPUT *pInput)
 
     int nSpeed = approxDist(predict.at5c, predict.at60);
 
-    predict.at3c = interpolate(predict.at3c, predict.at64, 0x7000);
+    predict.at3c = interpolate(predict.at3c, predict.at64, 0x7000, 1);
     int dz = predict.at58-pPosture->eyeAboveZ-predict.at38;
     if (dz > 0)
         predict.at3c += mulscale16(dz<<8, 0xa000);
@@ -593,7 +588,7 @@ void fakePlayerProcess(PLAYER *pPlayer, GINPUT *pInput)
         predict.at3c += mulscale16(dz<<8, 0x1800);
     predict.at38 += predict.at3c>>8;
 
-    predict.at44 = interpolate(predict.at44, predict.at64, 0x5000);
+    predict.at44 = interpolate(predict.at44, predict.at64, 0x5000, 1);
     dz = predict.at58-pPosture->weaponAboveZ-predict.at40;
     if (dz > 0)
         predict.at44 += mulscale16(dz<<8, 0x8000);
@@ -966,6 +961,8 @@ void viewBackupView(int nPlayer)
     pView->at30 = pPlayer->q16ang;
     pView->at50 = pPlayer->pSprite->x;
     pView->at54 = pPlayer->pSprite->y;
+    pView->at5c = xvel[pPlayer->pSprite->index];
+    pView->at60 = yvel[pPlayer->pSprite->index];
     pView->at38 = pPlayer->zView;
     pView->at34 = pPlayer->zWeapon-pPlayer->zView-0xc00;
     pView->at24 = pPlayer->q16horiz;
@@ -1006,7 +1003,7 @@ void viewAddInterpolation(void *data, INTERPOLATE_TYPE type)
     {
         ThrowError("Too many interpolations");
     }
-    else if (!bInterpWarnVanilla && VanillaMode() && (nInterpolations >= kMaxInterpolationsVanilla))
+    else if (!bInterpWarnVanilla && (nInterpolations >= kMaxInterpolationsVanilla) && VanillaMode())
     {
         OSD_Printf("Warning: Interpolations over vanilla limit (%d/%d)\n", nInterpolations, kMaxInterpolationsVanilla);
         bInterpWarnVanilla = 1;
@@ -1294,6 +1291,23 @@ struct WEAPONICON {
 WEAPONICON gWeaponIcon[] = {
     { -1, 0 },
     { -1, 0 }, // 1: pitchfork
+    { 524, 4 }, // 2: flare gun
+    { 559, 7 }, // 3: shotgun
+    { 558, 5 }, // 4: tommy gun
+    { 526, 11 }, // 5: napalm launcher
+    { 589, 7 }, // 6: dynamite
+    { 618, 6 }, // 7: spray can
+    { 539, 11 }, // 8: tesla gun
+    { 800, 0 }, // 9: life leech
+    { 525, 13 }, // 10: voodoo doll
+    { 811, 7 }, // 11: proxy bomb
+    { 810, 7 }, // 12: remote bomb
+    { -1, 0 },
+};
+
+WEAPONICON gWeaponIconVoxel[] = {
+    { -1, 0 },
+    { -1, 0 }, // 1: pitchfork
     { 524, 6 }, // 2: flare gun
     { 559, 6 }, // 3: shotgun
     { 558, 8 }, // 4: tommy gun
@@ -1308,21 +1322,22 @@ WEAPONICON gWeaponIcon[] = {
     { -1, 0 },
 };
 
-int dword_14C508;
-
 void viewDrawStats(PLAYER *pPlayer, int x, int y)
 {
-    COLORSTR colorStr;
+    UNREFERENCED_PARAMETER(pPlayer);
+    COLORSTR colorStr, colorStrKills, colorStrSecrets;
     const int nFont = 3;
     char buffer[128];
-    if (!gLevelStats)
+    if (!gLevelStats || (gLevelStatsOnlyOnMap && (gViewMode == 3)))
         return;
 
     colorStr.nPal1 = 2; // set text group palette
-    colorStr.nPal2 = 0;
+    colorStr.nPal2 = 8; // 8: gold
     colorStr.nColor1[0] = 0; // color first two characters of stat string
     colorStr.nColor1[1] = 2;
-    colorStr.nColor2[0] = colorStr.nColor2[1] = -1;
+    colorStr.nColor2[0] = colorStr.nColor2[1] = -1; // unused
+    colorStrKills = colorStrSecrets = colorStr;
+
     int nHeight;
     viewGetFontInfo(nFont, NULL, NULL, &nHeight);
     sprintf(buffer, "T:%d:%02d.%02d",
@@ -1331,15 +1346,30 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
         ((gLevelTime%kTicsPerSec)*33)/10
         );
     viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
-    y += nHeight+1;
-    if (gGameOptions.nGameType != kGameTypeTeams)
+    if ((gGameOptions.nMonsterSettings > 0) && (max(gKillMgr.at4, gKillMgr.at0) > 0))
+    {
+        y += nHeight+1;
         sprintf(buffer, "K:%d/%d", gKillMgr.at4, max(gKillMgr.at4, gKillMgr.at0));
+        if (gKillMgr.at0 && (gKillMgr.at4 >= gKillMgr.at0)) // if killed all enemies in level, set counter to gold
+            colorStrKills.nColor2[0] = 2; // set valid start position for gold color
+        viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrKills);
+    }
+#if 0
     else
+    {
+        y += nHeight+1;
         sprintf(buffer, "K:%d", pPlayer->fragCount);
-    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
-    y += nHeight+1;
-    sprintf(buffer, "S:%d/%d", gSecretMgr.nNormalSecretsFound, max(gSecretMgr.nNormalSecretsFound, gSecretMgr.nAllSecrets)); // if we found more than there are, increase the total - some levels have a bugged counter
-    viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
+        viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrKills);
+    }
+#endif
+    if (gGameOptions.nGameType <= kGameTypeCoop) // only show secrets counter for single-player/co-op mode
+    {
+        y += nHeight+1;
+        sprintf(buffer, "S:%d/%d", gSecretMgr.nNormalSecretsFound, max(gSecretMgr.nNormalSecretsFound, gSecretMgr.nAllSecrets)); // if we found more than there are, increase the total - some levels have a bugged counter
+        if (gSecretMgr.nAllSecrets && (gSecretMgr.nNormalSecretsFound >= gSecretMgr.nAllSecrets)) // if all secrets found, set counter to gold
+            colorStrSecrets.nColor2[0] = 2; // set valid start position for gold color
+        viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrSecrets);
+    }
 }
 
 struct POWERUPDISPLAY
@@ -1682,11 +1712,6 @@ void viewDrawPack(PLAYER *pPlayer, int x, int y)
             x += tilesiz[gPackIcons[nPack]].x + 1;
         }
     }
-    if (pPlayer->packItemTime != dword_14C508)
-    {
-        viewUpdatePages();
-    }
-    dword_14C508 = pPlayer->packItemTime;
 }
 
 void DrawPackItemInStatusBar(PLAYER *pPlayer, int x, int y, int x2, int y2, int nStat)
@@ -1985,13 +2010,12 @@ void UpdateStatusBar(ClockTicks arg)
 
     const int nPalette = playerColorPalHud(pPlayer->teamId);
     int nThrowPower = pPlayer->throwPower;
-    const char bVanilla = VanillaMode();
-    if (!bVanilla && gViewInterpolate && (pPlayer->throwPower > 0) && (pPlayer->throwPower > pPlayer->throwPowerOld))
+    if (!VanillaMode() && gViewInterpolate && (pPlayer->throwPower > 0) && (pPlayer->throwPower > pPlayer->throwPowerOld))
         nThrowPower = interpolate(pPlayer->throwPowerOld, pPlayer->throwPower, gInterpolate);
 
     if (gViewSize < 0) return;
 
-    char bDrawWeaponHud = gShowWeaponSelect && !bVanilla;
+    char bDrawWeaponHud = gShowWeaponSelect && !VanillaMode();
     if (bDrawWeaponHud && (gViewSize > 3)) // if hud size above 3, draw weapon select bar behind hud
     {
         viewDrawWeaponSelect(pPlayer, pXSprite);
@@ -2208,7 +2232,7 @@ void UpdateStatusBar(ClockTicks arg)
             TileHGauge(2208, 44, 190, pPlayer->armor[2], 3200);
             DrawStatNumber("%3d", pPlayer->armor[2]>>4, 2230, 50, 193, 0, 0);
         }
-        sprintf(gTempStr, "v%s", bVanilla ? "1.21" : GetVersionString());
+        sprintf(gTempStr, "v%s", VanillaMode() ? "1.21" : GetVersionString());
         viewDrawText(3, gTempStr, 20, 191, 32, 0, 1, 0);
 
         for (int i = 0; i < 6; i++)
@@ -2227,7 +2251,7 @@ void UpdateStatusBar(ClockTicks arg)
         {
             TileHGauge(2260, 124, 175, nThrowPower, 65536);
         }
-        viewDrawStats(pPlayer, 2-xscalestats, 140);
+        viewDrawStats(pPlayer, 2-xscalestats, 140-yscalestats);
         viewDrawPowerUps(pPlayer);
     }
 
@@ -2236,7 +2260,7 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gGameOptions.nGameType == kGameTypeSinglePlayer) return;
 
-    if (gGameOptions.nGameType >= kGameTypeTeams)
+    if (gGameOptions.nGameType >= kGameTypeBloodBath)
     {
         viewDrawKillMsg(arg);
         viewDrawMultiKill(arg);
@@ -2244,7 +2268,7 @@ void UpdateStatusBar(ClockTicks arg)
 
     if (gGameOptions.nGameType == kGameTypeTeams)
     {
-        if (bVanilla)
+        if (VanillaMode())
         {
             viewDrawCtfHudVanilla(arg);
         }
@@ -2276,6 +2300,7 @@ void viewPrecacheTiles(void)
     tilePrecacheTile(2578, 0);
     tilePrecacheTile(2586, 0);
     tilePrecacheTile(2602, 0);
+    tilePrecacheTile(kHudFullBackTile, 0);
     for (int i = 0; i < 10; i++)
     {
         tilePrecacheTile(2190 + i, 0);
@@ -2332,7 +2357,7 @@ void viewInit(void)
         lensTable[i] = B_LITTLE32(lensTable[i]);
     }
 #endif
-    char *data = tileAllocTile(4077, kLensSize, kLensSize, 0, 0);
+    char *data = tileAllocTile(LENSBUFFER, kLensSize, kLensSize, 0, 0);
     memset(data, 255, kLensSize*kLensSize);
     gGameMessageMgr.SetState(gMessageState);
     gGameMessageMgr.SetCoordinates(1, 1);
@@ -2352,12 +2377,11 @@ void viewInit(void)
         dword_172CE0[i][1] = mulscale16(wrand(), 2048);
         dword_172CE0[i][2] = mulscale16(wrand(), 2048);
     }
-    gViewMap.sub_25C38(0, 0, gZoom, 0, gFollowMap);
+    gViewMap.Init(0, 0, gZoom, 0, gFollowMap);
 
     g_frameDelay = calcFrameDelay(r_maxfps);
 
     bLoadScreenCrcMatch = tileGetCRC32(kLoadScreen) == kLoadScreenCRC;
-    bMenuBackDimCrcMatch = tileGetCRC32(kMenuBackDim) == kMenuBackDimCRC;
 }
 
 inline int viewCalculateOffetRatio(int nRatio)
@@ -2375,14 +2399,25 @@ inline int viewCalculateOffetRatio(int nRatio)
 
 void viewUpdateHudRatio(void)
 {
-    xscalehud = xscalestats = xscalepowerups = 0;
+    const char bFullHud = (gViewSize > 3);
+    xscalehud = xscalestats = yscalestats = xscalepowerups = 0;
+
     if (gHudRatio > 0)
-       xscalehud = viewCalculateOffetRatio(gHudRatio-1);
+        xscalehud = viewCalculateOffetRatio(gHudRatio-1);
     if (gLevelStats > 1)
-       xscalestats = viewCalculateOffetRatio(gLevelStats-2);
+        xscalestats = viewCalculateOffetRatio(gLevelStats-2);
+    if (gLevelStats && bFullHud) // calculate level stats y position for full hud
+    {
+        const int kScreenRatio = scale(320, xscale, yscale);
+        if ((gLevelStats == 2) || (kScreenRatio <= 300)) // adjust level stats y pos when resolution ratio is less than 16:10
+            yscalestats = 30;
+        else if ((gLevelStats == 3) || (kScreenRatio <= 330)) // adjust level stats y pos when resolution ratio is less than 16:10
+            yscalestats = 10;
+    }
     if (gPowerupDuration > 1)
-       xscalepowerups = viewCalculateOffetRatio(gPowerupDuration-2);
-    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = (gViewSize < 6) ? xscalehud : 0;
+        xscalepowerups = viewCalculateOffetRatio(gPowerupDuration-2);
+
+    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = gViewMap.xoffset = (gViewSize < 6) ? xscalehud : 0;
 
     if (gPowerupDuration)
         xscalectfhud = xscalepowerups;
@@ -2390,6 +2425,17 @@ void viewUpdateHudRatio(void)
         xscalectfhud = xscalestats;
     else
         xscalectfhud = xscalehud;
+}
+
+void viewUpdateSkyRatio(void)
+{
+    psky_t *pSky = tileSetupSky(0);
+    if (!pSky)
+        return;
+    if (gFov >= 90)
+        pSky->yscale = divscale16(mulscale16(fix16_from_float(1), fix16_from_float(float(gFov)/90.f)), yxaspect);
+    else
+        pSky->yscale = 65536;
 }
 
 void viewResizeView(int size)
@@ -2453,7 +2499,7 @@ void viewResizeView(int size)
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     viewSetRenderScale(0);
     viewUpdateHudRatio();
-    viewUpdatePages();
+    viewUpdateSkyRatio();
 }
 
 #define kBackTile 253
@@ -2461,11 +2507,25 @@ void viewResizeView(int size)
 
 void UpdateFrame(void)
 {
-    const int nPalette = !VanillaMode() ? playerColorPalHud(gView->teamId) : 0;
+    const char bOrigTile = !gHudBgVanilla ? VanillaMode() : (gHudBgVanilla == 2);
+    const int nPalette = !bOrigTile ? playerColorPalHud(gView->teamId) : 0;
+    const char bDrawNewBottomBorder = gHudBgNewBorder && (gViewSize == 5);
 
-    const int nTile = !VanillaMode() ? kBackTile : kBackTileVanilla;
+    if (bDrawNewBottomBorder)
+    {
+        const int nTile = kHudFullBackTile;
+        const int nHalfScreen = klabs(gViewX1S-gViewX0S)>>1;
+        for (int i = 0; i <= nHalfScreen; i += (int)tilesiz[nTile].x) // extend new bottom border across screen
+        {
+            DrawStatMaskedSprite(nTile, -i, 172, 16, nPalette); // left side
+            DrawStatMaskedSprite(nTile, i+320, 172, 16, nPalette); // right side
+        }
+    }
+
+    const int nTile = !bOrigTile ? kBackTile : kBackTileVanilla;
     int nScale = 65536;
     int nWidth = 0, nHeight = 0;
+
     if (gHudBgScale) // scale background tiles to match hud pixel density scale
     {
         nWidth = tilesiz[nTile].x;
@@ -2482,29 +2542,33 @@ void UpdateFrame(void)
     }
 
     viewTileSprite(nTile, 0, nPalette, 0, 0, xdim, gViewY0-3, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 0, nPalette, 0, gViewY1+4, xdim, ydim, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 0, nPalette, 0, gViewY0-3, gViewX0-3, gViewY1+4, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 0, nPalette, gViewX1+4, gViewY0-3, xdim, gViewY1+4, nWidth, nHeight, nScale);
+    if (!bDrawNewBottomBorder) // don't render rest of border tiles for full hud mode
+    {
+        viewTileSprite(nTile, 0, nPalette, 0, gViewY1+4, xdim, ydim, nWidth, nHeight, nScale);
+        viewTileSprite(nTile, 0, nPalette, 0, gViewY0-3, gViewX0-3, gViewY1+4, nWidth, nHeight, nScale);
+        viewTileSprite(nTile, 0, nPalette, gViewX1+4, gViewY0-3, xdim, gViewY1+4, nWidth, nHeight, nScale);
+    }
 
-    viewTileSprite(nTile, 20, nPalette, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1, nWidth, nHeight, nScale);
     viewTileSprite(nTile, 20, nPalette, gViewX0, gViewY0-3, gViewX1+4, gViewY0, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4, nWidth, nHeight, nScale);
-    viewTileSprite(nTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4, nWidth, nHeight, nScale);
+    if (!bDrawNewBottomBorder) // don't render rest of border tiles for full hud mode
+    {
+        viewTileSprite(nTile, 20, nPalette, gViewX0-3, gViewY0-3, gViewX0, gViewY1+1, nWidth, nHeight, nScale);
+        viewTileSprite(nTile, 10, nPalette+1, gViewX1+1, gViewY0, gViewX1+4, gViewY1+4, nWidth, nHeight, nScale);
+        viewTileSprite(nTile, 10, nPalette+1, gViewX0-3, gViewY1+1, gViewX1+1, gViewY1+4, nWidth, nHeight, nScale);
+    }
 }
 
 void viewDimScreen(void)
 {
-    if (bMenuBackDimCrcMatch && (gGameMenuMgr.pActiveMenu != &menuOptionsDisplayColor)) // if current menu is not on color correction menu, dim screen
-        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(128),0,kMenuBackDim,0,0,RS_STRETCH,192); // stretch black menu tile across entire screen
+    const int shadow_pal = 5;
+    if (gGameMenuMgr.pActiveMenu != &menuOptionsDisplayColor) // if current menu is not on color correction menu, dim screen
+        rotatesprite_fs_alpha(fix16_from_int(320<<1),fix16_from_int(220<<1),fix16_from_int(127),0,0,127,shadow_pal,RS_STRETCH|RS_NOCLIP,192); // stretch tile across entire screen
 }
 
 void viewDrawInterface(ClockTicks arg)
 {
-    if (gViewMode == 3 && ((gViewSize >= 4) || (gViewSize <= 3 && gGameOptions.nGameType != kGameTypeSinglePlayer)))
-    {
+    if ((gViewMode == 3) && ((gViewSize > 4) || (gViewSize <= 4 && gGameOptions.nGameType != kGameTypeSinglePlayer)))
         UpdateFrame();
-        pcBackground--;
-    }
     UpdateStatusBar(arg);
 }
 
@@ -2803,20 +2867,32 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         if (!pNSprite)
             break;
         pNSprite->z = getflorzofslope(pTSprite->sectnum, pNSprite->x, pNSprite->y);
-        if ((sector[pNSprite->sectnum].floorpicnum >= 4080) && (sector[pNSprite->sectnum].floorpicnum <= 4095) && gGameOptions.bSectorBehavior && !VanillaMode()) // if floor has ror, find actual floor
+        if (gGameOptions.bSectorBehavior && !VanillaMode()) // support better floor detection for shadows (detect fake floors/allows ROR traversal)
         {
-            int cX = pNSprite->x, cY = pNSprite->y, cZ = pNSprite->z, cZrel = pNSprite->z, nSectnum = pNSprite->sectnum;
-            for (int i = 0; i < 16; i++) // scan through max stacked sectors
+            int ceilZ, ceilHit, floorZ, floorHit;
+            GetZRangeAtXYZ(pTSprite->x, pTSprite->y, pTSprite->z, pTSprite->sectnum, &ceilZ, &ceilHit, &floorZ, &floorHit, pTSprite->clipdist<<2, CLIPMASK0, PARALLAXCLIP_CEILING|PARALLAXCLIP_FLOOR);
+            if (((floorHit&0xc000) == 0xc000) && spriRangeIsFine(floorHit&0x3fff) && ((sprite[floorHit&0x3fff].cstat & (CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_ALIGNMENT_FLOOR|CSTAT_SPRITE_INVISIBLE)) == (CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_ALIGNMENT_FLOOR))) // if there is a fake floor under us, use fake floor as the shadow position
             {
-                if (!CheckLink(&cX, &cY, &cZ, &nSectnum)) // if no more floors underneath, abort
-                    break;
-                const int newFloorZ = getflorzofslope(nSectnum, cX, cZ);
-                cZrel += newFloorZ - cZ; // get height difference for next sector's ceiling/floor, and add to relative height for shadow
-                if ((sector[nSectnum].floorpicnum < 4080) || (sector[nSectnum].floorpicnum > 4095)) // if current sector is not open air, use as floor for shadow casting, otherwise continue to next sector
-                    break;
-                cZ = newFloorZ;
+                int top, bottom;
+                GetSpriteExtents(&sprite[floorHit&0x3fff], &top, &bottom);
+                pNSprite->z = top;
+                pNSprite->z--; // offset from fake floor so it isn't z-fighting when being rendered
             }
-            pNSprite->z = cZrel;
+            else if ((sector[pNSprite->sectnum].floorpicnum >= 4080) && (sector[pNSprite->sectnum].floorpicnum <= 4095)) // if floor has ror, find actual floor
+            {
+                int cX = pNSprite->x, cY = pNSprite->y, cZ = pNSprite->z, cZrel = pNSprite->z, nSectnum = pNSprite->sectnum;
+                for (int i = 0; i < 16; i++) // scan through max stacked sectors
+                {
+                    if (!CheckLink(&cX, &cY, &cZ, &nSectnum)) // if no more floors underneath, abort
+                        break;
+                    const int newFloorZ = getflorzofslope(nSectnum, cX, cZ);
+                    cZrel += newFloorZ - cZ; // get height difference for next sector's ceiling/floor, and add to relative height for shadow
+                    if ((sector[nSectnum].floorpicnum < 4080) || (sector[nSectnum].floorpicnum > 4095)) // if current sector is not open air, use as floor for shadow casting, otherwise continue to next sector
+                        break;
+                    cZ = newFloorZ;
+                }
+                pNSprite->z = cZrel;
+            }
         }
         pNSprite->shade = 127;
         pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
@@ -2957,7 +3033,6 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
         pNSprite->z = pTSprite->z-(32<<8);
-        pNSprite->z -= weaponIcon.zOffset<<8; // offset up
         if (pPlayer->posture == kPostureCrouch) // if player is crouching
             pNSprite->z += pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture].zOffset<<5;
         pNSprite->picnum = nTile;
@@ -2965,6 +3040,8 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->xrepeat = 32;
         pNSprite->yrepeat = 32;
         pNSprite->ang = (gCameraAng + kAng90) & kAngMask; // always face viewer
+        if (VanillaMode())
+            break;
         const int nVoxel = voxelIndex[nTile];
         if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
             pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
@@ -2982,7 +3059,10 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
                 pNSprite->ang = (gCameraAng + kAng180) & kAngMask;
             else if ((pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT)) // make proxy/remote tnt always face viewers like sprite
                 pNSprite->ang = (gCameraAng + kAng180 + kAng45) & kAngMask;
+            pNSprite->z -= gWeaponIconVoxel[pPlayer->curWeapon].zOffset<<8; // offset up
         }
+        else
+            pNSprite->z -= weaponIcon.zOffset<<8; // offset up
         break;
     }
     }
@@ -3011,9 +3091,10 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
     {
         tspritetype *pTSprite = &tsprite[nTSprite];
         //int nXSprite = pTSprite->extra;
-        int nXSprite = sprite[pTSprite->owner].extra;
+        int nSprite = pTSprite->owner;
+        int nXSprite = sprite[nSprite].extra;
         XSPRITE *pTXSprite = NULL;
-        if (qsprite_filler[pTSprite->owner] > gDetail)
+        if ((qsprite_filler[nSprite] > gDetail) || (sprite[nSprite].sectnum == -1))
         {
             pTSprite->xrepeat = 0;
             continue;
@@ -3028,7 +3109,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             continue;
         }
 
-        int nSprite = pTSprite->owner;
         if (gViewInterpolate && TestBitString(gInterpolateSprite, nSprite) && !(pTSprite->flags&512))
         {
             LOCATION *pPrevLoc = &gPrevSpriteLoc[nSprite];
@@ -3146,7 +3226,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         {
             int const nRootTile = pTSprite->picnum;
 #if 0
-            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+pTSprite->owner);
+            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+nSprite);
             if (tiletovox[nAnimTile] != -1)
             {
                 pTSprite->yoffset += picanm[nAnimTile].yofs;
@@ -3164,7 +3244,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         if ((pTSprite->cstat&48) != 48 && usemodels && !(spriteext[nSprite].flags&SPREXT_NOTMD))
         {
             int const nRootTile = pTSprite->picnum;
-            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+pTSprite->owner);
+            int nAnimTile = pTSprite->picnum + animateoffs_replace(pTSprite->picnum, 32768+nSprite);
 
             if (usemodels && tile2model[Ptile2tile(nAnimTile, pTSprite->pal)].modelid >= 0 &&
                 tile2model[Ptile2tile(nAnimTile, pTSprite->pal)].framenum >= 0)
@@ -3199,7 +3279,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         }
         nShade += tileShade[pTSprite->picnum];
         pTSprite->shade = ClipRange(nShade, -128, 127);
-        if ((pTSprite->flags&kHitagRespawn) && sprite[pTSprite->owner].owner == 3)
+        if ((pTSprite->flags&kHitagRespawn) && sprite[nSprite].owner == 3)
         {
             dassert(pTXSprite != NULL);
             pTSprite->xrepeat = 48;
@@ -3453,8 +3533,9 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
             }
             
-            if (pTSprite->owner != gView->pSprite->index || gViewPos != VIEWPOS_0) {
-                if (getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) >= cZ) {
+            if (nSprite != gView->pSprite->index || gViewPos != VIEWPOS_0) {
+                if (getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) >= cZ)
+                {
                     viewAddEffect(nTSprite, kViewEffectShadow);
                 }
             }
@@ -3681,7 +3762,7 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
 {
     const int32_t nStat = r_usenewaspect ? RS_AUTO : RS_AUTO | RS_STRETCH;
     const char bBannedWeapon = (pPlayer->curWeapon == kWeaponNone) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT);
-    const char bShowAutoAimTarget = (gAimReticle == 2) && (gProfile[pPlayer->nPlayer].nAutoAim) && pPlayer->aimTargetsCount && !bBannedWeapon;
+    const char bShowAutoAimTarget = (gAimReticle == 2) && pPlayer->aimTargetsCount && !bBannedWeapon;
     const char bPaused = !((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != kGameTypeSinglePlayer))) || gDemo.bPlaying);
     int q16SlopeTilt = fix16_from_float(0.82f);
     int cX = 160;
@@ -3802,14 +3883,16 @@ void viewSetErrorMessage(const char *pMessage)
 
 void DoLensEffect(void)
 {
-    char *d = (char*)waloff[4077];
+    char *d = (char*)waloff[LENSBUFFER];
     dassert(d != NULL);
-    char *s = (char*)waloff[4079];
+    char *s = (char*)waloff[CRYSTALBALLBUFFER];
     dassert(s != NULL);
     for (int i = 0; i < kLensSize*kLensSize; i++, d++)
+    {
         if (lensTable[i] >= 0)
             *d = s[lensTable[i]];
-    tileInvalidate(4077, -1, -1);
+    }
+    tileInvalidate(LENSBUFFER, -1, -1);
 }
 
 void UpdateDacs(int nPalette, bool bNoTint)
@@ -4020,7 +4103,7 @@ int gLastPal = 0;
 
 int32_t g_frameRate;
 
-char gRenderScaleRefresh = 0;
+static char bRenderScaleRefresh = 0;
 
 void viewDrawScreen(void)
 {
@@ -4055,7 +4138,18 @@ void viewDrawScreen(void)
 
     if (gViewMode == 3 || gViewMode == 4 || gOverlayMap)
     {
-        DoSectorLighting();
+        char bDoLighting = !gSlowRoomFlicker;
+        if (gSlowRoomFlicker) // slow down sector lighting
+        {
+            const int kSectorLightingSpeed = kTicsPerFrame*2; // process sector lighting at half speed
+            static ClockTicks nLastFrameClock = 0;
+            const ClockTicks nDelta = (gFrameClock - nLastFrameClock);
+            bDoLighting = (nDelta < 0) || (nDelta >= kSectorLightingSpeed);
+            if (bDoLighting)
+                nLastFrameClock = gFrameClock;
+        }
+        if (bDoLighting)
+            DoSectorLighting();
     }
     if (gViewMode == 3 || gOverlayMap)
     {
@@ -4158,22 +4252,58 @@ void viewDrawScreen(void)
             CalcPosition(gView->pSprite, (int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum, fix16_to_int(cA), q16horiz);
         }
         const char bLink = CheckLink((int*)&cX, (int*)&cY, (int*)&cZ, &nSectnum);
-        if (!bLink && gViewInterpolate && !VanillaMode()) // double check current sector for interpolated movement (fixes ROR glitch such as E3M5's scanning room doorway)
+        if (!bLink && gViewInterpolate && !VanillaMode() && (nSectnum != -1)) // double check current sector for interpolated movement (fixes ROR glitch such as E3M5's scanning room doorway)
         {
             int nFoundSect = nSectnum;
             if (FindSector(cX, cY, cZ, &nFoundSect) && (nFoundSect != nSectnum) && AreSectorsNeighbors(nSectnum, nFoundSect, 1)) // if newly found sector is connected to current sector, set as view sector
                 nSectnum = nFoundSect;
         }
-        int v78 = gViewInterpolate ? interpolateang(gScreenTiltO, gScreenTilt, gInterpolate) : gScreenTilt;
-        char v14 = 0;
+        int nTilt = gViewInterpolate ? interpolateang(gScreenTiltO, gScreenTilt, gInterpolate) : gScreenTilt;
+        char nPalCrystalBall = 0;
         bool bDelirium = powerupCheck(gView, kPwUpDeliriumShroom) > 0;
         static bool bDeliriumOld = false;
         int tiltcs = 0, tiltdim = 320;
         const char bCrystalBall = (powerupCheck(gView, kPwUpCrystalBall) > 0) && (gNetPlayers > 1);
 #ifdef USE_OPENGL
-        renderSetRollAngle(0);
+        int nRollAngle = 0;
+        if ((videoGetRenderMode() != REND_CLASSIC) && gRollAngle && !gNoClip)
+        {
+            int nXVel = xvel[gView->pSprite->index], nYVel = yvel[gView->pSprite->index];
+            if (gViewInterpolate)
+            {
+                if (numplayers > 1 && gView == gMe && gPrediction && gMe->pXSprite->health > 0)
+                {
+                    nXVel = interpolate(predictOld.at5c, predict.at5c, gInterpolate);
+                    nYVel = interpolate(predictOld.at60, predict.at60, gInterpolate);
+                }
+                else
+                {
+                    VIEW *pView = &gPrevView[gViewIndex];
+                    nXVel = interpolate(pView->at5c, nXVel, gInterpolate);
+                    nYVel = interpolate(pView->at60, nYVel, gInterpolate);
+                }
+            }
+            if ((nXVel != 0) || (nYVel != 0))
+            {
+                const int nAng = fix16_to_int(gViewAngle)&kAngMask;
+                RotateVector(&nXVel, &nYVel, -nAng);
+                nRollAngle = 13 + (5 - gRollAngle);
+                nRollAngle = ClipRange(nYVel>>nRollAngle, -(kAng15+kAng5), kAng15+kAng5);
+            }
+        }
+        renderSetRollAngle(nRollAngle);
 #endif
-        if (v78 || bDelirium)
+        if ((videoGetRenderMode() == REND_CLASSIC) && (gRenderScale > 1) && !bRenderScaleRefresh)
+        {
+            if (!waloff[DOWNSCALEBUFFER])
+                viewSetRenderScale(0);
+            if (waloff[DOWNSCALEBUFFER])
+            {
+                renderSetTarget(DOWNSCALEBUFFER, tilesiz[DOWNSCALEBUFFER].x, tilesiz[DOWNSCALEBUFFER].y);
+                renderSetAspect(viewingRange_fov, yxaspect);
+            }
+        }
+        else if (nTilt || bDelirium)
         {
             if (videoGetRenderMode() == REND_CLASSIC)
             {
@@ -4189,7 +4319,7 @@ void viewDrawScreen(void)
                     tiltdim = 640;
                 }
                 renderSetTarget(TILTBUFFER, tiltdim, tiltdim);
-                int nAng = v78&(kAng90-1);
+                int nAng = nTilt&(kAng90-1);
                 if (nAng > kAng45)
                 {
                     nAng = kAng90-nAng;
@@ -4198,7 +4328,7 @@ void viewDrawScreen(void)
             }
 #ifdef USE_OPENGL
             else
-                renderSetRollAngle(v78);
+                renderSetRollAngle(nTilt+nRollAngle);
 #endif
         }
         else if (bCrystalBall)
@@ -4242,11 +4372,11 @@ void viewDrawScreen(void)
             if (!sectRangeIsFine(pOther->pSprite->sectnum)) // sector is invalid, use self for crystal ball target
                 pOther = &gPlayer[gViewIndex];
             //othercameraclock = gGameClock;
-            if (!waloff[4079])
+            if (!waloff[CRYSTALBALLBUFFER])
             {
-                tileAllocTile(4079, 128, 128, 0, 0);
+                tileAllocTile(CRYSTALBALLBUFFER, 128, 128, 0, 0);
             }
-            renderSetTarget(4079, 128, 128);
+            renderSetTarget(CRYSTALBALLBUFFER, 128, 128);
             renderSetAspect(65536, 78643);
             int vd8 = pOther->pSprite->x;
             int vd4 = pOther->pSprite->y;
@@ -4275,9 +4405,7 @@ void viewDrawScreen(void)
             CalcOtherPosition(pOther->pSprite, &vd8, &vd4, &vd0, &vcc, v50, 0);
             CheckLink(&vd8, &vd4, &vd0, &vcc);
             if (IsUnderwaterSector(vcc))
-            {
-                v14 = 10;
-            }
+                nPalCrystalBall = 10;
             memcpy(bakMirrorGotpic, gotpic+510, 2);
             memcpy(gotpic+510, otherMirrorGotpic, 2);
             g_visibility = (int32_t)(ClipLow(gVisibility-32*pOther->visibility, 0) * (numplayers > 1 ? 1.f : r_ambientlightrecip));
@@ -4320,16 +4448,6 @@ RORHACKOTHER:
         else
         {
             othercameraclock = (int)totalclock;
-        }
-        if ((gRenderScale > 1) && !gRenderScaleRefresh && !(v78 || bDelirium) && (videoGetRenderMode() == REND_CLASSIC))
-        {
-            if (!waloff[DOWNSCALEBUFFER])
-                viewSetRenderScale(0);
-            if (waloff[DOWNSCALEBUFFER])
-            {
-                renderSetTarget(DOWNSCALEBUFFER, tilesiz[DOWNSCALEBUFFER].x, tilesiz[DOWNSCALEBUFFER].y);
-                renderSetAspect(viewingRange_fov, yxaspect);
-            }
         }
 
         if (!bDelirium)
@@ -4429,7 +4547,29 @@ RORHACK:
         gView->pSprite->cstat = bakCstat;
         char bMirrorScreen = (videoGetRenderMode() == REND_CLASSIC) && r_mirrormode; // mirror framebuffer for classic renderer
 
-        if (v78 || bDelirium)
+        if ((videoGetRenderMode() == REND_CLASSIC) && (gRenderScale > 1) && !bRenderScaleRefresh)
+        {
+            dassert(waloff[DOWNSCALEBUFFER] != 0);
+            renderRestoreTarget();
+            tileInvalidate(DOWNSCALEBUFFER, -1, -1);
+            const int nScale = divscale16(fix16_from_int(320), fix16_from_int(tilesiz[DOWNSCALEBUFFER].y-1));
+            unsigned int nStat = RS_NOMASK|RS_YFLIP|RS_AUTO|RS_STRETCH;
+            int nAng = kAng90;
+            if (nTilt || bDelirium)
+            {
+                nAng = nTilt & (kAng90-1);
+                if (nAng > kAng45)
+                    nAng = nAng - kAng90;
+                nAng += kAng90;
+            }
+            if (bMirrorScreen) // mirror tilt buffer
+            {
+                videoMirrorTile((uint8_t *)waloff[DOWNSCALEBUFFER], tilesiz[DOWNSCALEBUFFER].y, tilesiz[DOWNSCALEBUFFER].x);
+                bMirrorScreen = 0;
+            }
+            rotatesprite(fix16_from_int(320>>1), fix16_from_int(200>>1), nScale, nAng, DOWNSCALEBUFFER, 0, 0, nStat, gViewX0, gViewY0, gViewX1, gViewY1);
+        }
+        else if (nTilt || bDelirium)
         {
             if (videoGetRenderMode() == REND_CLASSIC)
             {
@@ -4440,7 +4580,7 @@ RORHACK:
                 {
                     vrc = 64+32+4+2+1+1024;
                 }
-                int nAng = v78 & (kAng90-1);
+                int nAng = nTilt & (kAng90-1);
                 if (nAng > kAng45)
                 {
                     nAng = kAng90 - nAng;
@@ -4451,7 +4591,7 @@ RORHACK:
                     videoMirrorTile((uint8_t *)waloff[TILTBUFFER], tilesiz[TILTBUFFER].x, tilesiz[TILTBUFFER].y);
                     bMirrorScreen = 0;
                 }
-                rotatesprite(160<<16, 100<<16, nScale, v78+kAng90, TILTBUFFER, 0, 0, vrc, gViewX0, gViewY0, gViewX1, gViewY1);
+                rotatesprite(160<<16, 100<<16, nScale, nTilt+kAng90, TILTBUFFER, 0, 0, vrc, gViewX0, gViewY0, gViewX1, gViewY1);
             }
 #ifdef USE_OPENGL
             else
@@ -4473,23 +4613,9 @@ RORHACK:
             }
 #endif
         }
-        else if ((gRenderScale > 1) && !gRenderScaleRefresh && (videoGetRenderMode() == REND_CLASSIC))
-        {
-            dassert(waloff[DOWNSCALEBUFFER] != 0);
-            renderRestoreTarget();
-            tileInvalidate(DOWNSCALEBUFFER, -1, -1);
-            const int nScale = divscale16(fix16_from_int(320), fix16_from_int(tilesiz[DOWNSCALEBUFFER].y-1));
-            if (bMirrorScreen) // mirror tilt buffer
-            {
-                videoMirrorTile((uint8_t *)waloff[DOWNSCALEBUFFER], tilesiz[DOWNSCALEBUFFER].y, tilesiz[DOWNSCALEBUFFER].x);
-                bMirrorScreen = 0;
-            }
-            rotatesprite(fix16_from_int(320/2), fix16_from_int(200/2), nScale, kAng90, DOWNSCALEBUFFER, 0, 0, RS_NOMASK|RS_YFLIP|RS_AUTO|RS_STRETCH, gViewX0, gViewY0, gViewX1, gViewY1);
-        }
-        else if (gRenderScaleRefresh)
-        {
-            gRenderScaleRefresh = 0;
-        }
+
+        if (bRenderScaleRefresh)
+            bRenderScaleRefresh = 0;
 
         if (bMirrorScreen)
             videoMirrorDrawing();
@@ -4585,13 +4711,13 @@ RORHACK:
             rotatesprite(0, 200<<16, 65536, 0, 2358, 0, 0, 256+22, gViewX0, gViewY0, gViewX1, gViewY1);
             rotatesprite(320<<16, 200<<16, 65536, 1024, 2358, 0, 0, 512+18, gViewX0, gViewY0, gViewX1, gViewY1);
         }
-        if (bCrystalBall && waloff[4079])
+        if (bCrystalBall && waloff[CRYSTALBALLBUFFER])
         {
             DoLensEffect();
             viewingRange = viewingrange;
             yxAspect = yxaspect;
             renderSetAspect(65536, 54613);
-            rotatesprite((280+xscalehud)<<16, 35<<16, 53248, 512, 4077, 0, v14, 512+6, gViewX0, gViewY0, gViewX1, gViewY1);
+            rotatesprite((280+xscalehud)<<16, 35<<16, 53248, kAng90, LENSBUFFER, 0, nPalCrystalBall, 512+6, gViewX0, gViewY0, gViewX1, gViewY1);
             rotatesprite((280+xscalehud)<<16, 35<<16, 53248, 0, 1683, 0, 0, 512+35, gViewX0, gViewY0, gViewX1, gViewY1);
             renderSetAspect(viewingRange, yxAspect);
         }
@@ -4609,7 +4735,7 @@ RORHACK:
     }
     if (gViewMode == 4)
     {
-        gViewMap.sub_25DB0(gView->pSprite);
+        gViewMap.Process(gView->pSprite);
     }
     viewDrawInterface(delta);
     int zn = ((gView->zWeapon-gView->zView-(12<<8))>>7)+220;
@@ -4839,7 +4965,7 @@ void viewResetCrosshairToDefault(void)
 void viewSetRenderScale(char bShowRes)
 {
     const int kMaxDownScale = 480*2;
-    if ((gRenderScale <= 1) || (videoGetRenderMode() != REND_CLASSIC))
+    if ((videoGetRenderMode() != REND_CLASSIC) || (gRenderScale <= 1))
     {
         if (bShowRes)
             OSD_Printf("Render resolution set to native res\n");
@@ -4850,8 +4976,8 @@ void viewSetRenderScale(char bShowRes)
     int nSizeY = ClipRange((gViewY1-gViewY0+1)/gRenderScale, 8, kMaxDownScale);
 
     if (waloff[DOWNSCALEBUFFER]) // for some reason build has a problem when changing the render scale, so we need to skip a single frame before it'll work again
-        gRenderScaleRefresh = 1;
-    if (!waloff[DOWNSCALEBUFFER])
+        bRenderScaleRefresh = 1;
+    else
         tileAllocTile(DOWNSCALEBUFFER, kMaxDownScale, kMaxDownScale, 0, 0);
     walock[DOWNSCALEBUFFER] = CACHE1D_PERMANENT;
     tileSetSize(DOWNSCALEBUFFER, nSizeY, nSizeX);

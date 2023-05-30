@@ -95,8 +95,13 @@ void LoadSave::LoadGame(char *pzFile)
     seqKillAll();
     if (!gGameStarted)
     {
+        memset(xvel,0,sizeof(xvel[0])*kMaxSprites);
+        memset(yvel,0,sizeof(yvel[0])*kMaxSprites);
+        memset(zvel,0,sizeof(zvel[0])*kMaxSprites);
         memset(xsprite, 0, sizeof(XSPRITE)*kMaxXSprites);
         memset(sprite, 0, sizeof(spritetype)*kMaxSprites);
+        memset(qsprite_filler,0,sizeof(qsprite_filler[0])*kMaxSprites);
+        memset(qsector_filler,0,sizeof(qsector_filler[0])*kMaxSectors);
         automapping = 1;
     }
     hLFile = kopen4load(pzFile, 0);
@@ -145,6 +150,7 @@ void LoadSave::LoadGame(char *pzFile)
     else
         gGameMessageMgr.Clear();
     viewSetErrorMessage("");
+    viewResizeView(gViewSize);
     if (!gGameStarted)
     {
         netWaitForEveryone(0);
@@ -226,6 +232,7 @@ void LoadSave::LoadGame(char *pzFile)
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
         gGameOptions.nProjectileBehavior = gProjectileBehavior;
+        gGameOptions.bNapalmFalloff = gNapalmFalloff;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gWeaponsVer;
@@ -281,6 +288,8 @@ void MyLoadSave::Load(void)
     memset(wall, 0, sizeof(wall[0])*kMaxWalls);
     memset(sprite, 0, sizeof(sprite[0])*kMaxSprites);
     memset(spriteext, 0, sizeof(spriteext[0])*kMaxSprites);
+    memset(qsprite_filler,0,sizeof(qsprite_filler[0])*kMaxSprites);
+    memset(qsector_filler,0,sizeof(qsector_filler[0])*kMaxSectors);
     Read(sector, sizeof(sector[0])*numsectors);
     Read(wall, sizeof(wall[0])*numwalls);
     Read(sprite, sizeof(sprite[0])*kMaxSprites);
@@ -318,7 +327,6 @@ void MyLoadSave::Load(void)
     totalclock = nGameClock;
     Read(&gLevelTime, sizeof(gLevelTime));
     Read(&gPaused, sizeof(gPaused));
-    Read(&gbAdultContent, sizeof(gbAdultContent));
     Read(baseWall, sizeof(baseWall[0])*numwalls);
     Read(baseSprite, sizeof(baseSprite[0])*nNumSprites);
     Read(baseFloor, sizeof(baseFloor[0])*numsectors);
@@ -432,7 +440,6 @@ void MyLoadSave::Save(void)
     Write(&nGameClock, sizeof(nGameClock));
     Write(&gLevelTime, sizeof(gLevelTime));
     Write(&gPaused, sizeof(gPaused));
-    Write(&gbAdultContent, sizeof(gbAdultContent));
     Write(baseWall, sizeof(baseWall[0])*numwalls);
     Write(baseSprite, sizeof(baseSprite[0])*nNumSprites);
     Write(baseFloor, sizeof(baseFloor[0])*numsectors);
@@ -598,7 +605,11 @@ bool LoadSavedInCurrentSession(int nSlot)
         return false;
     if (gSaveGameOptions[nSlot].nEnemySpeed != gGameOptions.nEnemySpeed)
         return false;
+    if (gSaveGameOptions[nSlot].bEnemyShuffle != gGameOptions.bEnemyShuffle)
+        return false;
     if (gSaveGameOptions[nSlot].bPitchforkOnly != gGameOptions.bPitchforkOnly)
+        return false;
+    if (gSaveGameOptions[nSlot].bPermaDeath != gGameOptions.bPermaDeath)
         return false;
     if (gSaveGameOptions[nSlot].uSpriteBannedFlags != gGameOptions.uSpriteBannedFlags)
         return false;
@@ -623,7 +634,11 @@ void LoadUpdateSaveGame(int nSlot, int nSkill)
         nDifficulty = 5;
     else if (gSaveGameOptions[nSlot].nEnemySpeed)
         nDifficulty = 5;
+    else if (gSaveGameOptions[nSlot].bEnemyShuffle)
+        nDifficulty = 5;
     else if (gSaveGameOptions[nSlot].bPitchforkOnly)
+        nDifficulty = 5;
+    else if (gSaveGameOptions[nSlot].bPermaDeath)
         nDifficulty = 5;
     else if (gSaveGameOptions[nSlot].uSpriteBannedFlags)
         nDifficulty = 5;

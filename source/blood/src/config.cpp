@@ -84,12 +84,14 @@ int32_t gAutoAim;
 int32_t gWeaponSwitch;
 int32_t gWeaponFastSwitch;
 int32_t gLockManualSaving;
+int32_t gRestoreLastSave;
 int32_t gAutosave;
 bool gAutosaveInCurLevel;
 int32_t gAutoRun;
 int32_t gCalebTalk;
 int32_t gChatSnd;
 int32_t gColorMsg;
+int32_t gKillObituary;
 int32_t gKillMsg;
 int32_t gMultiKill;
 int32_t gViewInterpolate;
@@ -98,6 +100,7 @@ int32_t gWeaponInterpolate;
 int32_t gViewHBobbing;
 int32_t gViewVBobbing;
 int32_t gWeaponHBobbing;
+int32_t gSlowRoomFlicker;
 int32_t gFollowMap;
 int32_t gOverlayMap;
 int32_t gRotateMap;
@@ -108,9 +111,9 @@ int32_t gMessageState;
 int32_t gMessageCount;
 int32_t gMessageTime;
 int32_t gMessageFont;
-int32_t gbAdultContent;
-char gzAdultPassword[9];
 int32_t gStereo;
+int32_t gPlayerTeamPreference;
+int32_t gShowLoadingSavingBackground;
 int32_t gShowPlayerNames;
 int32_t gShowWeapon;
 int32_t gMouseSensitivity;
@@ -127,12 +130,17 @@ bool gFullMap;
 int32_t gUpscaleFactor;
 int32_t gRenderScale;
 int32_t gLevelStats;
+int32_t gLevelStatsOnlyOnMap;
 int32_t gHudRatio;
+int32_t gHudBgNewBorder;
 int32_t gHudBgScale;
+int32_t gHudBgVanilla;
 int32_t gPowerupDuration;
 int32_t gPowerupTicks;
+int32_t gShowCompleteTime;
 int32_t gShowMapTitle;
 int32_t gFov;
+int32_t gRollAngle;
 int32_t gCenterHoriz;
 int32_t gDeliriumBlur;
 int32_t gShowWeaponSelect;
@@ -155,6 +163,7 @@ int gQuadDamagePowerup;
 int gDamageInvul;
 int gExplosionBehavior;
 int gProjectileBehavior;
+int gNapalmFalloff;
 int gEnemyBehavior;
 int gEnemyRandomTNT;
 int gWeaponsVer;
@@ -345,11 +354,7 @@ void CONFIG_SetDefaults(void)
     }
 #endif
 
-#ifdef USE_OPENGL
-    gSetup.bpp = 32;
-#else
     gSetup.bpp = 8;
-#endif
 
 #if defined(_WIN32)
     MixRate = 44100;
@@ -374,8 +379,10 @@ void CONFIG_SetDefaults(void)
 
     gSetup.forcesetup       = 1;
     gSetup.noautoload       = 1;
+    gSetup.quickstart       = 0;
     gSetup.fullscreen       = 1;
     gSetup.usemouse         = 1;
+    Bstrcpy(gSetup.lastini, BloodIniFile);
 
     //ud.config.AmbienceToggle  = 1;
     //ud.config.AutoAim         = 1;
@@ -399,7 +406,7 @@ void CONFIG_SetDefaults(void)
     SoundToggle     = 1;
     CDAudioToggle = 0;
     DopplerToggle = 1;
-    MusicDevice = ASS_OPL3;
+    MusicDevice = ASS_SF2;
     Bstrcpy(SF2_BankFile, "notblood.sf2");
     gFMPianoFix = 1;
     //ud.config.VoiceToggle     = 5;  // bitfield, 1 = local, 2 = dummy, 4 = other players in DM
@@ -416,10 +423,14 @@ void CONFIG_SetDefaults(void)
     //ud.hudontop               = 0;
     //ud.idplayers              = 1;
     gLevelStats = 0;
+    gLevelStatsOnlyOnMap = 0;
     gHudRatio = 1;
+    gHudBgNewBorder = 1;
     gHudBgScale = 1;
+    gHudBgVanilla = 0;
     gPowerupDuration = 4;
     gPowerupTicks = 100;
+    gShowCompleteTime = 1;
     gShowMapTitle = 1;
     gShowWeaponSelect = 0;
     gShowWeaponSelectTimeStart = 7;
@@ -465,9 +476,10 @@ void CONFIG_SetDefaults(void)
     //ud.weaponsway             = 1;
     //ud.weaponswitch           = 3;  // new+empty
     gFov = 90;
+    gRollAngle = 0;
     gCenterHoriz = 1;
     gDeliriumBlur = 1;
-    gViewSize = 2;
+    gViewSize = 3;
     gTurnSpeed = 92;
     gCenterViewOnDrop = 0;
     gJoystickRumble = 1;
@@ -477,14 +489,16 @@ void CONFIG_SetDefaults(void)
     gCalebTalk = 0;
     gChatSnd = 1;
     gColorMsg = 1;
+    gKillObituary = 1;
     gKillMsg = 1;
     gMultiKill = 2;
     gViewInterpolate = 1;
     gPanningInterpolate = 1;
-    gWeaponInterpolate = 0;
+    gWeaponInterpolate = 1;
     gViewHBobbing = 1;
     gViewVBobbing = 1;
     gWeaponHBobbing = 1;
+    gSlowRoomFlicker = 0;
     gFollowMap = 1;
     gOverlayMap = 0;
     gRotateMap = 0;
@@ -495,11 +509,11 @@ void CONFIG_SetDefaults(void)
     gMessageCount = 4;
     gMessageTime = 5;
     gMessageFont = 0;
-    gbAdultContent = 0;
-    gzAdultPassword[0] = '\0';
     gStereo = 1;
+    gPlayerTeamPreference = 0;
+    gShowLoadingSavingBackground = 0;
     gShowPlayerNames = 1;
-    gShowWeapon = 2;
+    gShowWeapon = 1;
 
     gMouseAimingFlipped = 0;
     gMouseAim = 1;
@@ -507,6 +521,7 @@ void CONFIG_SetDefaults(void)
     gWeaponSwitch = 2;
     gWeaponFastSwitch = 0;
     gLockManualSaving = 0;
+    gRestoreLastSave = 1;
     gAutosave = 1;
     gAutosaveInCurLevel = false;
 
@@ -516,6 +531,7 @@ void CONFIG_SetDefaults(void)
     gDamageInvul = 0;
     gExplosionBehavior = 0;
     gProjectileBehavior = 0;
+    gNapalmFalloff = 0;
     gEnemyBehavior = 1;
     gEnemyRandomTNT = 0;
     gWeaponsVer = 0;
@@ -835,12 +851,14 @@ int CONFIG_ReadSetup(void)
     ///////
     SCRIPT_GetNumber(scripthandle, "Game Options", "Autosave", &gAutosave);
     SCRIPT_GetNumber(scripthandle, "Game Options", "LockManualSaving", &gLockManualSaving);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "RestoreLastSave", &gRestoreLastSave);
     SCRIPT_GetNumber(scripthandle, "Game Options", "VanillaMode", &gVanilla);
     SCRIPT_GetNumber(scripthandle, "Game Options", "MonsterSettings", &gMonsterSettings);
     SCRIPT_GetNumber(scripthandle, "Game Options", "QuadDamagePowerup", &gQuadDamagePowerup);
     SCRIPT_GetNumber(scripthandle, "Game Options", "DamageInvul", &gDamageInvul);
     SCRIPT_GetNumber(scripthandle, "Game Options", "ExplosionsBehavior", &gExplosionBehavior);
     SCRIPT_GetNumber(scripthandle, "Game Options", "ProjectilesBehavior", &gProjectileBehavior);
+    SCRIPT_GetNumber(scripthandle, "Game Options", "NapalmFalloff", &gNapalmFalloff);
     SCRIPT_GetNumber(scripthandle, "Game Options", "EnemyBehavior", &gEnemyBehavior);
     SCRIPT_GetNumber(scripthandle, "Game Options", "EnemyRandomTNT", &gEnemyRandomTNT);
     SCRIPT_GetNumber(scripthandle, "Game Options", "WeaponsVer", &gWeaponsVer);
@@ -878,6 +896,9 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Setup", "ConfigVersion", &configversion);
     SCRIPT_GetNumber(scripthandle, "Setup", "ForceSetup", &gSetup.forcesetup);
     SCRIPT_GetNumber(scripthandle, "Setup", "NoAutoLoad", &gSetup.noautoload);
+    SCRIPT_GetNumber(scripthandle, "Setup", "QuickStart", &gSetup.quickstart);
+    SCRIPT_GetString(scripthandle, "Setup", "LastINI", &gSetup.lastini[0]);
+    gSetup.lastini[BMAX_PATH-1] = '\0';
 
     int32_t cachesize;
     SCRIPT_GetNumber(scripthandle, "Setup", "CacheSize", &cachesize);
@@ -1010,6 +1031,8 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Setup", "ConfigVersion", BYTEVERSION, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "ForceSetup", gSetup.forcesetup, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "NoAutoLoad", gSetup.noautoload, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Setup", "QuickStart", gSetup.quickstart, FALSE, FALSE);
+    SCRIPT_PutString(scripthandle, "Setup", "LastINI", &gSetup.lastini[0]);
 
 #ifdef POLYMER
     SCRIPT_PutNumber(scripthandle, "Screen Setup", "Polymer", glrendmode == REND_POLYMER, FALSE, FALSE);
@@ -1125,12 +1148,14 @@ void CONFIG_WriteSetup(uint32_t flags)
     ///////
     SCRIPT_PutNumber(scripthandle, "Game Options", "Autosave", gAutosave, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "LockManualSaving", gLockManualSaving, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "RestoreLastSave", gRestoreLastSave, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "VanillaMode", gVanilla, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "MonsterSettings", gMonsterSettings, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "QuadDamagePowerup", gQuadDamagePowerup, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "DamageInvul", gDamageInvul, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "ExplosionsBehavior", gExplosionBehavior, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "ProjectilesBehavior", gProjectileBehavior, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Game Options", "NapalmFalloff", gNapalmFalloff, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "EnemyBehavior", gEnemyBehavior, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "EnemyRandomTNT", gEnemyRandomTNT, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Game Options", "WeaponsVer", gWeaponsVer, FALSE, FALSE);

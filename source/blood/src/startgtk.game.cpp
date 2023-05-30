@@ -67,6 +67,7 @@ static struct
     GtkWidget *fullscreencheck;
     GtkWidget *inputdevlabel;
     GtkWidget *inputdevcombo;
+    GtkWidget *quickstart;
     GtkWidget *custommodlabel;
     GtkWidget *custommodcombo;
     GtkWidget *emptyhlayout;
@@ -137,6 +138,12 @@ static void on_inputdevcombo_changed(GtkComboBox *combobox, gpointer user_data)
     case 2:	settings.shared.usemouse = 0; settings.shared.usejoystick = 1; break;
     case 3:	settings.shared.usemouse = 1; settings.shared.usejoystick = 1; break;
     }
+}
+
+static void on_quickstart_toggled(GtkToggleButton *togglebutton, gpointer user_data)
+{
+    UNREFERENCED_PARAMETER(user_data);
+    settings.shared.quickstart = gtk_toggle_button_get_active(togglebutton);
 }
 
 static void on_custommodcombo_changed(GtkComboBox *combobox, gpointer user_data)
@@ -227,6 +234,7 @@ static unsigned char GetModsDirNames(GtkListStore *list)
     BUILDVFS_FIND_REC *dirs = NULL;
     GtkTreeIter iter;
 
+    int const bakpathsearchmode = pathsearchmode;
     pathsearchmode = 1;
 
     if ((homedir = Bgethomedir()))
@@ -251,6 +259,7 @@ static unsigned char GetModsDirNames(GtkListStore *list)
     klistfree(dirs);
     dirs = NULL;
 
+    pathsearchmode = bakpathsearchmode;
     return iternumb;
 }
 
@@ -368,6 +377,7 @@ static void PopulateForm(unsigned char pgs)
 
         // populate check buttons
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(stwidgets.fullscreencheck), settings.shared.fullscreen);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(stwidgets.quickstart), settings.shared.quickstart);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(stwidgets.autoloadcheck), !settings.shared.noautoload);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(stwidgets.alwaysshowcheck), settings.shared.forcesetup);
     }
@@ -482,6 +492,10 @@ static GtkWidget *create_window(void)
     gtk_table_attach(GTK_TABLE(stwidgets.configtlayout), stwidgets.inputdevcombo, 1,2, 1,2,
         (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), (GtkAttachOptions)0, 4, 0);
 
+    // Quick start checkbox
+    stwidgets.quickstart = gtk_check_button_new_with_mnemonic("_Quick Start");
+    gtk_table_attach(GTK_TABLE(stwidgets.configtlayout), stwidgets.quickstart, 2,3, 1,2, GTK_FILL, (GtkAttachOptions)0, 4, 0);
+
     // Custom mod LabelText
     stwidgets.custommodlabel = gtk_label_new_with_mnemonic("Custom _game:");
     gtk_misc_set_alignment(GTK_MISC(stwidgets.custommodlabel), 0.3, 0);
@@ -591,6 +605,9 @@ static GtkWidget *create_window(void)
                      NULL);
     g_signal_connect((gpointer) stwidgets.inputdevcombo, "changed",
                      G_CALLBACK(on_inputdevcombo_changed),
+                     NULL);
+    g_signal_connect((gpointer) stwidgets.quickstart, "toggled",
+                     G_CALLBACK(on_quickstart_toggled),
                      NULL);
     g_signal_connect((gpointer) stwidgets.custommodcombo, "changed",
                      G_CALLBACK(on_custommodcombo_changed),

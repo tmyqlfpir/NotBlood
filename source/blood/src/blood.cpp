@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "asound.h"
 #include "db.h"
 #include "blood.h"
+#include "chatpipe.h"
 #include "choke.h"
 #include "config.h"
 #include "controls.h"
@@ -85,7 +86,7 @@ const char* AppProperName = APPNAME;
 const char* AppTechnicalName = APPBASENAME;
 
 char SetupFilename[BMAX_PATH] = SETUPFILENAME;
-int32_t gNoSetup = 0, gCommandSetup = 0, gQuickStart = 0;
+int32_t gNoSetup = 0, gCommandSetup = 0;
 
 INPUT_MODE gInputMode;
 
@@ -96,6 +97,7 @@ unsigned int nMaxAlloc = 0x4000000;
 bool bCustomName = false;
 char bAddUserMap = false;
 bool bNoDemo = false;
+bool bQuickNetStart = false;
 bool bQuickStart = false;
 bool bNoAutoLoad = false;
 
@@ -125,6 +127,14 @@ bool gPaused;
 bool gSaveGameActive;
 int gCacheMiss;
 int gMenuPicnum = 2518; // default menu picnum
+
+int gMultiModeInit = -1;
+int gMultiEpisodeInit = -1;
+int gMultiLevelInit = -1;
+int gMultiDiffInit = -1;
+int gMultiMonsters = -1;
+int gMultiWeapons = -1;
+int gMultiItems = -1;
 
 enum gametokens
 {
@@ -585,7 +595,7 @@ int gDoQuickSave = 0;
 
 void StartLevel(GAMEOPTIONS *gameOptions)
 {
-    const bool triggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == kGameTypeSinglePlayer) && gameOptions->uGameFlags&kGameFlagContinuing; // if demo isn't active and not in multiplayer session and we switched to new level
+    const char bTriggerAutosave = gAutosave && !gDemo.bRecording && !gDemo.bPlaying && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (gameOptions->uGameFlags&kGameFlagContinuing); // if demo isn't active and not in multiplayer session and we switched to new level
     EndLevel();
     gInput = {};
     gStartNewGame = 0;
@@ -595,6 +605,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     if (gDemo.bRecording && gGameStarted)
         gDemo.Close();
     netWaitForEveryone(0);
+    VanillaModeUpdate();
     if (gGameOptions.nGameType == kGameTypeSinglePlayer)
     {
         if (!(gGameOptions.uGameFlags&kGameFlagContinuing))
@@ -620,6 +631,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
         gGameOptions.nProjectileBehavior = gProjectileBehavior;
+        gGameOptions.bNapalmFalloff = gNapalmFalloff;
         gGameOptions.bEnemyBehavior = gEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gWeaponsVer;
@@ -648,6 +660,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
         gGameOptions.bFriendlyFire = gPacketStartGame.bFriendlyFire;
         gGameOptions.nKeySettings = gPacketStartGame.keySettings;
+        gGameOptions.bAutoTeams = gPacketStartGame.bAutoTeams;
         gGameOptions.nSpawnProtection = gPacketStartGame.nSpawnProtection;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
         if (gPacketStartGame.userMap)
@@ -660,6 +673,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
         gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
+        gGameOptions.bNapalmFalloff = gPacketStartGame.bNapalmFalloff;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
@@ -671,7 +685,9 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
         gGameOptions.nEnemySpeed = 0;
+        gGameOptions.bEnemyShuffle = false;
         gGameOptions.bPitchforkOnly = false;
+        gGameOptions.bPermaDeath = false;
         gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////
     }
@@ -751,7 +767,9 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             continue;
         }
     }
-    
+    if (gGameOptions.bEnemyShuffle)
+        dbShuffleEnemy();
+
     #ifdef NOONE_EXTENSIONS
     if (!gModernMap)
         OSD_Printf("> Modern types erased: %d.\n", modernTypesErased);
@@ -858,7 +876,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     gGameStarted = 1;
     ready2send = 1;
     gAutosaveInCurLevel = false;
-    if (triggerAutosave)
+    if (bTriggerAutosave && !gGameOptions.bPermaDeath)
         AutosaveGame(true); // create autosave at start of the new level
 }
 
@@ -884,6 +902,7 @@ void StartNetworkLevel(void)
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
         gGameOptions.bFriendlyFire = gPacketStartGame.bFriendlyFire;
         gGameOptions.nKeySettings = gPacketStartGame.keySettings;
+        gGameOptions.bAutoTeams = gPacketStartGame.bAutoTeams;
         gGameOptions.nSpawnProtection = gPacketStartGame.nSpawnProtection;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
         if (gPacketStartGame.userMap)
@@ -896,6 +915,7 @@ void StartNetworkLevel(void)
         gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
         gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
         gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
+        gGameOptions.bNapalmFalloff = gPacketStartGame.bNapalmFalloff;
         gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
@@ -907,7 +927,9 @@ void StartNetworkLevel(void)
         gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
         gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
         gGameOptions.nEnemySpeed = 0;
+        gGameOptions.bEnemyShuffle = false;
         gGameOptions.bPitchforkOnly = false;
+        gGameOptions.bPermaDeath = false;
         gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
         ///////
     }
@@ -937,19 +959,21 @@ static void DoQuickSave(void)
 {
     if (gGameStarted && !gGameMenuMgr.m_bActive && gPlayer[myconnectindex].pXSprite->health != 0)
     {
-        if (gLockManualSaving) // if manual saving is locked
+        if (gLockManualSaving || gGameOptions.bPermaDeath) // if manual saving is locked
         {
             viewSetMessage("Quicksaving is locked!");
-            viewSetMessage("Change lock save settings to save...");
+            viewSetMessage(gGameOptions.bPermaDeath ? "Game is in permadeath mode..." : "Change lock save settings to save...");
             return;
         }
         QuickSaveGame();
     }
 }
 
-int DoRestoreSave(void)
+static int DoRestoreSave(void)
 {
     if (gGameOptions.nGameType != kGameTypeSinglePlayer || numplayers > 1) // in multiplayer game, do not save
+        return 0;
+    if (gGameOptions.bPermaDeath)
         return 0;
     if (LoadSavedInCurrentSession(gQuickLoadSlot)) // if quickload is set to save from current session, load save
     {
@@ -1008,7 +1032,7 @@ void LocalKeys(void)
     if (gDoQuickSave)
     {
         keyFlushScans();
-        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gDemo.bPlaying && !gDemo.bRecording) // if not in multiplayer session and not in demo playback, allow quicksave
+        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath && !gDemo.bPlaying && !gDemo.bRecording) // if not in multiplayer session and not in demo playback, allow quicksave
         {
             switch (gDoQuickSave)
             {
@@ -1083,12 +1107,12 @@ void LocalKeys(void)
             break;
         case sc_F2:
             keyFlushScans();
-            if (!gGameMenuMgr.m_bActive && gGameOptions.nGameType == kGameTypeSinglePlayer && !gLockManualSaving)
+            if (!gGameMenuMgr.m_bActive && (gGameOptions.nGameType == kGameTypeSinglePlayer) && !gLockManualSaving && !gGameOptions.bPermaDeath)
                 gGameMenuMgr.Push(&menuSaveGame,-1);
-            else if (gLockManualSaving && gGameOptions.nGameType == kGameTypeSinglePlayer) // if manual saving is locked and not currently in multiplayer
+            else if ((gLockManualSaving || gGameOptions.bPermaDeath) && (gGameOptions.nGameType == kGameTypeSinglePlayer)) // if manual saving is locked and not currently in multiplayer
             {
                 viewSetMessage("Saving is locked!");
-                viewSetMessage("Change lock save settings to save...");
+                viewSetMessage(gGameOptions.bPermaDeath ? "Game is in permadeath mode..." : "Change lock save settings to save...");
             }
             break;
         case sc_F3:
@@ -1118,7 +1142,7 @@ void LocalKeys(void)
             return;
         case sc_F9:
             keyFlushScans();
-            if (gGameOptions.nGameType == kGameTypeSinglePlayer)
+            if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath)
                 DoQuickLoad();
             break;
         case sc_F10:
@@ -1161,6 +1185,7 @@ bool gRestartGame = false;
 void ProcessFrame(void)
 {
     char buffer[128];
+    VanillaModeUpdate();
     for (int i = connecthead; i >= 0; i = connectpoint2[i])
     {
         if (gDemo.bRecording) // quantize to demo formatted input
@@ -1210,6 +1235,12 @@ void ProcessFrame(void)
         if (gPlayer[i].input.keyFlags.restart) // if restart requested from ProcessInput()
         {
             gPlayer[i].input.keyFlags.restart = 0;
+            if (gGameOptions.bPermaDeath && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // quit to main menu
+            {
+                gQuitGame = true;
+                gRestartGame = true;
+                return;
+            }
             if (gPlayer[i].input.keyFlags.action && gGameOptions.nGameType == kGameTypeSinglePlayer && numplayers == 1) // if pressed action key and not in multiplayer session
             {
                 if (DoRestoreSave()) // attempt to load last save, if fail then restart current level
@@ -1329,7 +1360,7 @@ SWITCH switches[] = {
     { "vector", 17, 1 },
     { "quick", 18, 0 },
     //{ "getopt", 19, 1 },
-    //{ "auto", 20, 1 },
+    { "auto", 20, 0 },
     { "pname", 21, 1 },
     { "noresend", 22, 0 },
     { "silentaim", 23, 0 },
@@ -1358,6 +1389,13 @@ SWITCH switches[] = {
     { "c", 43, 1 },
     { "conf", 43, 1 },
     { "noconsole", 43, 0 },
+    { "mp_mode", 45, 1 },
+    { "mp_level", 46, 2 },
+    { "mp_diff", 47, 1 },
+    { "mp_dudes", 48, 1 },
+    { "mp_weapons", 49, 1 },
+    { "mp_items", 50, 1 },
+    { "mp_map", 51, 1 },
     { NULL, 0, 0 }
 };
 
@@ -1369,6 +1407,7 @@ void PrintHelp(void)
         "Files can be of type [grp|zip|map|def]\n"
         "\n"
         "-art [file.art]\tSpecify an art base file name\n"
+        "-auto\t\tAutomatic Network start. Implies -quick\n"
         "-cachesize #\tSet cache size in kB\n"
         "-cfg [file.cfg]\tUse an alternate configuration file\n"
         "-client [host]\tConnect to a multiplayer game\n"
@@ -1381,8 +1420,8 @@ void PrintHelp(void)
         "-mh [file.def]\tInclude an additional definitions module\n"
         "-noautoload\tDisable loading from autoload directory\n"
         "-nodemo\t\tNo Demos\n"
-        "-nodudes\tNo monsters\n"
-        "-playback\tPlay back a demo\n"
+        "-nodudes\t\tNo monsters\n"
+        "-playback\t\tPlay back a demo\n"
         "-pname\t\tOverride player name setting from config file\n"
         "-record\t\tRecord demo\n"
         "-validate\t\tRun DOS 1.21 compatibility unit test\n"
@@ -1391,9 +1430,16 @@ void PrintHelp(void)
 #ifdef STARTUP_SETUP_WINDOW
         "-setup/nosetup\tEnable or disable startup window\n"
 #endif
-        "-skill\t\tSet player handicap; Range:0..4; Default:2; (NOT difficulty level.)\n"
+        "-skill [0-4]\t\tSet player handicap; Range:0..4; Default:2; (NOT difficulty level.)\n"
         "-snd\t\tSpecify an RFF Sound file name\n"
         "-usecwd\t\tRead data and configuration from current directory\n"
+        "-mp_mode [0-2]\tSet game mode for multiplayer (0: co-op, 1: bloodbath, 2: teams)\n"
+        "-mp_level [E M]\tSet level for multiplayer (e.g: 1 3)\n"
+        "-mp_diff [0-4]\tSet difficulty for multiplayer (0-4)\n"
+        "-mp_dudes [0-2]\tSet monster settings for multiplayer (0: none, 1: spawn, 2: respawn)\n"
+        "-mp_weapons [0-3]\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
+        "-mp_items [0-2]\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
+        "-mp_map [file.map]\tSet user map path for multiplayer\n"
         ;
 #ifdef WM_MSGBOX_WINDOW
     Bsnprintf(tempbuf, sizeof(tempbuf), APPNAME " %s", s_buildRev);
@@ -1406,7 +1452,7 @@ void PrintHelp(void)
     // NUKE-TODO:
     puts("-?            This help");
     //puts("-8250         Enforce obsolete UART I/O");
-    //puts("-auto         Automatic Network start. Implies -quick");
+    puts("-auto         Automatic Network start. Implies -quick");
     //puts("-getopt       Use network game options from file.  Implies -auto");
     puts("-broadcast    Set network to broadcast packet mode");
     puts("-masterslave  Set network to master/slave packet mode");
@@ -1434,6 +1480,7 @@ void PrintHelp(void)
 void ParseOptions(void)
 {
     int option;
+    char bCustomModDir = 0;
     while ((option = GetOptions(switches)) != -1)
     {
         switch (option)
@@ -1455,16 +1502,10 @@ void ParseOptions(void)
             break;
         //case 19:
         //    byte_148eec = 1;
-        //case 20:
-        //    if (OptArgc < 1)
-        //        ThrowError("Missing argument");
-        //    strncpy(byte_148ef0, OptArgv[0], 13);
-        //    byte_148ef0[12] = 0;
-        //    bQuickStart = 1;
-        //    byte_148eeb = 1;
-        //    if (gGameOptions.gameType == kGameTypeSinglePlayer)
-        //        gGameOptions.gameType = kGameTypeBloodBath;
-        //    break;
+        case 20: // auto
+            bQuickNetStart = 1;
+            bQuickStart = 1;
+            break;
         case 25:
             bNoDemo = 1;
             break;
@@ -1543,6 +1584,8 @@ void ParseOptions(void)
                 ThrowError("Missing argument");
             levelOverrideINI(OptArgv[0]);
             bNoDemo = 1;
+            if (!bCustomModDir) // reset custom mod directory if given ini command (and only if game_dir argument has not been parsed before)
+                Bsprintf(g_modDir,"/");
             break;
         case 26:
             if (OptArgc < 1)
@@ -1644,6 +1687,7 @@ void ParseOptions(void)
                 ThrowError("Missing argument");
             Bstrncpyz(g_modDir, OptArgv[0], sizeof(g_modDir));
             G_AddPath(OptArgv[0]);
+            bCustomModDir = 1;
             break;
         case 37:
             gCommandSetup = true;
@@ -1682,6 +1726,42 @@ void ParseOptions(void)
             gCommandSetup = false;
             levelOverrideINI("TEST.INI");
             strcpy(g_modDir, "/validatedemos");
+            break;
+        case 45: // mp_mode
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiModeInit = ClipRange(atoi(OptArgv[0]), 0, 2);
+            break;
+        case 46: // mp_level
+            if (OptArgc < 2)
+                ThrowError("Missing argument");
+            gMultiEpisodeInit = ClipRange(atoi(OptArgv[0]), 1, kMaxEpisodes)-1;
+            gMultiLevelInit = ClipRange(atoi(OptArgv[1]), 1, kMaxLevels)-1;
+            break;
+        case 47: // mp_difficulty
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiDiffInit = ClipRange(atoi(OptArgv[0]), 0, 4);
+            break;
+        case 48: // mp_dudes
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiMonsters = ClipRange(atoi(OptArgv[0]), 0, 2);
+            break;
+        case 49: // mp_weapons
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiWeapons = ClipRange(atoi(OptArgv[0]), 0, 3);
+            break;
+        case 50: // mp_items
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gMultiItems = ClipRange(atoi(OptArgv[0]), 0, 2);
+            break;
+        case 51: // mp_map
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            Bstrncpyz(zUserMapName, OptArgv[0], sizeof(zUserMapName));
             break;
         }
     }
@@ -1730,8 +1810,6 @@ int app_main(int argc, char const * const * argv)
             return 3;
     }
 #endif
-
-    win_priorityclass = 0;
 
     G_ExtPreInit(argc, argv);
 
@@ -1797,6 +1875,8 @@ int app_main(int argc, char const * const * argv)
     if (!g_useCwd)
         G_AddSearchPaths();
 
+    ChatPipe_Create();
+
     // used with binds for fast function lookup
     hash_init(&h_gamefuncs);
     for (bssize_t i=NUMGAMEFUNCTIONS-1; i>=0; i--)
@@ -1816,6 +1896,7 @@ int app_main(int argc, char const * const * argv)
     CONFIG_ReadSetup();
     if (bCustomName)
         strcpy(szPlayerName, gPName);
+    VanillaModeUpdate();
 
     if (enginePreInit())
     {
@@ -1840,6 +1921,7 @@ int app_main(int argc, char const * const * argv)
             engineUnInit();
             Bexit(0);
         }
+        Bstrcpy(gSetup.lastini, pINISelected->zName);
     }
 #endif
 
@@ -1990,6 +2072,7 @@ int app_main(int argc, char const * const * argv)
         scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
     scrSetGamma(gGamma);
     viewResizeView(gViewSize);
+    vsync = videoSetVsync(vsync);
     initprintf("Initializing sound system\n");
     sndInit();
     sfxInit();
@@ -2004,7 +2087,7 @@ int app_main(int argc, char const * const * argv)
 
     OSD_Exec("autoexec.cfg");
 
-    if (!bQuickStart && !gQuickStart)
+    if (!bQuickStart && !gSetup.quickstart)
         credLogosDos();
     scrSetDac();
 RESTART:
@@ -2024,13 +2107,14 @@ RESTART:
         goto RESTART;
     }
     UpdateNetworkMenus();
-    if (!bNoDemo && gQuickStart && !gDemoRunValidation) // disable demo playback in quick start mode
+    if (!bNoDemo && gSetup.quickstart && !gDemoRunValidation) // disable demo playback in quick start mode
         bNoDemo = 1;
     if (!gDemo.bRecording && gDemo.nDemosFound > 0 && gGameOptions.nGameType == kGameTypeSinglePlayer && !bNoDemo)
         gDemo.SetupPlayback(NULL);
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
     gQuitGame = 0;
     gRestartGame = 0;
+    VanillaModeUpdate();
     if (gGameOptions.nGameType != kGameTypeSinglePlayer)
     {
         KB_ClearKeysDown();
@@ -2049,7 +2133,7 @@ RESTART:
     }
     ready2send = 1;
     static bool frameJustDrawn;
-    static int nGammaMenu = !gQuickStart ? 0 : 40;
+    static int nGammaMenu = !gSetup.quickstart ? 0 : 40;
     while (!gQuitGame)
     {
         bool bDraw;
@@ -2167,6 +2251,14 @@ RESTART:
                     if (gGameStarted) // dim background
                         viewDimScreen();
                     gGameMenuMgr.Draw();
+                    if (bQuickNetStart)
+                    {
+                        if (gGameMenuMgr.pActiveMenu == &menuNetStart)
+                        {
+                            StartNetGame(NULL);
+                            bQuickNetStart = false;
+                        }
+                    }
                 }
                 break;
             case INPUT_MODE_2:
@@ -2209,6 +2301,7 @@ RESTART:
         gQuitRequest = 0;
         gRestartGame = 0;
         gGameStarted = 0;
+        VanillaModeUpdate();
         levelSetupOptions(0,0);
         while (gGameMenuMgr.m_bActive)
         {
@@ -2943,11 +3036,13 @@ void ScanINIFiles(void)
     pINISelected = pINIChain;
     for (auto pIter = pINIChain; pIter; pIter = pIter->pNext)
     {
-        if (!Bstrncasecmp(BloodIniFile, pIter->zName, BMAX_PATH))
+        if (!bINIOverride && !Bstrncasecmp(gSetup.lastini, pIter->zName, BMAX_PATH))
         {
             pINISelected = pIter;
             break;
         }
+        else if (!Bstrncasecmp(BloodIniFile, pIter->zName, BMAX_PATH)) // fallback to selecting blood.ini if last ini was not found
+            pINISelected = pIter;
     }
 }
 
@@ -2987,12 +3082,29 @@ void LoadExtraArts(void)
     }
 }
 
-bool VanillaMode(const bool demoState) {
+static char bVanilla = 0;
+static char bDemoState = 0;
+
+void VanillaModeUpdate(void)
+{
+    const bool bSinglePlayer = (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1);
+
+    bVanilla = 0;
+    bDemoState = gDemo.bPlaying || gDemo.bRecording;
+
     if (gVanilla == 2) // vanilla mode override, always return true (except for multiplayer)
-        return (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1);
-    if (demoState) // only check if demo recording/playing is active
-        return gDemo.bPlaying || gDemo.bRecording;
-    return (gDemo.bPlaying || gDemo.bRecording) || (gVanilla && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)); // fallback on single-player global vanilla mode settings
+        bVanilla = bSinglePlayer ? 2 : 0;
+    else  // fallback on single-player global vanilla mode settings
+        bVanilla = bDemoState || (gVanilla && bSinglePlayer);
+}
+
+bool VanillaMode(const bool bDemoCheck)
+{
+    if (bVanilla == 2) // vanilla mode override
+        return true;
+    if (bDemoCheck) // only check if demo recording/playing is active
+        return bDemoState;
+    return bVanilla; // fallback on global vanilla mode settings
 }
 
 bool WeaponsNotBlood(void) {

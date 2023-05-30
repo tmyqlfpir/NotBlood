@@ -11,7 +11,7 @@
 **NotBlood** is a gameplay modification of Blood, based upon the reverse-engineer port [NBlood](https://github.com/nukeykt/NBlood)
 
 ### Downloads
-Download for Windows/Linux can be found on [https://github.com/clipmove/NotBlood/releases](https://github.com/clipmove/NotBlood/releases)
+Download for Windows/Linux/MacOS can be found on [https://github.com/clipmove/NotBlood/releases](https://github.com/clipmove/NotBlood/releases)
 <details><summary><h3 dir="auto">New Features For NotBlood</h3></summary>
 
 ### Features
@@ -38,8 +38,9 @@ Download for Windows/Linux can be found on [https://github.com/clipmove/NotBlood
 * Adjustable spawn weapon option
 * Adjustable spawn protection
 * UT99 style multi kill alerts
+* Uneven teams support
 
-### Enhancements (Optional)
+### Mutators (Optional)
 * Replaced sector based damage logic for player explosions ([before](https://web.archive.org/web/20220514202656if_/https://files.catbox.moe/h6xcrg.mp4)/[after](https://web.archive.org/web/20220514202724if_/https://files.catbox.moe/35e08d.mp4))
 * Difficulty based invulnerability timer for player damage ([before](https://web.archive.org/web/20220319193718if_/https://files.catbox.moe/ucs7gp.mp4)/[after](https://web.archive.org/web/20220514201922if_/https://files.catbox.moe/8hyaqm.mp4))
 * Raymarching collision testing for player projectiles ([before](https://web.archive.org/web/20220514202239if_/https://files.catbox.moe/qxtv05.mp4)/[after](https://web.archive.org/web/20220319193719if_/https://files.catbox.moe/vo03ck.mp4))

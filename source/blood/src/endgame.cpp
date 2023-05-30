@@ -64,7 +64,7 @@ void CEndGameMgr::Draw(void)
         viewDrawText(1, "FRAG STATS", 160, nY, -128, 0, 1, 0);
         gKillMgr.Draw();
     }
-    if (gGameOptions.nGameType <= kGameTypeCoop)
+    if (gShowCompleteTime && (gGameOptions.nGameType <= kGameTypeCoop))
     {
         char pBuffer[40];
         const int levelTime = gLevelTime-1;

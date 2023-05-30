@@ -23,7 +23,7 @@
     <ProjectGuid>{5407CB5A-4B15-41FA-B79B-8B386A14D275}</ProjectGuid>
     <RootNamespace>notblood</RootNamespace>
     <Keyword>MakeFileProj</Keyword>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>notblood</ProjectName>
   </PropertyGroup>
@@ -34,9 +34,11 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -65,42 +67,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <OutDir>$(SolutionDir)..\..\</OutDir>
     <IntDir>$(Platform)\Build\$(ProjectName)\$(Configuration)\</IntDir>
-    <NMakeIncludeSearchPath>$(NMakeIncludeSearchPath);..\..\source\build\include;..\..\source\mact\include;..\..\source\audiolib\include;..\..\platform\windows\include</NMakeIncludeSearchPath>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">nmake /f msvc.mak DEBUG=1 WINBITS=32 RENDERTYPE=SDL</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">nmake /f msvc.mak veryclean all DEBUG=1 WINBITS=32 RENDERTYPE=SDL</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">nmake /f msvc.mak veryclean DEBUG=1 WINBITS=32 RENDERTYPE=SDL</NMakeCleanCommandLine>
-    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">USE_OPENGL;POLYMER;SDL_USEFOLDER;SDL_TARGET=2</NMakePreprocessorDefinitions>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">nmake /f msvc.mak WINBITS=32 RENDERTYPE=SDL</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">nmake /f msvc.mak veryclean all WINBITS=32 RENDERTYPE=SDL</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">nmake /f msvc.mak veryclean WINBITS=32 RENDERTYPE=SDL</NMakeCleanCommandLine>
-    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">USE_OPENGL;POLYMER;SDL_USEFOLDER;SDL_TARGET=2</NMakePreprocessorDefinitions>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nmake /f msvc.mak DEBUG=1 WINBITS=64 RENDERTYPE=SDL</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nmake /f msvc.mak veryclean all DEBUG=1 WINBITS=64 RENDERTYPE=SDL</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nmake /f msvc.mak veryclean DEBUG=1 WINBITS=64 RENDERTYPE=SDL</NMakeCleanCommandLine>
-    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">USE_OPENGL;POLYMER;NOASM;SDL_USEFOLDER;SDL_TARGET=2</NMakePreprocessorDefinitions>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nmake /f msvc.mak WINBITS=64 RENDERTYPE=SDL</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nmake /f msvc.mak veryclean all WINBITS=64 RENDERTYPE=SDL</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nmake /f msvc.mak veryclean WINBITS=64 RENDERTYPE=SDL</NMakeCleanCommandLine>
-    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">USE_OPENGL;POLYMER;NOASM;SDL_USEFOLDER;SDL_TARGET=2</NMakePreprocessorDefinitions>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <GenerateManifest>false</GenerateManifest>
     <EmbedManifest>false</EmbedManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <GenerateManifest>false</GenerateManifest>
-    <EmbedManifest>false</EmbedManifest>
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <EmbedManifest>false</EmbedManifest>
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <EmbedManifest>false</EmbedManifest>
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>false</GenerateManifest>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Link>
@@ -195,13 +169,14 @@
     <ClCompile Include="..\..\source\blood\src\airat.cpp" />
     <ClCompile Include="..\..\source\blood\src\aispid.cpp" />
     <ClCompile Include="..\..\source\blood\src\aitchern.cpp" />
-    <ClCompile Include="..\..\source\blood\src\aiunicult.cpp" />
+    <ClCompile Include="..\..\source\blood\src\aicdud.cpp" />
     <ClCompile Include="..\..\source\blood\src\aizomba.cpp" />
     <ClCompile Include="..\..\source\blood\src\aizombf.cpp" />
     <ClCompile Include="..\..\source\blood\src\asound.cpp" />
     <ClCompile Include="..\..\source\blood\src\barf.cpp" />
     <ClCompile Include="..\..\source\blood\src\blood.cpp" />
     <ClCompile Include="..\..\source\blood\src\callback.cpp" />
+    <ClCompile Include="..\..\source\blood\src\chatpipe.cpp" />
     <ClCompile Include="..\..\source\blood\src\choke.cpp" />
     <ClCompile Include="..\..\source\blood\src\common.cpp" />
     <ClCompile Include="..\..\source\blood\src\config.cpp" />
@@ -231,7 +206,10 @@
     <ClCompile Include="..\..\source\blood\src\mirrors.cpp" />
     <ClCompile Include="..\..\source\blood\src\misc.cpp" />
     <ClCompile Include="..\..\source\blood\src\network.cpp" />
+    <ClCompile Include="..\..\source\blood\src\nnextcdud.cpp" />
     <ClCompile Include="..\..\source\blood\src\nnexts.cpp" />
+    <ClCompile Include="..\..\source\blood\src\nnextsif.cpp" />
+    <ClCompile Include="..\..\source\blood\src\nnextstr.cpp" />
     <ClCompile Include="..\..\source\blood\src\osdcmd.cpp" />
     <ClCompile Include="..\..\source\blood\src\player.cpp" />
     <ClCompile Include="..\..\source\blood\src\qav.cpp" />
@@ -278,12 +256,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\source\blood\rsrc\gameres.rc">
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
+    <ResourceCompile Include="..\..\source\blood\rsrc\gameres.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\blood\src\actor.h" />
@@ -305,13 +278,14 @@
     <ClInclude Include="..\..\source\blood\src\airat.h" />
     <ClInclude Include="..\..\source\blood\src\aispid.h" />
     <ClInclude Include="..\..\source\blood\src\aitchern.h" />
-    <ClInclude Include="..\..\source\blood\src\aiunicult.h" />
+    <ClInclude Include="..\..\source\blood\src\aicdud.h" />
     <ClInclude Include="..\..\source\blood\src\aizomba.h" />
     <ClInclude Include="..\..\source\blood\src\aizombf.h" />
     <ClInclude Include="..\..\source\blood\src\asound.h" />
     <ClInclude Include="..\..\source\blood\src\barf.h" />
     <ClInclude Include="..\..\source\blood\src\blood.h" />
     <ClInclude Include="..\..\source\blood\src\callback.h" />
+    <ClInclude Include="..\..\source\blood\src\chatpipe.h" />
     <ClInclude Include="..\..\source\blood\src\choke.h" />
     <ClInclude Include="..\..\source\blood\src\common_game.h" />
     <ClInclude Include="..\..\source\blood\src\config.h" />
@@ -337,7 +311,10 @@
     <ClInclude Include="..\..\source\blood\src\menu.h" />
     <ClInclude Include="..\..\source\blood\src\messages.h" />
     <ClInclude Include="..\..\source\blood\src\mirrors.h" />
+    <ClInclude Include="..\..\source\blood\src\nnextcdud.h" />
     <ClInclude Include="..\..\source\blood\src\nnexts.h" />
+    <ClInclude Include="..\..\source\blood\src\nnextsif.h" />
+    <ClInclude Include="..\..\source\blood\src\nnextstr.h" />
     <ClInclude Include="..\..\source\blood\src\warp.h" />
     <ClInclude Include="..\..\source\blood\src\inifile.h" />
     <ClInclude Include="..\..\source\blood\src\iob.h" />
@@ -353,6 +330,7 @@
     <ClInclude Include="..\..\source\blood\src\replace.h" />
     <ClInclude Include="..\..\source\blood\src\resource.h" />
     <ClInclude Include="..\..\source\blood\src\screen.h" />
+    <ClInclude Include="..\..\source\blood\src\screenpals.h" />
     <ClInclude Include="..\..\source\blood\src\sectorfx.h" />
     <ClInclude Include="..\..\source\blood\src\seq.h" />
     <ClInclude Include="..\..\source\blood\src\sfx.h" />

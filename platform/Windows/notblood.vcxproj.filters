@@ -99,6 +99,9 @@
     <ClCompile Include="..\..\source\blood\src\callback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\blood\src\chatpipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\blood\src\fx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -222,7 +225,7 @@
     <ClCompile Include="..\..\source\blood\src\common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\blood\src\aiunicult.cpp">
+    <ClCompile Include="..\..\source\blood\src\aicdud.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\blood\src\gfx.cpp">
@@ -235,6 +238,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\blood\src\nnexts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\blood\src\nnextsif.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\blood\src\nnextcdud.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\blood\src\nnextstr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -292,6 +304,9 @@
     <ClInclude Include="..\..\source\blood\src\screen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\blood\src\screenpals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\blood\src\qheap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -344,6 +359,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\blood\src\callback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\blood\src\chatpipe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\blood\src\fx.h">
@@ -463,7 +481,7 @@
     <ClInclude Include="..\..\source\blood\src\osdcmds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\blood\src\aiunicult.h">
+    <ClInclude Include="..\..\source\blood\src\aicdud.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\blood\src\gfx.h">
@@ -475,7 +493,16 @@
     <ClInclude Include="..\..\source\blood\src\barf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\blood\src\nnextsif.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\blood\src\nnexts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\blood\src\nnextcdud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\blood\src\nnextstr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -26,7 +26,7 @@ A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-en
 * Adjustable spawn protection
 * UT99 style multi kill alerts
 
-### Enhancements (Optional)
+### Mutators (Optional)
 * Replaced sector based damage logic for player explosions
 * Difficulty based invulnerability timer for player damage
 * Raymarching collision testing for player projectiles
@@ -79,7 +79,7 @@ This feature sets the game to match v1.21 DOS compatibility, and removes any bug
 The vanilla mode option can be found within game settings, and is only available for single-player
 It should be noted that vanilla mode does not work with modern maps
 
-### Enhancements Options
+### Mutator Options
 * Replace guns akimbo with quad damage
    - Replaces the guns akimbo powerup with Quake's quad damage (lasts 22 seconds)
 * Player damage invulnerability
@@ -97,6 +97,8 @@ It should be noted that vanilla mode does not work with modern maps
 * Projectiles behavior (Raze)
    - For all missiles/projectiles, use the more accurate eduke32's clipmove() function
    - Leave all hitbox sizes as original
+* Napalm gravity falloff
+   - For player spawned napalm projectiles, make gravity affect their trajectory path
 * Enemy behavior
    - Fixes various original 1.21 bugs with enemies such as:
    - Tiny Caleb using the wrong burning sprite
@@ -112,6 +114,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Napalm balls, proxy bundles, armed spray cans or pod projectiles
 * Weapon behavior
    - Select between original weapon behavior, NBlood's V1.X behavior or NotBlood's tweaked weapon set which include:
+   - Tommy gun alt fire uses autoaim
+   - Autoaim is always enabled for pitchfork
    - Adjust pitch offset for spray/missile firing
    - Adds a charge up stab for pitchfork's alt fire
    - Makes lifeleech throwable and increases damage while in sentry mode
@@ -135,10 +139,11 @@ It should be noted that vanilla mode does not work with modern maps
    - Add room over room sector transversal for shadow rendering
    - Support wall sprites moving along with elevators
    - Fix bullet hole being placed across sky tile walls
+   - Use Raze phase calculation for smoother elevator rides
 * Hitscan projectiles
    - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
    - Projectile speed is adjusted depending on difficulty and if bullet is underwater
-   - This enhancement does not support custom modern map enemies
+   - This mutator does not support custom modern map enemies
 * Randomizer mode
    - Set the enemy/pickups randomizer mode
    - The randomizer does not support custom modern map enemies
@@ -184,10 +189,16 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable colored player names in messages
 * cl_killmsg
    - Enable/disable kill messages
+* cl_killobituaries
+   - Enable/disable random obituary kill messages
 * cl_multikill
    - Enable/disable multi kill messages (0: disable, 1: enable, 2: enable + audio alert)
 * cl_weaponhbob
    - Enable/disable view horizontal bobbing
+* cl_rollangle
+   - Sets how much your screen tilts when strafing (polymost only)
+* cl_showloadsavebackdrop
+   - Enable/disable the menu backdrop for loading/saving game
 * cl_slopecrosshair
    - Enable/disable adjusting crosshair position for slope tilting
 * cl_slowroomflicker
@@ -204,20 +215,28 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable fast weapon switching
 * cl_packitemswitch
    - Enable/disable item slot switching to activated item (always enabled in multiplayer)
-* cl_quickstart
-   - Enable/disable quick start mode (start to menu on launch/disable demo playback)
 * crosshair
    - Enable/disable crosshair (0: off, 1: on, 2: on [autoaim])
+* detail
+   - Change the detail graphics setting (0-4)
+* hud_bgnewborder
+   - Enable/disable new hud bottom border background image (only for r_size 5)
 * hud_bgscale
    - Enable/disable hud background image scaling for resolution
+* hud_bgvanilla
+   - Enable/disable hud vanilla background image override (0: default, 1: use new tile, 2: use original tile)
 * hud_stats
    - Set aspect ratio screen position for hud (0: native, 1: 4:3, 2: 16:10, 3: 16:9, 3: 21:9)
+* hud_statsautomaponly
+   - Enable/disable showing level statistics display only on map view
 * hud_ratio
    - Enable/disable level statistics display (0: off, 1: on [default], 2: on [4:3], 3: on [16:10], 4: on [16:9], 5: on [21:9])
 * hud_powerupdurationticks
-   - set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)
+   - Set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)
+* hud_showendtime
+   - Enable/disable displaying the level completion time on end screen
 * hud_showweaponselect
-   - Enable/disable weapon select bar display. (0: none, 1: bottom, 2: top)
+   - Enable/disable weapon select bar display (0: none, 1: bottom, 2: top)
 * hud_showweaponselecttimestart
    - Length of time for selected weapon bar to appear
 * hud_showweaponselecttimehold
@@ -255,6 +274,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable wall/floor aligned transparent voxels
 * skill
    - Changes the skill handicap for multiplayer (default: 2, range: 0-4)
+* team
+   - Set preferred team in multiplayer (0: none, 1: blue, 2: red)
 * snd_earangle
    - Set the listening ear offset (15-90 degrees)
 * snd_speed

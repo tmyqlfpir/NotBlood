@@ -62,17 +62,17 @@ public:
 EventQueue eventQ;
 void EventQueue::Kill(int a1, int a2)
 {
-    PQueue->Kill([=](EVENT nItem)->bool {return (nItem.index == a1 && nItem.type == a2); });
+    PQueue->Kill([=](const EVENT &nItem)->bool {return (nItem.index == a1 && nItem.type == a2); });
 }
 
 void EventQueue::Kill(int idx, int type, int causer)
 {
-    PQueue->Kill([=](EVENT nItem)->bool { return (nItem.index == idx && nItem.type == type && nItem.causer == causer); });
+    PQueue->Kill([=](const EVENT &nItem)->bool { return (nItem.index == idx && nItem.type == type && nItem.causer == causer); });
 }
 
 void EventQueue::Kill(int a1, int a2, CALLBACK_ID a3)
 {
-    PQueue->Kill([=](EVENT nItem)->bool {return (nItem.index == a1 && nItem.type == a2 && nItem.cmd == kCmdCallback && nItem.funcID == (unsigned int)a3); });
+    PQueue->Kill([=](const EVENT &nItem)->bool {return (nItem.index == a1 && nItem.type == a2 && nItem.cmd == kCmdCallback && nItem.funcID == (unsigned int)a3); });
 }
 
 RXBUCKET rxBucket[kChannelMax+1];
@@ -258,6 +258,43 @@ static void SortRXBucket(int nCount)
     }
 }
 
+struct SECRETFOUND {
+    short nIndex;
+    char nType;
+    char bSuperSecret;
+} gSecretsFound[64];
+
+void evSecretInit(void)
+{
+    int i, nSize = ARRAY_SIZE(gSecretsFound);
+
+    for (i = 0; i < nSize; i++)
+    {
+        gSecretsFound[i].nIndex = -1;
+        gSecretsFound[i].nType = -1;
+        gSecretsFound[i].bSuperSecret = -1;
+    }
+}
+
+char evSecretNew(int nIndex, char nType, char bSuperSecret)
+{
+    int i, nSize = ARRAY_SIZE(gSecretsFound);
+    const SECRETFOUND curSecret = {(short)nIndex, nType, bSuperSecret};
+
+    for (i = 0; i < nSize; i++)
+    {
+        if (gSecretsFound[i].nIndex == -1) // reached end of list, add newly found secret to list
+        {
+            gSecretsFound[i] = curSecret;
+            return 1; // this secret is new, return true
+        }
+
+        if ((gSecretsFound[i].nIndex == curSecret.nIndex) && (gSecretsFound[i].nType == curSecret.nType) && (gSecretsFound[i].bSuperSecret == curSecret.bSuperSecret))
+            return 0; // this secret has been discovered before, return false
+    }
+    return 1; // this secret cannot be checked if it has been found or not, as the list is full - so consider it newly found
+}
+
 unsigned short bucketHead[1024+1];
 
 void evInit(void)
@@ -321,6 +358,7 @@ void evInit(void)
             j++;
     }
     bucketHead[i] = j;
+    evSecretInit();
 }
 
 char evGetSourceState(int nType, int nIndex)
@@ -395,6 +433,7 @@ void evSend(int nIndex, int nType, int rxId, COMMAND_ID command, int causerID)
         else viewSetSystemMessage("Invalid Total-Secrets command by xobject #%d (object type %d)", nIndex, nType);
         break;
     case kChannelSecretFound:
+        if (!VanillaMode() && !evSecretNew(nIndex, (char)nType, (char)(command - kCmdNumberic) == 1)) break; // secret already found, don't count it
         if (command >= kCmdNumberic) levelTriggerSecret(command - kCmdNumberic);
         else viewSetSystemMessage("Invalid Trigger-Secret command by xobject #%d (object type %d)", nIndex, nType);
         break;
@@ -600,7 +639,7 @@ void evKill(int a1, int a2)
 void evKill(int idx, int type, int causer)
 {
     #ifdef NOONE_EXTENSIONS
-    if (gModernMap)
+    if (gModernMap && isPartOfCauserScript(type, idx))
         eventQ.Kill(idx, type, causer);
     else
     #endif
@@ -640,6 +679,7 @@ void EventQLoadSave::Load()
     }
     Read(rxBucket, sizeof(rxBucket));
     Read(bucketHead, sizeof(bucketHead));
+    Read(&gSecretsFound, sizeof(gSecretsFound));
 }
 
 void EventQLoadSave::Save()
@@ -663,6 +703,7 @@ void EventQLoadSave::Save()
     }
     Write(rxBucket, sizeof(rxBucket));
     Write(bucketHead, sizeof(bucketHead));
+    Write(&gSecretsFound, sizeof(gSecretsFound));
 }
 
 static EventQLoadSave *myLoadSave;

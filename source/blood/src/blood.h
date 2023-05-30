@@ -52,7 +52,6 @@ enum INPUT_MODE {
 extern INPUT_MODE gInputMode;
 extern char SetupFilename[BMAX_PATH];
 extern int32_t gNoSetup;
-extern int32_t gQuickStart;
 extern short BloodVersion;
 extern int gNetPlayers;
 extern bool gRestartGame;
@@ -73,6 +72,14 @@ extern int gCacheMiss;
 extern int gDoQuickSave;
 extern int gMenuPicnum;
 
+extern int gMultiModeInit;
+extern int gMultiEpisodeInit;
+extern int gMultiLevelInit;
+extern int gMultiDiffInit;
+extern int gMultiMonsters;
+extern int gMultiWeapons;
+extern int gMultiItems;
+
 void QuitGame(void);
 void PreloadCache(void);
 void StartLevel(GAMEOPTIONS *gameOptions);
@@ -80,10 +87,10 @@ void ProcessFrame(void);
 void ScanINIFiles(void);
 bool LoadArtFile(const char *pzFile);
 void LoadExtraArts(void);
-bool VanillaMode(const bool demoState = false);
+void VanillaModeUpdate(void);
+bool VanillaMode(const bool bDemoCheck = false);
 bool WeaponsNotBlood(void);
 bool WeaponsV10x(void);
-bool ExplosionsNotBlood(void);
 bool ProjectilesNotBlood(void);
 bool ProjectilesRaze(void);
 bool EnemiesNotBlood(void);

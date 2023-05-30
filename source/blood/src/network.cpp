@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "controls.h"
 #include "globals.h"
 #include "network.h"
+#include "chatpipe.h"
 #include "menu.h"
 #include "player.h"
 #include "seq.h"
@@ -69,7 +70,7 @@ char gNetAddress[32];
 // PORT-TODO: Use different port?
 int gNetPort = kNetDefaultPort;
 
-const short word_1328AC = 0x21D;
+const short kNetVersion = 0x221;
 
 PKT_STARTGAME gPacketStartGame;
 
@@ -341,6 +342,7 @@ void netGetPackets(void)
     short nPlayer;
     short nSize;
     char buffer[128];
+    ChatPipe_Poll();
     while ((nSize = netGetPacket(&nPlayer, packet)) > 0)
     {
         char *pPacket = packet;
@@ -528,7 +530,7 @@ void netGetPackets(void)
         case 252:
             pPacket += 4;
             memcpy(&gPacketStartGame, pPacket, sizeof(PKT_STARTGAME));
-            if (gPacketStartGame.version != word_1328AC)
+            if (gPacketStartGame.version != kNetVersion)
                 ThrowError("\nThese versions of Blood cannot play together.\n");
             gStartNewGame = 1;
             SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
@@ -574,6 +576,7 @@ void netBroadcastPlayerInfo(int nPlayer)
     pProfile->nAutoAim = gAutoAim;
     pProfile->nWeaponSwitch = gWeaponSwitch;
     pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
+    pProfile->nTeamPreference = gPlayerTeamPreference;
     pProfile->nWeaponHBobbing = gWeaponHBobbing;
     gProfileNet[nPlayer] = gProfile[nPlayer];
     if (numplayers < 2)
@@ -592,6 +595,7 @@ void netBroadcastPlayerInfoUpdate(int nPlayer)
     pProfile->nAutoAim = gAutoAim;
     pProfile->nWeaponSwitch = gWeaponSwitch;
     pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
+    pProfile->nTeamPreference = gPlayerTeamPreference;
     pProfile->nWeaponHBobbing = gWeaponHBobbing;
     if (numplayers < 2)
         return;
@@ -607,7 +611,7 @@ void netBroadcastNewGame(void)
 {
     if (numplayers < 2)
         return;
-    gPacketStartGame.version = word_1328AC;
+    gPacketStartGame.version = kNetVersion;
     char *pPacket = packet;
     PutPacketByte(pPacket, 252);
     PutPacketDWord(pPacket, myconnectindex);

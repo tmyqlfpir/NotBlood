@@ -198,6 +198,8 @@ static void ThrowSeqCallback(int, int nXSprite)
     XSPRITE *pXSprite = &xsprite[nXSprite];
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
+    if (!sectRangeIsFine(pSprite->sectnum)) // invalid sector, abort
+        return;
     if (!VanillaMode() && !spriRangeIsFine(pXSprite->target)) // not a valid target, abort
         return thinkChase(pSprite, pXSprite);
     int nMissile = kThingArmedTNTStick;
@@ -242,6 +244,8 @@ static void sub_68170(int, int nXSprite)
     XSPRITE *pXSprite = &xsprite[nXSprite];
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
+    if (!sectRangeIsFine(pSprite->sectnum)) // invalid sector, abort
+        return;
     int nMissile = kThingArmedTNTStick;
     if (gGameOptions.nDifficulty > 2)
         nMissile = kThingArmedTNTBundle;
@@ -271,6 +275,8 @@ static void sub_68230(int, int nXSprite)
     XSPRITE *pXSprite = &xsprite[nXSprite];
     int nSprite = pXSprite->reference;
     spritetype *pSprite = &sprite[nSprite];
+    if (!sectRangeIsFine(pSprite->sectnum)) // invalid sector, abort
+        return;
     if (!VanillaMode() && !spriRangeIsFine(pXSprite->target)) // not a valid target, abort
         return thinkChase(pSprite, pXSprite);
     int nMissile = kThingArmedTNTStick;

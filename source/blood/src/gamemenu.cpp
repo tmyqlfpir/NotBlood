@@ -149,7 +149,6 @@ void CGameMenuMgr::Draw(void)
     if (pActiveMenu)
     {
         pActiveMenu->Draw();
-        viewUpdatePages();
     }
 
     if (m_postPop)
@@ -361,7 +360,7 @@ void CGameMenu::Draw(void)
         if (pItemList[i]->pPreDrawCallback)
             pItemList[i]->pPreDrawCallback(pItemList[i]);
         const bool bEnableBak = pItemList[i]->bEnable;
-        pItemList[i]->bEnable = pItemList[i]->bEnable && !(gNetPlayers > 1 && pItemList[i]->bDisableForNet); // turn off any menu items that should not be accessible during multiplayer
+        pItemList[i]->bEnable = pItemList[i]->bEnable && !(gNetPlayers > 1 && pItemList[i]->bDisableForNet) && !(gGameOptions.bPermaDeath && pItemList[i]->bDisableForPermaDeath); // turn off any menu items that should not be accessible during multiplayer/permadeath
         if (i == m_nFocus || (i != m_nFocus && !pItemList[i]->bNoDraw))
         {
             pItemList[i]->Draw();
@@ -432,7 +431,7 @@ void CGameMenu::SetFocusItem(CGameMenuItem *pItem)
 bool CGameMenu::CanSelectItem(int nItem)
 {
     dassert(nItem >= 0 && nItem < m_nItems && nItem < kMaxGameMenuItems);
-    return pItemList[nItem]->bCanSelect && pItemList[nItem]->bEnable && !(gNetPlayers > 1 && pItemList[nItem]->bDisableForNet);
+    return pItemList[nItem]->bCanSelect && pItemList[nItem]->bEnable && !(gNetPlayers > 1 && pItemList[nItem]->bDisableForNet) && !(gGameOptions.bPermaDeath && pItemList[nItem]->bDisableForPermaDeath);
 }
 
 void CGameMenu::FocusPrevItem(void)
@@ -488,6 +487,7 @@ CGameMenuItem::CGameMenuItem()
     pMenu = NULL;
     bNoDraw = 0;
     bDisableForNet = 0;
+    bDisableForPermaDeath = 0;
     tooltip_pzTextUpper = NULL;
     tooltip_pzTextLower = NULL;
     pPreDrawCallback = NULL;
@@ -1817,7 +1817,7 @@ void CGameMenuItemZEditBitmap::Draw(void)
         if (restoreGameDifficulty[at28] < 5)
             snprintf(buffer, sizeof(buffer), "DIFFICULTY: %s", zDiffStrings[restoreGameDifficulty[at28]]);
         else
-            snprintf(buffer, sizeof(buffer), "DIFFICULTY: CUSTOM (%d-%d-%d-%d-%d-%s)", gSaveGameOptions[at28].nEnemyQuantity, gSaveGameOptions[at28].nEnemyHealth, gSaveGameOptions[at28].nDifficulty, gSaveGameProfileSkill[at28], gSaveGameOptions[at28].nEnemySpeed, gSaveGameOptions[at28].bPitchforkOnly ? "ON" : "OFF");
+            snprintf(buffer, sizeof(buffer), "DIFFICULTY: CUSTOM (%d-%d-%d-%d-%d-%s-%s)", gSaveGameOptions[at28].nEnemyQuantity, gSaveGameOptions[at28].nEnemyHealth, gSaveGameOptions[at28].nDifficulty, gSaveGameProfileSkill[at28], gSaveGameOptions[at28].nEnemySpeed, gSaveGameOptions[at28].bEnemyShuffle ? "ON" : "OFF", gSaveGameOptions[at28].bPitchforkOnly ? "ON" : "OFF");
         gMenuTextMgr.DrawText(buffer, m_nFont, 20, 50, 32, 0, true);
     }
     at2c->at24 = -1;
