@@ -769,9 +769,10 @@ inline int interpolate(int a, int b, int c, char bOrigCal = 0)
     extern bool VanillaMode(const bool bDemoCheck = false);
     if (bOrigCal || VanillaMode())
         return a+mulscale16(b-a,c);
-    float result = (float)b - (float)a;
-    result = (float)a + (result * (float)c / 65536.0f);
-    return (int)result;
+    if (a == b)
+        return b;
+    float result = (float)(b - a) * (float(c) / 65536.0f);
+    return a + (int)result;
 }
 
 inline int interpolateang(int a, int b, int c)
