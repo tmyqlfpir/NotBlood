@@ -27,7 +27,7 @@ jobs:
             env: i686
             pkg: nasm mingw-w64-i686-SDL
             opt: SDLCONFIG=
-            additional-cmd: echo
+            additional-cmd: cp -a ./package/updater/w32/notbloodupdate ./upload/notbloodupdate.exe
             zipname: win32
           - name: i686 GCC WinXP
             ref: windows-xp

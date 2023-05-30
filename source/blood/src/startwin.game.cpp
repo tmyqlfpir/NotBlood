@@ -380,7 +380,7 @@ static void SetPage(int pageNum)
 
 static void EnableConfig(bool n)
 {
-#ifdef _WIN64
+#ifndef NETCODE_DISABLE
     EnableWindow(GetDlgItem(startupdlg, WIN_STARTWIN_UPDATE), n);
 #else
     ShowWindow(GetDlgItem(startupdlg, WIN_STARTWIN_UPDATE), SW_HIDE);
@@ -396,7 +396,7 @@ static void EnableConfig(bool n)
     EnableWindow(GetDlgItem(pages[TAB_CONFIG], IDCVMODE), n);
 }
 
-#ifdef _WIN64
+#ifndef NETCODE_DISABLE
 bool ExecUpdater(void)
 {
     STARTUPINFO si;
@@ -611,7 +611,7 @@ static INT_PTR CALLBACK startup_dlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, 
         switch (LOWORD(wParam))
         {
         case WIN_STARTWIN_UPDATE:
-#ifdef _WIN64
+#ifndef NETCODE_DISABLE
             if (!ExecUpdater()) break;
             done = 0;
             return TRUE;
