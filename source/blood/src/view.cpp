@@ -1005,7 +1005,7 @@ void viewAddInterpolation(void *data, INTERPOLATE_TYPE type)
     }
     else if (!bInterpWarnVanilla && (nInterpolations >= kMaxInterpolationsVanilla) && VanillaMode())
     {
-        OSD_Printf("Warning: Interpolations over vanilla limit (%d/%d)\n", nInterpolations, kMaxInterpolationsVanilla);
+        viewSetSystemMessage("Warning: Interpolations over vanilla limit (%d/%d)\n", nInterpolations, kMaxInterpolationsVanilla);
         bInterpWarnVanilla = 1;
     }
     INTERPOLATE *pInterpolate = &gInterpolation[nInterpolations++];
