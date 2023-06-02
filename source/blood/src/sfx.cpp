@@ -155,9 +155,10 @@ void Calc3DValues(BONKLE *pBonkle)
             bCanSeeZ = posZ;
         }
         if (sectRangeIsFine(bCanSeeSect) && !bIgnoreSpriteType)
-            bCanSeeSect = cansee(gMe->pSprite->x, gMe->pSprite->y, gMe->zView, gMe->pSprite->sectnum, posX, posY, bCanSeeZ, bCanSeeSect);
-        if (bCanSeeSect == 0)
-            distance3D += distance3D>>1;
+        {
+            if (!cansee(gMe->pSprite->x, gMe->pSprite->y, gMe->zView, gMe->pSprite->sectnum, posX, posY, bCanSeeZ, bCanSeeSect))
+                distance3D += distance3D>>1;
+        }
     }
     distance3D = ClipLow((distance3D >> 2) + (distance3D >> 3), 64);
     const int nVol = scale(pBonkle->vol, 80, distance3D);
