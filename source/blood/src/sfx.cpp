@@ -72,7 +72,7 @@ int Vol3d(int angle, int dist)
     return dist - mulscale16(dist, 0x2000 - mulscale30(0x2000, Cos(angle)));
 }
 
-static char Calc3DSectOffset(spritetype *pLink, int *srcx, int *srcy, int *srcz, const int dstsect, int *bCanSeeSect, int *bCanSeeZ, const char bDir)
+char Calc3DSectOffset(spritetype *pLink, int *srcx, int *srcy, int *srcz, const int dstsect, int *bCanSeeSect, int *bCanSeeZ, const char bDir)
 {
     const int nLink = pLink->owner;
     if (!spriRangeIsFine(nLink)) // if invalid link
@@ -99,7 +99,7 @@ static char Calc3DSectOffset(spritetype *pLink, int *srcx, int *srcy, int *srcz,
     return 1;
 }
 
-static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, const int dstsect, int *bCanSeeSect, int *bCanSeeZ)
+inline void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, const int dstsect, int *bCanSeeSect, int *bCanSeeZ)
 {
     if (srcsect == dstsect) // if source and listener are in same sector
         return;
@@ -120,6 +120,34 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
             return;
     }
     return;
+}
+
+inline void Calc3DOcclude(const BONKLE *pBonkle, int *nDist, int bCanSeeSect, int bCanSeeZ, const int posX, const int posY, const int posZ)
+{
+    if (pBonkle->pSndSpr && (pBonkle->pSndSpr->type >= kGenSound) && (pBonkle->pSndSpr->type <= kSoundPlayer)) // don't occlude these types
+        return;
+    if (bCanSeeSect == -1)
+    {
+        bCanSeeSect = pBonkle->sectnum;
+        const int fz = getflorzofslope(bCanSeeSect, posX, posY);
+        if (fz <= posZ)
+        {
+            bCanSeeZ = fz;
+        }
+        else
+        {
+            const int cz = getceilzofslope(bCanSeeSect, posX, posY);
+            if (cz >= posZ)
+                bCanSeeZ = cz;
+            else
+                bCanSeeZ = posZ;
+        }
+    }
+    if (sectRangeIsFine(bCanSeeSect))
+    {
+        if (!cansee(gMe->pSprite->x, gMe->pSprite->y, gMe->zView, gMe->pSprite->sectnum, posX, posY, bCanSeeZ, bCanSeeSect))
+            *nDist <<= 1;
+    }
 }
 
 void Calc3DValues(BONKLE *pBonkle)
@@ -145,21 +173,7 @@ void Calc3DValues(BONKLE *pBonkle)
 
     int distance3D = approxDist3D(dx, dy, dz);
     if (gSoundOcclusion)
-    {
-        char bIgnoreSpriteType = 0;
-        if (pBonkle->pSndSpr != NULL)
-            bIgnoreSpriteType = (pBonkle->pSndSpr->type >= kGenSound) && (pBonkle->pSndSpr->type <= kSoundPlayer); // don't occlude these types
-        if (bCanSeeSect == -1)
-        {
-            bCanSeeSect = pBonkle->sectnum;
-            bCanSeeZ = posZ;
-        }
-        if (sectRangeIsFine(bCanSeeSect) && !bIgnoreSpriteType)
-        {
-            if (!cansee(gMe->pSprite->x, gMe->pSprite->y, gMe->zView, gMe->pSprite->sectnum, posX, posY, bCanSeeZ, bCanSeeSect))
-                distance3D <<= 1;
-        }
-    }
+        Calc3DOcclude(pBonkle, &distance3D, bCanSeeSect, bCanSeeZ, posX, posY, posZ);
     distance3D = ClipLow((distance3D >> 2) + (distance3D >> 3), 64);
     const int nVol = scale(pBonkle->vol, 80, distance3D);
     const int nEarAngle = gStereo ? nEarAng : kAng15;
