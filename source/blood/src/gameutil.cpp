@@ -83,8 +83,6 @@ static bool AreSectorsNeighborsDepthCheck(int nSect1, int nSect2, int nDepth, bo
         const int nSectNext = wall[i].nextsector;
         if (nSectNext < 0) // if next wall isn't linked to a sector, skip
             continue;
-        if (!sectRangeIsFine(nSectNext)) // invalid sector, skip
-            continue;
         if (TestBitString(pSectBit, nSectNext)) // if we've already checked this sector, skip
             continue;
         if (nSectNext == nSect2) // howdy neighbor

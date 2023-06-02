@@ -1148,6 +1148,7 @@ int32_t registerosdcommands(void)
         { "snd_speed", "set the speed of sound m/s used for doppler calculation (default: 343, range: 10-1000)", (void *)&gSoundSpeed, CVAR_INT, 10, 1000 },
         { "snd_stereo", "enable/disable 3d stereo sound", (void *)&gStereo, CVAR_BOOL, 0, 1 },
         { "snd_fmpianofix", "enable/disable fm piano timbre fix", (void*)&gFMPianoFix, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
+        { "snd_occlusion", "enable/disable lowering sound volume by 50% for occluded sound sources", (void *)&gSoundOcclusion, CVAR_BOOL, 0, 1 },
         { "snd_underwaterpitch", "enable/disable lowering sound pitch by 7% while underwater", (void *)&gSoundUnderwaterPitch, CVAR_BOOL, 0, 1 },
 //        { "snd_speech", "enables/disables player speech", (void *)&ud.config.VoiceToggle, CVAR_INT, 0, 5 },
 //
