@@ -280,5 +280,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Set the listening ear offset (15-90 degrees)
 * snd_speed
    - Set the speed of sound m/s used for doppler calculation (default: 343, range: 10-1000)
+* snd_occlusion
+   - Enable/disable lowering sound volume by 50% for occluded sound sources
 * snd_underwaterpitch
    - Enable/disable lowering sound pitch by 7% while underwater
