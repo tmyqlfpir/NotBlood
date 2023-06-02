@@ -48,6 +48,7 @@ int gSoundEarAng = 15; // angle for ear focus
 static int oldEarAng = gSoundEarAng;
 static int nEarAng = kAng15;
 
+int gSoundOcclusion = 0; // adjust 3D sound sources volume if they don't have clear line of sight to player
 int gSoundUnderwaterPitch = 0; // modify pitch when underwater
 
 BONKLE Bonkle[256];
@@ -71,28 +72,34 @@ int Vol3d(int angle, int dist)
     return dist - mulscale16(dist, 0x2000 - mulscale30(0x2000, Cos(angle)));
 }
 
-static bool Calc3DSectOffset(spritetype *pLink, int *srcx, int *srcy, int *srcz, const int dstsect)
+static char Calc3DSectOffset(spritetype *pLink, int *srcx, int *srcy, int *srcz, const int dstsect, int *bCanSeeSect, int *bCanSeeZ, const char bDir)
 {
     const int nLink = pLink->owner;
     if (!spriRangeIsFine(nLink)) // if invalid link
-        return false;
+        return 0;
     const spritetype *pOtherLink = &sprite[nLink];
 
     const int linksect = pLink->sectnum;
     if (!sectRangeIsFine(linksect) || !sectRangeIsFine(pOtherLink->sectnum)) // if invalid sector
-        return false;
+        return 0;
     if (IsUnderwaterSector(linksect)) // if other link is underwater
-        return false;
+        return 0;
     if (!AreSectorsNeighbors(pOtherLink->sectnum, dstsect, 4, true)) // if linked sector is not parallel to destination sector, abort
-        return false;
+        return 0;
 
     *srcx += pOtherLink->x-pLink->x;
     *srcy += pOtherLink->y-pLink->y;
     *srcz += pOtherLink->z-pLink->z;
-    return true;
+
+    if (gSoundOcclusion)
+    {
+        *bCanSeeSect = pOtherLink->sectnum;
+        *bCanSeeZ = !bDir ? getceilzofslope(*bCanSeeSect, *srcx, *srcy) : getflorzofslope(*bCanSeeSect, *srcx, *srcy);
+    }
+    return 1;
 }
 
-static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, const int dstsect)
+static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, const int dstsect, int *bCanSeeSect, int *bCanSeeZ)
 {
     if (srcsect == dstsect) // if source and listener are in same sector
         return;
@@ -104,22 +111,25 @@ static void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
     const int nUpper = gUpperLink[srcsect], nLower = gLowerLink[srcsect];
     if ((nUpper >= 0) && (sector[sprite[nUpper].sectnum].floorpicnum >= 4080) && (sector[sprite[nUpper].sectnum].floorpicnum <= 4095)) // sector has a ror upper link
     {
-        if (Calc3DSectOffset(&sprite[nUpper], srcx, srcy, srcz, dstsect))
+        if (Calc3DSectOffset(&sprite[nUpper], srcx, srcy, srcz, dstsect, bCanSeeSect, bCanSeeZ, 0))
             return;
     }
     if ((nLower >= 0) && (sector[sprite[nLower].sectnum].ceilingpicnum >= 4080) && (sector[sprite[nLower].sectnum].ceilingpicnum <= 4095)) // sector has a ror lower link
     {
-        Calc3DSectOffset(&sprite[nLower], srcx, srcy, srcz, dstsect);
+        if (Calc3DSectOffset(&sprite[nLower], srcx, srcy, srcz, dstsect, bCanSeeSect, bCanSeeZ, 1))
+            return;
     }
+    return;
 }
 
 void Calc3DValues(BONKLE *pBonkle)
 {
+    int bCanSeeSect = -1, bCanSeeZ = -1;
     int posX = pBonkle->curPos.x;
     int posY = pBonkle->curPos.y;
     int posZ = pBonkle->curPos.z;
     if (!VanillaMode()) // check if sound source is occurring in a linked sector (room over room)
-        Calc3DSects(&posX, &posY, &posZ, pBonkle->sectnum, gMe->pSprite->sectnum);
+        Calc3DSects(&posX, &posY, &posZ, pBonkle->sectnum, gMe->pSprite->sectnum, &bCanSeeSect, &bCanSeeZ);
     const int dx = posX - gMe->pSprite->x;
     const int dy = posY - gMe->pSprite->y;
     const int dz = posZ - gMe->pSprite->z;
@@ -134,6 +144,22 @@ void Calc3DValues(BONKLE *pBonkle)
     rPhase = phaseLeft - phaseMin;
 
     int distance3D = approxDist3D(dx, dy, dz);
+    if (gSoundOcclusion)
+    {
+        char bIgnoreSpriteType = 0;
+        if (pBonkle->pSndSpr != NULL)
+            bIgnoreSpriteType = (pBonkle->pSndSpr->type >= kGenSound) && (pBonkle->pSndSpr->type <= kSoundPlayer); // don't occlude these types
+        if (bCanSeeSect == -1)
+        {
+            bCanSeeSect = pBonkle->sectnum;
+            bCanSeeZ = posZ;
+        }
+        if (sectRangeIsFine(bCanSeeSect) && !bIgnoreSpriteType)
+        {
+            if (!cansee(gMe->pSprite->x, gMe->pSprite->y, gMe->zView, gMe->pSprite->sectnum, posX, posY, bCanSeeZ, bCanSeeSect))
+                distance3D <<= 1;
+        }
+    }
     distance3D = ClipLow((distance3D >> 2) + (distance3D >> 3), 64);
     const int nVol = scale(pBonkle->vol, 80, distance3D);
     const int nEarAngle = gStereo ? nEarAng : kAng15;
