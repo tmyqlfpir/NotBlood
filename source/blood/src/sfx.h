@@ -37,6 +37,8 @@ struct BONKLE
     POINT3D oldPos;
     int sectnum;
     int format;
+    int zOff;
+    int nType;
 };
 
 extern int gSoundSpeed;
