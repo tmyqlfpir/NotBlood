@@ -136,6 +136,8 @@ inline void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
 
 inline void Calc3DOcclude(const BONKLE *pBonkle, int *nDist, const int posX, const int posY, const int posZ, int bCanSeeSect)
 {
+    if ((pBonkle->sfxId >= 303) && (pBonkle->sfxId <= 307)) // don't occlude explosion sfx
+        return;
     if ((pBonkle->nType >= kGenSound) && (pBonkle->nType <= kSoundPlayer)) // don't occlude these types
         return;
     if (!sectRangeIsFine(bCanSeeSect))
