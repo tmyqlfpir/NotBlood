@@ -38,6 +38,7 @@ struct BONKLE
     int sectnum;
     int format;
     int zOff;
+    int nType;
 };
 
 extern int gSoundSpeed;

@@ -136,7 +136,7 @@ inline void Calc3DSects(int *srcx, int *srcy, int *srcz, const int srcsect, cons
 
 inline void Calc3DOcclude(const BONKLE *pBonkle, int *nDist, const int posX, const int posY, const int posZ, int bCanSeeSect)
 {
-    if (pBonkle->pSndSpr && (pBonkle->pSndSpr->type >= kGenSound) && (pBonkle->pSndSpr->type <= kSoundPlayer)) // don't occlude these types
+    if ((pBonkle->nType >= kGenSound) && (pBonkle->nType <= kSoundPlayer)) // don't occlude these types
         return;
     if (!sectRangeIsFine(bCanSeeSect))
         bCanSeeSect = pBonkle->sectnum;
@@ -227,6 +227,7 @@ void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
     FindSector(x, y, z, &pBonkle->sectnum);
     pBonkle->oldPos = pBonkle->curPos;
     pBonkle->zOff = 0;
+    pBonkle->nType = 0;
     pBonkle->sfxId = soundId;
     pBonkle->hSnd = hRes;
     pBonkle->vol = pEffect->relVol;
@@ -323,6 +324,7 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags)
     pBonkle->sectnum = pSprite->sectnum;
     pBonkle->oldPos = pBonkle->curPos;
     pBonkle->zOff = CalcYOffset(pSprite);
+    pBonkle->nType = pSprite->type;
     pBonkle->sfxId = soundId;
     pBonkle->hSnd = hRes;
     pBonkle->vol = pEffect->relVol;
@@ -438,6 +440,7 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
     pBonkle->sectnum = pSprite->sectnum;
     pBonkle->oldPos = pBonkle->curPos;
     pBonkle->zOff = CalcYOffset(pSprite);
+    pBonkle->nType = pSprite->type;
     pBonkle->sfxId = soundId;
     pBonkle->hSnd = hRes;
     switch (volume)
@@ -577,7 +580,10 @@ void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *pOffsetPos)
                 pBonkle->oldPos = pBonkle->curPos;
             }
             if (gSoundOcclusion)
+            {
                 pBonkle->zOff = CalcYOffset(pSprite);
+                pBonkle->nType = pSprite->type;
+            }
         }
     }
 }
