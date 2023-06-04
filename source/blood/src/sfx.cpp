@@ -143,6 +143,7 @@ inline void Calc3DOcclude(const BONKLE *pBonkle, int *nDist, const int posX, con
     if (!sectRangeIsFine(bCanSeeSect))
         bCanSeeSect = pBonkle->sectnum;
 
+    const char bIsExplosion = (pBonkle->sfxId >= 303) && (pBonkle->sfxId <= 307);
     int bCanSeeZ = posZ-pBonkle->zOff;
     const int fz = getflorzofslope(bCanSeeSect, posX, posY);
     if (fz <= bCanSeeZ)
@@ -157,7 +158,7 @@ inline void Calc3DOcclude(const BONKLE *pBonkle, int *nDist, const int posX, con
     }
 
     if (!cansee(gMe->pSprite->x, gMe->pSprite->y, gMe->zView, gMe->pSprite->sectnum, posX, posY, bCanSeeZ, bCanSeeSect))
-        *nDist <<= 1;
+        *nDist = bIsExplosion ? *nDist+(*nDist>>1)-(*nDist>>2) : *nDist<<1;
 }
 
 void Calc3DValues(BONKLE *pBonkle)
