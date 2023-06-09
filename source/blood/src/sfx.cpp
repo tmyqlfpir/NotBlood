@@ -56,11 +56,22 @@ BONKLE *BonkleCache[256];
 
 int nBonkles;
 
+DMGFEEDBACK gSoundDingSprite[4];
+const DMGFEEDBACK kSoundDingSpriteInit = {-1, 0, 0};
+
+int gSoundDing = 0;
+int gSoundDingVol = 75;
+int gSoundDingMinPitch = 22050;
+int gSoundDingMaxPitch = 22050;
+
 void sfxInit(void)
 {
     for (int i = 0; i < 256; i++)
         BonkleCache[i] = &Bonkle[i];
     nBonkles = 0;
+
+    for (int i = 0; i < 4; i++)
+        gSoundDingSprite[i] = kSoundDingSpriteInit;
 }
 
 void sfxTerm()
@@ -543,6 +554,9 @@ void sfxKillAllSounds(void)
     {
         sfxKillSoundInternal(i);
     }
+
+    for (int i = 0; i < 4; i++)
+        gSoundDingSprite[i] = kSoundDingSpriteInit;
 }
 
 void sfxKillSpriteSounds(spritetype *pSprite)
@@ -640,6 +654,38 @@ static void sfxUpdateEarAng(void)
     }
 }
 
+inline int ClampScale(int nVal, int nInMin, int nInMax, int nOutMin, int nOutMax)
+{
+	if (nInMin == nInMax)
+		return (nVal - nInMax) >= 0 ? nOutMax : nOutMin;
+	float cVal = float(nVal - nInMin) / float(nInMax - nInMin);
+	cVal = ClipRangeF(cVal, 0.f, 1.f);
+
+	return nOutMin + int(float(nOutMax - nOutMin) * cVal);
+}
+
+static void sfxPlayerDamageFeedback(void)
+{
+    const int kMinDam = 50, kMaxDam = 1500, kDelayTicks = 7;
+    for (int i = 0; i < 4; i++)
+    {
+        DMGFEEDBACK *pSoundDmgSprite = &gSoundDingSprite[i];
+        if (pSoundDmgSprite->nSprite == -1) // reached end of attacked sprite list, stop
+            break;
+        const int nTickDiff = klabs(gLevelTime - pSoundDmgSprite->nTick);
+        if (!nTickDiff) // this sfx will trigger in the same tick, skip
+            continue;
+        if (nTickDiff < kDelayTicks) // this sfx will trigger too soon, skip
+            continue;
+
+        const int nRate = ClampScale(pSoundDmgSprite->nDamage, kMinDam, kMaxDam, gSoundDingMinPitch, gSoundDingMaxPitch);
+        sndStartSample("HITSOUND", gSoundDingVol, -1, nRate);
+        pSoundDmgSprite->nSprite = -1;
+        pSoundDmgSprite->nDamage = 0;
+        pSoundDmgSprite->nTick = gLevelTime;
+    }
+}
+
 static void sfxModifyPitchUnderwater(spritetype *pSndSpr, int *nPitch)
 {
     if (pSndSpr && (pSndSpr == gMe->pSprite)) // if sound is assigned to player sprite, don't modify pitch
@@ -654,6 +700,8 @@ void sfxUpdate3DSounds(void)
     sfxUpdateListenerVel();
     sfxUpdateSpeedOfSound();
     sfxUpdateEarAng();
+    if (gSoundDing)
+        sfxPlayerDamageFeedback();
     const char bUnderwater = gSoundUnderwaterPitch && !VanillaMode() && gMe->pSprite && sectRangeIsFine(gMe->pSprite->sectnum) && IsUnderwaterSector(gMe->pSprite->sectnum); // if underwater, lower audio pitch
     for (int i = nBonkles - 1; i >= 0; i--)
     {
