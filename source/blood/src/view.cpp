@@ -3031,7 +3031,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
         pNSprite->z = pTSprite->z-(32<<8);
-        if (pPlayer->posture == kPostureCrouch) // if player is crouching
+        if (!VanillaMode() && (pPlayer->posture == kPostureCrouch)) // if player is crouching
             pNSprite->z += pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture].zOffset<<5;
         pNSprite->picnum = nTile;
         pNSprite->shade = pTSprite->shade;
@@ -3042,7 +3042,10 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             break;
         const int nVoxel = voxelIndex[nTile];
         if ((pPlayer == gView) && (gViewPos != VIEWPOS_0)) // if viewing current player in third person, set sprite to transparent
+        {
             pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT;
+            pNSprite->z -= weaponIcon.zOffset<<8; // offset up
+        }
         else if (gShowWeapon == 2 && usevoxels && gDetail >= 4 && videoGetRenderMode() != REND_POLYMER && nVoxel != -1)
         {
             pNSprite->cstat |= 48;
