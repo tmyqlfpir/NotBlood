@@ -41,6 +41,13 @@ struct BONKLE
     int nType;
 };
 
+struct DMGFEEDBACK
+{
+    short nSprite;
+    short nDamage;
+    int   nTick;
+};
+
 extern int gSoundSpeed;
 extern int gSoundEarAng;
 extern int gSoundOcclusion;
@@ -49,6 +56,13 @@ extern int gSoundUnderwaterPitch;
 extern BONKLE Bonkle[256];
 extern BONKLE* BonkleCache[256];
 extern int nBonkles;
+
+extern DMGFEEDBACK gSoundDingSprite[4];
+
+extern int gSoundDing;
+extern int gSoundDingVol;
+extern int gSoundDingMinPitch;
+extern int gSoundDingMaxPitch;
 
 void sfxInit(void);
 void sfxTerm(void);
