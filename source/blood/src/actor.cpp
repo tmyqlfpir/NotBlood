@@ -3483,6 +3483,21 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
                 nDamageFactor = getDudeInfo(pSprite->type)->curDamage[damageType];
             #endif
 
+            if (gSoundDing && (damage > 0) && (pSourcePlayer == gMe) && (pSprite != gMe->pSprite)) {
+                for (int i = 0; i < 4; i++) {
+                    DMGFEEDBACK *pSoundDmgSprite = &gSoundDingSprite[i];
+                    if (pSoundDmgSprite->nSprite == -1) {
+                        pSoundDmgSprite->nSprite = pSprite->index;
+                        pSoundDmgSprite->nDamage = damage;
+                        break;
+                    }
+                    if (pSoundDmgSprite->nSprite == pSprite->index) {
+                        pSoundDmgSprite->nDamage += damage;
+                        break;
+                    }
+                }
+            }
+
             if (!nDamageFactor) return 0;
             else if (nDamageFactor != 256)
                 damage = mulscale8(damage, nDamageFactor);
