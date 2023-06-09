@@ -1374,7 +1374,7 @@ void aiLookForTarget(spritetype *pSprite, XSPRITE *pXSprite)
         }
         if (pXSprite->state)
         {
-            char sectmap[(kMaxSectors+7)>>3];
+            char sectmap[bitmap_size(kMaxSectors)];
             gAffectedSectors[0] = 0;
             gAffectedXWalls[0] = 0;
             const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode(); // use new sector checking logic

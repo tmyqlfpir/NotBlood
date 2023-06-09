@@ -123,12 +123,12 @@ VIEW predictFifo[256];
 
 int gInterpolate;
 int nInterpolations;
-char gInterpolateSprite[(kMaxSprites+7)>>3];
-char gInterpolateWall[(kMaxWalls+7)>>3];
-char gInterpolateSector[(kMaxSectors+7)>>3];
-char gInterpolatePanningWall[(kMaxWalls+7)>>3];
-char gInterpolatePanningCeiling[(kMaxSectors+7)>>3];
-char gInterpolatePanningFloor[(kMaxSectors+7)>>3];
+char gInterpolateSprite[bitmap_size(kMaxSprites)];
+char gInterpolateWall[bitmap_size(kMaxWalls)];
+char gInterpolateSector[bitmap_size(kMaxSectors)];
+char gInterpolatePanningWall[bitmap_size(kMaxWalls)];
+char gInterpolatePanningCeiling[bitmap_size(kMaxSectors)];
+char gInterpolatePanningFloor[bitmap_size(kMaxSectors)];
 
 #define kMaxInterpolations (16384*2)
 #define kMaxInterpolationsVanilla 4096
