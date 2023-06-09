@@ -106,7 +106,7 @@ bool AreSectorsNeighbors(int nSect1, int nSect2, int nDepth, bool bCheckSameSect
     }
     dassert(nSect1 >= 0 && nSect1 < kMaxSectors);
     dassert(nSect2 >= 0 && nSect2 < kMaxSectors);
-    char sectbits[(kMaxSectors+7)>>3];
+    char sectbits[bitmap_size(kMaxSectors)];
     memset(sectbits, 0, sizeof(sectbits));
     int nSrcSect, nDstSect;
     if (sector[nSect1].wallnum < sector[nSect2].wallnum)
@@ -1064,7 +1064,7 @@ unsigned int ClipMoveEDuke(int *x, int *y, int *z, int *nSector, int xv, int yv,
 
 int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, char *pSectBit)
 {
-    char sectbits[(kMaxSectors+7)>>3];
+    char sectbits[bitmap_size(kMaxSectors)];
     dassert(pSectors != NULL);
     memset(sectbits, 0, sizeof(sectbits));
     pSectors[0] = nSector;
@@ -1073,7 +1073,7 @@ int GetClosestSectors(int nSector, int x, int y, int nDist, short *pSectors, cha
     int i = 0;
     if (pSectBit)
     {
-        memset(pSectBit, 0, (kMaxSectors+7)>>3);
+        memset(pSectBit, 0, bitmap_size(kMaxSectors));
         SetBitString(pSectBit, nSector);
     }
     while (i < n)
@@ -1114,7 +1114,7 @@ int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSector
     // E6M1: throwing TNT on the stone footpath while standing on the brown road will fail due to the start/end points of the span being too far away. it'll only do damage at one end of the road
     // E1M2: throwing TNT at the double doors while standing on the train platform
     // by setting newSectCheckMethod to true these issues will be resolved
-    char sectbits[(kMaxSectors+7)>>3];
+    char sectbits[bitmap_size(kMaxSectors)];
     dassert(pSectors != NULL);
     memset(sectbits, 0, sizeof(sectbits));
     pSectors[0] = nSector;
@@ -1124,7 +1124,7 @@ int GetClosestSpriteSectors(int nSector, int x, int y, int nDist, short *pSector
     const int nDist4 = nDist<<4;
     if (pSectBit)
     {
-        memset(pSectBit, 0, (kMaxSectors+7)>>3);
+        memset(pSectBit, 0, bitmap_size(kMaxSectors));
         SetBitString(pSectBit, nSector);
     }
     while (i < n) // scan through sectors

@@ -23,8 +23,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <stdlib.h>
 #include <string.h>
 
-#include <cfloat>
-
 #include "compat.h"
 #include "a.h"
 #include "build.h"
@@ -125,12 +123,12 @@ VIEW predictFifo[256];
 
 int gInterpolate;
 int nInterpolations;
-char gInterpolateSprite[(kMaxSprites+7)>>3];
-char gInterpolateWall[(kMaxWalls+7)>>3];
-char gInterpolateSector[(kMaxSectors+7)>>3];
-char gInterpolatePanningWall[(kMaxWalls+7)>>3];
-char gInterpolatePanningCeiling[(kMaxSectors+7)>>3];
-char gInterpolatePanningFloor[(kMaxSectors+7)>>3];
+char gInterpolateSprite[bitmap_size(kMaxSprites)];
+char gInterpolateWall[bitmap_size(kMaxWalls)];
+char gInterpolateSector[bitmap_size(kMaxSectors)];
+char gInterpolatePanningWall[bitmap_size(kMaxWalls)];
+char gInterpolatePanningCeiling[bitmap_size(kMaxSectors)];
+char gInterpolatePanningFloor[bitmap_size(kMaxSectors)];
 
 #define kMaxInterpolations (16384*2)
 #define kMaxInterpolationsVanilla 4096
@@ -5008,8 +5006,8 @@ void viewPrintFPS(void)
     static int32_t frameCount;
     static double cumulativeFrameDelay;
     static double lastFrameTime;
-    static float lastFPS, minFPS = 999.0f, maxFPS;
-    static double minGameUpdate = 999.0, maxGameUpdate;
+    static float lastFPS, minFPS = std::numeric_limits<float>::max(), maxFPS;
+    static double minGameUpdate = std::numeric_limits<double>::max(), maxGameUpdate;
 
     double frameTime = timerGetFractionalTicks();
     double frameDelay = frameTime - lastFrameTime;
