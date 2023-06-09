@@ -1135,6 +1135,10 @@ int32_t registerosdcommands(void)
         { "skill", "changes the skill handicap for multiplayer (default: 2, range: 0-4)", (void *)&gSkill, CVAR_INT, 0, 4 },
 //
 //        { "snd_ambience", "enables/disables ambient sounds", (void *)&ud.config.AmbienceToggle, CVAR_BOOL, 0, 1 },
+        { "snd_ding", "enable/disable hit noise when damaging an enemy. the sound can be changed by replacing the 'notblood.pk3/HITSOUND.RAW' file", (void *)&gSoundDing, CVAR_BOOL, 0, 1 },
+        { "snd_dingvol", "set volume for hit sound (default: 75, range: 1-255)", (void *)&gSoundDingVol, CVAR_INT, 1, 255 },
+        { "snd_dingminfreq", "set min damage frequency for hit sound (default: 22050, range: 11025-44100)", (void *)&gSoundDingMinPitch, CVAR_INT, 11025, 44100 },
+        { "snd_dingmaxfreq", "set max damage frequency for hit sound (default: 22050, range: 11025-44100)", (void *)&gSoundDingMaxPitch, CVAR_INT, 11025, 44100 },
         { "snd_doppler", "enables/disables audio doppler effect (stereo only)", (void *)&DopplerToggle, CVAR_BOOL, 0, 1 },
         { "snd_enabled", "enables/disables sound effects", (void *)&SoundToggle, CVAR_BOOL, 0, 1 },
         { "snd_earangle", "set the listening ear offset (15-90 degrees)", (void *)&gSoundEarAng, CVAR_INT, 15, 90 },

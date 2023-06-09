@@ -276,6 +276,14 @@ It should be noted that vanilla mode does not work with modern maps
    - Changes the skill handicap for multiplayer (default: 2, range: 0-4)
 * snd_earangle
    - Set the listening ear offset (15-90 degrees)
+* snd_ding
+   - Enable/disable hit noise when damaging an enemy. The sound can be changed by replacing the 'notblood.pk3/HITSOUND.RAW' file
+* snd_dingvol
+   - Set volume for hit sound (default: 75, range: 1-255)
+* snd_dingminfreq
+   - Set min damage frequency for hit sound (default: 22050, range: 11025-44100)
+* snd_dingmaxfreq
+   - Set max damage frequency for hit sound (default: 22050, range: 11025-44100)
 * snd_speed
    - Set the speed of sound m/s used for doppler calculation (default: 343, range: 10-1000)
 * snd_occlusion
