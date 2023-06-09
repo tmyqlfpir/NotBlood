@@ -23,8 +23,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <stdlib.h>
 #include <string.h>
 
-#include <cfloat>
-
 #include "compat.h"
 #include "a.h"
 #include "build.h"
@@ -5008,8 +5006,8 @@ void viewPrintFPS(void)
     static int32_t frameCount;
     static double cumulativeFrameDelay;
     static double lastFrameTime;
-    static float lastFPS, minFPS = 999.0f, maxFPS;
-    static double minGameUpdate = 999.0, maxGameUpdate;
+    static float lastFPS, minFPS = std::numeric_limits<float>::max(), maxFPS;
+    static double minGameUpdate = std::numeric_limits<double>::max(), maxGameUpdate;
 
     double frameTime = timerGetFractionalTicks();
     double frameDelay = frameTime - lastFrameTime;
