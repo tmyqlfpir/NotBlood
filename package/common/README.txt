@@ -127,6 +127,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Fixes room over room sector handling with hitscan calculations
    - Allow hitscan weapons to be fired when floating above water
    - Prevent missiles from colliding with water surface sectors
+   - Fix water/blood droplets transitioning through underwater (e.g: the cave secret in CP01.MAP)
    - Fixes blood splatter not using closest sector
    - Improves FX sprite handling regarding room over room transitioning
    - Check wall collision for spent bullet casings movement

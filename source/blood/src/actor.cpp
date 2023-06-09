@@ -4504,7 +4504,16 @@ int MoveThing(spritetype *pSprite)
             }
         }
     }
-    if (CheckLink(pSprite))
+    char bIgnoreROR = 0;
+    if ((pSprite->type == kThingDripWater || pSprite->type == kThingDripBlood) && gGameOptions.bSectorBehavior && !VanillaMode()) // check if droplet is moving through ror sector
+    {
+        const vec3_t kBakPos = pSprite->xyz;
+        const int kBakSect = nSector;
+        bIgnoreROR = CheckLink(&pSprite->x, &pSprite->y, &pSprite->z, &nSector) && IsUnderwaterSector(nSector); // only allow ror traversal if ror sector is not underwater (fixes bug where droplets move through water)
+        pSprite->xyz = kBakPos;
+        nSector = kBakSect;
+    }
+    if (bIgnoreROR || CheckLink(pSprite))
         GetZRange(pSprite, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist<<2, CLIPMASK0);
     GetSpriteExtents(pSprite, &top, &bottom);
     if (bottom >= floorZ)
