@@ -207,9 +207,15 @@ void Calc3DValues(BONKLE *pBonkle)
     }
     const int sinVal = Sin(angle);
     const int cosVal = Cos(angle);
-    const int nPitch = dmulscale30r(cosVal, pBonkle->curPos.x - pBonkle->oldPos.x, sinVal, pBonkle->curPos.y - pBonkle->oldPos.y);
-    lPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVL.dx, sinVal, earVL.dy) + nSoundSpeed, nPitch + nSoundSpeed);
-    rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + nSoundSpeed, nPitch + nSoundSpeed);
+    const int nPitch = dmulscale30r(cosVal, pBonkle->curPos.x - pBonkle->oldPos.x, sinVal, pBonkle->curPos.y - pBonkle->oldPos.y) + nSoundSpeed;
+    if (nPitch == 0) // don't allow div by zero
+    {
+        lPitch = rPitch = ClipRange(pBonkle->pitch, 5000, 50000);
+        return;
+    }
+
+    lPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVL.dx, sinVal, earVL.dy) + nSoundSpeed, nPitch);
+    rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + nSoundSpeed, nPitch);
     lPitch = ClipRange(lPitch, 5000, 50000);
     rPitch = ClipRange(rPitch, 5000, 50000);
 }
