@@ -2633,6 +2633,8 @@ void actInit(bool bSaveLoad) {
                         default:
                             pSprite->clipdist = dudeInfo[nType].clipdist;
                             pSprite->cstat |= 4096 + CSTAT_SPRITE_BLOCK_HITSCAN + CSTAT_SPRITE_BLOCK;
+                            if (((pSprite->cstat & CSTAT_SPRITE_ALIGNMENT_MASK) != CSTAT_SPRITE_ALIGNMENT_FACING) && !VanillaMode()) // fix flat enemy sprites in E2M4
+                                pSprite->cstat &= ~(pSprite->cstat & CSTAT_SPRITE_ALIGNMENT_MASK);
                             break;
                     }
                 }
