@@ -81,6 +81,7 @@ void SetMouseAimFlipped(CGameMenuItemZBool *);
 void SetTurnSpeed(CGameMenuItemSlider *);
 void SetCenterView(CGameMenuItemZBool *);
 void SetJoystickRumble(CGameMenuItemZBool *);
+void SetTurnAcceleration(CGameMenuItemZCycle *);
 void SetCrouchToggle(CGameMenuItemZBool *);
 void SetAutoRun(CGameMenuItemZBool *);
 void ResetKeys(CGameMenuItemChain *);
@@ -950,6 +951,12 @@ void SetJoystickDigitalNeg(CGameMenuItemZCycle* pItem);
 void SetJoystickDeadzone(CGameMenuItemSlider* pItem);
 void SetJoystickSaturate(CGameMenuItemSlider* pItem);
 
+const char *pzTurnAccelerationStrings[] = {
+    "OFF",
+    "ON RUNNING",
+    "ALWAYS ON",
+};
+
 CGameMenuItemTitle itemOptionsControlTitle("CONTROL SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsControlKeyboard("KEYBOARD SETUP", 1, 0, 60, 320, 1, &menuOptionsControlKeyboard, -1, NULL, 0);
 CGameMenuItemChain itemOptionsControlMouse("MOUSE SETUP", 1, 0, 80, 320, 1, &menuOptionsControlMouse, -1, SetupMouseMenu, 0);
@@ -959,11 +966,12 @@ CGameMenuItemChain itemOptionsControlJoystickMisc("JOYSTICK MISC SETUP", 1, 0, 1
 
 CGameMenuItemTitle itemOptionsControlKeyboardTitle("KEYBOARD SETUP", 1, 160, 20, 2038);
 CGameMenuItemSlider itemOptionsControlKeyboardSliderTurnSpeed("Key Turn Speed:", 1, 18, 50, 280, &gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
-CGameMenuItemZBool itemOptionsControlKeyboardBoolCrouchToggle("Crouch Toggle:", 1, 18, 70, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
-CGameMenuItemZBool itemOptionsControlKeyboardBoolAutoRun("Always Run:", 1, 18, 90, 280, gAutoRun, SetAutoRun, NULL, NULL);
-CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 125, 320, 1, &menuKeys, -1, NULL, 0);
-CGameMenuItemChain itemOptionsControlKeyboardReset("Reset Keys (default)...", 1, 0, 145, 320, 1, &menuKeys, -1, ResetKeys, 0);
-CGameMenuItemChain itemOptionsControlKeyboardResetClassic("Reset Keys (classic)...", 1, 0, 165, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
+CGameMenuItemZCycle itemOptionsControlKeyboardCycleTurnAcceleration("Key Turn Acceleration:", 1, 18, 70, 280, 0, SetTurnAcceleration, pzTurnAccelerationStrings, ARRAY_SIZE(pzTurnAccelerationStrings), 0);
+CGameMenuItemZBool itemOptionsControlKeyboardBoolCrouchToggle("Crouch Toggle:", 1, 18, 90, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
+CGameMenuItemZBool itemOptionsControlKeyboardBoolAutoRun("Always Run:", 1, 18, 110, 280, gAutoRun, SetAutoRun, NULL, NULL);
+CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 135, 320, 1, &menuKeys, -1, NULL, 0);
+CGameMenuItemChain itemOptionsControlKeyboardReset("Reset Keys (default)...", 1, 0, 155, 320, 1, &menuKeys, -1, ResetKeys, 0);
+CGameMenuItemChain itemOptionsControlKeyboardResetClassic("Reset Keys (classic)...", 1, 0, 175, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
 
 CGameMenuItemTitle itemKeysTitle("KEY SETUP", 1, 160, 20, 2038);
 CGameMenuItemKeyList itemKeyList("", 3, 56, 40, 200, 16, NUMGAMEFUNCTIONS, 0);
@@ -1844,6 +1852,7 @@ void SetupControlsMenu(void)
 
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardTitle, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardSliderTurnSpeed, true);
+    menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardCycleTurnAcceleration, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardBoolCrouchToggle, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardBoolAutoRun, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardList, false);
@@ -1852,6 +1861,7 @@ void SetupControlsMenu(void)
     menuOptionsControlKeyboard.Add(&itemBloodQAV, false);
 
     itemOptionsControlKeyboardSliderTurnSpeed.nValue = gTurnSpeed;
+    itemOptionsControlKeyboardCycleTurnAcceleration.m_nFocus = gTurnAcceleration % ARRAY_SSIZE(pzTurnAccelerationStrings);
     itemOptionsControlKeyboardBoolCrouchToggle.at20 = gCrouchToggle;
     itemOptionsControlKeyboardBoolAutoRun.at20 = gAutoRun;
 
@@ -2361,6 +2371,11 @@ void SetCenterView(CGameMenuItemZBool *pItem)
 void SetJoystickRumble(CGameMenuItemZBool *pItem)
 {
     gSetup.joystickrumble = pItem->at20;
+}
+
+void SetTurnAcceleration(CGameMenuItemZCycle *pItem)
+{
+    gTurnAcceleration = pItem->m_nFocus % ARRAY_SSIZE(pzTurnAccelerationStrings);
 }
 
 void SetCrouchToggle(CGameMenuItemZBool *pItem)

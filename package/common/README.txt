@@ -254,6 +254,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Toggles crouch button (0:hold, 1:toggle)
 * in_turnsensitivity
    - Keyboard turning sensitivity multiplier (default: 92, range: 64-128)
+* in_turnacceleration
+   - Set keyboard turning acceleration (0: off, 1: only when running, 2: always on)
 * notarget
    - Toggles AI player detection
 * r_drawinvisiblesprites

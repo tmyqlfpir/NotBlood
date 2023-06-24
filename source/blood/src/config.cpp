@@ -75,6 +75,7 @@ int32_t useprecache;
 char CommbatMacro[MAXRIDECULE][MAXRIDECULELENGTH];
 char szPlayerName[MAXPLAYERNAME];
 int32_t gTurnSpeed;
+int32_t gTurnAcceleration;
 int32_t gCenterViewOnDrop;
 int32_t gCrouchToggle;
 int32_t gDetail;
@@ -480,6 +481,7 @@ void CONFIG_SetDefaults(void)
     gDeliriumBlur = 1;
     gViewSize = 3;
     gTurnSpeed = 92;
+    gTurnAcceleration = 1;
     gCenterViewOnDrop = 0;
     gCrouchToggle = 0;
     gDetail = 4;
