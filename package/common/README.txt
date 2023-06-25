@@ -256,6 +256,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Keyboard turning sensitivity multiplier (default: 92, range: 64-128)
 * in_turnacceleration
    - Set keyboard turning acceleration (0: off, 1: only when running, 2: always on)
+* in_sharpturning
+   - Disable view interpolation and improve responsiveness
 * notarget
    - Toggles AI player detection
 * r_drawinvisiblesprites

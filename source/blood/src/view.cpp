@@ -4209,7 +4209,7 @@ void viewDrawScreen(void)
                 v48 = interpolate(pView->at18, v48, gInterpolate);
             }
         }
-        if (gView == gMe && (numplayers <= 1 || gPrediction) && gView->pXSprite->health != 0 && !VanillaMode())
+        if (((numplayers > 1) || gSharpTurning) && gView == gMe && gPrediction && gMe->pXSprite->health > 0 && !VanillaMode())
         {
             fix16_t q16look;
             cA = gViewAngle;
