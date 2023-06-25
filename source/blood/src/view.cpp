@@ -1363,7 +1363,7 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
     if (gGameOptions.nGameType <= kGameTypeCoop) // only show secrets counter for single-player/co-op mode
     {
         y += nHeight+1;
-        sprintf(buffer, "S:%d/%d", gSecretMgr.nNormalSecretsFound, max(gSecretMgr.nNormalSecretsFound, gSecretMgr.nAllSecrets)); // if we found more than there are, increase the total - some levels have a bugged counter
+        sprintf(buffer, "S:%d/%d", gSecretMgr.nNormalSecretsFound, VanillaMode() ? gSecretMgr.nAllSecrets : max(gSecretMgr.nNormalSecretsFound, gSecretMgr.nAllSecrets)); // if we found more than there are, increase the total - some levels have a bugged counter
         if (gSecretMgr.nNormalSecretsFound && (gSecretMgr.nNormalSecretsFound >= gSecretMgr.nAllSecrets)) // if all secrets found, set counter to gold
             colorStrSecrets.nColor2[0] = 2; // set valid start position for gold color
         viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStrSecrets);
