@@ -75,6 +75,7 @@ struct GAMEOPTIONS {
     bool bPermaDeath;
     bool bFriendlyFire;
     char nKeySettings;
+    char bItemWeaponSettings;
     char bAutoTeams;
     char nSpawnProtection;
     char nSpawnWeapon;

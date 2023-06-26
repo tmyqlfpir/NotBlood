@@ -208,6 +208,7 @@ void ReadGameOptionsLegacy(GAMEOPTIONS &gameOptions, GAMEOPTIONSLEGACY &gameOpti
     gameOptions.bPermaDeath = false;
     gameOptions.bFriendlyFire = true;
     gameOptions.nKeySettings = 0;
+    gameOptions.bItemWeaponSettings = 0;
     gameOptions.bAutoTeams = 1;
     gameOptions.nSpawnProtection = 0;
     gameOptions.nSpawnWeapon = 0;
