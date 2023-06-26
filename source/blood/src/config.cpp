@@ -88,7 +88,6 @@ int32_t gLockManualSaving;
 int32_t gRestoreLastSave;
 int32_t gAutosave;
 bool gAutosaveInCurLevel;
-int32_t gSharpTurning;
 int32_t gAutoRun;
 int32_t gCalebTalk;
 int32_t gChatSnd;
@@ -527,7 +526,6 @@ void CONFIG_SetDefaults(void)
     gRestoreLastSave = 1;
     gAutosave = 1;
     gAutosaveInCurLevel = false;
-    gSharpTurning = 1;
 
     gVanilla = 0;
     gMonsterSettings = 1;

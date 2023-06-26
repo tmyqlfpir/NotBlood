@@ -67,7 +67,6 @@ extern int32_t gLockManualSaving;
 extern int32_t gRestoreLastSave;
 extern int32_t gAutosave;
 extern bool gAutosaveInCurLevel;
-extern int32_t gSharpTurning;
 extern int32_t gAutoRun;
 extern int32_t gCalebTalk;
 extern int32_t gChatSnd;
