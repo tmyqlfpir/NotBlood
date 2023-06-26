@@ -89,6 +89,7 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bPermaDeath;
     0,     // bool bFriendlyFire;
     1,     // char nKeySettings;
+    0,     // char bItemWeaponSettings;
     1,     // char bAutoTeams;
     0,     // char nSpawnProtection;
     0,     // char nSpawnWeapon;

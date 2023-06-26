@@ -450,12 +450,13 @@ CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrin
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetStart9("KEYS SETTING:", 3, 66, 115, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemZBool itemNetStart10("AUTO TEAMS:", 3, 66, 115, 180, true, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetStart11("SPAWN PROTECTION:", 3, 66, 125, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
-CGameMenuItemZCycle itemNetStart12("SPAWN WITH WEAPON:", 3, 66, 135, 180, 0, 0, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
-CGameMenuItemChain itemNetStart13("USER MAP", 3, 66, 150, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
-CGameMenuItemChain itemNetStart14("MUTATORS", 3, 66, 160, 320, 0, &menuNetworkGameMutators, -1, NULL, 0);
-CGameMenuItemChain itemNetStart15("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
+CGameMenuItemZBool itemNetStart10("ITEM/WEAPON SETTING:", 3, 66, 125, 180, false, NULL, "KEEP ON DEATH", "LOST ON DEATH");
+CGameMenuItemZBool itemNetStart11("AUTO TEAMS:", 3, 66, 115, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetStart12("SPAWN PROTECTION:", 3, 66, 135, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
+CGameMenuItemZCycle itemNetStart13("SPAWN WITH WEAPON:", 3, 66, 145, 180, 0, 0, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
+CGameMenuItemChain itemNetStart14("USER MAP", 3, 66, 155, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
+CGameMenuItemChain itemNetStart15("MUTATORS", 3, 66, 165, 320, 0, &menuNetworkGameMutators, -1, NULL, 0);
+CGameMenuItemChain itemNetStart16("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
 
 ///////////////
 CGameMenuItemChain itemNetMutatorBannedItems("SET ITEMS", 3, 0, 37, 320, 1, &menuBannedItems, -1, NULL, 0);
@@ -1321,6 +1322,7 @@ void SetupNetStartMenu(void)
     menuNetStart.Add(&itemNetStart13, false);
     menuNetStart.Add(&itemNetStart14, false);
     menuNetStart.Add(&itemNetStart15, false);
+    menuNetStart.Add(&itemNetStart16, false);
     menuMultiUserMaps.Add(&itemNetStartUserMapTitle, true);
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
 
@@ -1372,8 +1374,8 @@ void SetupNetStartMenu(void)
     itemNetStart5.SetTextIndex(gMultiMonsters != -1 ? gMultiMonsters : 0);
     itemNetStart6.SetTextIndex(gMultiWeapons != -1 ? gMultiWeapons : 1);
     itemNetStart7.SetTextIndex(gMultiItems != -1 ? gMultiItems : 1);
-    itemNetStart10.at20 = !gPlayerTeamPreference;
-    itemNetStart11.SetTextIndex(1);
+    itemNetStart11.at20 = !gPlayerTeamPreference;
+    itemNetStart12.SetTextIndex(1);
     SetNetGameMode(&itemNetStart1); // hide friendly fire/keys menu items depending on game mode
 
     ///////
@@ -2977,8 +2979,10 @@ void SetNetGameMode(CGameMenuItemZCycle *pItem)
     itemNetStart8.bNoDraw = !itemNetStart8.bEnable;
     itemNetStart9.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
     itemNetStart9.bNoDraw = !itemNetStart9.bEnable;
-    itemNetStart10.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
+    itemNetStart10.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
     itemNetStart10.bNoDraw = !itemNetStart10.bEnable;
+    itemNetStart11.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
+    itemNetStart11.bNoDraw = !itemNetStart11.bEnable;
 }
 
 void UpdateSoundToggle(CGameMenuItemZBool *pItem)
@@ -3736,9 +3740,10 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.respawnSettings = 0;
     gPacketStartGame.bFriendlyFire = itemNetStart8.at20;
     gPacketStartGame.keySettings = itemNetStart9.m_nFocus;
-    gPacketStartGame.bAutoTeams = itemNetStart10.at20;
-    gPacketStartGame.nSpawnProtection = itemNetStart11.m_nFocus;
-    gPacketStartGame.nSpawnWeapon = itemNetStart12.m_nFocus;
+    gPacketStartGame.itemWeaponSettings = itemNetStart10.at20;
+    gPacketStartGame.bAutoTeams = itemNetStart11.at20;
+    gPacketStartGame.nSpawnProtection = itemNetStart12.m_nFocus;
+    gPacketStartGame.nSpawnWeapon = itemNetStart13.m_nFocus;
     ////
     SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
     gPacketStartGame.bQuadDamagePowerup = itemNetMutatorBoolQuadDamagePowerup.at20;
