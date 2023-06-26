@@ -83,6 +83,7 @@ int32_t gMouseAim;
 int32_t gAutoAim;
 int32_t gWeaponSwitch;
 int32_t gWeaponFastSwitch;
+int32_t gSharpTurning;
 int32_t gLockManualSaving;
 int32_t gRestoreLastSave;
 int32_t gAutosave;
@@ -521,6 +522,7 @@ void CONFIG_SetDefaults(void)
     gAutoAim = 2;
     gWeaponSwitch = 2;
     gWeaponFastSwitch = 0;
+    gSharpTurning = 1;
     gLockManualSaving = 0;
     gRestoreLastSave = 1;
     gAutosave = 1;
