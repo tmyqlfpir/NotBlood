@@ -609,6 +609,7 @@ void SetPowerupDuration(CGameMenuItemZCycle *pItem);
 void SetShowMapTitle(CGameMenuItemZBool *pItem);
 void SetWeaponSwitch(CGameMenuItemZCycle *pItem);
 void SetWeaponFastSwitch(CGameMenuItemZBool *pItem);
+void SetSharpTurning(CGameMenuItemZBool *pItem);
 void SetAutosaveMode(CGameMenuItemZCycle *pItem);
 void SetLockSaving(CGameMenuItemZBool *pItem);
 void SetRestoreLastSave(CGameMenuItemZBool *pItem);
@@ -2456,6 +2457,11 @@ void SetWeaponFastSwitch(CGameMenuItemZBool *pItem)
         gProfile[myconnectindex].bWeaponFastSwitch = gWeaponFastSwitch;
         netBroadcastPlayerInfo(myconnectindex);
     }
+}
+
+void SetSharpTurning(CGameMenuItemZBool *pItem)
+{
+    gSharpTurning = pItem->at20;
 }
 
 void SetAutosaveMode(CGameMenuItemZCycle *pItem)
