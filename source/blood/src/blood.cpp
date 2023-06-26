@@ -660,6 +660,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
         gGameOptions.bFriendlyFire = gPacketStartGame.bFriendlyFire;
         gGameOptions.nKeySettings = gPacketStartGame.keySettings;
+        gGameOptions.bItemWeaponSettings = gPacketStartGame.itemWeaponSettings;
         gGameOptions.bAutoTeams = gPacketStartGame.bAutoTeams;
         gGameOptions.nSpawnProtection = gPacketStartGame.nSpawnProtection;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
@@ -902,6 +903,7 @@ void StartNetworkLevel(void)
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
         gGameOptions.bFriendlyFire = gPacketStartGame.bFriendlyFire;
         gGameOptions.nKeySettings = gPacketStartGame.keySettings;
+        gGameOptions.bItemWeaponSettings = gPacketStartGame.itemWeaponSettings;
         gGameOptions.bAutoTeams = gPacketStartGame.bAutoTeams;
         gGameOptions.nSpawnProtection = gPacketStartGame.nSpawnProtection;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
