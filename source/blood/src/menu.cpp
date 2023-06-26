@@ -613,7 +613,6 @@ void SetSharpTurning(CGameMenuItemZBool *pItem);
 void SetAutosaveMode(CGameMenuItemZCycle *pItem);
 void SetLockSaving(CGameMenuItemZBool *pItem);
 void SetRestoreLastSave(CGameMenuItemZBool *pItem);
-void SetSharpTurning(CGameMenuItemZBool *pItem);
 void SetVanillaMode(CGameMenuItemZCycle *pItem);
 
 ///////////////
@@ -2484,11 +2483,6 @@ void SetLockSaving(CGameMenuItemZBool *pItem)
 void SetRestoreLastSave(CGameMenuItemZBool *pItem)
 {
     gRestoreLastSave = pItem->at20;
-}
-
-void SetSharpTurning(CGameMenuItemZBool *pItem)
-{
-    gSharpTurning = pItem->at20;
 }
 
 void SetGameVanillaMode(char nState)
