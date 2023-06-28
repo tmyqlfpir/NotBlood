@@ -509,13 +509,13 @@ static double srcColorDiff(int rgb1, int rgb2)
     return srcDeltaE2000(lab1, lab2);
 }
 
-static void scrTweakPalette(uint8_t *curPal, int replacePal, bool useCIEDE2000, bool grayscale, bool invertPal, int palSize)
+static void scrTweakPalette(uint8_t *curPal, int replacePal, char bUseCIEDE2000, char bGrayscale, char bInvertPal, int palSize)
 {
-    if (!replacePal && !grayscale && !invertPal) // do nothing
+    if (!replacePal && !bGrayscale && !bInvertPal) // do nothing
         return;
     for (int j = 0; j < palSize; j += 3) // count through all palette colors
     {
-        if (invertPal)
+        if (bInvertPal)
         {
             curPal[j+0] = 255-curPal[j+0];
             curPal[j+1] = 255-curPal[j+1];
@@ -529,7 +529,7 @@ static void scrTweakPalette(uint8_t *curPal, int replacePal, bool useCIEDE2000, 
             curPal[j+2] = clamp(color-20, 0, 255);
             continue;
         }
-        else if (grayscale)
+        else if (bGrayscale)
         {
             char color = clamp((curPal[j]+curPal[j+1]+curPal[j+2])/3, 0, 255);
             curPal[j+0] = color;
@@ -546,7 +546,7 @@ static void scrTweakPalette(uint8_t *curPal, int replacePal, bool useCIEDE2000, 
         for (int i = 0; i < srcCustomPaletteColors[replacePal]; i++)
         {
             double testedDistance;
-            if (useCIEDE2000)
+            if (bUseCIEDE2000)
                 testedDistance = srcColorDiff((curPal[j+0]<<16)|(curPal[j+1]<<8)|(curPal[j+2]), (newPal[i][0]<<16)|(newPal[i][1]<<8)|(newPal[i][2]));
             else
                 testedDistance = sqrt(pow(abs(curPal[j+0]-newPal[i][0]),2.0)+pow(abs(curPal[j+1]-newPal[i][1]),2.0)+pow(abs(curPal[j+2]-newPal[i][2]),2.0));
@@ -559,34 +559,41 @@ static void scrTweakPalette(uint8_t *curPal, int replacePal, bool useCIEDE2000, 
         curPal[j+0] = newPal[palIndex][0];
         curPal[j+1] = newPal[palIndex][1];
         curPal[j+2] = newPal[palIndex][2];
+        if (bInvertPal == 2)
+        {
+            curPal[j+0] = 255-curPal[j+0];
+            curPal[j+1] = 255-curPal[j+1];
+            curPal[j+2] = 255-curPal[j+2];
+        }
     }
 }
 
-static RGB bakPalTable[5][256];
-
-void scrCustomizePalette(int replacePal, bool useCIEDE2000, bool grayscale, bool invertPal)
+void scrCustomizePalette(int replacePal, char bUseCIEDE2000, char bGrayscale, char bInvertPal)
 {
-    static bool hasBakPalTable = false;
+    static RGB bakPalTable[5][256];
+    static char bHasBakPalTable = 0;
+
     for (int i = 0; i < 5; i++)
     {
         if (!basepaltable[PAL[i].id]) // not initialized, should never happen
             continue;
-        if (!hasBakPalTable)
+        if (!bHasBakPalTable)
             memcpy(bakPalTable[PAL[i].id], palTable[PAL[i].id], sizeof(bakPalTable[0])); // create backup
         else
             memcpy(palTable[PAL[i].id], bakPalTable[PAL[i].id], sizeof(bakPalTable[0])); // restore from backup
-        scrTweakPalette((uint8_t *)palTable[PAL[i].id], replacePal, useCIEDE2000, grayscale, invertPal, sizeof(bakPalTable[0]));
+        scrTweakPalette((uint8_t *)palTable[PAL[i].id], replacePal, bUseCIEDE2000, bGrayscale, bInvertPal, sizeof(bakPalTable[0]));
         paletteSetColorTable(PAL[i].id, (uint8_t *)palTable[PAL[i].id]);
     }
     memcpy(palette, palTable[0], sizeof(palette));
-    hasBakPalTable = true;
+    bHasBakPalTable = 1;
+
     // Make color index 255 of palette black (or closest)
     for (int i = 0; i < 5; i++)
     {
         if (!basepaltable[i])
             continue;
         Bmemset(&basepaltable[i][255 * 3], 0, 3);
-        scrTweakPalette(&basepaltable[i][255 * 3], replacePal, useCIEDE2000, grayscale, invertPal, 3); // find palette for black
+        scrTweakPalette(&basepaltable[i][255 * 3], replacePal, bUseCIEDE2000, bGrayscale, bInvertPal, 3); // find palette for black
     }
     scrSetPalette(0);
 }
