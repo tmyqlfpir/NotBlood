@@ -1196,8 +1196,8 @@ void ProcessFrame(void)
             gFifoInput[gNetFifoTail&255][i].strafe <<= 8;
             gFifoInput[gNetFifoTail&255][i].forward >>= 8;
             gFifoInput[gNetFifoTail&255][i].forward <<= 8;
-            const int mturn = fix16_to_int(gFifoInput[gNetFifoTail&255][i].q16turn<<2);
-            gFifoInput[gNetFifoTail&255][i].q16turn = fix16_from_int(mturn>>2);
+            const int mturn = fix16_to_int(gFifoInput[gNetFifoTail&255][i].q16turn)<<2;
+            gFifoInput[gNetFifoTail&255][i].q16turn = fix16_from_int(mturn)>>2;
             const int mlook = ClipRange(fix16_to_int(gFifoInput[gNetFifoTail&255][i].q16mlook*4), -256, 255);
             gFifoInput[gNetFifoTail&255][i].q16mlook = fix16_from_int(mlook/4);
         }
