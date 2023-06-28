@@ -799,35 +799,57 @@ void playerSpawnWeapon(PLAYER* pPlayer, int nSpawnWeapon)
     }
 }
 
-inline void playerRestoreItems(PLAYER* pPlayer, char bBackup)
-{
-    struct RESTOREITEMINFO {
-        int hasWeapon[kWeaponMax];
-        int ammoCount[12];
-        int packCurAmount[kPackMax];
-        int pwUpTime[4];
-        int armorCur[3];
-        int packId;
-    };
-    static RESTOREITEMINFO restoreInfo[kMaxPlayers];
+struct RESTOREITEMINFO {
+    int hasWeapon[kWeaponMax];
+    int ammoCount[12];
+    int packCurAmount[kPackMax];
+    int pwUpTime[4];
+    int armorCur[3];
+    int packId;
+};
 
+static RESTOREITEMINFO restoreInfo[kMaxPlayers];
+
+inline void playerBackupItems(PLAYER* pPlayer)
+{
     if ((gGameOptions.nGameType != kGameTypeCoop) || !gGameOptions.bItemWeaponSettings) // don't backup item/weapon info for non-coop mode/if restore items is off
         return;
 
     RESTOREITEMINFO *pRestoreInfo = &restoreInfo[pPlayer->nPlayer];
     for (int i = 0; i < kWeaponMax; i++)
-        bBackup ? pRestoreInfo->hasWeapon[i] = pPlayer->hasWeapon[i] : pPlayer->hasWeapon[i] = pRestoreInfo->hasWeapon[i];
+        pRestoreInfo->hasWeapon[i] = pPlayer->hasWeapon[i];
     for (int i = 0; i < 12; i++)
-        bBackup ? pRestoreInfo->ammoCount[i] = pPlayer->ammoCount[i] : pPlayer->ammoCount[i] = pRestoreInfo->ammoCount[i];
+        pRestoreInfo->ammoCount[i] = pPlayer->ammoCount[i];
     for (int i = 0; i < kPackMax; i++)
-        bBackup ? pRestoreInfo->packCurAmount[i] = pPlayer->packSlots[i].curAmount : pPlayer->packSlots[i].curAmount = pRestoreInfo->packCurAmount[i];
-    bBackup ? pRestoreInfo->pwUpTime[0] = pPlayer->pwUpTime[kPwUpDivingSuit] : pPlayer->pwUpTime[kPwUpDivingSuit] = pRestoreInfo->pwUpTime[0];
-    bBackup ? pRestoreInfo->pwUpTime[1] = pPlayer->pwUpTime[kPwUpCrystalBall] : pPlayer->pwUpTime[kPwUpCrystalBall] = pRestoreInfo->pwUpTime[1];
-    bBackup ? pRestoreInfo->pwUpTime[2] = pPlayer->pwUpTime[kPwUpBeastVision] : pPlayer->pwUpTime[kPwUpBeastVision] = pRestoreInfo->pwUpTime[2];
-    bBackup ? pRestoreInfo->pwUpTime[3] = pPlayer->pwUpTime[kPwUpJumpBoots] : pPlayer->pwUpTime[kPwUpJumpBoots] = pRestoreInfo->pwUpTime[3];
-    bBackup ? pRestoreInfo->packId = pPlayer->packItemId : pPlayer->packItemId = pRestoreInfo->packId;
+        pRestoreInfo->packCurAmount[i] = pPlayer->packSlots[i].curAmount;
+    pRestoreInfo->pwUpTime[0] = pPlayer->pwUpTime[kPwUpDivingSuit];
+    pRestoreInfo->pwUpTime[1] = pPlayer->pwUpTime[kPwUpCrystalBall];
+    pRestoreInfo->pwUpTime[2] = pPlayer->pwUpTime[kPwUpBeastVision];
+    pRestoreInfo->pwUpTime[3] = pPlayer->pwUpTime[kPwUpJumpBoots];
+    pRestoreInfo->packId = pPlayer->packItemId;
     for (int i = 0; i < 3; i++)
-        bBackup ? pRestoreInfo->armorCur[i] = pPlayer->armor[i] : pPlayer->armor[i] = pRestoreInfo->armorCur[i];
+        pRestoreInfo->armorCur[i] = pPlayer->armor[i];
+}
+
+inline void playerRestoreItems(PLAYER* pPlayer)
+{
+    if ((gGameOptions.nGameType != kGameTypeCoop) || !gGameOptions.bItemWeaponSettings) // don't restore item/weapon info for non-coop mode/if restore items is off
+        return;
+
+    RESTOREITEMINFO *pRestoreInfo = &restoreInfo[pPlayer->nPlayer];
+    for (int i = 0; i < kWeaponMax; i++)
+        pPlayer->hasWeapon[i] = pRestoreInfo->hasWeapon[i];
+    for (int i = 0; i < 12; i++)
+        pPlayer->ammoCount[i] = pRestoreInfo->ammoCount[i];
+    for (int i = 0; i < kPackMax; i++)
+        pPlayer->packSlots[i].curAmount = pRestoreInfo->packCurAmount[i];
+    pPlayer->pwUpTime[kPwUpDivingSuit] = pRestoreInfo->pwUpTime[0];
+    pPlayer->pwUpTime[kPwUpCrystalBall] = pRestoreInfo->pwUpTime[1];
+    pPlayer->pwUpTime[kPwUpBeastVision] = pRestoreInfo->pwUpTime[2];
+    pPlayer->pwUpTime[kPwUpJumpBoots] = pRestoreInfo->pwUpTime[3];
+    pPlayer->packItemId = pRestoreInfo->packId;
+    for (int i = 0; i < 3; i++)
+        pPlayer->armor[i] = pRestoreInfo->armorCur[i];
 }
 
 void playerResetPosture(PLAYER* pPlayer) {
@@ -1116,7 +1138,7 @@ void playerStart(int nPlayer, int bNewLevel)
     if (bNewLevel || (nPlayer == gAnnounceKillingSpreePlayer))
         playerResetAnnounceKillingSpree();
     if (bNewLevel)
-        playerRestoreItems(pPlayer, 1);
+        playerBackupItems(pPlayer);
 }
 
 void playerReset(PLAYER *pPlayer)
@@ -1716,7 +1738,7 @@ void ProcessInput(PLAYER *pPlayer)
                 actPostSprite(pPlayer->nSprite, kStatThing);
                 seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
                 playerReset(pPlayer);
-                playerRestoreItems(pPlayer, 0);
+                playerRestoreItems(pPlayer);
                 if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // if single-player
                 {
                     if (gDemo.bRecording)
@@ -2565,7 +2587,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         return nDamage;
     if (nDeathSeqID != 16)
     {
-        playerRestoreItems(pPlayer, 1);
+        playerBackupItems(pPlayer);
         powerupClear(pPlayer);
         if (nXSector > 0 && xsector[nXSector].Exit)
             trTriggerSector(pSprite->sectnum, &xsector[nXSector], kCmdSectorExit, nSource);
