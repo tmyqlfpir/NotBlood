@@ -727,6 +727,12 @@ const int nFrameLimitValues[] = {
     240
 };
 
+const char *pzInvertPaletteStrings[] = {
+    "OFF",
+    "ON",
+    "INVERT TWICE",
+};
+
 
 void PreDrawVideoModeMenu(CGameMenuItem *);
 
@@ -745,7 +751,7 @@ CGameMenuItemTitle itemOptionsDisplayColorTitle("COLOR CORRECTION", 1, 160, 20, 
 CGameMenuItemZCycle itemOptionsDisplayColorPaletteCustom("PALETTE:", 3, 66, 60, 180, 0, UpdateVideoPaletteCycleMenu, srcCustomPaletteStr, ARRAY_SSIZE(srcCustomPaletteStr), 0);
 CGameMenuItemZBool itemOptionsDisplayColorPaletteCIEDE2000("CIEDE2000 COMPARE:", 3, 66, 70, 180, 0, UpdateVideoPaletteBoolMenu, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayColorPaletteGrayscale("GRAYSCALE PALETTE:", 3, 66, 80, 180, 0, UpdateVideoPaletteBoolMenu, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayColorPaletteInvert("INVERT PALETTE:", 3, 66, 90, 180, 0, UpdateVideoPaletteBoolMenu, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayColorPaletteInvert("INVERT PALETTE:", 3, 66, 90, 180, 0, UpdateVideoPaletteCycleMenu, pzInvertPaletteStrings, ARRAY_SSIZE(pzInvertPaletteStrings), NULL);
 CGameMenuItemSliderFloat itemOptionsDisplayColorGamma("GAMMA:", 3, 66, 100, 180, &g_videoGamma, MIN_GAMMA, MAX_GAMMA, 0.1f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
 CGameMenuItemSliderFloat itemOptionsDisplayColorContrast("CONTRAST:", 3, 66, 110, 180, &g_videoContrast, MIN_CONTRAST, MAX_CONTRAST, 0.05f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
 CGameMenuItemSliderFloat itemOptionsDisplayColorSaturation("SATURATION:", 3, 66, 120, 180, &g_videoSaturation, MIN_SATURATION, MAX_SATURATION, 0.05f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
@@ -1769,7 +1775,7 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayColorPaletteCustom.m_nFocus = gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr);
     itemOptionsDisplayColorPaletteCIEDE2000.at20 = gCustomPaletteCIEDE2000;
     itemOptionsDisplayColorPaletteGrayscale.at20 = gCustomPaletteGrayscale;
-    itemOptionsDisplayColorPaletteInvert.at20 = gCustomPaletteInvert;
+    itemOptionsDisplayColorPaletteInvert.m_nFocus = gCustomPaletteInvert % ARRAY_SSIZE(pzInvertPaletteStrings);
     itemOptionsDisplayColorContrast.pPreDrawCallback = PreDrawDisplayColor;
     itemOptionsDisplayColorSaturation.pPreDrawCallback = PreDrawDisplayColor;
 
@@ -2855,7 +2861,9 @@ void UpdateVideoPalette(void)
 
 void UpdateVideoPaletteCycleMenu(CGameMenuItemZCycle *pItem)
 {
-    gCustomPalette = pItem->m_nFocus % ARRAY_SSIZE(srcCustomPaletteStr);
+    UNREFERENCED_PARAMETER(pItem);
+    gCustomPalette = itemOptionsDisplayColorPaletteCustom.m_nFocus % ARRAY_SSIZE(srcCustomPaletteStr);
+    gCustomPaletteInvert = itemOptionsDisplayColorPaletteInvert.m_nFocus % ARRAY_SSIZE(pzInvertPaletteStrings);
     UpdateVideoPalette();
 }
 
@@ -2864,7 +2872,6 @@ void UpdateVideoPaletteBoolMenu(CGameMenuItemZBool *pItem)
     UNREFERENCED_PARAMETER(pItem);
     gCustomPaletteCIEDE2000 = itemOptionsDisplayColorPaletteCIEDE2000.at20;
     gCustomPaletteGrayscale = itemOptionsDisplayColorPaletteGrayscale.at20;
-    gCustomPaletteInvert = itemOptionsDisplayColorPaletteInvert.at20;
     UpdateVideoPalette();
 }
 
@@ -2887,7 +2894,7 @@ void ResetVideoColor(CGameMenuItemChain *pItem)
     gCustomPalette = itemOptionsDisplayColorPaletteCustom.m_nFocus = 0;
     gCustomPaletteCIEDE2000 = itemOptionsDisplayColorPaletteCIEDE2000.at20 = 0;
     gCustomPaletteGrayscale = itemOptionsDisplayColorPaletteGrayscale.at20 = 0;
-    gCustomPaletteInvert = itemOptionsDisplayColorPaletteInvert.at20 = 0;
+    gCustomPaletteInvert = itemOptionsDisplayColorPaletteInvert.m_nFocus = 0;
     scrCustomizePalette(gCustomPalette % ARRAY_SSIZE(srcCustomPaletteStr), gCustomPaletteCIEDE2000, gCustomPaletteGrayscale, gCustomPaletteInvert);
     videoSetPalette(gBrightness>>2, gLastPal, 0);
 #ifdef USE_OPENGL

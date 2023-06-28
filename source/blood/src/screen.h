@@ -62,4 +62,4 @@ void scrInit(void);
 void scrUnInit(void);
 void scrSetGameMode(int vidMode, int XRes, int YRes, int nBits);
 void scrNextPage(void);
-void scrCustomizePalette(int replacePal, bool useCIEDE2000, bool grayscale, bool invertPal);
+void scrCustomizePalette(int replacePal, char bUseCIEDE2000, char bGrayscale, char bInvertPal);
