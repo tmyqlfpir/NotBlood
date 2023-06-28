@@ -655,6 +655,9 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             gGameOptions.nMonsterRespawnTime = 15 * kTicRate; // 15 secs
         else
             gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 2) * 30 * kTicRate;
+        gGameOptions.nEnemyQuantity = gPacketStartGame.monsterQuantity;
+        gGameOptions.nEnemyHealth = gPacketStartGame.monsterHealth;
+        gGameOptions.nEnemySpeed = gPacketStartGame.monsterSpeed;
         gGameOptions.nWeaponSettings = gPacketStartGame.weaponSettings;
         gGameOptions.nItemSettings = gPacketStartGame.itemSettings;
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
@@ -683,9 +686,6 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         gGameOptions.nRandomizerCheat = -1;
-        gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
-        gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
-        gGameOptions.nEnemySpeed = 0;
         gGameOptions.bEnemyShuffle = false;
         gGameOptions.bPitchforkOnly = false;
         gGameOptions.bPermaDeath = false;
@@ -898,6 +898,9 @@ void StartNetworkLevel(void)
             gGameOptions.nMonsterRespawnTime = 15 * kTicRate; // 15 secs
         else
             gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 2) * 30 * kTicRate;
+        gGameOptions.nEnemyQuantity = gPacketStartGame.monsterQuantity;
+        gGameOptions.nEnemyHealth = gPacketStartGame.monsterHealth;
+        gGameOptions.nEnemySpeed = gPacketStartGame.monsterSpeed;
         gGameOptions.nWeaponSettings = gPacketStartGame.weaponSettings;
         gGameOptions.nItemSettings = gPacketStartGame.itemSettings;
         gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
@@ -926,9 +929,6 @@ void StartNetworkLevel(void)
         gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
         Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
         gGameOptions.nRandomizerCheat = -1;
-        gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
-        gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
-        gGameOptions.nEnemySpeed = 0;
         gGameOptions.bEnemyShuffle = false;
         gGameOptions.bPitchforkOnly = false;
         gGameOptions.bPermaDeath = false;
@@ -1196,8 +1196,8 @@ void ProcessFrame(void)
             gFifoInput[gNetFifoTail&255][i].strafe <<= 8;
             gFifoInput[gNetFifoTail&255][i].forward >>= 8;
             gFifoInput[gNetFifoTail&255][i].forward <<= 8;
-            const int mturn = fix16_to_int(gFifoInput[gNetFifoTail&255][i].q16turn<<2);
-            gFifoInput[gNetFifoTail&255][i].q16turn = fix16_from_int(mturn>>2);
+            const int mturn = fix16_to_int(gFifoInput[gNetFifoTail&255][i].q16turn)<<2;
+            gFifoInput[gNetFifoTail&255][i].q16turn = fix16_from_int(mturn)>>2;
             const int mlook = ClipRange(fix16_to_int(gFifoInput[gNetFifoTail&255][i].q16mlook*4), -256, 255);
             gFifoInput[gNetFifoTail&255][i].q16mlook = fix16_from_int(mlook/4);
         }

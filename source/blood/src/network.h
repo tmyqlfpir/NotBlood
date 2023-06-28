@@ -75,6 +75,7 @@ struct PKT_STARTGAME {
     char gameType, difficulty, monsterSettings, weaponSettings, itemSettings, respawnSettings, keySettings, itemWeaponSettings, randomizerMode;
     char episodeId, levelId;
     char userMap, userMapName[BMAX_PATH];
+    char monsterQuantity, monsterHealth, monsterSpeed;
     bool bQuadDamagePowerup;
     bool bDamageInvul;
     int nExplosionBehavior;
