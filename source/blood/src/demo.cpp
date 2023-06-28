@@ -171,6 +171,9 @@ DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST109.DEM", (int32_t)0x000038B4, 0x2197456B, 0x00000000, {(int32_t)0x0000196A, (int32_t)0xFFFF5C13, (int32_t)0xFFFFF9A4}, 1},
     {"/validatedemos/TEST110.DEM", (int32_t)0x00004ACC, 0xB2E036DC, 0x00000000, {(int32_t)0x000102C5, (int32_t)0x00004CC3, (int32_t)0x000031A4}, 1},
     {"/validatedemos/TEST111.DEM", (int32_t)0x000018A1, 0x7E4E907C, 0x00000000, {(int32_t)0x0000BDC1, (int32_t)0x0000583F, (int32_t)0x000019A4}, 1},
+    {"/validatedemos/TEST112.DEM", (int32_t)0x00003F4C, 0x50D29210, 0x00000000, {(int32_t)0x0000F6A1, (int32_t)0xFFFED26B, (int32_t)0x00024DA4}, 1},
+    {"/validatedemos/TEST113.DEM", (int32_t)0x000025DC, 0xCD2519A0, 0x0000001F, {(int32_t)0xFFFFFA41, (int32_t)0xFFFFD353, (int32_t)0x0000FD50}, 0},
+    {"/validatedemos/TEST114.DEM", (int32_t)0x00001664, 0x62DBFA86, 0x00000000, {(int32_t)0x0000787B, (int32_t)0xFFFFDB53, (int32_t)0x000019A4}, 1},
 };
 
 int nBuild = 0;
@@ -825,7 +828,7 @@ void CDemo::ReadInput(int nCount)
         pInput->syncFlags.run = bitReader.readBit();
         bitReader.skipBits(26);
         pInput->forward = bitReader.readSigned(8) << 8;
-        pInput->q16turn = fix16_from_int(bitReader.readSigned(16) >> 2);
+        pInput->q16turn = fix16_from_int(bitReader.readSigned(16)) >> 2;
         pInput->strafe = bitReader.readSigned(8) << 8;
         pInput->buttonFlags.jump = bitReader.readBit();
         pInput->buttonFlags.crouch = bitReader.readBit();
