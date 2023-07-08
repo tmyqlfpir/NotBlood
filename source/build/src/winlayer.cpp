@@ -1755,18 +1755,17 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
 
     if (r_mirrormode & 1) // mirror mode (horiz)
     {
-        uint8_t *pRow = pTile, *pEnd = &pTile[(nHeight-1)*nWidth], *pPixel;
-        while (pRow <= pEnd)
+        uint8_t *pRow, *pEnd = &pTile[(nHeight-1)*nWidth];
+        for (pRow = pTile; pRow <= pEnd; pRow += nWidth)
         {
             Bmemcpy(pBuff, pRow, nWidth);
-            for (pPixel = &pBuff[nWidth-1]; pPixel >= pBuff; pPixel--, pRow++)
-                *pRow = *pPixel;
+            copybufreverse((void *)&pBuff[nWidth-1], (void *)pRow, nWidth);
         }
     }
     if (r_mirrormode & 2) // mirror mode (vert)
     {
-        uint8_t *pLow = pTile, *pHigh = &pTile[(nHeight-1)*nWidth];
-        for (; pLow < pHigh; pLow += nWidth, pHigh -= nWidth)
+        uint8_t *pLow, *pHigh = &pTile[(nHeight-1)*nWidth];
+        for (pLow = pTile; pLow < pHigh; pLow += nWidth, pHigh -= nWidth)
         {
             Bmemcpy(pBuff, pLow, nWidth);
             Bmemcpy(pLow, pHigh, nWidth);
