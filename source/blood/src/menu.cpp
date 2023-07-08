@@ -751,7 +751,7 @@ CGameMenuItemTitle itemOptionsDisplayColorTitle("COLOR CORRECTION", 1, 160, 20, 
 CGameMenuItemZCycle itemOptionsDisplayColorPaletteCustom("PALETTE:", 3, 66, 60, 180, 0, UpdateVideoPaletteCycleMenu, srcCustomPaletteStr, ARRAY_SSIZE(srcCustomPaletteStr), 0);
 CGameMenuItemZBool itemOptionsDisplayColorPaletteCIEDE2000("CIEDE2000 COMPARE:", 3, 66, 70, 180, 0, UpdateVideoPaletteBoolMenu, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayColorPaletteGrayscale("GRAYSCALE PALETTE:", 3, 66, 80, 180, 0, UpdateVideoPaletteBoolMenu, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayColorPaletteInvert("INVERT PALETTE:", 3, 66, 90, 180, 0, UpdateVideoPaletteCycleMenu, pzInvertPaletteStrings, ARRAY_SSIZE(pzInvertPaletteStrings), NULL);
+CGameMenuItemZCycle itemOptionsDisplayColorPaletteInvert("INVERT PALETTE:", 3, 66, 90, 180, 0, UpdateVideoPaletteCycleMenu, pzInvertPaletteStrings, ARRAY_SSIZE(pzInvertPaletteStrings), 0);
 CGameMenuItemSliderFloat itemOptionsDisplayColorGamma("GAMMA:", 3, 66, 100, 180, &g_videoGamma, MIN_GAMMA, MAX_GAMMA, 0.1f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
 CGameMenuItemSliderFloat itemOptionsDisplayColorContrast("CONTRAST:", 3, 66, 110, 180, &g_videoContrast, MIN_CONTRAST, MAX_CONTRAST, 0.05f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
 CGameMenuItemSliderFloat itemOptionsDisplayColorSaturation("SATURATION:", 3, 66, 120, 180, &g_videoSaturation, MIN_SATURATION, MAX_SATURATION, 0.05f, UpdateVideoColorMenu, -1, -1, kMenuSliderValue);
