@@ -140,6 +140,9 @@ enum {
     BANNED_TCALEBS     =  1 <<  6,
     BANNED_HHOUNDS     =  1 <<  7,
 
+    // monster behavior tweaks
+    BANNED_RATS_BITE   =  1 <<  8,
+
     // weapons
     BANNED_FLARE       =  1 << 12,
     BANNED_SHOTGUN     =  1 << 13,

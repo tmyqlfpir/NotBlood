@@ -383,6 +383,7 @@ CGameMenuItemZBool itemBannedMonstersGhosts("GHOSTS:", 3, 75, 72, 161, false, NU
 CGameMenuItemZBool itemBannedMonstersSpiders("SPIDERS:", 3, 75, 80, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedMonstersTinyCaleb("TINY CALEBS:", 3, 75, 88, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedMonstersHellHounds("HELL HOUNDS:", 3, 75, 96, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedMonstersRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 112, 161, false, NULL, "SHORT", "DEFAULT");
 
 CGameMenuItemTitle itemBannedItemsTitle("SET ITEMS", 1, 160, 20, 2038);
 CGameMenuItemZBool itemBannedItemsFlare("FLARE PISTOL:", 3, 75, 36, 161, false, NULL, "REMOVE", "KEEP");
@@ -483,6 +484,7 @@ CGameMenuItemZBool itemNetMonsterGhosts("GHOSTS:", 3, 75, 122, 161, false, NULL,
 CGameMenuItemZBool itemNetMonsterSpiders("SPIDERS:", 3, 75, 130, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemNetMonsterTinyCaleb("TINY CALEBS:", 3, 75, 138, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemNetMonsterHellHounds("HELL HOUNDS:", 3, 75, 146, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemNetMonsterRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 162, 161, false, NULL, "SHORT", "DEFAULT");
 
 ///////////////
 CGameMenuItemChain itemNetMutatorBannedItems("SET ITEMS", 3, 0, 37, 320, 1, &menuBannedItems, -1, NULL, 0);
@@ -1190,6 +1192,7 @@ void SetupDifficultyMenu(void)
     menuBannedMonsters.Add(&itemBannedMonstersSpiders, false);
     menuBannedMonsters.Add(&itemBannedMonstersTinyCaleb, false);
     menuBannedMonsters.Add(&itemBannedMonstersHellHounds, false);
+    menuBannedMonsters.Add(&itemBannedMonstersRatsAttack, false);
     menuBannedMonsters.Add(&itemBloodQAV, false);
 
     menuBannedItems.Add(&itemBannedItemsTitle, false);
@@ -1369,6 +1372,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameMonsters.Add(&itemNetMonsterSpiders, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterTinyCaleb, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterHellHounds, false);
+    menuNetworkGameMonsters.Add(&itemNetMonsterRatsAttack, false);
     menuNetworkGameMonsters.Add(&itemBloodQAV, false);
 
     //////////////////////
@@ -2568,6 +2572,10 @@ inline unsigned int SetBannedSprites(char bSinglePlayer)
             uSpriteBannedFlags |= BANNED_TCALEBS;
         if (itemBannedMonstersHellHounds.at20)
             uSpriteBannedFlags |= BANNED_HHOUNDS;
+
+        // monster behavior tweaks
+        if (itemBannedMonstersRatsAttack.at20)
+            uSpriteBannedFlags |= BANNED_RATS_BITE;
     }
     else // load from network monster menu
     {
@@ -2588,6 +2596,10 @@ inline unsigned int SetBannedSprites(char bSinglePlayer)
             uSpriteBannedFlags |= BANNED_TCALEBS;
         if (itemNetMonsterHellHounds.at20)
             uSpriteBannedFlags |= BANNED_HHOUNDS;
+
+        // monster behavior tweaks
+        if (itemNetMonsterRatsAttack.at20)
+            uSpriteBannedFlags |= BANNED_RATS_BITE;
     }
 
     // weapons
