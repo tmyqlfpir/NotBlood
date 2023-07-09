@@ -123,8 +123,8 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
             if (nDist < pDudeInfo->seeDist && klabs(nDeltaAngle) <= pDudeInfo->periphery)
             {
                 int nRange = gVectorData[kVectorRatBite].maxDist;
-                if (gGameOptions.uSpriteBannedFlags&BANNED_RATS_BITE) // reduce distance required before attempting to bite by 1/3
-                    nRange -= ((nRange>>2) + (nRange>>3));
+                if (gGameOptions.uSpriteBannedFlags&BANNED_RATS_BITE) // reduce distance required before attempting to bite by 1/4
+                    nRange -= (nRange>>2);
                 aiSetTarget(pXSprite, pXSprite->target);
                 if ((nDist < nRange) && klabs(nDeltaAngle) < 85)
                     aiNewState(pSprite, pXSprite, &ratBite);
