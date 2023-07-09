@@ -5272,6 +5272,7 @@ int MoveMissile(spritetype *pSprite)
     GetSpriteExtents(pSprite, &top, &bottom);
     int i = 1;
     const char bIsFlameSprite = (pSprite->type == kMissileFlameSpray) || (pSprite->type == kMissileFlameHound); // do not use eduke clipmove for flame based sprites (changes damage too much)
+    const char bButcherKnife = (pSprite->type == kMissileButcherKnife) && spriRangeIsFine(pSprite->owner) && (sprite[pSprite->owner].type == kDudeZombieButcher) && (gGameOptions.uSpriteBannedFlags&BANNED_BUTCHER_KNIFE);
     while (1)
     {
         int x = pSprite->x;
@@ -5374,15 +5375,19 @@ int MoveMissile(spritetype *pSprite)
         bottom += vz;
         if (bottom >= floorZ)
         {
-            gSpriteHit[nXSprite].florhit = floorHit;
+            if (bButcherKnife && ((floorHit&0xC000) == 0xC000) && IsPlayerSprite(&sprite[floorHit&0x3fff])) // tweak butcher knife so it will hit players
+                gHitInfo.hitsprite = floorHit&0x3fff, vdi = 3;
+            else
+                gSpriteHit[nXSprite].florhit = floorHit, vdi = 2;
             vz += floorZ-bottom;
-            vdi = 2;
         }
         if (top <= ceilZ)
         {
-            gSpriteHit[nXSprite].ceilhit = ceilHit;
+            if (bButcherKnife && ((ceilHit&0xC000) == 0xC000) && IsPlayerSprite(&sprite[ceilHit&0x3fff])) // tweak butcher knife so it will hit players
+                gHitInfo.hitsprite = ceilHit&0x3fff, vdi = 3;
+            else
+                gSpriteHit[nXSprite].ceilhit = ceilHit, vdi = 1;
             vz += ClipLow(ceilZ-top, 0);
-            vdi = 1;
         }
         pSprite->x = x;
         pSprite->y = y;

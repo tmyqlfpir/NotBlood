@@ -142,6 +142,7 @@ enum {
 
     // monster behavior tweaks
     BANNED_RATS_BITE   =  1 <<  8,
+    BANNED_BUTCHER_KNIFE = 1 << 9,
 
     // weapons
     BANNED_FLARE       =  1 << 12,
