@@ -583,7 +583,7 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                     }
                     else if (nDist < 0x3200 && klabs(nDeltaAngle) < 28)
                     {
-                        AISTATE *pCultistTsProneFire = EnemiesNotBlood() && !VanillaMode() ? &cultistTsProneFireFixed : &cultistTsProneFire; // use non-glitched prone fire state
+                        AISTATE *pCultistTsProneFire = EnemiesNBlood() && !VanillaMode() ? &cultistTsProneFireFixed : &cultistTsProneFire; // use non-glitched prone fire state
                         int hit = HitScan(pSprite, pSprite->z, dx, dy, 0, CLIPMASK1, 0);
                         switch (hit)
                         {

@@ -632,7 +632,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
         gGameOptions.nProjectileBehavior = gProjectileBehavior;
         gGameOptions.bNapalmFalloff = gNapalmFalloff;
-        gGameOptions.bEnemyBehavior = gEnemyBehavior;
+        gGameOptions.nEnemyBehavior = gEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gWeaponsVer;
         gGameOptions.bSectorBehavior = gSectorBehavior;
@@ -678,7 +678,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
         gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
         gGameOptions.bNapalmFalloff = gPacketStartGame.bNapalmFalloff;
-        gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
+        gGameOptions.nEnemyBehavior = gPacketStartGame.nEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bSectorBehavior = gPacketStartGame.bSectorBehavior;
@@ -921,7 +921,7 @@ void StartNetworkLevel(void)
         gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
         gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
         gGameOptions.bNapalmFalloff = gPacketStartGame.bNapalmFalloff;
-        gGameOptions.bEnemyBehavior = gPacketStartGame.bEnemyBehavior;
+        gGameOptions.nEnemyBehavior = gPacketStartGame.nEnemyBehavior;
         gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
         gGameOptions.bSectorBehavior = gPacketStartGame.bSectorBehavior;
@@ -3125,8 +3125,12 @@ bool ProjectilesRaze(void) {
     return gGameOptions.nProjectileBehavior == 2; // raze's projectile collision
 }
 
+bool EnemiesNBlood(void) {
+    return gGameOptions.nEnemyBehavior >= 1; // nblood's enemies
+}
+
 bool EnemiesNotBlood(void) {
-    return gGameOptions.bEnemyBehavior == 1; // notblood's enemies
+    return gGameOptions.nEnemyBehavior == 2; // notblood's enemies
 }
 
 bool fileExistsRFF(int id, const char *ext) {
