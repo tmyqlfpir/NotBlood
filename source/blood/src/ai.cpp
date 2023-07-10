@@ -209,7 +209,7 @@ bool CanMove(spritetype *pSprite, int a2, int nAngle, int nRange)
         // It makes ignore danger if enemy immune to N damageType. As result Cerberus start acting like
         // in Blood 1.0 so it can move normally to player. It's up to you for adding rest of enemies here as
         // i don't think it will broke something in game.
-        if (EnemiesNotBlood() && !VanillaMode() && Crusher && isImmune(pSprite, pXSector->damageType, 16)) return true;
+        if (EnemiesNBlood() && !VanillaMode() && Crusher && isImmune(pSprite, pXSector->damageType, 16)) return true;
         fallthrough__;
     case kDudeZombieButcher:
     case kDudeSpiderBrown:
@@ -909,7 +909,7 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
     int nSprite = pXSprite->reference;
     if (nSource >= 0) {
         spritetype *pSource = &sprite[nSource];
-        const char bTargetIsAlive = !EnemiesNotBlood() || !aiDudeIsDead(nSource); // if target is dude and dude is not dead
+        const char bTargetIsAlive = !EnemiesNBlood() || !aiDudeIsDead(nSource); // if target is dude and dude is not dead
         if (pSprite == pSource) return 0;
         else if (pXSprite->target == -1) // if no target, give the dude a target
         {
@@ -973,12 +973,12 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
             DUDEEXTRA *pDudeExtra = &gDudeExtra[pSprite->extra];
             pDudeExtra->teslaHit = 1;
         }
-        else if (EnemiesNotBlood() && !VanillaMode()) // reset tesla hit state if received different type of damage
+        else if (EnemiesNBlood() && !VanillaMode()) // reset tesla hit state if received different type of damage
         {
             DUDEEXTRA *pDudeExtra = &gDudeExtra[pSprite->extra];
             pDudeExtra->teslaHit = 0;
         }
-        const bool fixRandomCultist = EnemiesNotBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && (pSprite->inittype != pSprite->type) && !VanillaMode(); // fix burning cultists randomly switching types underwater
+        const bool fixRandomCultist = EnemiesNBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && (pSprite->inittype != pSprite->type) && !VanillaMode(); // fix burning cultists randomly switching types underwater
         switch (pSprite->type)
         {
         case kDudeCultistTommy:
@@ -1057,7 +1057,7 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
         case kDudeTinyCaleb:
             if (nDmgType == kDamageBurn && pXSprite->health <= (unsigned int)pDudeInfo->fleeHealth/* && (pXSprite->at17_6 != 1 || pXSprite->at17_6 != 2)*/)
             {
-                if (EnemiesNotBlood() && !VanillaMode()) // fix burning sprite for tiny caleb
+                if (EnemiesNBlood() && !VanillaMode()) // fix burning sprite for tiny caleb
                 {
                     pSprite->type = kDudeBurningTinyCaleb;
                     aiNewState(pSprite, pXSprite, &tinycalebBurnGoto);
@@ -1377,7 +1377,7 @@ void aiLookForTarget(spritetype *pSprite, XSPRITE *pXSprite)
             char sectmap[bitmap_size(kMaxSectors)];
             gAffectedSectors[0] = 0;
             gAffectedXWalls[0] = 0;
-            const bool newSectCheckMethod = EnemiesNotBlood() && !VanillaMode(); // use new sector checking logic
+            const bool newSectCheckMethod = EnemiesNBlood() && !VanillaMode(); // use new sector checking logic
             GetClosestSpriteSectors(pSprite->sectnum, pSprite->x, pSprite->y, 400, gAffectedSectors, sectmap, gAffectedXWalls, newSectCheckMethod, gGameOptions.nExplosionBehavior == 1);
             for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
             {
@@ -1559,7 +1559,7 @@ void aiInitSprite(spritetype *pSprite)
         break;
     }
     case kDudeCerberusOneHead: {
-        if (EnemiesNotBlood() && !VanillaMode()) {
+        if (EnemiesNBlood() && !VanillaMode()) {
             pDudeExtraE->thinkTime = 0;
             aiNewState(pSprite, pXSprite, &cerberus2Idle);
             break;

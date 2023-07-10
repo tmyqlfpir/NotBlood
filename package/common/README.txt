@@ -99,15 +99,18 @@ It should be noted that vanilla mode does not work with modern maps
    - Leave all hitbox sizes as original
 * Napalm gravity falloff
    - For player spawned napalm projectiles, make gravity affect their trajectory path
-* Enemy behavior
+* Enemy behavior (NBlood)
    - Fixes various original 1.21 bugs with enemies such as:
    - Tiny Caleb using the wrong burning sprite
    - Enemies sometimes burning indefinitely
    - Ignited cultists switching weapons when extinguished in water
    - Cerberus spinning uselessly on lava
-   - Improved beast stomp attack sector scanning
    - Check if enemy is alive before setting target for AI
    - Fixes tesla cultists bugged prone attack sequence
+* Enemy behavior (NotBlood)
+   - All of the above fixes and including:
+   - Improved beast stomp attack sector scanning
+   - Fix bloated butchers cleavers hitting prone players
    - Turn enemy around if stuck running into a corner for a few seconds
 * Random cultist TNT
    - This will make cultists use a variety of random thrown sprites such as:

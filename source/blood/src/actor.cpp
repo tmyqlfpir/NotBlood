@@ -3025,7 +3025,7 @@ void actKillDude(int nKillerSprite, spritetype *pSprite, DAMAGE_TYPE damageType,
         }
         break;
     case kDudeTinyCaleb:
-        if (!EnemiesNotBlood() || VanillaMode())
+        if (!EnemiesNBlood() || VanillaMode())
             break;
         if (damageType == kDamageBurn && pXSprite->medium == kMediumNormal)
         {
@@ -4945,7 +4945,7 @@ void MoveDude(spritetype *pSprite)
                     break;
                 case kDudeBurningCultist:
                 {
-                    const bool fixRandomCultist = EnemiesNotBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && (pSprite->inittype != pSprite->type) && !VanillaMode(); // fix burning cultists randomly switching types underwater
+                    const bool fixRandomCultist = EnemiesNBlood() && (pSprite->inittype >= kDudeBase) && (pSprite->inittype < kDudeMax) && (pSprite->inittype != pSprite->type) && !VanillaMode(); // fix burning cultists randomly switching types underwater
                     if (fixRandomCultist)
                         pSprite->type = pSprite->inittype;
                     else if (Chance(chance)) // vanilla behavior
@@ -5272,7 +5272,7 @@ int MoveMissile(spritetype *pSprite)
     GetSpriteExtents(pSprite, &top, &bottom);
     int i = 1;
     const char bIsFlameSprite = (pSprite->type == kMissileFlameSpray) || (pSprite->type == kMissileFlameHound); // do not use eduke clipmove for flame based sprites (changes damage too much)
-    const char bButcherKnife = (pSprite->type == kMissileButcherKnife) && spriRangeIsFine(pSprite->owner) && (sprite[pSprite->owner].type == kDudeZombieButcher) && (gGameOptions.uSpriteBannedFlags&BANNED_BUTCHER_KNIFE);
+    const char bButcherKnife = (pSprite->type == kMissileButcherKnife) && spriRangeIsFine(pSprite->owner) && (sprite[pSprite->owner].type == kDudeZombieButcher);
     while (1)
     {
         int x = pSprite->x;
@@ -5375,7 +5375,7 @@ int MoveMissile(spritetype *pSprite)
         bottom += vz;
         if (bottom >= floorZ)
         {
-            if (bButcherKnife && ((floorHit&0xC000) == 0xC000) && IsPlayerSprite(&sprite[floorHit&0x3fff])) // tweak butcher knife so it will hit players
+            if (bButcherKnife && ((floorHit&0xC000) == 0xC000) && IsPlayerSprite(&sprite[floorHit&0x3fff]) && EnemiesNotBlood() && !VanillaMode()) // tweak butcher knife so it will hit players
                 gHitInfo.hitsprite = floorHit&0x3fff, vdi = 3;
             else
                 gSpriteHit[nXSprite].florhit = floorHit, vdi = 2;
@@ -5383,7 +5383,7 @@ int MoveMissile(spritetype *pSprite)
         }
         if (top <= ceilZ)
         {
-            if (bButcherKnife && ((ceilHit&0xC000) == 0xC000) && IsPlayerSprite(&sprite[ceilHit&0x3fff])) // tweak butcher knife so it will hit players
+            if (bButcherKnife && ((ceilHit&0xC000) == 0xC000) && IsPlayerSprite(&sprite[ceilHit&0x3fff]) && EnemiesNotBlood() && !VanillaMode()) // tweak butcher knife so it will hit players
                 gHitInfo.hitsprite = ceilHit&0x3fff, vdi = 3;
             else
                 gSpriteHit[nXSprite].ceilhit = ceilHit, vdi = 1;
@@ -6549,7 +6549,7 @@ void actProcessSprites(void)
             #else
             const bool burningType = (pSprite->type == kDudeBurningInnocent) || (pSprite->type == kDudeBurningCultist) || (pSprite->type == kDudeBurningZombieAxe) || (pSprite->type == kDudeBurningZombieButcher) || (pSprite->type == kDudeBurningTinyCaleb) || (pSprite->type == kDudeBurningBeast);
             #endif
-            const bool fixBurnGlitch = EnemiesNotBlood() && burningType && !VanillaMode(); // if enemies are burning, always apply burning damage per tick
+            const bool fixBurnGlitch = EnemiesNBlood() && burningType && !VanillaMode(); // if enemies are burning, always apply burning damage per tick
             if ((pXSprite->burnTime > 0) || fixBurnGlitch)
             {
                 switch (pSprite->type)
@@ -6776,7 +6776,7 @@ spritetype *actSpawnDude(spritetype *pSource, short nType, int a3, int a4)
         y = pSource->y+mulscale30r(Sin(angle), a3);
     }
     pSprite2->type = nType;
-    if (EnemiesNotBlood() && !VanillaMode())
+    if (EnemiesNBlood() && !VanillaMode())
         pSprite2->inittype = nType;
     pSprite2->ang = angle;
     vec3_t pos = { x, y, z };

@@ -59,7 +59,7 @@ struct GAMEOPTIONS {
     int nExplosionBehavior;
     int nProjectileBehavior;
     bool bNapalmFalloff;
-    bool bEnemyBehavior;
+    int nEnemyBehavior;
     bool bEnemyRandomTNT;
     int nWeaponsVer;
     bool bSectorBehavior;
@@ -142,7 +142,6 @@ enum {
 
     // monster behavior tweaks
     BANNED_RATS_BITE   =  1 <<  8,
-    BANNED_BUTCHER_KNIFE = 1 << 9,
 
     // weapons
     BANNED_FLARE       =  1 << 12,

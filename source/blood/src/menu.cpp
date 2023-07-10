@@ -58,7 +58,7 @@ void SetDamageInvul(CGameMenuItemZBool*);
 void SetExplosionBehavior(CGameMenuItemZCycle*);
 void SetProjectileBehavior(CGameMenuItemZCycle*);
 void SetNapalmFalloff(CGameMenuItemZBool*);
-void SetEnemyBehavior(CGameMenuItemZBool*);
+void SetEnemyBehavior(CGameMenuItemZCycle*);
 void SetEnemyRandomTNT(CGameMenuItemZBool*);
 void SetWeaponsVer(CGameMenuItemZCycle*);
 void SetSectorBehavior(CGameMenuItemZBool*);
@@ -263,6 +263,12 @@ const char *pzProjectileBehaviorStrings[] = {
     "Raze",
 };
 
+const char *pzEnemyBehaviorStrings[] = {
+    "Original",
+    "NBlood",
+    "NotBlood",
+};
+
 const char *pzWeaponsVersionStrings[] = {
     "Original",
     "NotBlood",
@@ -384,7 +390,6 @@ CGameMenuItemZBool itemBannedMonstersSpiders("SPIDERS:", 3, 75, 80, 161, false, 
 CGameMenuItemZBool itemBannedMonstersTinyCaleb("TINY CALEBS:", 3, 75, 88, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedMonstersHellHounds("HELL HOUNDS:", 3, 75, 96, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedMonstersRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 112, 161, false, NULL, "SHORTER", "DEFAULT");
-CGameMenuItemZBool itemBannedMonstersButcherKnife("BUTCHER KNIFE ATTACK:", 3, 75, 120, 161, false, NULL, "FIXED", "DEFAULT");
 
 CGameMenuItemTitle itemBannedItemsTitle("SET ITEMS", 1, 160, 20, 2038);
 CGameMenuItemZBool itemBannedItemsFlare("FLARE PISTOL:", 3, 75, 36, 161, false, NULL, "REMOVE", "KEEP");
@@ -486,7 +491,6 @@ CGameMenuItemZBool itemNetMonsterSpiders("SPIDERS:", 3, 75, 130, 161, false, NUL
 CGameMenuItemZBool itemNetMonsterTinyCaleb("TINY CALEBS:", 3, 75, 138, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemNetMonsterHellHounds("HELL HOUNDS:", 3, 75, 146, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemNetMonsterRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 162, 161, false, NULL, "SHORTER", "DEFAULT");
-CGameMenuItemZBool itemNetMonsterButcherKnife("BUTCHER KNIFE ATTACK:", 3, 75, 170, 161, false, NULL, "FIXED", "DEFAULT");
 
 ///////////////
 CGameMenuItemChain itemNetMutatorBannedItems("SET ITEMS", 3, 0, 37, 320, 1, &menuBannedItems, -1, NULL, 0);
@@ -495,7 +499,7 @@ CGameMenuItemZBool itemNetMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY
 CGameMenuItemZCycle itemNetMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 70, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
 CGameMenuItemZCycle itemNetMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 80, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
 CGameMenuItemZBool itemNetMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 90, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 100, 180, false, NULL, "NBLOOD", "ORIGINAL");
+CGameMenuItemZCycle itemNetMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 100, 180, false, NULL, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
 CGameMenuItemZBool itemNetMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 110, 180, false, NULL, NULL, NULL);
 CGameMenuItemZCycle itemNetMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 120, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZBool itemNetMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 130, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
@@ -652,7 +656,7 @@ CGameMenuItemZBool itemMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:",
 CGameMenuItemZCycle itemMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
 CGameMenuItemZCycle itemMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
 CGameMenuItemZBool itemMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 85, 180, false, SetNapalmFalloff, NULL, NULL);
-CGameMenuItemZBool itemMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, false, SetEnemyBehavior, "NBLOOD", "ORIGINAL");
+CGameMenuItemZCycle itemMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, 0, SetEnemyBehavior, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
 CGameMenuItemZBool itemMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, false, SetEnemyRandomTNT, NULL, NULL);
 CGameMenuItemZCycle itemMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZBool itemMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 125, 180, false, SetSectorBehavior, "NOTBLOOD", "ORIGINAL");
@@ -1195,7 +1199,6 @@ void SetupDifficultyMenu(void)
     menuBannedMonsters.Add(&itemBannedMonstersTinyCaleb, false);
     menuBannedMonsters.Add(&itemBannedMonstersHellHounds, false);
     menuBannedMonsters.Add(&itemBannedMonstersRatsAttack, false);
-    menuBannedMonsters.Add(&itemBannedMonstersButcherKnife, false);
     menuBannedMonsters.Add(&itemBloodQAV, false);
 
     menuBannedItems.Add(&itemBannedItemsTitle, false);
@@ -1376,7 +1379,6 @@ void SetupNetStartMenu(void)
     menuNetworkGameMonsters.Add(&itemNetMonsterTinyCaleb, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterHellHounds, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterRatsAttack, false);
-    menuNetworkGameMonsters.Add(&itemNetMonsterButcherKnife, false);
     menuNetworkGameMonsters.Add(&itemBloodQAV, false);
 
     //////////////////////
@@ -1439,7 +1441,7 @@ void SetupNetStartMenu(void)
     itemNetMutatorExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     itemNetMutatorProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     itemNetMutatorNapalmFalloff.at20 = !!gNapalmFalloff;
-    itemNetMutatorEnemyBehavior.at20 = !!gEnemyBehavior;
+    itemNetMutatorEnemyBehavior.m_nFocus = gEnemyBehavior % ARRAY_SSIZE(pzEnemyBehaviorStrings);
     itemNetMutatorBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
     itemNetMutatorWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     itemNetMutatorSectorBehavior.at20 = !!gSectorBehavior;
@@ -1684,7 +1686,7 @@ void SetupOptionsMenu(void)
     itemMutatorExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     itemMutatorProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     itemMutatorNapalmFalloff.at20 = !!gNapalmFalloff;
-    itemMutatorEnemyBehavior.at20 = !!gEnemyBehavior;
+    itemMutatorEnemyBehavior.m_nFocus = gEnemyBehavior % ARRAY_SSIZE(pzEnemyBehaviorStrings);
     itemMutatorBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
     itemMutatorWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     itemMutatorSectorBehavior.at20 = !!gSectorBehavior;
@@ -2253,13 +2255,13 @@ void SetNapalmFalloff(CGameMenuItemZBool *pItem)
     }
 }
 
-void SetEnemyBehavior(CGameMenuItemZBool *pItem)
+void SetEnemyBehavior(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
-        gEnemyBehavior = pItem->at20;
-        gGameOptions.bEnemyBehavior = gEnemyBehavior;
+        gEnemyBehavior = pItem->m_nFocus % ARRAY_SSIZE(pzEnemyBehaviorStrings);
+        gGameOptions.nEnemyBehavior = gEnemyBehavior;
     } else {
-        pItem->at20 = !!gEnemyBehavior;
+        pItem->m_nFocus = gEnemyBehavior % ARRAY_SSIZE(pzEnemyBehaviorStrings);
     }
 }
 
@@ -2580,8 +2582,6 @@ inline unsigned int SetBannedSprites(char bSinglePlayer)
         // monster behavior tweaks
         if (itemBannedMonstersRatsAttack.at20)
             uSpriteBannedFlags |= BANNED_RATS_BITE;
-        if (itemBannedMonstersButcherKnife.at20)
-            uSpriteBannedFlags |= BANNED_BUTCHER_KNIFE;
     }
     else // load from network monster menu
     {
@@ -2606,8 +2606,6 @@ inline unsigned int SetBannedSprites(char bSinglePlayer)
         // monster behavior tweaks
         if (itemNetMonsterRatsAttack.at20)
             uSpriteBannedFlags |= BANNED_RATS_BITE;
-        if (itemNetMonsterButcherKnife.at20)
-            uSpriteBannedFlags |= BANNED_BUTCHER_KNIFE;
     }
 
     // weapons
@@ -3856,7 +3854,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.nExplosionBehavior = itemNetMutatorExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     gPacketStartGame.nProjectileBehavior = itemNetMutatorProjectileBehavior.m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     gPacketStartGame.bNapalmFalloff = itemNetMutatorNapalmFalloff.at20;
-    gPacketStartGame.bEnemyBehavior = itemNetMutatorEnemyBehavior.at20;
+    gPacketStartGame.nEnemyBehavior = itemNetMutatorEnemyBehavior.m_nFocus % ARRAY_SSIZE(pzEnemyBehaviorStrings);
     gPacketStartGame.bEnemyRandomTNT = itemNetMutatorBoolEnemyRandomTNT.at20;
     gPacketStartGame.nWeaponsVer = itemNetMutatorWeaponsVer.m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
     gPacketStartGame.bSectorBehavior = itemNetMutatorSectorBehavior.at20;
