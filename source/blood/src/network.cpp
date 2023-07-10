@@ -70,7 +70,7 @@ char gNetAddress[32];
 // PORT-TODO: Use different port?
 int gNetPort = kNetDefaultPort;
 
-const short kNetVersion = 0x223;
+const short kNetVersion = 0x224;
 
 PKT_STARTGAME gPacketStartGame;
 
