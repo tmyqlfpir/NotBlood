@@ -73,6 +73,7 @@ extern int32_t gColorMsg;
 extern int32_t gKillObituary;
 extern int32_t gKillMsg;
 extern int32_t gMultiKill;
+extern int32_t gStompSound;
 extern int32_t gViewInterpolate;
 extern int32_t gPanningInterpolate;
 extern int32_t gWeaponInterpolate;

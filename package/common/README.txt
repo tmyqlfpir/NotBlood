@@ -197,6 +197,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable random obituary kill messages
 * cl_multikill
    - Enable/disable multi kill messages (0: disable, 1: enable, 2: enable + audio alert)
+* cl_stompkill
+   - Enable/disable sound effect when stomp killing another player. The sound can be changed by replacing the 'notblood.pk3/NOTSTOMP.RAW' file
 * cl_weaponhbob
    - Enable/disable view horizontal bobbing
 * cl_rollangle

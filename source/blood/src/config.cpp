@@ -94,6 +94,7 @@ int32_t gColorMsg;
 int32_t gKillObituary;
 int32_t gKillMsg;
 int32_t gMultiKill;
+int32_t gStompSound;
 int32_t gViewInterpolate;
 int32_t gPanningInterpolate;
 int32_t gWeaponInterpolate;
@@ -492,6 +493,7 @@ void CONFIG_SetDefaults(void)
     gKillObituary = 1;
     gKillMsg = 1;
     gMultiKill = 2;
+    gStompSound = 0;
     gViewInterpolate = 1;
     gPanningInterpolate = 1;
     gWeaponInterpolate = 1;
