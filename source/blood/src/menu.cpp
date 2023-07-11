@@ -198,6 +198,12 @@ const char *zKeyStrings[] =
     "SHARED",
 };
 
+const char *zKeepItemWeaponStrings[] =
+{
+    "LOST ON DEATH",
+    "KEEP ON DEATH"
+};
+
 const char *zSpawnProtectStrings[] =
 {
     "OFF",
@@ -470,10 +476,10 @@ CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrin
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetStart9("KEYS SETTING:", 3, 66, 115, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemZBool itemNetStart10("ITEM/WEAPON SETTING:", 3, 66, 125, 180, false, NULL, "KEEP ON DEATH", "LOST ON DEATH");
+CGameMenuItemZCycle itemNetStart10("ITEM/WEAPON SETTING:", 3, 66, 125, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
 CGameMenuItemZBool itemNetStart11("AUTO TEAMS:", 3, 66, 115, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetStart12("SPAWN PROTECTION:", 3, 66, 135, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
-CGameMenuItemZCycle itemNetStart13("SPAWN WITH WEAPON:", 3, 66, 145, 180, 0, 0, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
+CGameMenuItemZCycle itemNetStart13("SPAWN WITH WEAPON:", 3, 66, 145, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
 CGameMenuItemChain itemNetStart14("USER MAP", 3, 66, 155, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
 CGameMenuItemChain itemNetStart15("MUTATORS", 3, 66, 165, 320, 0, &menuNetworkGameMutators, -1, NULL, 0);
 CGameMenuItemChain itemNetStart16("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
@@ -3051,14 +3057,23 @@ void PreDrawDisplayPolymost(CGameMenuItem *pItem)
 
 void SetNetGameMode(CGameMenuItemZCycle *pItem)
 {
-    itemNetStart8.bEnable = (pItem->m_nFocus+1) != kGameTypeBloodBath;
-    itemNetStart8.bNoDraw = !itemNetStart8.bEnable;
-    itemNetStart9.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
-    itemNetStart9.bNoDraw = !itemNetStart9.bEnable;
-    itemNetStart10.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
-    itemNetStart10.bNoDraw = !itemNetStart10.bEnable;
-    itemNetStart11.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
-    itemNetStart11.bNoDraw = !itemNetStart11.bEnable;
+    if (pItem == &itemNetStart1)
+    {
+        itemNetStart8.bEnable = (pItem->m_nFocus+1) != kGameTypeBloodBath;
+        itemNetStart8.bNoDraw = !itemNetStart8.bEnable;
+        itemNetStart9.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
+        itemNetStart9.bNoDraw = !itemNetStart9.bEnable;
+        itemNetStart10.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
+        itemNetStart10.bNoDraw = !itemNetStart10.bEnable;
+        itemNetStart11.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
+        itemNetStart11.bNoDraw = !itemNetStart11.bEnable;
+        return;
+    }
+
+    if ((pItem == &itemNetStart10) && (pItem->m_nFocus > 0)) // if adjusted keep weapon/item settings, set spawn weapon to pitchfork
+        itemNetStart13.m_nFocus = 0;
+    else if ((pItem == &itemNetStart13) && (pItem->m_nFocus > 0)) // if adjusted spawn with weapon, turn off keep weapon/item settings as it will overwrite any weapon picked up after spawning
+        itemNetStart10.m_nFocus = 0;
 }
 
 void SetNetMonsterMenu(CGameMenuItemZCycle *pItem)
@@ -3837,7 +3852,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.respawnSettings = 0;
     gPacketStartGame.bFriendlyFire = itemNetStart8.at20;
     gPacketStartGame.keySettings = itemNetStart9.m_nFocus;
-    gPacketStartGame.itemWeaponSettings = itemNetStart10.at20;
+    gPacketStartGame.itemWeaponSettings = itemNetStart10.m_nFocus;
     gPacketStartGame.bAutoTeams = itemNetStart11.at20;
     gPacketStartGame.nSpawnProtection = itemNetStart12.m_nFocus;
     gPacketStartGame.nSpawnWeapon = itemNetStart13.m_nFocus;
