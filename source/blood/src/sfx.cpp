@@ -685,7 +685,7 @@ static void sfxPlayerDamageFeedback(void)
             continue;
 
         const int nRate = ClampScale(pSoundDmgSprite->nDamage, kMinDam, kMaxDam, gSoundDingMinPitch, gSoundDingMaxPitch);
-        sndStartSample("NOTHIT", gSoundDingVol, -1, nRate);
+        sndStartSample("NOTHIT", min(gSoundDingVol, FXVolume), -1, nRate);
         pSoundDmgSprite->nSprite = -1;
         pSoundDmgSprite->nDamage = 0;
         pSoundDmgSprite->nTick = gLevelTime;
