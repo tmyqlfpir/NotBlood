@@ -1700,7 +1700,7 @@ void ProcessInput(PLAYER *pPlayer)
         gViewLookAdjust = 0.f;
     }
 
-    pPlayer->isRunning = pInput->syncFlags.run;
+    pPlayer->isRunning = gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2 ? pInput->syncFlags.run : 0; // v1.0x weapon swaying 
     if (pInput->buttonFlags.byte || pInput->forward || pInput->strafe || pInput->q16turn)
         pPlayer->restTime = 0;
     else if (pPlayer->restTime >= 0)
@@ -2147,12 +2147,9 @@ void playerProcess(PLAYER *pPlayer)
     {
         if (pXSprite->height < 256)
         {
-            int isRunning = pPlayer->isRunning;
-            if (gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) // v1.0x weapon swaying
-                isRunning = 1; // always running
-            pPlayer->bobAmp = (pPlayer->bobAmp+pPosture->pace[isRunning]*4) & 2047;
-            pPlayer->swayAmp = (pPlayer->swayAmp+(pPosture->pace[isRunning]*4)/2) & 2047;
-            const int clampPhase = isRunning ? 60 : 30;
+            pPlayer->bobAmp = (pPlayer->bobAmp+pPosture->pace[pPlayer->isRunning]*4) & 2047;
+            pPlayer->swayAmp = (pPlayer->swayAmp+(pPosture->pace[pPlayer->isRunning]*4)/2) & 2047;
+            const int clampPhase = pPlayer->isRunning ? 60 : 30;
             if (pPlayer->bobPhase < clampPhase)
                 pPlayer->bobPhase = ClipHigh(pPlayer->bobPhase+nSpeed, clampPhase);
         }

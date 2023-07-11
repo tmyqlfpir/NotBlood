@@ -368,8 +368,7 @@ void fakeProcessInput(PLAYER *pPlayer, GINPUT *pInput)
         gViewLookAdjust = 0.f;
     }
 
-    predict.at70 = pInput->syncFlags.run;
-    predict.at70 = 0;
+    predict.at70 = (gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || VanillaMode() ? pInput->syncFlags.run : 0; // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
     predict.at71 = pInput->buttonFlags.jump;
     if (predict.at48 == 1)
     {
@@ -617,12 +616,9 @@ void fakePlayerProcess(PLAYER *pPlayer, GINPUT *pInput)
     {
         if (pXSprite->height < 256)
         {
-            int isRunning = predict.at70;
-            if ((gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || (VanillaMode() && numplayers > 1)) // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
-                isRunning = 1; // always running
-            predict.at4 = (predict.at4+(pPosture->pace[isRunning]*4))&2047;
-            predict.at14 = (predict.at14+(pPosture->pace[isRunning]*4)/2)&2047;
-            const int clampPhase = isRunning ? 60 : 30;
+            predict.at4 = (predict.at4+(pPosture->pace[predict.at70]*4))&2047;
+            predict.at14 = (predict.at14+(pPosture->pace[predict.at70]*4)/2)&2047;
+            const int clampPhase = predict.at70 ? 60 : 30;
             if (predict.at0 < clampPhase)
                 predict.at0 = ClipHigh(predict.at0 + nSpeed, clampPhase);
         }

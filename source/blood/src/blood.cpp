@@ -1202,6 +1202,7 @@ void ProcessFrame(void)
             gFifoInput[gNetFifoTail&255][i].q16mlook = fix16_from_int(mlook/4);
         }
         gPlayer[i].input.buttonFlags = gFifoInput[gNetFifoTail&255][i].buttonFlags;
+        gPlayer[i].input.syncFlags.run = gFifoInput[gNetFifoTail&255][i].syncFlags.run;
         gPlayer[i].input.keyFlags.word |= gFifoInput[gNetFifoTail&255][i].keyFlags.word;
         gPlayer[i].input.useFlags.byte |= gFifoInput[gNetFifoTail&255][i].useFlags.byte;
         if (gFifoInput[gNetFifoTail&255][i].newWeapon)
