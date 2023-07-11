@@ -1002,6 +1002,7 @@ int32_t registerosdcommands(void)
         { "cl_killmsg", "enable/disable kill messages", (void *)&gKillMsg, CVAR_BOOL, 0, 1 },
         { "cl_killobituaries", "enable/disable random obituary kill messages", (void *)&gKillObituary, CVAR_BOOL, 0, 1 },
         { "cl_multikill", "enable/disable multi kill messages (0: disable, 1: enable, 2: enable + audio alert)", (void *)&gMultiKill, CVAR_INT, 0, 2 },
+        { "cl_stompkill", "enable/disable sound effect when stomp killing another player. the sound can be changed by replacing the 'notblood.pk3/NOTSTOMP.RAW' file", (void *)&gStompSound, CVAR_BOOL, 0, 1 },
         { "cl_viewhbob", "enable/disable view horizontal bobbing", (void *)&gViewHBobbing, CVAR_BOOL, 0, 1 },
         { "cl_viewvbob", "enable/disable view vertical bobbing", (void *)&gViewVBobbing, CVAR_BOOL, 0, 1 },
         { "cl_weaponhbob", "enable/disable weapon horizontal bobbing (0: off, 1: original, 2: V1.0x)", (void *)&gWeaponHBobbing, CVAR_INT|CVAR_MULTI, 0, 2 },
@@ -1136,7 +1137,7 @@ int32_t registerosdcommands(void)
         { "skill", "changes the skill handicap for multiplayer (default: 2, range: 0-4)", (void *)&gSkill, CVAR_INT, 0, 4 },
 //
 //        { "snd_ambience", "enables/disables ambient sounds", (void *)&ud.config.AmbienceToggle, CVAR_BOOL, 0, 1 },
-        { "snd_ding", "enable/disable hit noise when damaging an enemy. the sound can be changed by replacing the 'notblood.pk3/HITSOUND.RAW' file", (void *)&gSoundDing, CVAR_BOOL, 0, 1 },
+        { "snd_ding", "enable/disable hit noise when damaging an enemy. the sound can be changed by replacing the 'notblood.pk3/NOTHIT.RAW' file", (void *)&gSoundDing, CVAR_BOOL, 0, 1 },
         { "snd_dingvol", "set volume for hit sound (default: 75, range: 1-255)", (void *)&gSoundDingVol, CVAR_INT, 1, 255 },
         { "snd_dingminfreq", "set min damage frequency for hit sound (default: 22050, range: 11025-44100)", (void *)&gSoundDingMinPitch, CVAR_INT, 11025, 44100 },
         { "snd_dingmaxfreq", "set max damage frequency for hit sound (default: 22050, range: 11025-44100)", (void *)&gSoundDingMaxPitch, CVAR_INT, 11025, 44100 },

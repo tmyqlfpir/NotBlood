@@ -285,6 +285,7 @@ void sndStartSample(const char *pzSound, int nVolume, int nChannel, int nRate)
     pChannel->at5 = gSoundRes.Lookup(pzSound, "RAW");
     if (!pChannel->at5)
         return;
+    nVolume = clamp(nVolume, 0, 255); // clamp to range that audiolib accepts
     int nSize = pChannel->at5->size;
     char *pData = (char*)gSoundRes.Lock(pChannel->at5);
     if (!nRate)

@@ -197,6 +197,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable random obituary kill messages
 * cl_multikill
    - Enable/disable multi kill messages (0: disable, 1: enable, 2: enable + audio alert)
+* cl_stompkill
+   - Enable/disable sound effect when stomp killing another player. The sound can be changed by replacing the 'notblood.pk3/NOTSTOMP.RAW' file
 * cl_weaponhbob
    - Enable/disable view horizontal bobbing
 * cl_rollangle
@@ -285,7 +287,7 @@ It should be noted that vanilla mode does not work with modern maps
 * snd_earangle
    - Set the listening ear offset (15-90 degrees)
 * snd_ding
-   - Enable/disable hit noise when damaging an enemy. The sound can be changed by replacing the 'notblood.pk3/HITSOUND.RAW' file
+   - Enable/disable hit noise when damaging an enemy. The sound can be changed by replacing the 'notblood.pk3/NOTHIT.RAW' file
 * snd_dingvol
    - Set volume for hit sound (default: 75, range: 1-255)
 * snd_dingminfreq
