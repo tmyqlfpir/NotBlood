@@ -1705,7 +1705,7 @@ void ProcessInput(PLAYER *pPlayer)
         pPlayer->restTime = 0;
     else if (pPlayer->restTime >= 0)
         pPlayer->restTime += kTicsPerFrame;
-    if (VanillaMode() || (pXSprite->health == 0))
+    if (VanillaMode() || pXSprite->health == 0)
         WeaponProcess(pPlayer);
     if (pXSprite->health == 0)
     {

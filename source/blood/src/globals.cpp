@@ -102,7 +102,11 @@ const char *GetVersionString(void)
         gVersionString = gVersionStringBuf;
         if (!gVersionString)
             return NULL;
-        sprintf(gVersionString, "%d.%02d", EXEVERSION / 100, EXEVERSION % 100);
+
+        Bstrncpyz(gVersionStringBuf, s_buildRev, sizeof(gVersionStringBuf));
+        char * const pHyphen = strchr(gVersionStringBuf, '-');
+        if (pHyphen != nullptr)
+            pHyphen[0] = '\0';
     }
     return gVersionString;
 }
