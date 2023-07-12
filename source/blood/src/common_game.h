@@ -42,7 +42,6 @@ extern int g_useCwd;
 #define NOTBLOODDEF "notblood.def"
 
 #define BYTEVERSION 123
-#define EXEVERSION 101
 
 void _SetErrorLoc(const char *pzFile, int nLine);
 void _ThrowError(const char *pzFormat, ...);
