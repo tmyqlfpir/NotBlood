@@ -1058,7 +1058,7 @@ void NetworkJoinGame(CGameMenuItemChain *pItem);
 char zNetAddressBuffer[16] = "localhost";
 char zNetPortBuffer[6] = "23513";
 
-CGameMenuItemTitle itemNetworkTitle("MULTIPLAYER", 1, 160, 20, 2038);
+CGameMenuItemTitle itemNetworkTitle("PLAY ONLINE", 1, 160, 20, 2038);
 CGameMenuItemChain itemNetworkHost("HOST A GAME", 1, 0, 80, 320, 1, &menuNetworkHost, -1, SetupNetworkHostMenu, 0);
 CGameMenuItemChain itemNetworkJoin("JOIN A GAME", 1, 0, 100, 320, 1, &menuNetworkJoin, -1, SetupNetworkJoinMenu, 0);
 
