@@ -837,22 +837,24 @@ void UpdateGlowTex(CGameMenuItemZBool *pItem);
 void Update3DModels(CGameMenuItemZBool *pItem);
 void UpdateDeliriumBlur(CGameMenuItemZBool *pItem);
 void UpdateTexColorIndex(CGameMenuItemZBool *pItem);
+void UpdateShadeInterpolation(CGameMenuItemZBool *pItem);
 void UpdateYShrearing(CGameMenuItemZBool *pItem);
 void UpdateRollAngle(CGameMenuItemSlider *pItem);
 #ifdef USE_OPENGL
 void PreDrawDisplayPolymost(CGameMenuItem *pItem);
 CGameMenuItemTitle itemOptionsDisplayPolymostTitle("POLYMOST SETUP", 1, 160, 20, 2038);
-CGameMenuItemZCycle itemOptionsDisplayPolymostTextureMode("TEXTURE MODE:", 3, 66, 50, 180, 0, UpdateTextureMode, pzTextureModeStrings, 2, 0);
-CGameMenuItemZCycle itemOptionsDisplayPolymostAnisotropy("ANISOTROPY:", 3, 66, 60, 180, 0, UpdateAnisotropy, pzAnisotropyStrings, 6, 0);
-CGameMenuItemZBool itemOptionsDisplayPolymostTrueColorTextures("TRUE COLOR TEXTURES:", 3, 66, 70, 180, 0, UpdateTrueColorTextures, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayPolymostTexQuality("GL TEXTURE QUALITY:", 3, 66, 80, 180, 0, UpdateTexQuality, pzTexQualityStrings, 3, 0);
-CGameMenuItemZBool itemOptionsDisplayPolymostPreloadCache("PRE-LOAD MAP TEXTURES:", 3, 66, 90, 180, 0, UpdatePreloadCache, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayPolymostTexCache("ON-DISK TEXTURE CACHE:", 3, 66, 100, 180, 0, UpdateTexCache, pzTexCacheStrings, 3, 0);
-CGameMenuItemZBool itemOptionsDisplayPolymostDetailTex("DETAIL TEXTURES:", 3, 66, 110, 180, 0, UpdateDetailTex, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayPolymostGlowTex("GLOW TEXTURES:", 3, 66, 120, 180, 0, UpdateGlowTex, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayPolymost3DModels("3D MODELS:", 3, 66, 130, 180, 0, Update3DModels, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayPolymostDeliriumBlur("DELIRIUM EFFECT BLUR:", 3, 66, 140, 180, 0, UpdateDeliriumBlur, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayPolymostUseColorIndexedTex("RENDER WITH COLOR INDEXING:", 3, 66, 150, 180, 0, UpdateTexColorIndex, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayPolymostTextureMode("TEXTURE MODE:", 3, 66, 40, 180, 0, UpdateTextureMode, pzTextureModeStrings, 2, 0);
+CGameMenuItemZCycle itemOptionsDisplayPolymostAnisotropy("ANISOTROPY:", 3, 66, 50, 180, 0, UpdateAnisotropy, pzAnisotropyStrings, 6, 0);
+CGameMenuItemZBool itemOptionsDisplayPolymostTrueColorTextures("TRUE COLOR TEXTURES:", 3, 66, 60, 180, 0, UpdateTrueColorTextures, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayPolymostTexQuality("GL TEXTURE QUALITY:", 3, 66, 70, 180, 0, UpdateTexQuality, pzTexQualityStrings, 3, 0);
+CGameMenuItemZBool itemOptionsDisplayPolymostPreloadCache("PRE-LOAD MAP TEXTURES:", 3, 66, 80, 180, 0, UpdatePreloadCache, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayPolymostTexCache("ON-DISK TEXTURE CACHE:", 3, 66, 90, 180, 0, UpdateTexCache, pzTexCacheStrings, 3, 0);
+CGameMenuItemZBool itemOptionsDisplayPolymostDetailTex("DETAIL TEXTURES:", 3, 66, 100, 180, 0, UpdateDetailTex, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayPolymostGlowTex("GLOW TEXTURES:", 3, 66, 110, 180, 0, UpdateGlowTex, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayPolymost3DModels("3D MODELS:", 3, 66, 120, 180, 0, Update3DModels, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayPolymostDeliriumBlur("DELIRIUM EFFECT BLUR:", 3, 66, 130, 180, 0, UpdateDeliriumBlur, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayPolymostUseColorIndexedTex("RENDER WITH COLOR INDEXING:", 3, 66, 140, 180, 0, UpdateTexColorIndex, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayPolymostShadeInterpolation("FOG SMOOTHING:", 3, 66, 150, 180, 0, UpdateShadeInterpolation, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayPolymostYShearing("Y-SHEARING:", 3, 66, 160, 180, 0, UpdateYShrearing, NULL, NULL);
 CGameMenuItemSlider itemOptionsDisplayPolymostRollAngle("VIEW ROLLING:", 3, 66, 170, 180, &gRollAngle, 0, 5, 1, UpdateRollAngle, -1, -1, kMenuSliderValue);
 #endif
@@ -1839,6 +1841,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymost3DModels, false);
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostDeliriumBlur, false);
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostUseColorIndexedTex, false);
+    menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostShadeInterpolation, false);
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostYShearing, false);
     menuOptionsDisplayPolymost.Add(&itemOptionsDisplayPolymostRollAngle, false);
     menuOptionsDisplayPolymost.Add(&itemBloodQAV, false);
@@ -2971,6 +2974,8 @@ void SetupVideoPolymostMenu(CGameMenuItemChain *pItem)
     itemOptionsDisplayPolymost3DModels.at20 = usemodels;
     itemOptionsDisplayPolymostDeliriumBlur.at20 = gDeliriumBlur;
     itemOptionsDisplayPolymostUseColorIndexedTex.at20 = r_useindexedcolortextures;
+    itemOptionsDisplayPolymostShadeInterpolation.at20 = r_shadeinterpolate;
+    itemOptionsDisplayPolymostShadeInterpolation.bEnable = !!r_useindexedcolortextures;
     itemOptionsDisplayPolymostYShearing.at20 = r_yshearing;
 }
 
@@ -3042,6 +3047,12 @@ void UpdateDeliriumBlur(CGameMenuItemZBool *pItem)
 void UpdateTexColorIndex(CGameMenuItemZBool *pItem)
 {
     r_useindexedcolortextures = pItem->at20;
+    itemOptionsDisplayPolymostShadeInterpolation.bEnable = pItem->at20;
+}
+
+void UpdateShadeInterpolation(CGameMenuItemZBool *pItem)
+{
+    r_shadeinterpolate = pItem->at20;
 }
 
 void UpdateYShrearing(CGameMenuItemZBool *pItem)
