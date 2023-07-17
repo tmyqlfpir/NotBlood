@@ -484,6 +484,7 @@ CGameMenuItemChain itemNetStart14("USER MAP", 3, 66, 155, 320, 0, &menuMultiUser
 CGameMenuItemChain itemNetStart15("MUTATORS", 3, 66, 165, 320, 0, &menuNetworkGameMutators, -1, NULL, 0);
 CGameMenuItemChain itemNetStart16("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
 
+CGameMenuItemTitle itemNetMonsterTitle("MONSTERS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetMonsterSettings("MONSTERS:", 3, 66, 40, 180, 0, SetNetMonsterMenu, zMonsterStrings, ARRAY_SSIZE(zMonsterStrings), 0);
 CGameMenuItemSlider itemNetMonsterQuantity("MONSTER QUANTITY:", 3, 66, 50, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemNetMonsterHealth("MONSTER HEALTH:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
@@ -1377,7 +1378,7 @@ void SetupNetStartMenu(void)
     menuMultiUserMaps.Add(&itemNetStartUserMapTitle, true);
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
 
-    menuNetworkGameMonsters.Add(&itemCustomDifficultyTitle, false);
+    menuNetworkGameMonsters.Add(&itemNetMonsterTitle, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterSettings, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterQuantity, true);
     menuNetworkGameMonsters.Add(&itemNetMonsterHealth, false);
