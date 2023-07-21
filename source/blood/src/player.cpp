@@ -2237,8 +2237,8 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     dassert(nKiller >= 0 && nKiller < kMaxPlayers);
     int nVictim = pVictim->pSprite->type-kDudePlayer1;
     dassert(nVictim >= 0 && nVictim < kMaxPlayers);
-    const ClockTicks nKillingSpreeTime = kTicRate * 3; // three seconds window for kill sprees
-    const char bKillingSpreeStopped = !VanillaMode() && (gGameOptions.nGameType >= kGameTypeBloodBath) && gMultiKill && (gMultiKillsFrags[nVictim] >= 5) && ((gFrameClock - gMultiKillsTicks[nVictim]) < nKillingSpreeTime);
+    const ClockTicks kKillingSpreeTime = kTicRate * 4; // four seconds window for kill sprees
+    const char bKillingSpreeStopped = !VanillaMode() && (gGameOptions.nGameType >= kGameTypeBloodBath) && gMultiKill && (gMultiKillsFrags[nVictim] >= 5) && ((gFrameClock - gMultiKillsTicks[nVictim]) < kKillingSpreeTime);
     if (myconnectindex == connecthead)
     {
         sprintf(buffer, "frag %d killed %d\n", pKiller->nPlayer+1, pVictim->nPlayer+1);
@@ -2314,7 +2314,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         if (!VanillaMode() && (gGameOptions.nGameType >= kGameTypeBloodBath) && bKilledEnemy) // calculate multi kill/killing spree for bloodbath/teams mode (ignore friendly fire)
         {
             const char bKillerAlive = pKiller->pXSprite->health > 0;
-            const char bKillerSpreeActive = (gFrameClock - gMultiKillsTicks[nKiller]) < nKillingSpreeTime;
+            const char bKillerSpreeActive = (gFrameClock - gMultiKillsTicks[nKiller]) < kKillingSpreeTime;
             if (bKillerSpreeActive && bKillerAlive) // if killed enemy within multi kill time window, reward point
             {
                 gMultiKillsFrags[nKiller]++;
