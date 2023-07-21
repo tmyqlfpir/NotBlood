@@ -246,7 +246,7 @@ KILLMSG gSuicide[] = {
     { "\r%s\r has suicided", 4207 },
 };
 
-KILLMSG gKillingSpreeFrag = {"\r%s\r's killing spree was ended by \r%s\r", 4110};
+KILLMSG gKillingSpreeFrag = {"\r%s\r put a stop to \r%s\r's killing spree", 4110};
 
 KILLMSG gKillingSpreeSuicide = {"\r%s\r was looking good until they killed themselves", 4207};
 
