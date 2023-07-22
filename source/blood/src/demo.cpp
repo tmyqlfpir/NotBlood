@@ -57,7 +57,7 @@ struct DEMOVALIDATE {
     int nAutoAim;
 };
 
-DEMOVALIDATE gDemoValidate[] = {
+const DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST000.DEM", (int32_t)0x00000DB1, 0x68E811AD, 0x00000000, {(int32_t)0x00002239, (int32_t)0x00006A75, (int32_t)0x000029A4}, 1},
     {"/validatedemos/TEST001.DEM", (int32_t)0x000008E3, 0x898BFCFE, 0x00000000, {(int32_t)0x00001AC0, (int32_t)0x00003F49, (int32_t)0x000025A4}, 1},
     {"/validatedemos/TEST002.DEM", (int32_t)0x00000CE0, 0xCAF89634, 0x00000000, {(int32_t)0x0000C8ED, (int32_t)0x00009AF9, (int32_t)0x000159A4}, 1},
@@ -534,7 +534,7 @@ void CDemo::ProcessKeys(void)
 
 void CDemo::Playback(void)
 {
-    DEMOVALIDATE *pValidateInfo;
+    const DEMOVALIDATE *pValidateInfo;
     CONTROL_BindsEnabled = false;
     ready2send = 0;
     int v4 = 0;
