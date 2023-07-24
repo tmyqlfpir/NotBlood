@@ -2237,7 +2237,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
     dassert(nKiller >= 0 && nKiller < kMaxPlayers);
     int nVictim = pVictim->pSprite->type-kDudePlayer1;
     dassert(nVictim >= 0 && nVictim < kMaxPlayers);
-    const ClockTicks kKillingSpreeTime = kTicRate * 4; // four seconds window for kill sprees
+    const ClockTicks kKillingSpreeTime = kTicRate * 5; // five seconds window for kill sprees
     const char bKillingSpreeStopped = !VanillaMode() && (gGameOptions.nGameType >= kGameTypeBloodBath) && gMultiKill && (gMultiKillsFrags[nVictim] >= 5) && ((gFrameClock - gMultiKillsTicks[nVictim]) < kKillingSpreeTime);
     if (myconnectindex == connecthead)
     {
