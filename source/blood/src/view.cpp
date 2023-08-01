@@ -4737,31 +4737,33 @@ RORHACK:
     }
     if (gViewMode == 4)
     {
-        int cX = gView->pSprite->x;
-        int cY = gView->pSprite->y;
-        short nAng = gView->pSprite->ang;
-        if (gViewMap.bFollowMode && !VanillaMode()) // interpolate angle for 2d map view
+        int cX = 0, cY = 0, nAng = 0;
+        if (gViewMap.bFollowMode) // calculate get current player position for 2d map for follow mode
         {
-            fix16_t cA = gView->q16ang;
-            if (gViewInterpolate)
+            cX = gView->pSprite->x, cY = gView->pSprite->y, nAng = gView->pSprite->ang;
+            if (!VanillaMode()) // interpolate angle for 2d map view
             {
-                if (numplayers > 1 && gView == gMe && gPrediction && gMe->pXSprite->health > 0)
+                fix16_t cA = gView->q16ang;
+                if (gViewInterpolate)
                 {
-                    cX = interpolate(predictOld.at50, predict.at50, gInterpolate);
-                    cY = interpolate(predictOld.at54, predict.at54, gInterpolate);
-                    cA = interpolateangfix16(predictOld.at30, predict.at30, gInterpolate);
+                    if (numplayers > 1 && gView == gMe && gPrediction && gMe->pXSprite->health > 0)
+                    {
+                        cX = interpolate(predictOld.at50, predict.at50, gInterpolate);
+                        cY = interpolate(predictOld.at54, predict.at54, gInterpolate);
+                        cA = interpolateangfix16(predictOld.at30, predict.at30, gInterpolate);
+                    }
+                    else
+                    {
+                        VIEW *pView = &gPrevView[gViewIndex];
+                        cX = interpolate(pView->at50, cX, gInterpolate);
+                        cY = interpolate(pView->at54, cY, gInterpolate);
+                        cA = interpolateangfix16(pView->at30, cA, gInterpolate);
+                    }
                 }
-                else
-                {
-                    VIEW *pView = &gPrevView[gViewIndex];
-                    cX = interpolate(pView->at50, cX, gInterpolate);
-                    cY = interpolate(pView->at54, cY, gInterpolate);
-                    cA = interpolateangfix16(pView->at30, cA, gInterpolate);
-                }
+                if (gView == gMe && (numplayers <= 1 || gPrediction) && gView->pXSprite->health != 0)
+                    cA = gViewAngle;
+                nAng = fix16_to_int(cA);
             }
-            if (gView == gMe && (numplayers <= 1 || gPrediction) && gView->pXSprite->health != 0)
-                cA = gViewAngle;
-            nAng = fix16_to_int(cA);
         }
         gViewMap.Process(cX, cY, nAng);
     }
