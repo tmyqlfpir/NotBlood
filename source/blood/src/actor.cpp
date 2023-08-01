@@ -4269,7 +4269,7 @@ void ProcessTouchObjects(spritetype *pSprite, int nXSprite)
                 if (pPlayer)
             #endif
                 {
-                    const char bPlayerWasAlive = gStompSound && ((pXSprite2->health > 0) || IsPlayerSprite(pSprite2) && playerSeqPlaying(&gPlayer[pSprite2->type-kDudePlayer1], 16));
+                    const char bPlayerWasAlive = gStompSound && ((pXSprite2->health > 0) || (IsPlayerSprite(pSprite2) && playerSeqPlaying(&gPlayer[pSprite2->type-kDudePlayer1], 16)));
                     const char bKillingPlayer = gStompSound && (IsPlayerSprite(pSprite2) && ((pPlayer == gMe) || (pSprite2 == gMe->pSprite)));
                     actDamageSprite(nSprite, pSprite2,kDamageBullet, 8);
                     if (gStompSound && bKillingPlayer && bPlayerWasAlive && (pXSprite2->health == 0))

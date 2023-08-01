@@ -10981,7 +10981,7 @@ static void check_sprite(int32_t i)
     else if ((unsigned)sprite[i].picnum >= MAXTILES)
     {
         LOG_F(ERROR, "Error in map file: sprite #%d (%d,%d) with illegal picnum (%d) was REMOVED.",
-                   i, TrackerCast(sprite[i].x), TrackerCast(sprite[i].y), TrackerCast(sprite[i].sectnum));
+                   i, TrackerCast(sprite[i].x), TrackerCast(sprite[i].y), TrackerCast(sprite[i].picnum));
         remove_sprite(i);
     }
     else if ((unsigned)sprite[i].sectnum >= (unsigned)numsectors)
@@ -14973,4 +14973,3 @@ void tileInvalidate(int16_t tilenume, int32_t pal, int32_t how)
 /*
  * vim:ts=8:
  */
-
