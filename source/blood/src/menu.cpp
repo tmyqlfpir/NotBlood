@@ -328,6 +328,7 @@ CGameMenu menuHelp;
 CGameMenu menuNetwork;
 CGameMenu menuNetworkHost;
 CGameMenu menuNetworkJoin;
+CGameMenu menuNetworkBrowser;
 CGameMenu menuNetworkGameMonsters;
 CGameMenu menuNetworkGameMutators;
 
@@ -340,7 +341,7 @@ CGameMenuItemQAV itemHelp5QAV("", 3, 160, 100, "HELP5", false, true);
 
 CGameMenuItemTitle itemMainTitle("BLOOD", 1, 160, 20, 2038);
 CGameMenuItemChain itemMain1("NEW GAME", 1, 0, 45, 320, 1, &menuEpisode, -1, NULL, 0);
-CGameMenuItemChain itemMain2("PLAY ONLINE", 1, 0, 65, 320, 1, &menuNetwork, -1, NULL, 0);
+CGameMenuItemChain itemMain2("MULTIPLAYER", 1, 0, 65, 320, 1, &menuNetwork, -1, NULL, 0);
 CGameMenuItemChain itemMain3("OPTIONS", 1, 0, 85, 320, 1, &menuOptions, -1, NULL, 0);
 CGameMenuItemChain itemMain4("LOAD GAME", 1, 0, 105, 320, 1, &menuLoadGame, -1, NULL, 0);
 CGameMenuItemChain itemMain5("HELP", 1, 0, 125, 320, 1, &menuHelp, -1, NULL, 0);
@@ -557,7 +558,7 @@ CGameMenu menuOptionsDisplayMode;
 CGameMenu menuOptionsDisplayPolymost;
 #endif
 CGameMenu menuOptionsSound;
-CGameMenu menuOptionsOnline;
+CGameMenu menuOptionsPlayer;
 CGameMenu menuOptionsControl;
 
 void SetupOptionsSound(CGameMenuItemChain *pItem);
@@ -566,7 +567,7 @@ CGameMenuItemTitle itemOptionsTitle("OPTIONS", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsChainGame("GAME SETUP", 1, 0, 50, 320, 1, &menuOptionsGame, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainDisplay("DISPLAY SETUP", 1, 0, 70, 320, 1, &menuOptionsDisplay, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainSound("SOUND SETUP", 1, 0, 90, 320, 1, &menuOptionsSound, -1, SetupOptionsSound, 0);
-CGameMenuItemChain itemOptionsChainOnline("ONLINE SETUP", 1, 0, 110, 320, 1, &menuOptionsOnline, -1, NULL, 0);
+CGameMenuItemChain itemOptionsChainOnline("PLAYER SETUP", 1, 0, 110, 320, 1, &menuOptionsPlayer, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainControl("CONTROL SETUP", 1, 0, 130, 320, 1, &menuOptionsControl, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainMutators("MUTATORS", 1, 0, 150, 320, 1, &menuOptionsGameMutators, -1, NULL, 0);
 
@@ -969,18 +970,18 @@ const char *pzShowWeaponStrings[] = {
     "VOXEL"
 };
 
-CGameMenuItemTitle itemOptionsOnlineTitle("ONLINE SETUP", 1, 160, 20, 2038);
-CGameMenuItemZEdit itemOptionsOnlineName("PLAYER NAME:", 3, 66, 50, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
-CGameMenuItemZCycle itemOptionsOnlineSkill("HEALTH HANDICAP:", 3, 66, 60, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
-CGameMenuItemZCycle itemOptionsOnlineTeamPreference("TEAM PREFERENCE:", 3, 66, 70, 180, 0, UpdatePlayerTeamPreference, pzPlayerTeamPreferenceStrings, ARRAY_SIZE(pzPlayerTeamPreferenceStrings), 0);
-CGameMenuItemZBool itemOptionsOnlineBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 90, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
-CGameMenuItemZCycle itemOptionsOnlineShowWeapons("SHOW WEAPONS:", 3, 66, 100, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
-CGameMenuItemZBool itemOptionsOnlineChatSound("MESSAGE BEEP:", 3, 66, 110, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
-CGameMenuItemZBool itemOptionsOnlineColorMsg("COLORED MESSAGES:", 3, 66, 120, 180, true, UpdatePlayerColorMessages, NULL, NULL);
-CGameMenuItemZBool itemOptionsOnlineObituaryMsg("USE OBITUARY MESSAGES:", 3, 66, 130, 180, true, UpdatePlayerKillObituaryMessages, NULL, NULL);
-CGameMenuItemZBool itemOptionsOnlineKillMsg("SHOW KILLS ON HUD:", 3, 66, 140, 180, true, UpdatePlayerKillMessage, NULL, NULL);
-CGameMenuItemZCycle itemOptionsOnlineMultiKill("MULTI KILL MESSAGES:", 3, 66, 150, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
-CGameMenuItemZBool itemOptionsOnlineStompKillSound("STOMP KILL SOUND:", 3, 66, 160, 180, 0, UpdatePlayerStompKillSound, NULL, NULL);
+CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
+CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 50, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
+CGameMenuItemZCycle itemOptionsPlayerSkill("HEALTH HANDICAP:", 3, 66, 60, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
+CGameMenuItemZCycle itemOptionsPlayerTeamPreference("TEAM PREFERENCE:", 3, 66, 70, 180, 0, UpdatePlayerTeamPreference, pzPlayerTeamPreferenceStrings, ARRAY_SIZE(pzPlayerTeamPreferenceStrings), 0);
+CGameMenuItemZBool itemOptionsPlayerBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 90, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
+CGameMenuItemZCycle itemOptionsPlayerShowWeapons("SHOW WEAPONS:", 3, 66, 100, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
+CGameMenuItemZBool itemOptionsPlayerChatSound("MESSAGE BEEP:", 3, 66, 110, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
+CGameMenuItemZBool itemOptionsPlayerColorMsg("COLORED MESSAGES:", 3, 66, 120, 180, true, UpdatePlayerColorMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsPlayerObituaryMsg("USE OBITUARY MESSAGES:", 3, 66, 130, 180, true, UpdatePlayerKillObituaryMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsPlayerKillMsg("SHOW KILLS ON HUD:", 3, 66, 140, 180, true, UpdatePlayerKillMessage, NULL, NULL);
+CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 150, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
+CGameMenuItemZBool itemOptionsPlayerStompKillSound("STOMP KILL SOUND:", 3, 66, 160, 180, 0, UpdatePlayerStompKillSound, NULL, NULL);
 
 #define JOYSTICKITEMSPERPAGE 16 // this must be an even value, as double tap inputs rely on odd index position
 #define MAXJOYSTICKBUTTONPAGES (max(1, (MAXJOYBUTTONSANDHATS*2 / JOYSTICKITEMSPERPAGE))) // we double all buttons/hats so each input can be bind for double tap
@@ -1055,23 +1056,33 @@ void SetupNetworkHostMenu(CGameMenuItemChain *pItem);
 void SetupNetworkJoinMenu(CGameMenuItemChain *pItem);
 void NetworkHostGame(CGameMenuItemChain *pItem);
 void NetworkJoinGame(CGameMenuItemChain *pItem);
+void NetworkBrowserReset(CGameMenuItemChain *pItem);
+void NetworkBrowserJoin(CGameMenuItemChain *pItem);
 
 char zNetAddressBuffer[16] = "localhost";
 char zNetPortBuffer[6] = "23513";
+char zNetBrowserGame[8][16+1+5] = {{'\0'}};
+char zNetBrowserState[32] = "SEARCHING...";
 
-CGameMenuItemTitle itemNetworkTitle("PLAY ONLINE", 1, 160, 20, 2038);
+CGameMenuItemTitle itemNetworkTitle("MULTIPLAYER", 1, 160, 20, 2038);
 CGameMenuItemChain itemNetworkHost("HOST A GAME", 1, 0, 80, 320, 1, &menuNetworkHost, -1, SetupNetworkHostMenu, 0);
 CGameMenuItemChain itemNetworkJoin("JOIN A GAME", 1, 0, 100, 320, 1, &menuNetworkJoin, -1, SetupNetworkJoinMenu, 0);
 
 CGameMenuItemTitle itemNetworkHostTitle("HOST A GAME", 1, 160, 20, 2038);
 CGameMenuItemSlider itemNetworkHostPlayerNum("PLAYER NUMBER:", 3, 66, 70, 180, 1, 2, kMaxPlayers, 1, NULL, -1, -1, kMenuSliderValue);
 CGameMenuItemZEdit itemNetworkHostPort("NETWORK PORT:", 3, 66, 80, 180, zNetPortBuffer, 6, 0, NULL, 0);
+CGameMenuItemZBool itemNetworkHostBroadcast("ANNOUNCE ON INTERNET:", 3, 66, 90, 180, 0, 0, NULL, NULL);
 CGameMenuItemChain itemNetworkHostHost("HOST A GAME", 3, 66, 100, 180, 1, NULL, -1, NetworkHostGame, 0);
 
 CGameMenuItemTitle itemNetworkJoinTitle("JOIN A GAME", 1, 160, 20, 2038);
-CGameMenuItemZEdit itemNetworkJoinAddress("NETWORK ADDRESS:", 3, 66, 70, 180, zNetAddressBuffer, 16, 0, NULL, 0);
-CGameMenuItemZEdit itemNetworkJoinPort("NETWORK PORT:", 3, 66, 80, 180, zNetPortBuffer, 6, 0, NULL, 0);
-CGameMenuItemChain itemNetworkJoinJoin("JOIN A GAME", 3, 66, 100, 180, 1, NULL, -1, NetworkJoinGame, 0);
+CGameMenuItemChain itemNetworkJoinBrowse("BROWSE PUBLIC SERVERS", 3, 66, 70, 180, 0, &menuNetworkBrowser, 0, NetworkBrowserReset, 0);
+CGameMenuItemZEdit itemNetworkJoinAddress("NETWORK ADDRESS:", 3, 66, 80, 180, zNetAddressBuffer, 16, 0, NULL, 0);
+CGameMenuItemZEdit itemNetworkJoinPort("NETWORK PORT:", 3, 66, 90, 180, zNetPortBuffer, 6, 0, NULL, 0);
+CGameMenuItemChain itemNetworkJoinJoin("JOIN A GAME", 3, 66, 110, 180, 1, NULL, -1, NetworkJoinGame, 0);
+
+CGameMenuItemTitle itemNetworkBrowserTitle("SERVER BROWSER", 1, 160, 20, 2038);
+CGameMenuItemChain itemNetworkBrowserState(zNetBrowserState, 1, 0, 50, 320, 1, NULL, -1, NULL, 0);
+CGameMenuItemChain *pItemNetworkBrowserGame[8];
 
 // There is no better way to do this than manually.
 
@@ -1879,44 +1890,44 @@ void SetupOptionsMenu(void)
     menuOptionsSoundSF2.Add(&itemOptionsSoundSF2Title, true);
     menuOptionsSoundSF2.Add(&itemOptionsSoundSF2FS, true);
 
-    menuOptionsOnline.Add(&itemOptionsOnlineTitle, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineName, true);
-    menuOptionsOnline.Add(&itemOptionsOnlineSkill, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineTeamPreference, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineBoolShowPlayerNames, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineShowWeapons, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineChatSound, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineColorMsg, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineObituaryMsg, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineKillMsg, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineMultiKill, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineStompKillSound, false);
-    menuOptionsOnline.Add(&itemBloodQAV, false);
-    itemOptionsOnlineSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
-    itemOptionsOnlineTeamPreference.tooltip_pzTextUpper = "Set player's preferred team for team mode";
-    itemOptionsOnlineBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's name";
-    itemOptionsOnlineBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
-    itemOptionsOnlineShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
-    itemOptionsOnlineShowWeapons.tooltip_pzTextLower = "over their head";
-    itemOptionsOnlineChatSound.tooltip_pzTextUpper = "Play beep sound for chat messages";
-    itemOptionsOnlineColorMsg.tooltip_pzTextUpper = "Color player names for chat messages";
-    itemOptionsOnlineObituaryMsg.tooltip_pzTextUpper = "Use random obituary kill messages";
-    itemOptionsOnlineKillMsg.tooltip_pzTextUpper = "Show player killed on screen";
-    itemOptionsOnlineKillMsg.tooltip_pzTextLower = "(for bloodbath/teams mode)";
-    itemOptionsOnlineMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
-    itemOptionsOnlineMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
-    itemOptionsOnlineStompKillSound.tooltip_pzTextUpper = "Play sound when stomp killing another player";
+    menuOptionsPlayer.Add(&itemOptionsPlayerTitle, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
+    menuOptionsPlayer.Add(&itemOptionsPlayerSkill, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerTeamPreference, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerBoolShowPlayerNames, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerShowWeapons, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerChatSound, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerColorMsg, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerObituaryMsg, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerKillMsg, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerMultiKill, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerStompKillSound, false);
+    menuOptionsPlayer.Add(&itemBloodQAV, false);
+    itemOptionsPlayerSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
+    itemOptionsPlayerTeamPreference.tooltip_pzTextUpper = "Set player's preferred team for team mode";
+    itemOptionsPlayerBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's name";
+    itemOptionsPlayerBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
+    itemOptionsPlayerShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
+    itemOptionsPlayerShowWeapons.tooltip_pzTextLower = "over their head";
+    itemOptionsPlayerChatSound.tooltip_pzTextUpper = "Play beep sound for chat messages";
+    itemOptionsPlayerColorMsg.tooltip_pzTextUpper = "Color player names for chat messages";
+    itemOptionsPlayerObituaryMsg.tooltip_pzTextUpper = "Use random obituary kill messages";
+    itemOptionsPlayerKillMsg.tooltip_pzTextUpper = "Show player killed on screen";
+    itemOptionsPlayerKillMsg.tooltip_pzTextLower = "(for bloodbath/teams mode)";
+    itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
+    itemOptionsPlayerMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
+    itemOptionsPlayerStompKillSound.tooltip_pzTextUpper = "Play sound when stomp killing another player";
 
-    itemOptionsOnlineSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
-    itemOptionsOnlineTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
-    itemOptionsOnlineBoolShowPlayerNames.at20 = gShowPlayerNames;
-    itemOptionsOnlineShowWeapons.m_nFocus = gShowWeapon;
-    itemOptionsOnlineChatSound.at20 = gChatSnd;
-    itemOptionsOnlineColorMsg.at20 = gColorMsg;
-    itemOptionsOnlineObituaryMsg.at20 = gKillObituary;
-    itemOptionsOnlineKillMsg.at20 = gKillMsg;
-    itemOptionsOnlineMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
-    itemOptionsOnlineStompKillSound.at20 = gStompSound;
+    itemOptionsPlayerSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
+    itemOptionsPlayerTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
+    itemOptionsPlayerBoolShowPlayerNames.at20 = gShowPlayerNames;
+    itemOptionsPlayerShowWeapons.m_nFocus = gShowWeapon;
+    itemOptionsPlayerChatSound.at20 = gChatSnd;
+    itemOptionsPlayerColorMsg.at20 = gColorMsg;
+    itemOptionsPlayerObituaryMsg.at20 = gKillObituary;
+    itemOptionsPlayerKillMsg.at20 = gKillMsg;
+    itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
+    itemOptionsPlayerStompKillSound.at20 = gStompSound;
 }
 
 void SetupControlsMenu(void)
@@ -3617,14 +3628,33 @@ void SetupNetworkMenu(void)
     menuNetworkHost.Add(&itemNetworkHostTitle, false);
     menuNetworkHost.Add(&itemNetworkHostPlayerNum, true);
     menuNetworkHost.Add(&itemNetworkHostPort, false);
+    menuNetworkHost.Add(&itemNetworkHostBroadcast, false);
     menuNetworkHost.Add(&itemNetworkHostHost, false);
     menuNetworkHost.Add(&itemBloodQAV, false);
+    itemNetworkHostBroadcast.tooltip_pzTextUpper = "Announces public IP on server browser";
+    itemNetworkHostBroadcast.tooltip_pzTextLower = "(can take up to 20 seconds to appear on server browser)";
 
     menuNetworkJoin.Add(&itemNetworkJoinTitle, false);
     menuNetworkJoin.Add(&itemNetworkJoinAddress, true);
     menuNetworkJoin.Add(&itemNetworkJoinPort, false);
+    menuNetworkJoin.Add(&itemNetworkJoinBrowse, false);
     menuNetworkJoin.Add(&itemNetworkJoinJoin, false);
     menuNetworkJoin.Add(&itemBloodQAV, false);
+
+    menuNetworkBrowser.Add(&itemNetworkBrowserTitle, false);
+    menuNetworkBrowser.Add(&itemNetworkBrowserState, true);
+    for (int nSlot = 0; nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++) // create list of possible available server items
+    {
+        pItemNetworkBrowserGame[nSlot] = new CGameMenuItemChain(zNetBrowserGame[nSlot], 3, 66, 70+(nSlot*10), 180, 1, NULL, -1, NetworkBrowserJoin, 0);
+        dassert(pItemNetworkBrowserGame[nSlot] != NULL);
+        menuNetworkBrowser.Add(pItemNetworkBrowserGame[nSlot], false);
+    }
+    menuNetworkBrowser.Add(&itemBloodQAV, false);
+    for (int nSlot = 0; nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
+    {
+        pItemNetworkBrowserGame[nSlot]->bCanSelect = 0;
+        pItemNetworkBrowserGame[nSlot]->bEnable = 0;
+    }
 }
 
 void SetupNetworkHostMenu(CGameMenuItemChain *pItem)
@@ -3648,7 +3678,7 @@ void NetworkHostGame(CGameMenuItemChain *pItem)
     if (!gNetPort)
         gNetPort = kNetDefaultPort;
     gNetMode = NETWORK_SERVER;
-    netInitialize(false);
+    netInitialize(false, itemNetworkHostBroadcast.at20);
     gGameMenuMgr.Deactivate();
     gQuitGame = gRestartGame = true;
 }
@@ -3667,6 +3697,71 @@ void NetworkJoinGame(CGameMenuItemChain *pItem)
     netInitialize(false);
     gGameMenuMgr.Deactivate();
     gQuitGame = gRestartGame = true;
+}
+
+void NetworkBrowserAdd(const char *pString, int nPort)
+{
+    char szTemp[16+1+5];
+    int nSlotEmpty = -1;
+
+    Bsnprintf(szTemp, sizeof(szTemp), "%s %d", pString, nPort);
+    for (int nSlot = 0; nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
+    {
+        if (!Bstrncmp(szTemp, zNetBrowserGame[nSlot], sizeof(szTemp))) // already exists, don't add to server list
+            return;
+        if (zNetBrowserGame[nSlot][0] == '\0')
+        {
+            nSlotEmpty = nSlot;
+            break;
+        }
+    }
+    if (nSlotEmpty < 0) // server list is full, return (WTF!? NOBODY KNOWS ABOUT THIS OBSCURE FORK)
+        return;
+
+    Bstrncpyz(zNetBrowserGame[nSlotEmpty], szTemp, sizeof(zNetBrowserGame[nSlotEmpty]));
+    pItemNetworkBrowserGame[nSlotEmpty]->bCanSelect = 1;
+    pItemNetworkBrowserGame[nSlotEmpty]->bEnable = 1;
+}
+
+void NetworkBrowserState(const char *pString)
+{
+    Bstrncpyz(zNetBrowserState, pString, sizeof(zNetBrowserState));
+    itemNetworkBrowserState.bCanSelect = 0;
+    itemNetworkBrowserState.bEnable = 0;
+    menuNetworkBrowser.m_nFocus = menuNetworkBrowser.at8 = 0; // unfocus state item
+}
+
+void NetworkBrowserReset(CGameMenuItemChain *pItem)
+{
+    UNREFERENCED_PARAMETER(pItem);
+    extern int netIRCIinitialize(void);
+
+    for (int nSlot = 0; nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
+    {
+        zNetBrowserGame[nSlot][0] = '\0';
+        pItemNetworkBrowserGame[nSlot]->bCanSelect = 0;
+        pItemNetworkBrowserGame[nSlot]->bEnable = 0;
+    }
+
+    if (!netIRCIinitialize())
+        Bstrncpyz(zNetBrowserState, "CANNOT CONNECT TO MASTER LIST", sizeof(zNetBrowserState));
+    else
+        Bstrncpyz(zNetBrowserState, "SEARCHING...", sizeof(zNetBrowserState));
+    menuNetworkBrowser.m_nFocus = menuNetworkBrowser.at8 = 1; // set focus on state item element
+}
+
+void NetworkBrowserJoin(CGameMenuItemChain *pItem)
+{
+    sndStopSong();
+    FX_StopAllSounds();
+    UpdateDacs(0, true);
+    Bsscanf(pItem->m_pzText, "%s %d", gNetAddress, &gNetPort);
+    gNetMode = NETWORK_CLIENT;
+    netIRCDeinitialize();
+    netInitialize(false);
+    gGameMenuMgr.Deactivate();
+    gQuitGame = gRestartGame = true;
+    NetworkBrowserReset(NULL);
 }
 
 void SaveGameProcess(CGameMenuItemChain *pItem)
