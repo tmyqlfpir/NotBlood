@@ -347,7 +347,7 @@ int netIRCIinitialize(void)
 
     gIRCState = BLOOD_IRC_CONNECTED;
     Bmemset(&m_ircd, 0, sizeof(ircd_t));
-    Bsprintf(m_ircd.nick, gNetMode == NETWORK_SERVER ? "BlSrv%lu%X" : "BlCli%lu%X", (unsigned int)(time(NULL)/60), (unsigned char)(time(NULL)&0xF));
+    Bsprintf(m_ircd.nick, gNetMode == NETWORK_SERVER ? "BlSrv%lu%X" : "BlCli%lu%X", (long unsigned int)(time(NULL)/60), (unsigned char)(time(NULL)&0xF));
     Bstrcpy(m_ircd.name, "NotBloodPlayer");
     Bstrcpy(m_ircd.chan, kIRCChan);
     m_ircd.sock = -1;
