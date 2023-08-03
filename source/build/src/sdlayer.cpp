@@ -486,7 +486,7 @@ int main(int argc, char *argv[])
 #endif
 
     engineSetupLogging(argc, argv);
-    
+
 #if SDL_VERSION_ATLEAST(2, 0, 8)
     if (EDUKE32_SDL_LINKED_PREREQ(linked, 2, 0, 8))
         SDL_SetMemoryFunctions(_xmalloc, _xcalloc, _xrealloc, _xfree);
@@ -920,7 +920,7 @@ void joyScanDevices()
             else
 #endif
                 Bstrncpyz(name, SDL_JoystickNameForIndex(i), sizeof(name));
-                
+
             VLOG_F(LOG_INPUT, "  %d. %s", i + 1, name);
         }
 #if SDL_MAJOR_VERSION >= 2
@@ -1731,7 +1731,7 @@ int setvideomode_sdlcommonpost(int32_t x, int32_t y, int32_t c, int32_t fs, int3
                 LOG_F(ERROR, "Unable to set video mode: %s.", SDL_GetError());
                 return -1;
             }
-            else 
+            else
                 refreshfreq = newmode.refresh_rate;
         }
     }
@@ -2160,7 +2160,7 @@ void videoShowFrame(int32_t w)
 
         {
             MICROPROFILE_SCOPEI("Engine", "SDL_GL_SwapWindow", MP_GREEN3);
-#if SDL_MAJOR_VERSION >= 2            
+#if SDL_MAJOR_VERSION >= 2
             SDL_GL_SwapWindow(sdl_window);
 #else
             SDL_GL_SwapBuffers();
@@ -2249,7 +2249,7 @@ int32_t videoSetGamma(void)
     if (novideo)
         return 0;
 
-#ifdef USE_OPENGL    
+#ifdef USE_OPENGL
     if (!nogl)
     {
         g_glColorCorrection = { g_videoGamma, g_videoContrast, g_videoSaturation, 0.f };
@@ -2259,7 +2259,7 @@ int32_t videoSetGamma(void)
         return 0;
     }
 #endif
-    
+
     int32_t i;
     uint16_t gammaTable[768];
     float gamma = max(MIN_GAMMA, min(MAX_GAMMA, g_videoGamma));
@@ -2511,7 +2511,7 @@ int32_t handleevents_sdlcommon(SDL_Event *ev)
 #endif
             }
             break;
-            
+
         case SDL_QUIT:
             quitevent = 1;
             return -1;
@@ -2807,6 +2807,14 @@ int32_t handleevents_pollsdl(void)
 }
 #endif
 
+/**
+ * Returns true after at least 100ms have passed to prevent bottlenecking the handleevents() function.
+ */
+static INLINE bool shouldPollGlResetStatus(uint64_t lastGlResetStatusTicks)
+{
+    return timerGetNanoTicks() - lastGlResetStatusTicks >= (timerGetNanoTickRate() / 10);
+}
+
 int32_t handleevents(void)
 {
 #ifdef __ANDROID__
@@ -2881,14 +2889,16 @@ int32_t handleevents(void)
     timerUpdateClock();
 
 #ifdef USE_OPENGL
-    if (!nogl && glinfo.reset_notification)
+    static uint64_t lastGlResetStatusTicks = 0;
+    if (!nogl && glinfo.reset_notification && shouldPollGlResetStatus(lastGlResetStatusTicks))
     {
+        lastGlResetStatusTicks = timerGetNanoTicks();
         static const auto glGetGraphicsReset = glGetGraphicsResetStatusKHR ? glGetGraphicsResetStatusKHR : glGetGraphicsResetStatus;
         auto status = glGetGraphicsReset();
         if (status != GL_NO_ERROR)
         {
             do
-            { 
+            {
                 switch (status)
                 {
                     case GL_GUILTY_CONTEXT_RESET:
@@ -2934,4 +2944,3 @@ int32_t handleevents(void)
 #if SDL_MAJOR_VERSION < 2
 # include "sdlayer12.cpp"
 #endif
-
