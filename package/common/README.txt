@@ -181,6 +181,8 @@ It should be noted that vanilla mode does not work with modern maps
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
 
 ### New console variables for NotBlood
+* cl_autodivingsuit
+   - Enable/disable automatic diving suit equipping when entering water (always enabled in multiplayer)
 * cl_calebtalk
    - Enable/disable Caleb's dialog lines (0: on, 1: no idle, 2: no explosion/gib, 3: off)
 * cl_chatsnd

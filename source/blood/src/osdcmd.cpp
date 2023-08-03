@@ -977,6 +977,7 @@ int32_t registerosdcommands(void)
 
         { "cl_autoaim", "enable/disable weapon autoaim", (void *)&gAutoAim, CVAR_INT|CVAR_MULTI, 0, 3 },
 //        { "cl_automsg", "enable/disable automatically sending messages to all players", (void *)&ud.automsg, CVAR_BOOL, 0, 1 },
+        { "cl_autodivingsuit", "enable/disable automatic diving suit equipping when entering water (always enabled in multiplayer)", (void *)&gAutoDivingSuit, CVAR_BOOL, 0, 1 },
         { "cl_autorun", "enable/disable autorun", (void *)&gAutoRun, CVAR_BOOL, 0, 1 },
 //
 //        { "cl_autosave", "enable/disable autosaves", (void *) &ud.autosave, CVAR_BOOL, 0, 1 },

@@ -87,6 +87,7 @@ int32_t gLockManualSaving;
 int32_t gRestoreLastSave;
 int32_t gAutosave;
 bool gAutosaveInCurLevel;
+int32_t gAutoDivingSuit;
 int32_t gAutoRun;
 int32_t gCalebTalk;
 int32_t gChatSnd;
@@ -486,6 +487,7 @@ void CONFIG_SetDefaults(void)
     gCenterViewOnDrop = 0;
     gCrouchToggle = 0;
     gDetail = 4;
+    gAutoDivingSuit = 1;
     gAutoRun = 1;
     gCalebTalk = 0;
     gChatSnd = 1;

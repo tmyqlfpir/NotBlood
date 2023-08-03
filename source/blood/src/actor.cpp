@@ -6614,7 +6614,7 @@ void actProcessSprites(void)
                         pPlayer->underwaterTime = 1200;
                     else
                         pPlayer->underwaterTime = ClipLow(pPlayer->underwaterTime-4, 0);
-                    if (pPlayer->underwaterTime < 1080 && packCheckItem(pPlayer, kPackDivingSuit) && !bDivingSuit && ((pPlayer->pXSprite->health > 0) || VanillaMode())) // don't activate diving suit if player is dead
+                    if (pPlayer->underwaterTime < 1080 && packCheckItem(pPlayer, kPackDivingSuit) && !bDivingSuit && (((pPlayer->pXSprite->health > 0) && gAutoDivingSuit) || VanillaMode())) // don't activate diving suit if player is dead
                         packUseItem(pPlayer, kPackDivingSuit);
                     if (!pPlayer->underwaterTime)
                     {
