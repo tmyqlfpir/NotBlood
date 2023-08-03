@@ -557,7 +557,7 @@ CGameMenu menuOptionsDisplayMode;
 CGameMenu menuOptionsDisplayPolymost;
 #endif
 CGameMenu menuOptionsSound;
-CGameMenu menuOptionsOnline;
+CGameMenu menuOptionsPlayer;
 CGameMenu menuOptionsControl;
 
 void SetupOptionsSound(CGameMenuItemChain *pItem);
@@ -566,7 +566,7 @@ CGameMenuItemTitle itemOptionsTitle("OPTIONS", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsChainGame("GAME SETUP", 1, 0, 50, 320, 1, &menuOptionsGame, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainDisplay("DISPLAY SETUP", 1, 0, 70, 320, 1, &menuOptionsDisplay, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainSound("SOUND SETUP", 1, 0, 90, 320, 1, &menuOptionsSound, -1, SetupOptionsSound, 0);
-CGameMenuItemChain itemOptionsChainOnline("ONLINE SETUP", 1, 0, 110, 320, 1, &menuOptionsOnline, -1, NULL, 0);
+CGameMenuItemChain itemOptionsChainOnline("PLAYER SETUP", 1, 0, 110, 320, 1, &menuOptionsPlayer, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainControl("CONTROL SETUP", 1, 0, 130, 320, 1, &menuOptionsControl, -1, NULL, 0);
 CGameMenuItemChain itemOptionsChainMutators("MUTATORS", 1, 0, 150, 320, 1, &menuOptionsGameMutators, -1, NULL, 0);
 
@@ -969,18 +969,18 @@ const char *pzShowWeaponStrings[] = {
     "VOXEL"
 };
 
-CGameMenuItemTitle itemOptionsOnlineTitle("ONLINE SETUP", 1, 160, 20, 2038);
-CGameMenuItemZEdit itemOptionsOnlineName("PLAYER NAME:", 3, 66, 50, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
-CGameMenuItemZCycle itemOptionsOnlineSkill("HEALTH HANDICAP:", 3, 66, 60, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
-CGameMenuItemZCycle itemOptionsOnlineTeamPreference("TEAM PREFERENCE:", 3, 66, 70, 180, 0, UpdatePlayerTeamPreference, pzPlayerTeamPreferenceStrings, ARRAY_SIZE(pzPlayerTeamPreferenceStrings), 0);
-CGameMenuItemZBool itemOptionsOnlineBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 90, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
-CGameMenuItemZCycle itemOptionsOnlineShowWeapons("SHOW WEAPONS:", 3, 66, 100, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
-CGameMenuItemZBool itemOptionsOnlineChatSound("MESSAGE BEEP:", 3, 66, 110, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
-CGameMenuItemZBool itemOptionsOnlineColorMsg("COLORED MESSAGES:", 3, 66, 120, 180, true, UpdatePlayerColorMessages, NULL, NULL);
-CGameMenuItemZBool itemOptionsOnlineObituaryMsg("USE OBITUARY MESSAGES:", 3, 66, 130, 180, true, UpdatePlayerKillObituaryMessages, NULL, NULL);
-CGameMenuItemZBool itemOptionsOnlineKillMsg("SHOW KILLS ON HUD:", 3, 66, 140, 180, true, UpdatePlayerKillMessage, NULL, NULL);
-CGameMenuItemZCycle itemOptionsOnlineMultiKill("MULTI KILL MESSAGES:", 3, 66, 150, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
-CGameMenuItemZBool itemOptionsOnlineStompKillSound("STOMP KILL SOUND:", 3, 66, 160, 180, 0, UpdatePlayerStompKillSound, NULL, NULL);
+CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
+CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 50, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
+CGameMenuItemZCycle itemOptionsPlayerSkill("HEALTH HANDICAP:", 3, 66, 60, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
+CGameMenuItemZCycle itemOptionsPlayerTeamPreference("TEAM PREFERENCE:", 3, 66, 70, 180, 0, UpdatePlayerTeamPreference, pzPlayerTeamPreferenceStrings, ARRAY_SIZE(pzPlayerTeamPreferenceStrings), 0);
+CGameMenuItemZBool itemOptionsPlayerBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 90, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
+CGameMenuItemZCycle itemOptionsPlayerShowWeapons("SHOW WEAPONS:", 3, 66, 100, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
+CGameMenuItemZBool itemOptionsPlayerChatSound("MESSAGE BEEP:", 3, 66, 110, 180, true, UpdatePlayerChatMessageSound, NULL, NULL);
+CGameMenuItemZBool itemOptionsPlayerColorMsg("COLORED MESSAGES:", 3, 66, 120, 180, true, UpdatePlayerColorMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsPlayerObituaryMsg("USE OBITUARY MESSAGES:", 3, 66, 130, 180, true, UpdatePlayerKillObituaryMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsPlayerKillMsg("SHOW KILLS ON HUD:", 3, 66, 140, 180, true, UpdatePlayerKillMessage, NULL, NULL);
+CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 150, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
+CGameMenuItemZBool itemOptionsPlayerStompKillSound("STOMP KILL SOUND:", 3, 66, 160, 180, 0, UpdatePlayerStompKillSound, NULL, NULL);
 
 #define JOYSTICKITEMSPERPAGE 16 // this must be an even value, as double tap inputs rely on odd index position
 #define MAXJOYSTICKBUTTONPAGES (max(1, (MAXJOYBUTTONSANDHATS*2 / JOYSTICKITEMSPERPAGE))) // we double all buttons/hats so each input can be bind for double tap
@@ -1879,44 +1879,44 @@ void SetupOptionsMenu(void)
     menuOptionsSoundSF2.Add(&itemOptionsSoundSF2Title, true);
     menuOptionsSoundSF2.Add(&itemOptionsSoundSF2FS, true);
 
-    menuOptionsOnline.Add(&itemOptionsOnlineTitle, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineName, true);
-    menuOptionsOnline.Add(&itemOptionsOnlineSkill, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineTeamPreference, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineBoolShowPlayerNames, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineShowWeapons, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineChatSound, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineColorMsg, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineObituaryMsg, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineKillMsg, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineMultiKill, false);
-    menuOptionsOnline.Add(&itemOptionsOnlineStompKillSound, false);
-    menuOptionsOnline.Add(&itemBloodQAV, false);
-    itemOptionsOnlineSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
-    itemOptionsOnlineTeamPreference.tooltip_pzTextUpper = "Set player's preferred team for team mode";
-    itemOptionsOnlineBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's name";
-    itemOptionsOnlineBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
-    itemOptionsOnlineShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
-    itemOptionsOnlineShowWeapons.tooltip_pzTextLower = "over their head";
-    itemOptionsOnlineChatSound.tooltip_pzTextUpper = "Play beep sound for chat messages";
-    itemOptionsOnlineColorMsg.tooltip_pzTextUpper = "Color player names for chat messages";
-    itemOptionsOnlineObituaryMsg.tooltip_pzTextUpper = "Use random obituary kill messages";
-    itemOptionsOnlineKillMsg.tooltip_pzTextUpper = "Show player killed on screen";
-    itemOptionsOnlineKillMsg.tooltip_pzTextLower = "(for bloodbath/teams mode)";
-    itemOptionsOnlineMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
-    itemOptionsOnlineMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
-    itemOptionsOnlineStompKillSound.tooltip_pzTextUpper = "Play sound when stomp killing another player";
+    menuOptionsPlayer.Add(&itemOptionsPlayerTitle, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
+    menuOptionsPlayer.Add(&itemOptionsPlayerSkill, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerTeamPreference, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerBoolShowPlayerNames, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerShowWeapons, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerChatSound, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerColorMsg, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerObituaryMsg, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerKillMsg, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerMultiKill, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerStompKillSound, false);
+    menuOptionsPlayer.Add(&itemBloodQAV, false);
+    itemOptionsPlayerSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
+    itemOptionsPlayerTeamPreference.tooltip_pzTextUpper = "Set player's preferred team for team mode";
+    itemOptionsPlayerBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's name";
+    itemOptionsPlayerBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
+    itemOptionsPlayerShowWeapons.tooltip_pzTextUpper = "Display player's weapon";
+    itemOptionsPlayerShowWeapons.tooltip_pzTextLower = "over their head";
+    itemOptionsPlayerChatSound.tooltip_pzTextUpper = "Play beep sound for chat messages";
+    itemOptionsPlayerColorMsg.tooltip_pzTextUpper = "Color player names for chat messages";
+    itemOptionsPlayerObituaryMsg.tooltip_pzTextUpper = "Use random obituary kill messages";
+    itemOptionsPlayerKillMsg.tooltip_pzTextUpper = "Show player killed on screen";
+    itemOptionsPlayerKillMsg.tooltip_pzTextLower = "(for bloodbath/teams mode)";
+    itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
+    itemOptionsPlayerMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
+    itemOptionsPlayerStompKillSound.tooltip_pzTextUpper = "Play sound when stomp killing another player";
 
-    itemOptionsOnlineSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
-    itemOptionsOnlineTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
-    itemOptionsOnlineBoolShowPlayerNames.at20 = gShowPlayerNames;
-    itemOptionsOnlineShowWeapons.m_nFocus = gShowWeapon;
-    itemOptionsOnlineChatSound.at20 = gChatSnd;
-    itemOptionsOnlineColorMsg.at20 = gColorMsg;
-    itemOptionsOnlineObituaryMsg.at20 = gKillObituary;
-    itemOptionsOnlineKillMsg.at20 = gKillMsg;
-    itemOptionsOnlineMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
-    itemOptionsOnlineStompKillSound.at20 = gStompSound;
+    itemOptionsPlayerSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
+    itemOptionsPlayerTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
+    itemOptionsPlayerBoolShowPlayerNames.at20 = gShowPlayerNames;
+    itemOptionsPlayerShowWeapons.m_nFocus = gShowWeapon;
+    itemOptionsPlayerChatSound.at20 = gChatSnd;
+    itemOptionsPlayerColorMsg.at20 = gColorMsg;
+    itemOptionsPlayerObituaryMsg.at20 = gKillObituary;
+    itemOptionsPlayerKillMsg.at20 = gKillMsg;
+    itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
+    itemOptionsPlayerStompKillSound.at20 = gStompSound;
 }
 
 void SetupControlsMenu(void)
