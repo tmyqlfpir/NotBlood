@@ -364,12 +364,12 @@ int netIRCProcess(void)
     return gIRCState;
 }
 #else
-void netIRCDeinitialize(void);
+void netIRCDeinitialize(void)
 {
     return;
 }
 
-int netIRCIinitialize(void);
+int netIRCIinitialize(void)
 {
     return 0;
 }
