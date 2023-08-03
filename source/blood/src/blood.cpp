@@ -2258,6 +2258,7 @@ RESTART:
             case INPUT_MODE_1:
                 if (gGameMenuMgr.m_bActive)
                 {
+                    static char bNetSearching = 0;
                     if (gGameStarted) // dim background
                         viewDimScreen();
                     gGameMenuMgr.Draw();
@@ -2268,6 +2269,16 @@ RESTART:
                             StartNetGame(NULL);
                             bQuickNetStart = false;
                         }
+                    }
+                    if (gGameMenuMgr.pActiveMenu == &menuNetworkBrowser) // search for servers
+                    {
+                        netIRCProcess();
+                        bNetSearching = 1;
+                    }
+                    else if (bNetSearching) // exited server browser, gracefully disconnect from master list
+                    {
+                        netIRCDeinitialize();
+                        bNetSearching = 0;
                     }
                 }
                 break;
