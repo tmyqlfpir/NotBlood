@@ -48,7 +48,6 @@ extern CGameMenu menuOptionsDisplay;
 extern CGameMenu menuOptionsDisplayColor;
 extern CGameMenu menuOptionsDisplayMode;
 extern CGameMenu menuOptionsSound;
-extern CGameMenu menuOptionsPlayer;
 extern CGameMenu menuOptionsControl;
 extern short gQuickLoadSlot;
 extern char strRestoreGameStrings[][16];
