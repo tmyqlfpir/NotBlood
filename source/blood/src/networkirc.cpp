@@ -4,6 +4,7 @@
 #ifdef NDEBUG
 void netIRCPrintf(const char *fmt, ...)
 {
+    UNREFERENCED_PARAMETER(fmt);
     return;
 }
 #else
@@ -285,12 +286,16 @@ int netGetWanIp4(void)
                 break;
             Bstrcpy(gWanIp4, &server_reply[i]);
             netIRCPrintf("\nIP: %s\n", gWanIp4);
-            bSuccess = inet_addr(gWanIp4) != -1;
+            bSuccess = 1;
             break;
         }
     }
 
-    shutdown(s, SD_SEND);
+#ifdef _WIN32
+    shutdown(s, SD_BOTH);
+#else
+    shutdown(s, SHUT_RDWR);
+#endif
 WANIPFAILED:
 #ifdef _WIN32
     if (s != INVALID_SOCKET)
@@ -311,7 +316,11 @@ void netIRCDeinitialize(void)
     if (gIRCState == BLOOD_IRC_DISCONNECTED)
         return;
 
-    shutdown(m_ircd.sock, SD_SEND);
+#ifdef _WIN32
+    shutdown(m_ircd.sock, SD_BOTH);
+#else
+    shutdown(m_ircd.sock, SHUT_RDWR);
+#endif
     if (m_ircd.sock >= 0)
 #ifdef _WIN32
         closesocket(m_ircd.sock);
@@ -337,8 +346,8 @@ int netIRCIinitialize(void)
 #endif
 
     gIRCState = BLOOD_IRC_CONNECTED;
-    m_ircd = {0};
-    Bsprintf(m_ircd.nick, gNetMode == NETWORK_SERVER ? "BlSrv%I64d" : "BlCli%I64d%01X", time(NULL)/60, time(NULL)&0xF);
+    Bmemset(&m_ircd, 0, sizeof(ircd_t));
+    Bsprintf(m_ircd.nick, gNetMode == NETWORK_SERVER ? "BlSrv%l64d%01X" : "BlCli%l64d%01X", (long int)(time(NULL)/60), (unsigned char)(time(NULL)&0xF));
     Bstrcpy(m_ircd.name, "NotBloodPlayer");
     Bstrcpy(m_ircd.chan, kIRCChan);
     m_ircd.sock = -1;
@@ -355,12 +364,12 @@ int netIRCProcess(void)
     return gIRCState;
 }
 #else
-void netIRCDeinitialize(void);
+void netIRCDeinitialize(void)
 {
     return;
 }
 
-int netIRCIinitialize(void);
+int netIRCIinitialize(void)
 {
     return 0;
 }
