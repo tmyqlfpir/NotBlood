@@ -4,6 +4,7 @@
 #ifdef NDEBUG
 void netIRCPrintf(const char *fmt, ...)
 {
+    UNREFERENCED_PARAMETER(fmt);
     return;
 }
 #else
@@ -285,7 +286,7 @@ int netGetWanIp4(void)
                 break;
             Bstrcpy(gWanIp4, &server_reply[i]);
             netIRCPrintf("\nIP: %s\n", gWanIp4);
-            bSuccess = inet_addr(gWanIp4) != -1;
+            bSuccess = 1;
             break;
         }
     }
@@ -337,8 +338,8 @@ int netIRCIinitialize(void)
 #endif
 
     gIRCState = BLOOD_IRC_CONNECTED;
-    m_ircd = {0};
-    Bsprintf(m_ircd.nick, gNetMode == NETWORK_SERVER ? "BlSrv%I64d" : "BlCli%I64d%01X", time(NULL)/60, time(NULL)&0xF);
+    Bmemset(&m_ircd, 0, sizeof(ircd_t));
+    Bsprintf(m_ircd.nick, gNetMode == NETWORK_SERVER ? "BlSrv%I64d" : "BlCli%I64d%01X", time(NULL)/60, (unsigned char)(time(NULL)&0xF));
     Bstrcpy(m_ircd.name, "NotBloodPlayer");
     Bstrcpy(m_ircd.chan, kIRCChan);
     m_ircd.sock = -1;
