@@ -1685,6 +1685,7 @@ void CGameMenuItemZEdit::Draw(void)
 bool CGameMenuItemZEdit::Event(CGameMenuEvent &event)
 {
     static char buffer[256];
+    static CGameMenuItemZEdit *pGameMenuItemZEdit = NULL;
     // Hack
     if (event.at2 == sc_kpad_2 || event.at2 == sc_kpad_4 || event.at2 == sc_kpad_6 || event.at2 == sc_kpad_8)
         event.at0 = kMenuEventKey;
@@ -1696,6 +1697,7 @@ bool CGameMenuItemZEdit::Event(CGameMenuEvent &event)
             strncpy(at20, buffer, at24);
             at20[at24-1] = 0;
             at30 = 0;
+            pGameMenuItemZEdit = NULL;
             return false;
         }
         return true;
@@ -1712,6 +1714,13 @@ bool CGameMenuItemZEdit::Event(CGameMenuEvent &event)
                 at2c(this, &event);
             at30 = 0;
             return false;
+        }
+        else // unselect previously edited item
+        {
+            if (!pGameMenuItemZEdit)
+                pGameMenuItemZEdit = this;
+            else if (pGameMenuItemZEdit != this)
+                pGameMenuItemZEdit->at30 = 0, pGameMenuItemZEdit = this;
         }
         strncpy(buffer, at20, at24);
         buffer[at24-1] = 0;
