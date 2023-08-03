@@ -265,7 +265,7 @@ int netGetWanIp4(void)
     if (send(s, request, strlen(request), 0) < 0) // send http request
     {
         netIRCPrintf("Unable to request HTTP response, aborting...\n");
-        goto WANIPFAILED;
+        goto WANIPCLOSED;
     }
     netIRCPrintf("Data Send\n");
 
@@ -273,7 +273,7 @@ int netGetWanIp4(void)
     if (recv_size < 0)
     {
         netIRCPrintf("Connection timeout, aborting...\n");
-        goto WANIPFAILED;
+        goto WANIPCLOSED;
     }
     netIRCPrintf("Reply received\n");
 
@@ -291,11 +291,13 @@ int netGetWanIp4(void)
         }
     }
 
+WANIPCLOSED:
 #ifdef _WIN32
     shutdown(s, SD_BOTH);
 #else
     shutdown(s, SHUT_RDWR);
 #endif
+
 WANIPFAILED:
 #ifdef _WIN32
     if (s != INVALID_SOCKET)
