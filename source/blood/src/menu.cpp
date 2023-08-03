@@ -3643,14 +3643,14 @@ void SetupNetworkMenu(void)
 
     menuNetworkBrowser.Add(&itemNetworkBrowserTitle, false);
     menuNetworkBrowser.Add(&itemNetworkBrowserState, true);
-    for (int nSlot = 0; nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++) // create list of possible available server items
+    for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++) // create list of possible available server items
     {
         pItemNetworkBrowserGame[nSlot] = new CGameMenuItemChain(zNetBrowserGame[nSlot], 3, 66, 70+(nSlot*10), 180, 1, NULL, -1, NetworkBrowserJoin, 0);
         dassert(pItemNetworkBrowserGame[nSlot] != NULL);
         menuNetworkBrowser.Add(pItemNetworkBrowserGame[nSlot], false);
     }
     menuNetworkBrowser.Add(&itemBloodQAV, false);
-    for (int nSlot = 0; nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
+    for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
     {
         pItemNetworkBrowserGame[nSlot]->bCanSelect = 0;
         pItemNetworkBrowserGame[nSlot]->bEnable = 0;
@@ -3705,7 +3705,7 @@ void NetworkBrowserAdd(const char *pString, int nPort)
     int nSlotEmpty = -1;
 
     Bsnprintf(szTemp, sizeof(szTemp), "%s %d", pString, nPort);
-    for (int nSlot = 0; nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
+    for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
     {
         if (!Bstrncmp(szTemp, zNetBrowserGame[nSlot], sizeof(szTemp))) // already exists, don't add to server list
             return;
@@ -3736,7 +3736,7 @@ void NetworkBrowserReset(CGameMenuItemChain *pItem)
     UNREFERENCED_PARAMETER(pItem);
     extern int netIRCIinitialize(void);
 
-    for (int nSlot = 0; nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
+    for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
     {
         zNetBrowserGame[nSlot][0] = '\0';
         pItemNetworkBrowserGame[nSlot]->bCanSelect = 0;
