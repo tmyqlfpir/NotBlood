@@ -3635,9 +3635,9 @@ void SetupNetworkMenu(void)
     itemNetworkHostBroadcast.tooltip_pzTextLower = "(can take up to 20 seconds to appear on server browser)";
 
     menuNetworkJoin.Add(&itemNetworkJoinTitle, false);
+    menuNetworkJoin.Add(&itemNetworkJoinBrowse, false);
     menuNetworkJoin.Add(&itemNetworkJoinAddress, true);
     menuNetworkJoin.Add(&itemNetworkJoinPort, false);
-    menuNetworkJoin.Add(&itemNetworkJoinBrowse, false);
     menuNetworkJoin.Add(&itemNetworkJoinJoin, false);
     menuNetworkJoin.Add(&itemBloodQAV, false);
 
