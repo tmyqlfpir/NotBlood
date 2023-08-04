@@ -131,7 +131,7 @@ static int osdfunc_bucketlist(osdcmdptr_t UNUSED(parm))
 
         if (missCount)
             LOG_F(INFO, "%12s: %s%u","miss", osd->draw.errorfmt, missCount);
-        
+
         if (freeCount)
             LOG_F(INFO, "%12s: %u",  "freed",     freeCount);
 
@@ -158,7 +158,7 @@ static int osdfunc_heapinfo(osdcmdptr_t UNUSED(parm))
 #endif
 
 void engineSetupAllocator(void)
-{    
+{
     engineCreateAllocator();
 
 #ifdef SMMALLOC_STATS_SUPPORT
@@ -177,7 +177,7 @@ const char *engineVerbosityCallback(loguru::Verbosity verbosity)
     if (gameVerbosityCallback)
     {
         auto str = gameVerbosityCallback(verbosity);
-        
+
         if (str != nullptr)
             return str;
     }
@@ -643,7 +643,7 @@ static int osdfunc_setrendermode(osdcmdptr_t parm)
 #endif
         nullptr, nullptr, "Polymost", "Polymer (for great justice)"
     };
-    
+
     if (parm->numparms != 1)
         return OSDCMD_SHOWHELP;
 
@@ -654,7 +654,7 @@ static int osdfunc_setrendermode(osdcmdptr_t parm)
 
     if (videoGetRenderMode() == m)
         return OSDCMD_OK;
-    
+
     if ((m==REND_CLASSIC) != (bpp==8) && baselayer_osdcmd_vidmode_func)
     {
         // Mismatch between video mode and requested renderer, do auto switch.
