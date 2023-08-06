@@ -933,7 +933,6 @@ void fakeActProcessSprites(void)
 
 void viewCorrectPrediction(void)
 {
-    static int oldLevelTime = 0;
     if (numplayers == 1)
     {
         gViewLook = gMe->q16look;
@@ -942,10 +941,9 @@ void viewCorrectPrediction(void)
     }
     spritetype *pSprite = gMe->pSprite;
     VIEW *pView = &predictFifo[(gNetFifoTail-1)&255];
-    const char bCalPrediction = !VanillaMode() ? (oldLevelTime != gLevelTime) : (gMe->q16ang != pView->at30 || pView->at24 != gMe->q16horiz || pView->at50 != pSprite->x || pView->at54 != pSprite->y || pView->at58 != pSprite->z);
+    const char bCalPrediction = !VanillaMode() || (gMe->q16ang != pView->at30 || pView->at24 != gMe->q16horiz || pView->at50 != pSprite->x || pView->at54 != pSprite->y || pView->at58 != pSprite->z);
     if (bCalPrediction)
     {
-        oldLevelTime = gLevelTime;
         viewInitializePrediction();
         predictOld = gPrevView[myconnectindex];
         gPredictTail = gNetFifoTail;
