@@ -165,17 +165,6 @@ const char *zMonsterStrings[] =
     "Respawn (120 Secs)",
 };
 
-const char *zMonsterMenuStrings[] =
-{
-    "MONSTER SETTING:               NONE",
-    "MONSTER SETTING:       BRING 'EM ON",
-    "MONSTER SETTING:  RESPAWN (15 SECS)",
-    "MONSTER SETTING:  RESPAWN (30 SECS)",
-    "MONSTER SETTING:  RESPAWN (60 SECS)",
-    "MONSTER SETTING:  RESPAWN (90 SECS)",
-    "MONSTER SETTING: RESPAWN (120 SECS)",
-};
-
 const char *zWeaponStrings[] =
 {
     "Do not Respawn",
@@ -472,7 +461,7 @@ CGameMenuItemZCycle itemNetStart1("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zN
 CGameMenuItemZCycle itemNetStart2("EPISODE:", 3, 66, 45, 180, 0, SetupNetLevels, NULL, 0, 0);
 CGameMenuItemZCycle itemNetStart3("LEVEL:", 3, 66, 55, 180, 0, NetClearUserMap, NULL, 0, 0);
 CGameMenuItemZCycle itemNetStart4("DIFFICULTY:", 3, 66, 65, 180, 0, SetNetMonsterMenu, zDiffStrings, ARRAY_SSIZE(zDiffStrings), 0);
-CGameMenuItemChain itemNetStart5("MONSTER SETTING:", 3, 66, 75, 320, 0, &menuNetworkGameMonsters, -1, NULL, 0);
+CGameMenuItemChain itemNetStart5("MONSTER SETTING:", 3, 66, 75, 180, 0, &menuNetworkGameMonsters, -1, NULL, 0);
 CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrings, 4, 0);
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
@@ -3115,7 +3104,7 @@ void SetNetGameMode(CGameMenuItemZCycle *pItem)
 
 void SetNetMonsterMenu(CGameMenuItemZCycle *pItem)
 {
-    itemNetStart5.m_pzText = zMonsterMenuStrings[itemNetMonsterSettings.m_nFocus];
+    itemNetStart5.m_pzText2 = zMonsterStrings[itemNetMonsterSettings.m_nFocus];
 
     if ((pItem == &itemNetStart4) || !pItem)
     {

@@ -160,8 +160,9 @@ public:
     void(*at2c)(CGameMenuItemChain *);
     int at30;
     int nPalOverride;
+    const char *m_pzText2;
     CGameMenuItemChain();
-    CGameMenuItemChain(const char *, int, int, int, int, int, CGameMenu *, int, void(*)(CGameMenuItemChain *), int, int palOverride = 0);
+    CGameMenuItemChain(const char *, int, int, int, int, int, CGameMenu *, int, void(*)(CGameMenuItemChain *), int, int palOverride = 0, const char *pzText2 = NULL);
     virtual void Draw(void);
     virtual bool Event(CGameMenuEvent &);
 };
