@@ -3977,11 +3977,11 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.gameType = itemNetGameMode.m_nFocus+1;
     if (gPacketStartGame.gameType == kGameTypeSinglePlayer)
         gPacketStartGame.gameType = kGameTypeBloodBath;
-    gPacketStartGame.uGameFlags = kNetGameFlagNone;
+    gPacketStartGame.uNetGameFlags = kNetGameFlagNone;
     if (!itemNetGameBoolExit.at20)
-        gPacketStartGame.uGameFlags |= kNetGameFlagNoLevelExit;
+        gPacketStartGame.uNetGameFlags |= kNetGameFlagNoLevelExit;
     if (!itemNetGameBoolTeleFrag.at20)
-        gPacketStartGame.uGameFlags |= kNetGameFlagNoTeleFrag;
+        gPacketStartGame.uNetGameFlags |= kNetGameFlagNoTeleFrag;
     gPacketStartGame.episodeId = itemNetStart2.m_nFocus;
     gPacketStartGame.levelId = itemNetStart3.m_nFocus;
     gPacketStartGame.difficulty = itemNetStart4.m_nFocus;

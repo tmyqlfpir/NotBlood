@@ -647,7 +647,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nEpisode = gPacketStartGame.episodeId;
         gGameOptions.nLevel = gPacketStartGame.levelId;
         gGameOptions.nGameType = gPacketStartGame.gameType;
-        gGameOptions.uNetGameFlags = gPacketStartGame.uGameFlags;
+        gGameOptions.uNetGameFlags = gPacketStartGame.uNetGameFlags;
         gGameOptions.nDifficulty = gPacketStartGame.difficulty;
         gGameOptions.nMonsterSettings = ClipRange(gPacketStartGame.monsterSettings, 0, 2);
         if (gPacketStartGame.monsterSettings <= 1)
@@ -891,7 +891,7 @@ void StartNetworkLevel(void)
         gGameOptions.nEpisode = gPacketStartGame.episodeId;
         gGameOptions.nLevel = gPacketStartGame.levelId;
         gGameOptions.nGameType = gPacketStartGame.gameType;
-        gGameOptions.uNetGameFlags = gPacketStartGame.uGameFlags;
+        gGameOptions.uNetGameFlags = gPacketStartGame.uNetGameFlags;
         gGameOptions.nDifficulty = gPacketStartGame.difficulty;
         gGameOptions.nMonsterSettings = ClipRange(gPacketStartGame.monsterSettings, 0, 2);
         if (gPacketStartGame.monsterSettings <= 1)
