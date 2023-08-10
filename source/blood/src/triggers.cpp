@@ -1695,7 +1695,7 @@ void OperateTeleport(unsigned int nSector, XSECTOR *pXSector)
                 pPlayer = NULL;
             if (bPlayer || !SectorContainsDudes(pDest->sectnum))
             {
-                if (!(gGameOptions.uNetGameFlags&2))
+                if (!(gGameOptions.uNetGameFlags&kNetGameFlagNoTeleFrag))
                     TeleFrag(pXSector->data, pDest->sectnum);
                 pSprite->x = pDest->x;
                 pSprite->y = pDest->y;
