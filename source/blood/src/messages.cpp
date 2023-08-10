@@ -307,6 +307,7 @@ void LevelWarpAndRecord(int nEpisode, int nLevel)
     char buffer[BMAX_PATH];
     levelSetupOptions(nEpisode, nLevel);
     gGameOptions.uGameFlags = kGameFlagNone;
+    gGameOptions.uNetGameFlags = kNetGameFlagNone;
     gGameStarted = false;
     gCheatMgr.ResetCheats();
     strcpy(buffer, levelGetFilename(nEpisode, nLevel));
