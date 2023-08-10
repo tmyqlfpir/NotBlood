@@ -165,17 +165,6 @@ const char *zMonsterStrings[] =
     "Respawn (120 Secs)",
 };
 
-const char *zMonsterMenuStrings[] =
-{
-    "MONSTER SETTING:               NONE",
-    "MONSTER SETTING:       BRING 'EM ON",
-    "MONSTER SETTING:  RESPAWN (15 SECS)",
-    "MONSTER SETTING:  RESPAWN (30 SECS)",
-    "MONSTER SETTING:  RESPAWN (60 SECS)",
-    "MONSTER SETTING:  RESPAWN (90 SECS)",
-    "MONSTER SETTING: RESPAWN (120 SECS)",
-};
-
 const char *zWeaponStrings[] =
 {
     "Do not Respawn",
@@ -329,6 +318,7 @@ CGameMenu menuNetwork;
 CGameMenu menuNetworkHost;
 CGameMenu menuNetworkJoin;
 CGameMenu menuNetworkBrowser;
+CGameMenu menuNetworkGameMode;
 CGameMenu menuNetworkGameMonsters;
 CGameMenu menuNetworkGameMutators;
 
@@ -468,11 +458,11 @@ void SetNetGameMode(CGameMenuItemZCycle *pItem);
 void SetNetMonsterMenu(CGameMenuItemZCycle *pItem);
 
 CGameMenuItemTitle itemNetStartTitle("MULTIPLAYER", 1, 160, 20, 2038);
-CGameMenuItemZCycle itemNetStart1("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zNetGameTypes, 3, 0);
+CGameMenuItemChain itemNetStart1("GAME:", 3, 66, 35, 180, 0, &menuNetworkGameMode, -1, NULL, 0);
 CGameMenuItemZCycle itemNetStart2("EPISODE:", 3, 66, 45, 180, 0, SetupNetLevels, NULL, 0, 0);
 CGameMenuItemZCycle itemNetStart3("LEVEL:", 3, 66, 55, 180, 0, NetClearUserMap, NULL, 0, 0);
 CGameMenuItemZCycle itemNetStart4("DIFFICULTY:", 3, 66, 65, 180, 0, SetNetMonsterMenu, zDiffStrings, ARRAY_SSIZE(zDiffStrings), 0);
-CGameMenuItemChain itemNetStart5("MONSTER SETTING:", 3, 66, 75, 320, 0, &menuNetworkGameMonsters, -1, NULL, 0);
+CGameMenuItemChain itemNetStart5("MONSTER SETTING:", 3, 66, 75, 180, 0, &menuNetworkGameMonsters, -1, NULL, 0);
 CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrings, 4, 0);
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
 CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
@@ -484,6 +474,11 @@ CGameMenuItemZCycle itemNetStart13("SPAWN WITH WEAPON:", 3, 66, 145, 180, 0, Set
 CGameMenuItemChain itemNetStart14("USER MAP", 3, 66, 155, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
 CGameMenuItemChain itemNetStart15("MUTATORS", 3, 66, 165, 320, 0, &menuNetworkGameMutators, -1, NULL, 0);
 CGameMenuItemChain itemNetStart16("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
+
+CGameMenuItemTitle itemNetGameTitle("GAME SETTINGS", 1, 160, 20, 2038);
+CGameMenuItemZCycle itemNetGameMode("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zNetGameTypes, ARRAY_SSIZE(zNetGameTypes), 0);
+CGameMenuItemZBool itemNetGameBoolExit("LEVEL EXIT:", 3, 66, 75, 180, true, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolTeleFrag("TELEFRAGS:", 3, 66, 85, 180, true, NULL, NULL, NULL);
 
 CGameMenuItemTitle itemNetMonsterTitle("MONSTERS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetMonsterSettings("MONSTERS:", 3, 66, 40, 180, 0, SetNetMonsterMenu, zMonsterStrings, ARRAY_SSIZE(zMonsterStrings), 0);
@@ -1389,6 +1384,14 @@ void SetupNetStartMenu(void)
     menuMultiUserMaps.Add(&itemNetStartUserMapTitle, true);
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
 
+    menuNetworkGameMode.Add(&itemNetGameTitle, false);
+    menuNetworkGameMode.Add(&itemNetGameMode, true);
+    menuNetworkGameMode.Add(&itemNetGameBoolExit, false);
+    menuNetworkGameMode.Add(&itemNetGameBoolTeleFrag, false);
+    menuNetworkGameMode.Add(&itemBloodQAV, false);
+    itemNetGameBoolExit.tooltip_pzTextUpper = "Toggle level exit switch functionality";
+    itemNetGameBoolTeleFrag.tooltip_pzTextUpper = "Toggle telefrags";
+
     menuNetworkGameMonsters.Add(&itemNetMonsterTitle, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterSettings, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterQuantity, true);
@@ -1445,7 +1448,6 @@ void SetupNetStartMenu(void)
     itemNetMutatorRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
     //////////////////////
 
-    itemNetStart1.SetTextIndex(gMultiModeInit != -1 ? gMultiModeInit : 1);
     itemNetStart2.SetTextIndex(gMultiEpisodeInit != -1 ? gMultiEpisodeInit : 0);
     SetupLevelMenuItem(gMultiEpisodeInit != -1 ? gMultiEpisodeInit : 0);
     itemNetStart3.SetTextIndex(gMultiLevelInit != -1 ? gMultiLevelInit : 0);
@@ -1454,7 +1456,9 @@ void SetupNetStartMenu(void)
     itemNetStart7.SetTextIndex(gMultiItems != -1 ? gMultiItems : 1);
     itemNetStart11.at20 = !gPlayerTeamPreference;
     itemNetStart12.SetTextIndex(1);
-    SetNetGameMode(&itemNetStart1); // hide friendly fire/keys menu items depending on game mode
+
+    itemNetGameMode.SetTextIndex(gMultiModeInit != -1 ? gMultiModeInit : 1);
+    SetNetGameMode(&itemNetGameMode); // hide friendly fire/keys menu items depending on game mode
 
     itemNetMonsterSettings.SetTextIndex(gMultiMonsters != -1 ? gMultiMonsters : 0);
     SetNetMonsterMenu(NULL);
@@ -2707,6 +2711,7 @@ void SetDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nLevel = 0;
     if (!gVanilla) // don't reset gameflags for vanilla mode
         gGameOptions.uGameFlags = kGameFlagNone;
+    gGameOptions.uNetGameFlags = kNetGameFlagNone;
     if (gDemo.bPlaying)
         gDemo.StopPlayback();
     else if (gDemo.bRecording)
@@ -2740,6 +2745,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
     gGameOptions.nLevel = 0;
     if (!gVanilla) // don't reset gameflags for vanilla mode
         gGameOptions.uGameFlags = kGameFlagNone;
+    gGameOptions.uNetGameFlags = kNetGameFlagNone;
     if (gDemo.bPlaying)
         gDemo.StopPlayback();
     else if (gDemo.bRecording)
@@ -3094,8 +3100,9 @@ void PreDrawDisplayPolymost(CGameMenuItem *pItem)
 
 void SetNetGameMode(CGameMenuItemZCycle *pItem)
 {
-    if (pItem == &itemNetStart1)
+    if (pItem == &itemNetGameMode)
     {
+        itemNetStart1.m_pzText2 = zNetGameTypes[itemNetGameMode.m_nFocus];
         itemNetStart8.bEnable = (pItem->m_nFocus+1) != kGameTypeBloodBath;
         itemNetStart8.bNoDraw = !itemNetStart8.bEnable;
         itemNetStart9.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
@@ -3115,7 +3122,7 @@ void SetNetGameMode(CGameMenuItemZCycle *pItem)
 
 void SetNetMonsterMenu(CGameMenuItemZCycle *pItem)
 {
-    itemNetStart5.m_pzText = zMonsterMenuStrings[itemNetMonsterSettings.m_nFocus];
+    itemNetStart5.m_pzText2 = zMonsterStrings[itemNetMonsterSettings.m_nFocus];
 
     if ((pItem == &itemNetStart4) || !pItem)
     {
@@ -3967,9 +3974,14 @@ void NetClearUserMap(CGameMenuItemZCycle *pItem)
 void StartNetGame(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
-    gPacketStartGame.gameType = itemNetStart1.m_nFocus+1;
+    gPacketStartGame.gameType = itemNetGameMode.m_nFocus+1;
     if (gPacketStartGame.gameType == kGameTypeSinglePlayer)
         gPacketStartGame.gameType = kGameTypeBloodBath;
+    gPacketStartGame.uGameFlags = kNetGameFlagNone;
+    if (!itemNetGameBoolExit.at20)
+        gPacketStartGame.uGameFlags |= kNetGameFlagNoLevelExit;
+    if (!itemNetGameBoolTeleFrag.at20)
+        gPacketStartGame.uGameFlags |= kNetGameFlagNoTeleFrag;
     gPacketStartGame.episodeId = itemNetStart2.m_nFocus;
     gPacketStartGame.levelId = itemNetStart3.m_nFocus;
     gPacketStartGame.difficulty = itemNetStart4.m_nFocus;
