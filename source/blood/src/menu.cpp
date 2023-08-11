@@ -1086,8 +1086,9 @@ char zNetBrowserGame[8][16+1+5] = {{'\0'}};
 char zNetBrowserState[32] = "SEARCHING...";
 
 CGameMenuItemTitle itemNetworkTitle("MULTIPLAYER", 1, 160, 20, 2038);
-CGameMenuItemChain itemNetworkHost("HOST A GAME", 1, 0, 80, 320, 1, &menuNetworkHost, -1, SetupNetworkHostMenu, 0);
-CGameMenuItemChain itemNetworkJoin("JOIN A GAME", 1, 0, 100, 320, 1, &menuNetworkJoin, -1, SetupNetworkJoinMenu, 0);
+CGameMenuItemChain itemNetworkHost("HOST A GAME", 1, 0, 70, 320, 1, &menuNetworkHost, -1, SetupNetworkHostMenu, 0);
+CGameMenuItemChain itemNetworkJoin("JOIN A GAME", 1, 0, 90, 320, 1, &menuNetworkJoin, -1, SetupNetworkJoinMenu, 0);
+CGameMenuItemChain itemNetworkPlayer("PLAYER SETUP", 1, 0, 110, 320, 1, &menuOptionsPlayer, -1, NULL, 0);
 
 CGameMenuItemTitle itemNetworkHostTitle("HOST A GAME", 1, 160, 20, 2038);
 CGameMenuItemSlider itemNetworkHostPlayerNum("PLAYER NUMBER:", 3, 66, 70, 180, 1, 2, kMaxPlayers, 1, NULL, -1, -1, kMenuSliderValue);
@@ -3674,6 +3675,7 @@ void SetupNetworkMenu(void)
     menuNetwork.Add(&itemNetworkTitle, false);
     menuNetwork.Add(&itemNetworkHost, true);
     menuNetwork.Add(&itemNetworkJoin, false);
+    menuNetwork.Add(&itemNetworkPlayer, false);
     menuNetwork.Add(&itemBloodQAV, false);
 
     menuNetworkHost.Add(&itemNetworkHostTitle, false);
