@@ -267,6 +267,8 @@ extern bool gRedFlagDropped;
 
 extern int         gPlayerScores[kMaxPlayers];
 extern ClockTicks  gPlayerScoreTicks[kMaxPlayers];
+extern int         gPlayerRoundLimit;
+extern char        gPlayerRoundEnding;
 extern int         gPlayerLastKiller;
 extern int         gPlayerLastVictim;
 extern ClockTicks  gPlayerKillMsgTicks;
@@ -474,6 +476,8 @@ spritetype *playerFireMissile(PLAYER *pPlayer, int a2, int a3, int a4, int a5, i
 spritetype *playerFireThing(PLAYER *pPlayer, int a2, int a3, int thingType, int a5);
 void        playerFrag(PLAYER *pKiller, PLAYER *pVictim);
 void        FragPlayer(PLAYER *pPlayer, int nSprite);
+void        playerInitRoundCheck(void);
+void        playerProcessRoundCheck(void);
 int         playerDamageArmor(PLAYER *pPlayer, DAMAGE_TYPE nType, int nDamage);
 spritetype *playerDropFlag(PLAYER *pPlayer, int a2);
 int         playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, int nDamage);
