@@ -1267,7 +1267,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
         #endif
         case kItemFlagABase:
         case kItemFlagBBase: {
-            if (gGameOptions.nGameType != kGameTypeTeams || pItem->extra <= 0) return 0;
+            if (gGameOptions.nGameType != kGameTypeTeams || pItem->extra <= 0 || gPlayerRoundEnding) return 0;
             XSPRITE * pXItem = &xsprite[pItem->extra];
             const int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
             if (pItem->type == kItemFlagABase) {
@@ -2366,7 +2366,7 @@ void FragPlayer(PLAYER *pPlayer, int nSprite)
     spritetype *pSprite = NULL;
     if (nSprite >= 0)
         pSprite = &sprite[nSprite];
-    if (pSprite && IsPlayerSprite(pSprite))
+    if (pSprite && IsPlayerSprite(pSprite) && !gPlayerRoundEnding)
     {
         PLAYER *pKiller = &gPlayer[pSprite->type - kDudePlayer1];
         playerFrag(pKiller, pPlayer);
