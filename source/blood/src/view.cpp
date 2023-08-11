@@ -1338,12 +1338,12 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
     colorStr.nColor2[0] = colorStr.nColor2[1] = -1; // unused
     colorStrKills = colorStrSecrets = colorStr;
 
-    int nHeight;
+    int nHeight, nLevelTime = !gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes ? gLevelTime : ClipLow(gPlayerRoundLimit-gLevelTime, 0);
     viewGetFontInfo(nFont, NULL, NULL, &nHeight);
     sprintf(buffer, "T:%d:%02d.%02d",
-        (gLevelTime/(kTicsPerSec*60)),
-        (gLevelTime/kTicsPerSec)%60,
-        ((gLevelTime%kTicsPerSec)*33)/10
+        (nLevelTime/(kTicsPerSec*60)),
+        (nLevelTime/kTicsPerSec)%60,
+        ((nLevelTime%kTicsPerSec)*33)/10
         );
     viewDrawText(3, buffer, x, y, 20, 0, 0, true, 256, 0, &colorStr);
     if ((gGameOptions.nMonsterSettings > 0) && (max(gKillMgr.at4, gKillMgr.at0) > 0))
