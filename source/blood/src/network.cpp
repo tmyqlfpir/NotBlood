@@ -70,7 +70,7 @@ char gNetAddress[32];
 // PORT-TODO: Use different port?
 int gNetPort = kNetDefaultPort;
 
-const short kNetVersion = 0x225;
+const short kNetVersion = 0x226;
 
 PKT_STARTGAME gPacketStartGame;
 
@@ -994,11 +994,15 @@ void netInitialize(bool bConsole, bool bAnnounce)
         {
             char buffer[128];
             sprintf(buffer, "Waiting for players (%i\\%i)", numplayers, gNetPlayers);
-            nIRCState = netIRCIinitialize();
             if (bAnnounce)
+            {
+                nIRCState = netIRCIinitialize();
                 viewLoadingScreen(gMenuPicnum, "Network Game", buffer, nIRCState ? "Broadcasting..." : "Broadcast failed");
+            }
             else
+            {
                 viewLoadingScreen(gMenuPicnum, "Network Game", NULL, buffer);
+            }
             videoNextPage();
         }
         while (numplayers < gNetPlayers)

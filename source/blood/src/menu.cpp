@@ -473,10 +473,11 @@ CGameMenuItemTitle itemNetGameTitle("GAME SETTINGS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetGameMode("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zNetGameTypes, ARRAY_SSIZE(zNetGameTypes), 0);
 CGameMenuItemZBool itemNetGameBoolExit("LEVEL EXIT:", 3, 66, 75, 180, true, NULL, NULL, NULL);
 CGameMenuItemZBool itemNetGameBoolTeleFrag("TELEFRAGS:", 3, 66, 85, 180, true, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetGameBoolFriendlyFire("FRIENDLY FIRE:", 3, 66, 95, 180, true, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetGameCycleKey("KEYS SETTING:", 3, 66, 105, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemZCycle itemNetGameCycleItemWeapon("ITEM/WEAPON SETTING:", 3, 66, 115, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
-CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 105, 180, true, 0, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolSkillOverride("PLAYER HANDICAP:", 3, 66, 95, 180, true, NULL, "ALLOWED", "OFF");
+CGameMenuItemZBool itemNetGameBoolFriendlyFire("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetGameCycleKey("KEYS SETTING:", 3, 66, 115, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleItemWeapon("ITEM/WEAPON SETTING:", 3, 66, 125, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
+CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 115, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetGameCycleSpawnProtection("SPAWN PROTECTION:", 3, 66, 135, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
 CGameMenuItemZCycle itemNetGameCycleSpawnWeapon("SPAWN WITH WEAPON:", 3, 66, 145, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
 CGameMenuItemChain itemNetGameChainBannedItems("SET ITEMS", 3, 0, 160, 320, 1, &menuBannedItems, -1, NULL, 0);
@@ -1382,6 +1383,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameMode.Add(&itemNetGameMode, true);
     menuNetworkGameMode.Add(&itemNetGameBoolExit, false);
     menuNetworkGameMode.Add(&itemNetGameBoolTeleFrag, false);
+    menuNetworkGameMode.Add(&itemNetGameBoolSkillOverride, false);
     menuNetworkGameMode.Add(&itemNetGameBoolFriendlyFire, false);
     menuNetworkGameMode.Add(&itemNetGameCycleKey, false);
     menuNetworkGameMode.Add(&itemNetGameCycleItemWeapon, false);
@@ -1392,6 +1394,8 @@ void SetupNetStartMenu(void)
     menuNetworkGameMode.Add(&itemBloodQAV, false);
     itemNetGameBoolExit.tooltip_pzTextUpper = "Toggle level exit switch functionality";
     itemNetGameBoolTeleFrag.tooltip_pzTextUpper = "Toggle telefrags kills";
+    itemNetGameBoolSkillOverride.tooltip_pzTextUpper = "Toggle player health handicap";
+    itemNetGameBoolSkillOverride.tooltip_pzTextLower = "(When off, use difficulty setting)";
     itemNetGameChainBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
 
     menuNetworkGameMonsters.Add(&itemNetMonsterTitle, false);
@@ -3985,6 +3989,8 @@ void StartNetGame(CGameMenuItemChain *pItem)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagNoLevelExit;
     if (!itemNetGameBoolTeleFrag.at20)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagNoTeleFrag;
+    if (!itemNetGameBoolSkillOverride.at20)
+        gPacketStartGame.uNetGameFlags |= kNetGameFlagSkillIssue;
     gPacketStartGame.episodeId = itemNetStart2.m_nFocus;
     gPacketStartGame.levelId = itemNetStart3.m_nFocus;
     gPacketStartGame.difficulty = itemNetStart4.m_nFocus;
