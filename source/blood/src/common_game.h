@@ -134,6 +134,7 @@ kNetGameFlagNone                =  0,
 kNetGameFlagNoLevelExit         =  1 << 0,
 kNetGameFlagNoTeleFrag          =  1 << 1, // this is the only flag that is part of the original v1.21 DOS binary (do not change this enum)
 kNetGameFlagSkillIssue          =  1 << 2,
+kNetGameFlagNoTeamColors        =  1 << 3,
 };
 
 // MEDIUM /////////////////////////////////////////////////////

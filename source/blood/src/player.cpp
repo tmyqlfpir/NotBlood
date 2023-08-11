@@ -1011,7 +1011,7 @@ void playerStart(int nPlayer, int bNewLevel)
     int top, bottom;
     GetSpriteExtents(pSprite, &top, &bottom);
     pSprite->z -= bottom - pSprite->z;
-    pSprite->pal = !VanillaMode() ? playerColorPalSprite(pPlayer->teamId) : playerColorPalDefault(pPlayer->teamId);
+    pSprite->pal = !VanillaMode() && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors) ? playerColorPalSprite(pPlayer->teamId) : playerColorPalDefault(pPlayer->teamId);
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
     pSprite->type = kDudePlayer1+nPlayer;
