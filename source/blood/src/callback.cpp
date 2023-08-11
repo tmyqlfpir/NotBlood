@@ -824,6 +824,11 @@ void fxPodGreenBloodSpray(int nSprite) // 24
 }
 #endif
 
+void TriggerEndLevel(int bSecretExit) // kCallbackMax-1
+{
+    levelEndLevel(bSecretExit ? kLevelExitSecret : kLevelExitNormal);
+}
+
 void(*gCallback[kCallbackMax])(int) =
 {
     fxFlameLick,
@@ -853,4 +858,5 @@ void(*gCallback[kCallbackMax])(int) =
     callbackMakeMissileBlocking, // the code is in nnexts.cpp
     fxPodGreenBloodSpray,
     #endif
+    TriggerEndLevel,
 };
