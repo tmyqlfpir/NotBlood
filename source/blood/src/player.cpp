@@ -652,9 +652,10 @@ void playerSetRace(PLAYER *pPlayer, int nLifeMode)
     
     // By NoOne: don't forget to change clipdist for grow and shrink modes
     pPlayer->pSprite->clipdist = pDudeInfo->clipdist;
-    
+
+    const int nSkill = !(gGameOptions.uNetGameFlags&kNetGameFlagSkillIssue) ? gProfile[pPlayer->nPlayer].skill : gGameOptions.nDifficulty;
     for (int i = 0; i < kDamageMax; i++)
-        pDudeInfo->curDamage[i] = mulscale8(Handicap[gProfile[pPlayer->nPlayer].skill], pDudeInfo->startDamage[i]);
+        pDudeInfo->curDamage[i] = mulscale8(Handicap[nSkill], pDudeInfo->startDamage[i]);
 }
 
 void playerSetGodMode(PLAYER *pPlayer, char bGodMode)
@@ -2458,7 +2459,8 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
             const DUDEINFO *pDudeInfo = getDudeInfo(pPlayer->pSprite->type);
             const XSPRITE *pXSprite = pPlayer->pXSprite;
             const int nHealth = clamp(pXSprite->health / ((pDudeInfo->startHealth<<4)>>3), 0, kInvulSteps-1); // divide health into invul array range (0-7)
-            const int nInvulTicks = ((invulTimers[nHealth]/4) * (4-gProfile[pPlayer->nPlayer].skill+1))>>1; // scale invul ticks depending on current difficulty
+            const int nSkill = !(gGameOptions.uNetGameFlags&kNetGameFlagSkillIssue) ? gProfile[pPlayer->nPlayer].skill : gGameOptions.nDifficulty;
+            const int nInvulTicks = ((invulTimers[nHealth]/4) * (4-nSkill+1))>>1; // scale invul ticks depending on current difficulty
             const char bInvulState = pPlayer->invulTime > (gFrameClock - nInvulTicks);
             if ((pPlayer->invulTime != gFrameClock) && bInvulState) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
                 return 0;

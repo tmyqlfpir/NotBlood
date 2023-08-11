@@ -1752,7 +1752,7 @@ void viewDrawPlayerFrags(void)
         int y = 9 * (i / 4);
         int col = playerColorPalDefault(gPlayer[p].teamId);
         char* name = gProfile[p].name;
-        if (gProfile[p].skill == 2)
+        if ((gProfile[p].skill == 2) || (gGameOptions.uNetGameFlags&kNetGameFlagSkillIssue))
             sprintf(gTempStr, "%s", name);
         else
             sprintf(gTempStr, "%s [%d]", name, gProfile[p].skill);
