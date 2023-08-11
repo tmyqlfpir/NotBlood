@@ -465,20 +465,21 @@ CGameMenuItemZCycle itemNetStart4("DIFFICULTY:", 3, 66, 65, 180, 0, SetNetMonste
 CGameMenuItemChain itemNetStart5("MONSTER SETTING:", 3, 66, 75, 180, 0, &menuNetworkGameMonsters, -1, NULL, 0);
 CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrings, 4, 0);
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
-CGameMenuItemZBool itemNetStart8("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetStart9("KEYS SETTING:", 3, 66, 115, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemZCycle itemNetStart10("ITEM/WEAPON SETTING:", 3, 66, 125, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
-CGameMenuItemZBool itemNetStart11("AUTO TEAMS:", 3, 66, 115, 180, true, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetStart12("SPAWN PROTECTION:", 3, 66, 135, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
-CGameMenuItemZCycle itemNetStart13("SPAWN WITH WEAPON:", 3, 66, 145, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
-CGameMenuItemChain itemNetStart14("USER MAP", 3, 66, 155, 320, 0, &menuMultiUserMaps, 0, NULL, 0);
-CGameMenuItemChain itemNetStart15("MUTATORS", 3, 66, 165, 320, 0, &menuNetworkGameMutators, -1, NULL, 0);
-CGameMenuItemChain itemNetStart16("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
+CGameMenuItemChain itemNetStart8("SET MUTATORS", 3, 0, 145, 320, 1, &menuNetworkGameMutators, -1, NULL, 0);
+CGameMenuItemChain itemNetStart9("USER MAP", 3, 0, 158, 320, 1, &menuMultiUserMaps, 0, NULL, 0);
+CGameMenuItemChain itemNetStart10("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
 
 CGameMenuItemTitle itemNetGameTitle("GAME SETTINGS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetGameMode("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zNetGameTypes, ARRAY_SSIZE(zNetGameTypes), 0);
 CGameMenuItemZBool itemNetGameBoolExit("LEVEL EXIT:", 3, 66, 75, 180, true, NULL, NULL, NULL);
 CGameMenuItemZBool itemNetGameBoolTeleFrag("TELEFRAGS:", 3, 66, 85, 180, true, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolFriendlyFire("FRIENDLY FIRE:", 3, 66, 95, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetGameCycleKey("KEYS SETTING:", 3, 66, 105, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleItemWeapon("ITEM/WEAPON SETTING:", 3, 66, 115, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
+CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 105, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetGameCycleSpawnProtection("SPAWN PROTECTION:", 3, 66, 135, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleSpawnWeapon("SPAWN WITH WEAPON:", 3, 66, 145, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
+CGameMenuItemChain itemNetGameChainBannedItems("SET ITEMS", 3, 0, 160, 320, 1, &menuBannedItems, -1, NULL, 0);
 
 CGameMenuItemTitle itemNetMonsterTitle("MONSTERS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetMonsterSettings("MONSTERS:", 3, 66, 40, 180, 0, SetNetMonsterMenu, zMonsterStrings, ARRAY_SSIZE(zMonsterStrings), 0);
@@ -496,19 +497,18 @@ CGameMenuItemZBool itemNetMonsterHellHounds("HELL HOUNDS:", 3, 75, 146, 161, fal
 CGameMenuItemZBool itemNetMonsterRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 162, 161, false, NULL, "SHORTER", "DEFAULT");
 
 ///////////////
-CGameMenuItemChain itemNetMutatorBannedItems("SET ITEMS", 3, 0, 37, 320, 1, &menuBannedItems, -1, NULL, 0);
-CGameMenuItemZBool itemNetMutatorBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 50, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 60, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 70, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
-CGameMenuItemZCycle itemNetMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 80, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
-CGameMenuItemZBool itemNetMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 90, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 100, 180, false, NULL, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
-CGameMenuItemZBool itemNetMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 110, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 120, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
-CGameMenuItemZBool itemNetMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 130, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
-CGameMenuItemZBool itemNetMutatorBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 140, 180, false, NULL, NULL, NULL);
-CGameMenuItemZCycle itemNetMutatorRandomizerMode("RANDOMIZER MODE:", 3, 66, 150, 180, 0, NULL, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
-CGameMenuItemZEdit itemNetMutatorRandomizerSeed("RANDOMIZER SEED:", 3, 66, 160, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
+CGameMenuItemZBool itemNetMutatorBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, false, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 55, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
+CGameMenuItemZCycle itemNetMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
+CGameMenuItemZBool itemNetMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 85, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, false, NULL, pzEnemyBehaviorStrings, ARRAY_SSIZE(pzEnemyBehaviorStrings), 0);
+CGameMenuItemZBool itemNetMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
+CGameMenuItemZBool itemNetMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 125, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemNetMutatorBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 135, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetMutatorRandomizerMode("RANDOMIZER MODE:", 3, 66, 145, 180, 0, NULL, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
+CGameMenuItemZEdit itemNetMutatorRandomizerSeed("RANDOMIZER SEED:", 3, 66, 155, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
 
 CGameMenuItemText itemLoadingText("LOADING...", 1, 160, 100, 1);
@@ -1375,12 +1375,6 @@ void SetupNetStartMenu(void)
     menuNetStart.Add(&itemNetStart8, false);
     menuNetStart.Add(&itemNetStart9, false);
     menuNetStart.Add(&itemNetStart10, false);
-    menuNetStart.Add(&itemNetStart11, false);
-    menuNetStart.Add(&itemNetStart12, false);
-    menuNetStart.Add(&itemNetStart13, false);
-    menuNetStart.Add(&itemNetStart14, false);
-    menuNetStart.Add(&itemNetStart15, false);
-    menuNetStart.Add(&itemNetStart16, false);
     menuMultiUserMaps.Add(&itemNetStartUserMapTitle, true);
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
 
@@ -1388,9 +1382,17 @@ void SetupNetStartMenu(void)
     menuNetworkGameMode.Add(&itemNetGameMode, true);
     menuNetworkGameMode.Add(&itemNetGameBoolExit, false);
     menuNetworkGameMode.Add(&itemNetGameBoolTeleFrag, false);
+    menuNetworkGameMode.Add(&itemNetGameBoolFriendlyFire, false);
+    menuNetworkGameMode.Add(&itemNetGameCycleKey, false);
+    menuNetworkGameMode.Add(&itemNetGameCycleItemWeapon, false);
+    menuNetworkGameMode.Add(&itemNetGameBoolAutoTeams, false);
+    menuNetworkGameMode.Add(&itemNetGameCycleSpawnProtection, false);
+    menuNetworkGameMode.Add(&itemNetGameCycleSpawnWeapon, false);
+    menuNetworkGameMode.Add(&itemNetGameChainBannedItems, false);
     menuNetworkGameMode.Add(&itemBloodQAV, false);
     itemNetGameBoolExit.tooltip_pzTextUpper = "Toggle level exit switch functionality";
-    itemNetGameBoolTeleFrag.tooltip_pzTextUpper = "Toggle telefrags";
+    itemNetGameBoolTeleFrag.tooltip_pzTextUpper = "Toggle telefrags kills";
+    itemNetGameChainBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
 
     menuNetworkGameMonsters.Add(&itemNetMonsterTitle, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterSettings, false);
@@ -1410,8 +1412,7 @@ void SetupNetStartMenu(void)
 
     //////////////////////
     menuNetworkGameMutators.Add(&itemGameMutatorsTitle, false);
-    menuNetworkGameMutators.Add(&itemNetMutatorBannedItems, true);
-    menuNetworkGameMutators.Add(&itemNetMutatorBoolQuadDamagePowerup, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorBoolQuadDamagePowerup, true);
     menuNetworkGameMutators.Add(&itemNetMutatorBoolDamageInvul, false);
     menuNetworkGameMutators.Add(&itemNetMutatorExplosionBehavior, false);
     menuNetworkGameMutators.Add(&itemNetMutatorProjectileBehavior, false);
@@ -1424,7 +1425,6 @@ void SetupNetStartMenu(void)
     menuNetworkGameMutators.Add(&itemNetMutatorRandomizerMode, false);
     menuNetworkGameMutators.Add(&itemNetMutatorRandomizerSeed, false);
     menuNetworkGameMutators.Add(&itemBloodQAV, false);
-    itemNetMutatorBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
     itemNetMutatorBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
     itemNetMutatorBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
     itemNetMutatorBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
@@ -1454,10 +1454,10 @@ void SetupNetStartMenu(void)
     itemNetStart4.SetTextIndex(gMultiDiffInit != -1 ? gMultiDiffInit : 2);
     itemNetStart6.SetTextIndex(gMultiWeapons != -1 ? gMultiWeapons : 1);
     itemNetStart7.SetTextIndex(gMultiItems != -1 ? gMultiItems : 1);
-    itemNetStart11.at20 = !gPlayerTeamPreference;
-    itemNetStart12.SetTextIndex(1);
 
     itemNetGameMode.SetTextIndex(gMultiModeInit != -1 ? gMultiModeInit : 1);
+    itemNetGameBoolAutoTeams.at20 = !gPlayerTeamPreference;
+    itemNetGameCycleSpawnProtection.SetTextIndex(1);
     SetNetGameMode(&itemNetGameMode); // hide friendly fire/keys menu items depending on game mode
 
     itemNetMonsterSettings.SetTextIndex(gMultiMonsters != -1 ? gMultiMonsters : 0);
@@ -3102,22 +3102,25 @@ void SetNetGameMode(CGameMenuItemZCycle *pItem)
 {
     if (pItem == &itemNetGameMode)
     {
-        itemNetStart1.m_pzText2 = zNetGameTypes[itemNetGameMode.m_nFocus];
-        itemNetStart8.bEnable = (pItem->m_nFocus+1) != kGameTypeBloodBath;
-        itemNetStart8.bNoDraw = !itemNetStart8.bEnable;
-        itemNetStart9.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
-        itemNetStart9.bNoDraw = !itemNetStart9.bEnable;
-        itemNetStart10.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
-        itemNetStart10.bNoDraw = !itemNetStart10.bEnable;
-        itemNetStart11.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
-        itemNetStart11.bNoDraw = !itemNetStart11.bEnable;
+        itemNetStart1.m_pzText2 = zNetGameTypes[pItem->m_nFocus];
+        itemNetGameBoolFriendlyFire.bEnable = (pItem->m_nFocus+1) != kGameTypeBloodBath;
+        itemNetGameBoolFriendlyFire.bNoDraw = !itemNetGameBoolFriendlyFire.bEnable;
+        itemNetGameCycleKey.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
+        itemNetGameCycleKey.bNoDraw = !itemNetGameCycleKey.bEnable;
+        itemNetGameCycleItemWeapon.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
+        itemNetGameCycleItemWeapon.bNoDraw = !itemNetGameCycleItemWeapon.bEnable;
+        itemNetGameBoolAutoTeams.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
+        itemNetGameBoolAutoTeams.bNoDraw = !itemNetGameBoolAutoTeams.bEnable;
+        if ((pItem->m_nFocus+1) == kGameTypeCoop) // always set level exit to on for co-op mode
+            itemNetGameBoolExit.at20 = 1;
+        itemNetGameBoolExit.bEnable = ((itemNetGameMode.m_nFocus+1) != kGameTypeCoop);
         return;
     }
 
-    if ((pItem == &itemNetStart10) && (pItem->m_nFocus > 0)) // if adjusted keep weapon/item settings, set spawn weapon to pitchfork
-        itemNetStart13.m_nFocus = 0;
-    else if ((pItem == &itemNetStart13) && (pItem->m_nFocus > 0)) // if adjusted spawn with weapon, turn off keep weapon/item settings as it will overwrite any weapon picked up after spawning
-        itemNetStart10.m_nFocus = 0;
+    if ((pItem == &itemNetGameCycleItemWeapon) && (pItem->m_nFocus > 0)) // if adjusted keep weapon/item settings, set spawn weapon to pitchfork
+        itemNetGameCycleSpawnWeapon.m_nFocus = 0;
+    else if ((pItem == &itemNetGameCycleSpawnWeapon) && (pItem->m_nFocus > 0)) // if adjusted spawn with weapon, turn off keep weapon/item settings as it will overwrite any weapon picked up after spawning
+        itemNetGameCycleItemWeapon.m_nFocus = 0;
 }
 
 void SetNetMonsterMenu(CGameMenuItemZCycle *pItem)
@@ -3978,7 +3981,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     if (gPacketStartGame.gameType == kGameTypeSinglePlayer)
         gPacketStartGame.gameType = kGameTypeBloodBath;
     gPacketStartGame.uNetGameFlags = kNetGameFlagNone;
-    if (!itemNetGameBoolExit.at20)
+    if (!itemNetGameBoolExit.at20 && (gPacketStartGame.gameType != kGameTypeCoop))
         gPacketStartGame.uNetGameFlags |= kNetGameFlagNoLevelExit;
     if (!itemNetGameBoolTeleFrag.at20)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagNoTeleFrag;
@@ -3988,12 +3991,12 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.weaponSettings = itemNetStart6.m_nFocus;
     gPacketStartGame.itemSettings = itemNetStart7.m_nFocus;
     gPacketStartGame.respawnSettings = 0;
-    gPacketStartGame.bFriendlyFire = itemNetStart8.at20;
-    gPacketStartGame.keySettings = itemNetStart9.m_nFocus;
-    gPacketStartGame.itemWeaponSettings = itemNetStart10.m_nFocus;
-    gPacketStartGame.bAutoTeams = itemNetStart11.at20;
-    gPacketStartGame.nSpawnProtection = itemNetStart12.m_nFocus;
-    gPacketStartGame.nSpawnWeapon = itemNetStart13.m_nFocus;
+    gPacketStartGame.bFriendlyFire = itemNetGameBoolFriendlyFire.at20;
+    gPacketStartGame.keySettings = itemNetGameCycleKey.m_nFocus;
+    gPacketStartGame.itemWeaponSettings = itemNetGameCycleItemWeapon.m_nFocus;
+    gPacketStartGame.bAutoTeams = itemNetGameBoolAutoTeams.at20;
+    gPacketStartGame.nSpawnProtection = itemNetGameCycleSpawnProtection.m_nFocus;
+    gPacketStartGame.nSpawnWeapon = itemNetGameCycleSpawnWeapon.m_nFocus;
 
     gPacketStartGame.monsterSettings = itemNetMonsterSettings.m_nFocus;
     gPacketStartGame.monsterQuantity = ClipRange(itemNetMonsterQuantity.nValue, 0, 4);
