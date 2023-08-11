@@ -825,6 +825,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gProfileNet[i] = gProfile[i];
         playerStart(i, 1);
     }
+    playerInitRoundCheck();
     if (gameOptions->uGameFlags&kGameFlagContinuing) // if episode is in progress, restore player stats
     {
         for (int i = connecthead; i >= 0; i = connectpoint2[i])

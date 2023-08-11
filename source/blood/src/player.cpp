@@ -68,6 +68,9 @@ bool gRedFlagDropped = false;
 int gPlayerScores[kMaxPlayers];
 ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
+int gPlayerRoundLimit = 0;
+char gPlayerRoundEnding = 0;
+
 int gPlayerLastKiller;
 int gPlayerLastVictim;
 ClockTicks gPlayerKillMsgTicks;
@@ -1299,6 +1302,8 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         sprintf(buffer, "\r%s\r captured \rRed Flag\r!", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8001, 255, 2, 0);
                         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagRedPal);
+                        if (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags)
+                            playerProcessRoundCheck();
 #if 0
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
@@ -1343,6 +1348,8 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         sprintf(buffer, "\r%s\r captured \rBlue Flag\r!", gProfile[pPlayer->nPlayer].name);
                         sndStartSample(8000, 255, 2, 0);
                         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagBluePal);
+                        if (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags)
+                            playerProcessRoundCheck();
 #if 0
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
@@ -2208,6 +2215,8 @@ void playerProcess(PLAYER *pPlayer)
             seqSpawn(dudeInfo[nType].seqStartID+8, 3, nXSprite, -1);
         break;
     }
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) // check every tick
+        playerProcessRoundCheck();
 }
 
 spritetype *playerFireMissile(PLAYER *pPlayer, int a2, int a3, int a4, int a5, int a6)
@@ -2377,6 +2386,83 @@ void FragPlayer(PLAYER *pPlayer, int nSprite)
             else
                 evSend(0, 0, 15, kCmdToggle, pPlayer->nSprite);
         }
+    }
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags)
+        playerProcessRoundCheck();
+}
+
+void playerInitRoundCheck(void)
+{
+    gPlayerRoundLimit = gPlayerRoundEnding = 0;
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit5)
+        gPlayerRoundLimit += 5;
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit10)
+        gPlayerRoundLimit += 10;
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit20)
+        gPlayerRoundLimit += 20;
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit50)
+        gPlayerRoundLimit += 50;
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit100)
+        gPlayerRoundLimit += 100;
+
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) // convert to minutes
+        gPlayerRoundLimit *= kTicsPerSec*60;
+}
+
+void playerProcessRoundCheck(void)
+{
+    if (gGameOptions.nGameType <= kGameTypeCoop) // frag limits do not apply here, return
+        return;
+    if (gPlayerRoundEnding) // we're already ending the round, don't trigger this again
+        return;
+
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes)
+    {
+        if (gLevelTime <= gPlayerRoundLimit) // if time limit has not been reached
+            return;
+    }
+
+    int nScore = INT_MIN;
+    if (gGameOptions.nGameType == kGameTypeBloodBath)
+    {
+        for (int p = connecthead; p >= 0; p = connectpoint2[p])
+            nScore = ClipLow(nScore, gPlayer[p].fragCount);
+    }
+    else if (gGameOptions.nGameType == kGameTypeTeams)
+    {
+        for (int i = 0; i < 2; i++)
+            nScore = ClipLow(nScore, gPlayerScores[i]);
+    }
+
+    if ((gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) || (nScore >= gPlayerRoundLimit))
+    {
+        char buffer[80] = "";
+        int nPal;
+        if (gGameOptions.nGameType == kGameTypeBloodBath)
+        {
+            for (int p = connecthead; p >= 0; p = connectpoint2[p])
+            {
+                if (gPlayer[p].fragCount < nScore)
+                    continue;
+                sprintf(buffer, "\r%s\r is the winner", gProfile[p].name);
+                nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(gPlayer[p].teamId) : 0;
+                break;
+            }
+        }
+        else if (gGameOptions.nGameType == kGameTypeTeams)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                if (gPlayerScores[i] < nScore)
+                    continue;
+                sprintf(buffer, "\r%s\r is the winner", i ? "Red Team" : "Blue Team");
+                nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(i) : 0;
+                break;
+            }
+        }
+        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
+        evPost(kLevelExitNormal, OBJ_SPRITE, kTicRate * 5, kCallbackEndLevel); // trigger level end in five seconds
+        gPlayerRoundEnding = 1;
     }
 }
 
