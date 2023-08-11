@@ -2436,8 +2436,8 @@ void playerProcessRoundCheck(void)
 
     if ((gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) || (nScore >= gPlayerRoundLimit))
     {
-        char buffer[80] = "";
-        int nPal;
+        char buffer[80] = "Ending round...";
+        int nPal = 0;
         if (gGameOptions.nGameType == kGameTypeBloodBath)
         {
             for (int p = connecthead; p >= 0; p = connectpoint2[p])
