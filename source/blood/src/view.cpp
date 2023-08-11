@@ -1338,7 +1338,7 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
     colorStr.nColor2[0] = colorStr.nColor2[1] = -1; // unused
     colorStrKills = colorStrSecrets = colorStr;
 
-    int nHeight, nLevelTime = !gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes ? gLevelTime : ClipLow(gPlayerRoundLimit-gLevelTime, 0);
+    int nHeight, nLevelTime = (gGameOptions.nGameType >= kGameTypeBloodBath) && (gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) ? ClipLow(gPlayerRoundLimit-gLevelTime, 0) : gLevelTime;
     viewGetFontInfo(nFont, NULL, NULL, &nHeight);
     sprintf(buffer, "T:%d:%02d.%02d",
         (nLevelTime/(kTicsPerSec*60)),
