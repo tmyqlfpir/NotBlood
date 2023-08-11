@@ -478,6 +478,7 @@ CGameMenuItemZBool itemNetGameBoolFriendlyFire("FRIENDLY FIRE:", 3, 66, 105, 180
 CGameMenuItemZCycle itemNetGameCycleKey("KEYS SETTING:", 3, 66, 115, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
 CGameMenuItemZCycle itemNetGameCycleItemWeapon("ITEM/WEAPON SETTING:", 3, 66, 125, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
 CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 115, 180, true, 0, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolTeamColors("TEAM COLORS:", 3, 66, 125, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetGameCycleSpawnProtection("SPAWN PROTECTION:", 3, 66, 135, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
 CGameMenuItemZCycle itemNetGameCycleSpawnWeapon("SPAWN WITH WEAPON:", 3, 66, 145, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
 CGameMenuItemChain itemNetGameChainBannedItems("SET ITEMS", 3, 0, 160, 320, 1, &menuBannedItems, -1, NULL, 0);
@@ -1388,6 +1389,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameMode.Add(&itemNetGameCycleKey, false);
     menuNetworkGameMode.Add(&itemNetGameCycleItemWeapon, false);
     menuNetworkGameMode.Add(&itemNetGameBoolAutoTeams, false);
+    menuNetworkGameMode.Add(&itemNetGameBoolTeamColors, false);
     menuNetworkGameMode.Add(&itemNetGameCycleSpawnProtection, false);
     menuNetworkGameMode.Add(&itemNetGameCycleSpawnWeapon, false);
     menuNetworkGameMode.Add(&itemNetGameChainBannedItems, false);
@@ -1396,6 +1398,8 @@ void SetupNetStartMenu(void)
     itemNetGameBoolTeleFrag.tooltip_pzTextUpper = "Toggle telefrags kills";
     itemNetGameBoolSkillOverride.tooltip_pzTextUpper = "Toggle player health handicap";
     itemNetGameBoolSkillOverride.tooltip_pzTextLower = "(When off, use difficulty setting)";
+    itemNetGameBoolAutoTeams.tooltip_pzTextUpper = "Automatically sort players into teams";
+    itemNetGameBoolTeamColors.tooltip_pzTextUpper = "Highlight players with team colors";
     itemNetGameChainBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
 
     menuNetworkGameMonsters.Add(&itemNetMonsterTitle, false);
@@ -3107,6 +3111,9 @@ void SetNetGameMode(CGameMenuItemZCycle *pItem)
     if (pItem == &itemNetGameMode)
     {
         itemNetStart1.m_pzText2 = zNetGameTypes[pItem->m_nFocus];
+        if ((pItem->m_nFocus+1) == kGameTypeCoop) // always set level exit to on for co-op mode
+            itemNetGameBoolExit.at20 = 1;
+        itemNetGameBoolExit.bEnable = ((itemNetGameMode.m_nFocus+1) != kGameTypeCoop);
         itemNetGameBoolFriendlyFire.bEnable = (pItem->m_nFocus+1) != kGameTypeBloodBath;
         itemNetGameBoolFriendlyFire.bNoDraw = !itemNetGameBoolFriendlyFire.bEnable;
         itemNetGameCycleKey.bEnable = (pItem->m_nFocus+1) == kGameTypeCoop;
@@ -3115,9 +3122,8 @@ void SetNetGameMode(CGameMenuItemZCycle *pItem)
         itemNetGameCycleItemWeapon.bNoDraw = !itemNetGameCycleItemWeapon.bEnable;
         itemNetGameBoolAutoTeams.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
         itemNetGameBoolAutoTeams.bNoDraw = !itemNetGameBoolAutoTeams.bEnable;
-        if ((pItem->m_nFocus+1) == kGameTypeCoop) // always set level exit to on for co-op mode
-            itemNetGameBoolExit.at20 = 1;
-        itemNetGameBoolExit.bEnable = ((itemNetGameMode.m_nFocus+1) != kGameTypeCoop);
+        itemNetGameBoolTeamColors.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
+        itemNetGameBoolTeamColors.bNoDraw = !itemNetGameBoolTeamColors.bEnable;
         return;
     }
 
@@ -3991,6 +3997,8 @@ void StartNetGame(CGameMenuItemChain *pItem)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagNoTeleFrag;
     if (!itemNetGameBoolSkillOverride.at20)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagSkillIssue;
+    if (!itemNetGameBoolTeamColors.at20)
+        gPacketStartGame.uNetGameFlags |= kNetGameFlagNoTeamColors;
     gPacketStartGame.episodeId = itemNetStart2.m_nFocus;
     gPacketStartGame.levelId = itemNetStart3.m_nFocus;
     gPacketStartGame.difficulty = itemNetStart4.m_nFocus;

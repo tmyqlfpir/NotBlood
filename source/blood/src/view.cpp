@@ -1669,7 +1669,7 @@ void viewDrawAimedPlayerName(void)
         if (IsPlayerSprite(pSprite))
         {
             char nPlayer = pSprite->type-kDudePlayer1;
-            if (!VanillaMode() && powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && ((gGameOptions.nGameType != kGameTypeTeams) || !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite))) // if doppleganger powerup is active, set player id as viewer
+            if (!VanillaMode() && powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite)) // if doppleganger powerup is active, set player id as viewer
                 nPlayer = gView->pSprite->type-kDudePlayer1;
             char* szName = gProfile[nPlayer].name;
             int nPalette = !VanillaMode() ? playerColorPalAimName(gPlayer[nPlayer].teamId) : playerColorPalDefault(gPlayer[nPlayer].teamId);
@@ -3474,7 +3474,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     pTSprite->shade = -128;
                     pTSprite->pal = 5;
                 } else if (powerupCheck(pPlayer, kPwUpDoppleganger) && (VanillaMode() || !bIsTeammate)) {
-                    pTSprite->pal = !VanillaMode() ? playerColorPalSprite(gView->teamId) : playerColorPalDefault(gView->teamId);
+                    pTSprite->pal = !VanillaMode() && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors) ? playerColorPalSprite(gView->teamId) : playerColorPalDefault(gView->teamId);
                 }
                 
                 if (powerupCheck(pPlayer, kPwUpReflectShots)) {
