@@ -2422,16 +2422,22 @@ void playerProcessRoundCheck(void)
             return;
     }
 
-    int nScore = INT_MIN;
+    int nScore = INT_MIN, nWinner = 0;
     if (gGameOptions.nGameType == kGameTypeBloodBath)
     {
         for (int p = connecthead; p >= 0; p = connectpoint2[p])
-            nScore = ClipLow(nScore, gPlayer[p].fragCount);
+        {
+            if (nScore < gPlayer[p].fragCount)
+                nScore = gPlayer[p].fragCount, nWinner = p;
+        }
     }
     else if (gGameOptions.nGameType == kGameTypeTeams)
     {
         for (int i = 0; i < 2; i++)
-            nScore = ClipLow(nScore, gPlayerScores[i]);
+        {
+            if (nScore < gPlayerScores[i])
+                nScore = gPlayerScores[i], nWinner = i;
+        }
     }
 
     if ((gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) || (nScore >= gPlayerRoundLimit))
@@ -2440,25 +2446,13 @@ void playerProcessRoundCheck(void)
         int nPal = 0;
         if (gGameOptions.nGameType == kGameTypeBloodBath)
         {
-            for (int p = connecthead; p >= 0; p = connectpoint2[p])
-            {
-                if (gPlayer[p].fragCount < nScore)
-                    continue;
-                sprintf(buffer, "\r%s\r is the winner", gProfile[p].name);
-                nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(gPlayer[p].teamId) : 0;
-                break;
-            }
+            sprintf(buffer, "\r%s\r is the winner", gProfile[nWinner].name);
+            nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(gPlayer[nWinner].teamId) : 0;
         }
         else if (gGameOptions.nGameType == kGameTypeTeams)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                if (gPlayerScores[i] < nScore)
-                    continue;
-                sprintf(buffer, "\r%s\r is the winner", i ? "Red Team" : "Blue Team");
-                nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(i) : 0;
-                break;
-            }
+            sprintf(buffer, "\r%s\r is the winner", nWinner ? "Red Team" : "Blue Team");
+            nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(nWinner) : 0;
         }
         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
         evPost(kLevelExitNormal, 3, kTicRate * 5, kCallbackEndLevel); // trigger level end in five seconds
