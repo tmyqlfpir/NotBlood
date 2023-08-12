@@ -487,9 +487,10 @@ CGameMenuItemZCycle itemNetStart4("DIFFICULTY:", 3, 66, 65, 180, 0, SetNetMonste
 CGameMenuItemChain itemNetStart5("MONSTER SETTING:", 3, 66, 75, 180, 0, &menuNetworkGameMonsters, -1, NULL, 0);
 CGameMenuItemZCycle itemNetStart6("WEAPONS:", 3, 66, 85, 180, 0, 0, zWeaponStrings, 4, 0);
 CGameMenuItemZCycle itemNetStart7("ITEMS:", 3, 66, 95, 180, 0, 0, zItemStrings, 3, 0);
-CGameMenuItemChain itemNetStart8("SET MUTATORS", 3, 0, 145, 320, 1, &menuNetworkGameMutators, -1, NULL, 0);
-CGameMenuItemChain itemNetStart9("USER MAP", 3, 0, 158, 320, 1, &menuMultiUserMaps, 0, NULL, 0);
-CGameMenuItemChain itemNetStart10("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
+CGameMenuItemChain itemNetStart8("SET ITEMS", 3, 0, 132, 320, 1, &menuBannedItems, -1, NULL, 0);
+CGameMenuItemChain itemNetStart9("SET MUTATORS", 3, 0, 145, 320, 1, &menuNetworkGameMutators, -1, NULL, 0);
+CGameMenuItemChain itemNetStart10("USER MAP", 3, 0, 158, 320, 1, &menuMultiUserMaps, 0, NULL, 0);
+CGameMenuItemChain itemNetStart11("START GAME", 1, 0, 175, 320, 1, 0, -1, StartNetGame, 0);
 
 CGameMenuItemTitle itemNetGameTitle("GAME SETTINGS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetGameMode("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zNetGameTypes, ARRAY_SSIZE(zNetGameTypes), 0);
@@ -505,7 +506,6 @@ CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 115, 180, true
 CGameMenuItemZBool itemNetGameBoolTeamColors("TEAM COLORS:", 3, 66, 125, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetGameCycleSpawnProtection("SPAWN PROTECTION:", 3, 66, 135, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
 CGameMenuItemZCycle itemNetGameCycleSpawnWeapon("SPAWN WITH WEAPON:", 3, 66, 145, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
-CGameMenuItemChain itemNetGameChainBannedItems("SET ITEMS", 3, 0, 160, 320, 1, &menuBannedItems, -1, NULL, 0);
 
 CGameMenuItemTitle itemNetMonsterTitle("MONSTERS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetMonsterSettings("MONSTERS:", 3, 66, 40, 180, 0, SetNetMonsterMenu, zMonsterStrings, ARRAY_SSIZE(zMonsterStrings), 0);
@@ -1402,6 +1402,7 @@ void SetupNetStartMenu(void)
     menuNetStart.Add(&itemNetStart8, false);
     menuNetStart.Add(&itemNetStart9, false);
     menuNetStart.Add(&itemNetStart10, false);
+    menuNetStart.Add(&itemNetStart11, false);
     menuMultiUserMaps.Add(&itemNetStartUserMapTitle, true);
     menuMultiUserMaps.Add(&menuMultiUserMap, true);
 
@@ -1419,7 +1420,6 @@ void SetupNetStartMenu(void)
     menuNetworkGameMode.Add(&itemNetGameBoolTeamColors, false);
     menuNetworkGameMode.Add(&itemNetGameCycleSpawnProtection, false);
     menuNetworkGameMode.Add(&itemNetGameCycleSpawnWeapon, false);
-    menuNetworkGameMode.Add(&itemNetGameChainBannedItems, false);
     menuNetworkGameMode.Add(&itemBloodQAV, false);
     itemNetGameBoolExit.tooltip_pzTextUpper = "Toggle level exit switch functionality";
     itemNetGameBoolTeleFrag.tooltip_pzTextUpper = "Toggle telefrags kills";
@@ -1427,7 +1427,6 @@ void SetupNetStartMenu(void)
     itemNetGameBoolSkillOverride.tooltip_pzTextLower = "(When off, use difficulty setting)";
     itemNetGameBoolAutoTeams.tooltip_pzTextUpper = "Automatically sort players into teams";
     itemNetGameBoolTeamColors.tooltip_pzTextUpper = "Highlight players with team colors";
-    itemNetGameChainBannedItems.tooltip_pzTextUpper = "Set which items to spawn";
 
     menuNetworkGameMonsters.Add(&itemNetMonsterTitle, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterSettings, false);
