@@ -7805,15 +7805,17 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
         // r_rotatespriteinterp 2: only interpolate when explicitly requested with RS_LERP (full-step 1000 ticks)
         // r_rotatespriteinterp 3: interpolate if the picnum or size matches regardless of RS_LERP being set
         // r_rotatespriteinterp 4: relax above picnum check to include the next tile, with potentially undesirable results
-
+#pragma pack(push, 1)
         static struct sm
         {
             float lerp[4];
             uint32_t clock;
             int16_t picnum, flags;
         } smooth[MAXUNIQHUDID] = {{ {0}, 0, 0, 0 }};
+#pragma pack(pop)
 
-        const float tick4diff = (r_rotatespriteinterp == 1) ? 4.f : (1000.f/(120.f/4.f)); // used to check when lerp frame has taken more than 4 ticks (or a single blood game tick)
+        const float kBloodTicsPerSec = 4.f;
+        const float tick4diff = (r_rotatespriteinterp == 1) ? kBloodTicsPerSec : (1000.f/(CLOCKTICKSPERSECOND/kBloodTicsPerSec)); // used to check when lerp frame has taken more than 4 ticks (or a single blood game tick)
         auto &sm = smooth[uniqid];
         auto &sm0 = smooth[0];
         vec4_t const goal = { sx, sy, z, a };
