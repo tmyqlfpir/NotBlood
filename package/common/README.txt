@@ -5,7 +5,6 @@ A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-en
 * Switch to last active weapon if TNT/spray can is active when entering water
 * Basic room over room support for positional audio
 * Autosaving support for collecting keys and start of level
-* Increase drawn sprites on screen limit from 2560 to 4096
 * New last weapon key binding (default Q)
 * Vanilla mode (v1.21) with optional DOS mouse handling
 * BloodGDX style difficulty options for singleplayer
