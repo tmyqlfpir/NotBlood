@@ -1220,19 +1220,15 @@ int32_t polymost_voxdraw(voxmodel_t *m, tspriteptr_t const tspr)
         glFrontFace(GL_CCW);
 
     buildgl_setEnabled(GL_CULL_FACE);
-    if (!r_mirrormode)
-        glCullFace(GL_BACK);
-    else
+    switch (r_mirrormode)
     {
-        switch (r_mirrormode)
-        {
-        case 3: // hoz+vert
-            glCullFace(GL_BACK); break;
-        case 2: // vert
-        case 1: // hoz
-        default:
-            glCullFace(GL_FRONT); break;
-        }
+    case 3: // hoz+vert
+        glCullFace(GL_BACK); break;
+    case 2: // vert
+    case 1: // hoz
+        glCullFace(GL_FRONT); break;
+    default:
+        glCullFace(GL_BACK); break;
     }
 
     float pc[4];
