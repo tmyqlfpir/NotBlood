@@ -42,6 +42,7 @@ CGameMenuMgr gGameMenuMgr;
 static CGameMenuItemZEdit *pGameMenuItemZEdit = NULL;
 
 extern CGameMenuItemQAV itemBloodQAV;
+static CGameMenuItemZEdit *pGameMenuItemZEdit = NULL;
 
 CMenuTextMgr::CMenuTextMgr()
 {
