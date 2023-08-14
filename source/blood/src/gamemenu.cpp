@@ -39,7 +39,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 CMenuTextMgr gMenuTextMgr;
 CGameMenuMgr gGameMenuMgr;
-static CGameMenuItemZEdit *pGameMenuItemZEdit = NULL;
 
 extern CGameMenuItemQAV itemBloodQAV;
 static CGameMenuItemZEdit *pGameMenuItemZEdit = NULL;
