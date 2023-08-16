@@ -451,7 +451,7 @@ int levelGetMusicIdx(const char *str)
 bool levelTryPlayMusic(int nEpisode, int nLevel, bool bSetLevelSong)
 {
     char buffer[BMAX_PATH];
-    if (CDAudioToggle && gEpisodeInfo[nEpisode].levelsInfo[nLevel].SongId > 0)
+    if (CDAudioToggle && gEpisodeInfo[nEpisode].levelsInfo[nLevel].SongId > 0 && (!CDAudioFallback || gEpisodeInfo[nEpisode].levelsInfo[nLevel].Song[0] == '\0'))
         snprintf(buffer, BMAX_PATH, "blood%02i.ogg", gEpisodeInfo[nEpisode].levelsInfo[nLevel].SongId);
     else
         strncpy(buffer, gEpisodeInfo[nEpisode].levelsInfo[nLevel].Song, BMAX_PATH);

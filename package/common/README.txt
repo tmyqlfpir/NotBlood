@@ -254,6 +254,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Position offset for selected weapon weapon bar
 * hud_showweaponselectscale
    - Sets scale for selected weapon weapon bar (default: 10, range: 5-20)
+* mus_redbookfallback
+   - Enables/disables redbook audio if midi song is not specified for level (mus_redbook must already be enabled)
 * in_centerviewondrop
    - Enable/disable recenter view when dropping down onto ground
 * in_crouchmode

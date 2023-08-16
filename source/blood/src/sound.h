@@ -43,6 +43,7 @@ struct SFX
 extern int32_t SoundToggle;
 extern int32_t MusicToggle;
 extern int32_t CDAudioToggle;
+extern int32_t CDAudioFallback;
 extern int32_t DopplerToggle;
 extern int32_t FXVolume;
 extern int32_t MusicVolume;
