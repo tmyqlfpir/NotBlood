@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 int32_t SoundToggle;
 int32_t MusicToggle;
 int32_t CDAudioToggle;
+int32_t CDAudioFallback;
 int32_t DopplerToggle;
 int32_t FXVolume;
 int32_t MusicVolume;

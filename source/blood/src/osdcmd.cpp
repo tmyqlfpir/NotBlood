@@ -1116,6 +1116,7 @@ int32_t registerosdcommands(void)
         { "mus_volume", "controls music volume", (void *)&MusicVolume, CVAR_INT, 0, 255 },
         { "mus_device", "music device", (void *)&MusicDevice, CVAR_INT, 0, ASS_NumSoundCards },
         { "mus_redbook", "enables/disables redbook audio", (void *)&CDAudioToggle, CVAR_BOOL, 0, 1 },
+        { "mus_redbookfallback", "enables/disables redbook audio if midi song is not specified for level (mus_redbook must already be enabled)", (void *)&CDAudioFallback, CVAR_BOOL, 0, 1 },
         { "net_address","sets network address used for multiplayer", (void *)zNetAddressBuffer, CVAR_STRING|CVAR_FUNCPTR, 0, 16 },
         { "net_port","sets network port used for multiplayer", (void *)zNetPortBuffer, CVAR_STRING|CVAR_FUNCPTR, 0, 6 },
 //
