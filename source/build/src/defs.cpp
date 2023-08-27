@@ -120,11 +120,21 @@ enum scripttoken_t
     T_LOCALIZATION, T_STRING,
     T_TILEFONT, T_CHARACTER,
     T_TRUENPOT,
+    T_NOTRANS,
+
+    // begin downstream
     T_RFFDEFINEID,
     T_EXTRA,
     T_ROTATE,
-    T_STUB_INTEGER, T_STUB_INTEGER_STRING, T_STUB_BRACES, T_STUB_STRING_BRACES,
-    T_NOTRANS,
+    // end downstream
+
+    // stubs
+    T_STUB_INTEGER,
+    T_STUB_INTEGER_STRING,
+    T_STUB_BRACES,
+    T_STUB_STRING_BRACES,
+
+    T_END,
 };
 
 static int32_t lastmodelid = -1, lastvoxid = -1, modelskin = -1, lastmodelskin = -1, seenframe = 0;
@@ -396,7 +406,10 @@ static int32_t defsparser(scriptfile *script)
         { "shadefactor",     T_SHADEFACTOR      },
         { "localization",    T_LOCALIZATION     },
         { "tilefont",        T_TILEFONT         },
+
+        // begin downstream
         { "rffdefineid",     T_RFFDEFINEID      },  // dummy
+        // end downstream
 
         // stubs for game-side tokens
         { "globalgameflags", T_STUB_INTEGER     },
@@ -800,7 +813,7 @@ static int32_t defsparser(scriptfile *script)
             char *texturetokptr = script->ltextptr, *textureend, *fn = NULL;
             int32_t tile = -1;
             int32_t alphacut = 255, flags = 0;
-            int32_t havexoffset = 0, haveyoffset = 0, haveextra = 0;
+            int32_t havexoffset = 0, haveyoffset = 0;
             int32_t xoffset = 0, yoffset = 0;
             int32_t istexture = 0;
             int32_t tile_crc32 = 0;
@@ -808,7 +821,10 @@ static int32_t defsparser(scriptfile *script)
             uint8_t have_crc32 = 0;
             uint8_t have_size = 0;
             uint8_t tile_flags = 0;
+            // begin downstream
+            int32_t haveextra = 0;
             int32_t extra = 0;
+            // end downstream
 
             static const tokenlist tilefromtexturetokens[] =
             {
@@ -825,7 +841,9 @@ static int32_t defsparser(scriptfile *script)
                 { "ifcrc",           T_IFCRC },
                 { "ifmatch",         T_IFMATCH },
                 { "truenpot",        T_TRUENPOT },
+                // begin downstream
                 { "extra",           T_EXTRA },
+                // end downstream
             };
 
             if (scriptfile_getsymbol(script,&tile)) break;
@@ -899,10 +917,12 @@ static int32_t defsparser(scriptfile *script)
                 case T_TEXTURE:
                     istexture = 1;
                     break;
+                // begin downstream
                 case T_EXTRA:
                     haveextra = 1;
                     scriptfile_getsymbol(script, &extra);
                     break;
+                // end downstream
                 default:
                     break;
                 }
@@ -922,7 +942,7 @@ static int32_t defsparser(scriptfile *script)
                 if (orig_crc32 == tile_crc32)
                     have_crc32 = 0;
                 else
-                    DLOG_F(WARNING, "tilefromtexture: CRC32 of tile %d doesn't match! CRC32: %d, Expected: %d", tile, orig_crc32, tile_crc32);
+                    DLOG_F(WARNING, "tilefromtexture: CRC32 of tile %d doesn't match! CRC32: 0x%08X, Expected: 0x%08X", tile, orig_crc32, tile_crc32);
             }
 
             vec2_16_t orig_size{};
@@ -932,31 +952,37 @@ static int32_t defsparser(scriptfile *script)
                 if (orig_size.x == tile_size.x && orig_size.y == tile_size.y)
                     have_size = 0;
                 else
-                    LOG_F(WARNING, "tilefromtexture: size of tile %d doesn't match! Size: (%d, %d), Expected: (%d, %d)", tile, orig_size.x, orig_size.y, tile_size.x, tile_size.y);
+                    DLOG_F(WARNING, "tilefromtexture: size of tile %d doesn't match! Size: (%d, %d), Expected: (%d, %d)", tile, orig_size.x, orig_size.y, tile_size.x, tile_size.y);
             }
 
             if (have_crc32 || have_size)
             {
 #if 0
-                initprintf("tilefromtexture %d { ifmatch { size %d %d crc32 %d } }\n", tile, orig_size.x, orig_size.y, orig_crc32);
+                DLOG_F(INFO, "tilefromtexture %d { ifmatch { size %d %d crc32 0x%08X } }", tile, orig_size.x, orig_size.y, orig_crc32);
 #endif
                 break;
             }
 
             if (!fn)
             {
-                // tilefromtexture <tile> { texhitscan }  sets the bit but doesn't change tile data
+                int32_t havemodifier = 0;
+
                 picanm[tile].sf |= flags;
                 picanm[tile].tileflags |= tile_flags;
 
+                havemodifier |= havexoffset;
                 if (havexoffset)
                     picanm[tile].xofs = xoffset;
+                havemodifier |= haveyoffset;
                 if (haveyoffset)
                     picanm[tile].yofs = yoffset;
+                // begin downstream
+                havemodifier |= haveextra;
                 if (haveextra)
                     picanm[tile].extra = extra;
+                // end downstream
 
-                if (EDUKE32_PREDICT_FALSE(flags == 0 && !havexoffset && !haveyoffset && !haveextra))
+                if (EDUKE32_PREDICT_FALSE(flags == 0 && !havemodifier))
                     LOG_F(ERROR, "%s:%d: tilefromtexture: filename missing",
                                script->filename, scriptfile_getlinum(script,texturetokptr));
                 break;
@@ -986,8 +1012,10 @@ static int32_t defsparser(scriptfile *script)
             else if (texstatus == 0)
                 picanm[tile].yofs = 0;
 
+            // begin downstream
             if (haveextra)
                 picanm[tile].extra = extra;
+            // end downstream
         }
         break;
         case T_COPYTILE:
@@ -1388,8 +1416,10 @@ static int32_t defsparser(scriptfile *script)
             if (EDUKE32_PREDICT_FALSE(scriptfile_getstring(script,&fn)))
                 break; //voxel filename
 
+            // begin downstream
             while (nextvoxid < MAXVOXELS && (voxreserve[nextvoxid>>3]&(1<<(nextvoxid&7))))
                 nextvoxid++;
+            // end downstream
 
             if (EDUKE32_PREDICT_FALSE(nextvoxid == MAXVOXELS))
             {
@@ -1475,7 +1505,6 @@ static int32_t defsparser(scriptfile *script)
                 int32_t token = getatoken(script,modeltokens,ARRAY_SIZE(modeltokens));
                 switch (token)
                 {
-                    //case T_ERROR: initprintf("Error on line %s:%d in model tokens\n", script->filename,script->linenum); break;
                 case T_SCALE:
                     scriptfile_getdouble(script,&scale); break;
                 case T_SHADE:
@@ -1892,9 +1921,9 @@ static int32_t defsparser(scriptfile *script)
                 md_thinoutmodel(lastmodelid, usedframebitmap);
 #  ifdef DEBUG_MODEL_MEM
                 if (i>=0 && i<onumframes)
-                    initprintf("used %d/%d frames: %s\n", i, onumframes, modelfn);
+                    LOG_F(INFO, "used %d/%d frames: %s", i, onumframes, modelfn);
                 else if (i<0)
-                    initprintf("md_thinoutmodel returned %d: %s\n", i, modelfn);
+                    LOG_F(INFO, "md_thinoutmodel returned %d: %s", i, modelfn);
 #  endif
             }
 # endif
@@ -1920,8 +1949,10 @@ static int32_t defsparser(scriptfile *script)
                 { "tile0",   T_TILE0   },
                 { "tile1",   T_TILE1   },
                 { "scale",   T_SCALE   },
-                { "rotate",  T_ROTATE  },
                 { "notrans", T_NOTRANS },
+                // begin downstream
+                { "rotate",  T_ROTATE  },
+                // end downstream
             };
 
             if (EDUKE32_PREDICT_FALSE(scriptfile_getstring(script,&fn)))
@@ -1929,8 +1960,10 @@ static int32_t defsparser(scriptfile *script)
 
             if (scriptfile_getbraces(script,&voxelend)) break;
 
+            // begin downstream
             while (nextvoxid < MAXVOXELS && (voxreserve[nextvoxid>>3]&(1<<(nextvoxid&7))))
                 nextvoxid++;
+            // end downstream
 
             if (EDUKE32_PREDICT_FALSE(nextvoxid == MAXVOXELS))
             {
@@ -1952,7 +1985,6 @@ static int32_t defsparser(scriptfile *script)
             {
                 switch (getatoken(script, voxeltokens, ARRAY_SIZE(voxeltokens)))
                 {
-                    //case T_ERROR: initprintf("Error on line %s:%d in voxel tokens\n", script->filename,linenum); break;
                 case T_TILE:
                     scriptfile_getsymbol(script,&tilex);
 
@@ -1988,13 +2020,17 @@ static int32_t defsparser(scriptfile *script)
                     break;
                 }
 
+                case T_NOTRANS:
+                    voxflags[lastvoxid] |= VF_NOTRANS;
+                    break;
+
+                // begin downstream
+
                 case T_ROTATE:
                     voxrotate[lastvoxid>>3] |= pow2char[lastvoxid&7];
                     break;
 
-                case T_NOTRANS:
-                    voxflags[lastvoxid] |= VF_NOTRANS;
-                    break;
+                // end downstream
                 }
             }
             lastvoxid = -1;
@@ -2032,7 +2068,6 @@ static int32_t defsparser(scriptfile *script)
             {
                 switch (getatoken(script,skyboxtokens,ARRAY_SIZE(skyboxtokens)))
                 {
-                    //case T_ERROR: initprintf("Error on line %s:%d in skybox tokens\n",script->filename,linenum); break;
                 case T_TILE:
                     scriptfile_getsymbol(script,&tile); break;
                 case T_PAL:
@@ -3675,22 +3710,6 @@ static int32_t defsparser(scriptfile *script)
         }
         break;
 
-        case T_RFFDEFINEID:
-        {
-            char *dummy;
-            int dummy2;
-
-            if (scriptfile_getstring(script, &dummy))
-                break;
-            if (scriptfile_getstring(script, &dummy))
-                break;
-            if (scriptfile_getnumber(script, &dummy2))
-                break;
-            if (scriptfile_getstring(script, &dummy))
-                break;
-        }
-        break;
-
         case T_LOCALIZATION:
         {
             char * localeName;
@@ -3833,13 +3852,33 @@ static int32_t defsparser(scriptfile *script)
             break;
         }
 
+        // begin downstream
+
+        case T_RFFDEFINEID:
+        {
+            char *dummy;
+            int dummy2;
+
+            if (scriptfile_getstring(script, &dummy))
+                break;
+            if (scriptfile_getstring(script, &dummy))
+                break;
+            if (scriptfile_getnumber(script, &dummy2))
+                break;
+            if (scriptfile_getstring(script, &dummy))
+                break;
+        }
+        break;
+
+        // end downstream
+
+        // stubs
         case T_STUB_INTEGER:
         {
             int32_t dummy;
             scriptfile_getnumber(script, &dummy);
             break;
         }
-
         case T_STUB_INTEGER_STRING:
         {
             int32_t dummy;
@@ -3852,7 +3891,6 @@ static int32_t defsparser(scriptfile *script)
 
             break;
         }
-
         case T_STUB_BRACES:
         {
             char * blockend;
@@ -3861,7 +3899,6 @@ static int32_t defsparser(scriptfile *script)
             script->textptr = blockend+1;
             break;
         }
-
         case T_STUB_STRING_BRACES:
         {
             char * blockend;
