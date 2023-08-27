@@ -7820,43 +7820,44 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
         const float tick4diff = (r_rotatespriteinterp == 1) ? kBloodTicsPerSec : (1000.f/(CLOCKTICKSPERSECOND/kBloodTicsPerSec)); // used to check when lerp frame has taken more than 4 ticks (or a single blood game tick)
         auto &sm = smooth[uniqid];
         auto &sm0 = smooth[0];
-        vec4_t const goal  = { sx, sy, z, a };
-        auto const   clock = totalclock;
-
-        sm0 = { goal, goal, picnum, (int16_t)(dastat & ~RS_TRANS_MASK), clock };
-
-        bool const lerpWouldLookDerp = !(dastat & RS_LERP) || sm.clock == 0 || clock - sm.clock > 4
-                                       || (!(dastat & RS_FORCELERP) && (sm.flags != (dastat & ~RS_TRANS_MASK) || (tilesiz[picnum] != tilesiz[sm.picnum]
-                                       && (unsigned)(picnum - sm.picnum)))) || klabs(a - sm.goal.a) == 1024;
-
-        if (clock - sm.clock >= 4 || sm0.goal != sm.goal)
+        vec4_t const goal = { sx, sy, z, a };
+        sm0 = { {sm.lerp[0], sm.lerp[1], sm.lerp[2], sm.lerp[3]}, (r_rotatespriteinterp > 1) ? timerGetTicks() : timer120(), picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
+        if (r_rotatespriteinterp == 1) // if half-step is set, set precision to 60 ticks
         {
-            sm.lerp = sm.goal;
-            sm.goal = sm0.goal;
-            sm.clock = sm0.clock;
+            sm0.clock >>= 1;
+            sm0.clock <<= 1;
         }
+        const uint32_t delta = sm0.clock - sm.clock;
 
-        if (lerpWouldLookDerp)
-            sm.lerp = sm.goal = sm0.goal;
-        else
+        const bool tooLongSinceLastLerp = delta > (uint32_t)tick4diff; // if too long since last lerp frame, don't interpolate
+        const bool lerpWouldLookDerp = (!(dastat & RS_LERP) && r_rotatespriteinterp < 3)
+                   || (!(dastat & RS_FORCELERP) && (sm.flags != (dastat & ~RS_TRANS_MASK) || (tilesiz[picnum] != tilesiz[sm.picnum]
+                   && ((unsigned)(picnum - sm.picnum) > (int)(r_rotatespriteinterp == 4)))));
+        if (r_rotatespriteinterp && !(lerpWouldLookDerp || tooLongSinceLastLerp))
         {
-            if (dastat & RS_NOPOSLERP)
-                sm.lerp.xy = sm.goal.xy = sm0.goal.xy;
-            if (dastat & RS_NOZOOMLERP)
-                sm.lerp.z = sm.goal.z = sm0.goal.z;
-            if (dastat & RS_NOANGLERP)
-                sm.lerp.a = sm.goal.a = sm0.goal.a;
-
-            sm0.lerp = { sm.goal.x - mulscale16(65536-rotatespritesmoothratio, sm.goal.x - sm.lerp.x),
-                         sm.goal.y - mulscale16(65536-rotatespritesmoothratio, sm.goal.y - sm.lerp.y),
-                         sm.goal.z - mulscale16(65536-rotatespritesmoothratio, sm.goal.z - sm.lerp.z),
-                        (sm.goal.a - mulscale16(65536-rotatespritesmoothratio, ((sm.goal.a + 1024 - sm.lerp.a) & 2047) - 1024)) & 2047 };
+            const float rotatespritesmoothratioF = (float)delta / tick4diff;
+            sm0.lerp[0] = dastat&RS_NOPOSLERP ? (float)goal.x : lerpF(sm0.lerp[0], (float)goal.x, rotatespritesmoothratioF);
+            sm0.lerp[1] = dastat&RS_NOPOSLERP ? (float)goal.y : lerpF(sm0.lerp[1], (float)goal.y, rotatespritesmoothratioF);
+            sm0.lerp[2] = dastat&RS_NOZOOMLERP ? (float)goal.z : lerpF(sm0.lerp[2], (float)goal.z, rotatespritesmoothratioF);
+            const int rotateDiff = (goal.a+1024) - (((int)sm.lerp[3] & 2047)+1024);
+            const bool safeToLerp = !(dastat&RS_NOANGLERP) && (rotateDiff < (1024+512)) && (rotateDiff > (512));
+            if (safeToLerp)
+                sm0.lerp[3] = (float)goal.a; // next keyframe is too big to transition smoothly, so set lerp to expected keyframe
+            else
+                sm0.lerp[3] = lerpF(sm0.lerp[3], (float)(goal.a+2048), rotatespritesmoothratioF)-2048.f;
+            sx = (int)sm0.lerp[0];
+            sy = (int)sm0.lerp[1];
+            z  = (int)sm0.lerp[2];
+            a  = (int)(sm0.lerp[3] + 2048.f) & 2047;
         }
-
-        sm.picnum = sm0.picnum;
-        sm.flags  = sm0.flags;
-
-        if (r_rotatespriteinterp)
+        else // set to next keyframe position (no interpolation)
+        {
+            sm0.lerp[0] = (float)goal.x;
+            sm0.lerp[1] = (float)goal.y;
+            sm0.lerp[2] = (float)goal.z;
+            sm0.lerp[3] = (float)goal.a;
+        }
+        if (r_rotatespriteinterp && r_rotatespriteinterpquantize) // quantize positions
         {
             sx >>= 16;
             sx <<= 16;
