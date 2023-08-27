@@ -251,9 +251,12 @@ enum {
     ROTATESPRITE_FULL16 = 2048,
     RS_LERP = 4096,
     RS_FORCELERP = 8192,
+    RS_NOPOSLERP = 16384,
+    RS_NOZOOMLERP = 32768,
+    RS_NOANGLERP = 65536,
 
     // ROTATESPRITE_MAX-1 is the mask of all externally available orientation bits
-    ROTATESPRITE_MAX = 16384,
+    ROTATESPRITE_MAX = 131072,
 
     RS_CENTERORIGIN = (1<<30),
 };
@@ -595,6 +598,7 @@ enum
     TSPR_FLAGS_NO_SHADOW = 1u<<2u,
     TSPR_FLAGS_INVISIBLE_WITH_SHADOW = 1u<<3u,
     TSPR_FLAGS_SLOPE_SPRITE = 1u<<4u,
+    TSPR_FLAGS_SLAB = 1u<<5u,
 };
 
 EXTERN int32_t guniqhudid;
