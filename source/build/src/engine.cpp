@@ -7841,7 +7841,7 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
             sm0.lerp[2] = dastat&RS_NOZOOMLERP ? (float)goal.z : lerpF(sm0.lerp[2], (float)goal.z, rotatespritesmoothratioF);
             const int rotateDiff = (goal.a+1024) - (((int)sm.lerp[3] & 2047)+1024);
             const bool safeToLerp = !(dastat&RS_NOANGLERP) && (rotateDiff < (1024+512)) && (rotateDiff > (512));
-            if (safeToLerp)
+            if (!safeToLerp)
                 sm0.lerp[3] = (float)goal.a; // next keyframe is too big to transition smoothly, so set lerp to expected keyframe
             else
                 sm0.lerp[3] = lerpF(sm0.lerp[3], (float)(goal.a+2048), rotatespritesmoothratioF)-2048.f;
