@@ -7743,7 +7743,7 @@ void polymost2_drawsprite(int32_t snum)
     {
         horzScale *= 256.f/320.f;
     }
-    else if ((globalorientation & CSTAT_SPRITE_ALIGNMENT)==CSTAT_SPRITE_ALIGNMENT_FLOOR)
+    else if (globalorientation & CSTAT_SPRITE_ALIGNMENT_FLOOR)
     {
         //POGOTODO: fix floor sprites to be scaled up slightly by the right amount, and note their tex is slightly clipped on the leading edges
         vertScale += 1.f/320.f;
@@ -7754,7 +7754,7 @@ void polymost2_drawsprite(int32_t snum)
 
     //handle sprite flipping
     horzScale *= -2.f*((globalorientation & CSTAT_SPRITE_XFLIP) != 0) + 1.f;
-    vertScale *= -2.f*(((globalorientation & CSTAT_SPRITE_ALIGNMENT) != CSTAT_SPRITE_ALIGNMENT_FLOOR) &
+    vertScale *= -2.f*(!(globalorientation & CSTAT_SPRITE_ALIGNMENT_FLOOR) &
                        ((globalorientation & CSTAT_SPRITE_YFLIP) != 0)) + 1.f;
 
     //POGOTODO: replace this with simply using off.x and a different float for z offsets
@@ -7883,7 +7883,7 @@ void polymost2_drawsprite(int32_t snum)
     off.y *= ((float) (((globalorientation & CSTAT_SPRITE_ALIGNMENT) != CSTAT_SPRITE_ALIGNMENT_FACING) &
                        ((globalorientation & CSTAT_SPRITE_YFLIP) != 0)))*-2.f + 1.f;
 
-    if ((globalorientation & CSTAT_SPRITE_ALIGNMENT)==CSTAT_SPRITE_ALIGNMENT_FLOOR)
+    if (globalorientation & CSTAT_SPRITE_ALIGNMENT_FLOOR)
     {
         vertScale = -vertScale;
         orientationOffset.x += ftsiz.y*((float) tspr->yrepeat)*(1.f/8.f);
@@ -7912,7 +7912,7 @@ void polymost2_drawsprite(int32_t snum)
     orientationOffset.y *= -(1.f/16384.f)*g;
     calcmat(a0, &orientationOffset, f, modelViewMatrix, angle);
 
-    if ((globalorientation & CSTAT_SPRITE_ALIGNMENT)==CSTAT_SPRITE_ALIGNMENT_FLOOR)
+    if (globalorientation & CSTAT_SPRITE_ALIGNMENT_FLOOR)
     {
         float temp = modelViewMatrix[4]; modelViewMatrix[4] = modelViewMatrix[8]*16.f; modelViewMatrix[8] = -temp*(1.f/16.f);
         temp = modelViewMatrix[5]; modelViewMatrix[5] = modelViewMatrix[9]*16.f; modelViewMatrix[9] = -temp*(1.f/16.f);
@@ -8211,7 +8211,7 @@ void polymost_drawsprite(int32_t snum)
         int const flag = usehightile && h_xsize[globalpicnum];
         off = { flag ? h_xoffs[globalpicnum] : picanm[globalpicnum].xofs,
                 flag ? h_yoffs[globalpicnum] : picanm[globalpicnum].yofs };
-        if (!(tsprflags & TSPR_FLAGS_SLOPE_SPRITE))
+        if ((tspr->cstat & CSTAT_SPRITE_ALIGNMENT) != CSTAT_SPRITE_ALIGNMENT_SLOPE)
         {
             off.x += tspr->xoffset;
             off.y += tspr->yoffset;
@@ -8307,9 +8307,9 @@ void polymost_drawsprite(int32_t snum)
 
     vec2f_t const ftsiz = { (float) tsiz.x, (float) tsiz.y };
 
-    switch ((globalorientation >> 4) & 3)
+    switch (globalorientation & CSTAT_SPRITE_ALIGNMENT)
     {
-        case 0:  // Face sprite
+        case CSTAT_SPRITE_ALIGNMENT_FACING:  // Face sprite
         {
             // Project 3D to 2D
             if (globalorientation & 4)
@@ -8432,7 +8432,7 @@ void polymost_drawsprite(int32_t snum)
         }
         break;
 
-        case 1:  // Wall sprite
+        case CSTAT_SPRITE_ALIGNMENT_WALL:  // Wall sprite
         {
             // Project 3D to 2D
             if (globalorientation & 4)
@@ -8662,7 +8662,8 @@ void polymost_drawsprite(int32_t snum)
         }
         break;
 
-        case 2:  // Floor sprite
+        case CSTAT_SPRITE_ALIGNMENT_FLOOR:  // Floor sprite
+        case CSTAT_SPRITE_ALIGNMENT_SLOPE:  // Sloped sprite
             globvis2 = globalhisibility2;
             if (sector[tspr->sectnum].visibility != 0)
                 globvis2 = mulscale4(globvis2, (uint8_t)(sector[tspr->sectnum].visibility + 16));
@@ -8906,9 +8907,6 @@ void polymost_drawsprite(int32_t snum)
                 drawpoly_trepeat = 0;
             }
 
-            break;
-
-        case 3:  // Voxel sprite
             break;
     }
 

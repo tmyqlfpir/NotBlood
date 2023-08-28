@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug NotBlood",
+            "type": "cppdbg",
+            "request": "launch",
+            "linux": {
+                "program": "${workspaceRoot}/NotBlood",
+            },
+            "windows": {
+                "program": "${workspaceRoot}/NotBlood.exe",
+            },
+            "cwd": "${workspaceRoot}",
+        }
+    ]
+}

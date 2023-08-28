@@ -5516,7 +5516,7 @@ static void classicDrawSprite(int32_t snum)
 
     if (tsprflags & TSPR_FLAGS_SLAB)
         vtilenum = tilenum; // if the game wants voxels, it gets voxels
-    else if ((cstat & CSTAT_SPRITE_ALIGNMENT) != CSTAT_SPRITE_ALIGNMENT_FLOOR && usevoxels && tiletovox[tilenum] != -1 && spritenum != -1 && !(spriteext[spritenum].flags&SPREXT_NOTMD))
+    else if (!(cstat & CSTAT_SPRITE_ALIGNMENT_FLOOR) && usevoxels && tiletovox[tilenum] != -1 && spritenum != -1 && !(spriteext[spritenum].flags&SPREXT_NOTMD))
     {
         bool drawVoxel = true;
         if (!r_shadowvoxels && bloodhack) // check if a voxel is likely being used as a shadow effect
@@ -5825,10 +5825,11 @@ static void classicDrawSprite(int32_t snum)
         off.x = tspr->xoffset;
         off.y = /*picanm[sprite[tspr->owner].picnum].yofs +*/ tspr->yoffset;
         if (cstat & 4) off.x = -off.x;
-        if ((cstat & 8) && (tspr->cstat & CSTAT_SPRITE_ALIGNMENT) != CSTAT_SPRITE_ALIGNMENT_FACING) off.y = -off.y;
+        if ((cstat & 8) && ((tspr->cstat & CSTAT_SPRITE_ALIGNMENT) != CSTAT_SPRITE_ALIGNMENT_FACING || (tspr->clipdist & TSPR_FLAGS_SLAB)))
+            off.y = -off.y;
         tspr->z -= off.y * tspr->yrepeat << 2;
 
-        const float xfactor = (tspr->cstat & CSTAT_SPRITE_ALIGNMENT) != CSTAT_SPRITE_ALIGNMENT_WALL ? (256.f/320.f) : 1.f;
+        const float xfactor = ((tspr->cstat & CSTAT_SPRITE_ALIGNMENT) != CSTAT_SPRITE_ALIGNMENT_WALL || (tspr->clipdist & TSPR_FLAGS_SLAB)) ? (256.f/320.f) : 1.f;
         const int32_t xv = (int32_t)(tspr->xrepeat*sintable[(tspr->ang+2560+1536)&2047]*xfactor);
         const int32_t yv = (int32_t)(tspr->xrepeat*sintable[(tspr->ang+2048+1536)&2047]*xfactor);
 
@@ -5905,7 +5906,7 @@ static void classicDrawSprite(int32_t snum)
         const int32_t floorz = (sec->floorstat&3) == 0 ? sec->floorz : INT32_MAX;
 
         classicDrawVoxel(x,y,z,i,daxrepeat,(int32_t)tspr->yrepeat,vtilenum,
-            tspr->shade,tspr->pal,lwall,swall,tspr->cstat,tsprflags,floorz,ceilingz);
+            tspr->shade,tspr->pal,lwall,swall,tspr->cstat,tspr->clipdist,floorz,ceilingz);
     }
     else if ((cstat & CSTAT_SPRITE_ALIGNMENT) == CSTAT_SPRITE_ALIGNMENT_FACING)
     {
@@ -6388,7 +6389,7 @@ draw_as_face_sprite:
         drawing_sprite = 0;
         globalht = nullptr;
     }
-    else if ((cstat & CSTAT_SPRITE_ALIGNMENT) == CSTAT_SPRITE_ALIGNMENT_FLOOR)
+    else if (cstat & CSTAT_SPRITE_ALIGNMENT_FLOOR)
     {
         if ((cstat&64) != 0)
             if ((globalposz > tspriteGetZOfSlope(tspr, globalposx, globalposy)) == ((cstat&8)==0))
@@ -9898,7 +9899,7 @@ static void sortsprites(int const start, int const end)
                 auto const s = tspriteptr[k];
                 int32_t z = s->z;
 
-                if ((s->cstat & CSTAT_SPRITE_ALIGNMENT) != CSTAT_SPRITE_ALIGNMENT_FLOOR)
+                if (!(s->cstat & CSTAT_SPRITE_ALIGNMENT_FLOOR))
                 {
                     int32_t const yoff  = picanm[s->picnum].yofs + s->yoffset;
                     int32_t const yspan = (tilesiz[s->picnum].y * s->yrepeat << 2);
