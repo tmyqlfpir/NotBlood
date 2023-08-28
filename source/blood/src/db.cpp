@@ -963,7 +963,7 @@ void dbRandomizerMode(spritetype *pSprite)
             {
                 static char bShownError = 0;
                 if (!bShownError) // only show once per session
-                    initprintf("Error invalid cheat seed %s (%d)\nAdd seed cheat effect to func dbRandomizerMode()\n\n", gGameOptions.szRandomizerSeed, gGameOptions.nRandomizerCheat);
+                    LOG_F(INFO, "Error invalid cheat seed %s (%d)\nAdd seed cheat effect to func dbRandomizerMode()\n\n", gGameOptions.szRandomizerSeed, gGameOptions.nRandomizerCheat);
                 bShownError = 1;
                 break;
             }
