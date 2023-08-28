@@ -2012,7 +2012,7 @@ int app_main(int argc, char const * const * argv)
         uint32_t etime = timerGetTicks();
         LOG_F(INFO, "Definitions file \"%s\" loaded in %d ms.", deffile, etime-stime);
     }
-    loaddefinitions_game(defsfile, FALSE);
+    loaddefinitions_game(deffile, FALSE);
     if (!bNoAutoLoad && !gSetup.noautoload) // autoload notblood#.def files
     {
         for (int i = 7; i >= 0; i--) // scan for 0-7 def files
