@@ -2963,7 +2963,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             walltype *pWall2 = &wall[pWall1->point2];
             pNSprite->xoffset = sector[pNSprite->sectnum].ceilingheinum & 255;
             pNSprite->yoffset = (sector[pNSprite->sectnum].ceilingheinum >> 8) & 255;
-            pNSprite->clipdist |= TSPR_FLAGS_SLOPE_SPRITE;
+            pNSprite->cstat |= CSTAT_SPRITE_ALIGNMENT_SLOPE;
             pNSprite->ang = getangle(pWall2->x-pWall1->x, pWall2->y-pWall1->y)+kAng270;
         }
         return pNSprite;
@@ -2998,7 +2998,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
             walltype *pWall2 = &wall[pWall1->point2];
             pNSprite->xoffset = sector[pNSprite->sectnum].floorheinum & 255;
             pNSprite->yoffset = (sector[pNSprite->sectnum].floorheinum >> 8) & 255;
-            pNSprite->clipdist |= TSPR_FLAGS_SLOPE_SPRITE;
+            pNSprite->cstat |= CSTAT_SPRITE_ALIGNMENT_SLOPE;
             pNSprite->ang = getangle(pWall2->x-pWall1->x, pWall2->y-pWall1->y)+kAng270;
         }
         return pNSprite;
