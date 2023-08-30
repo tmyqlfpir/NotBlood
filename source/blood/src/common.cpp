@@ -52,7 +52,7 @@ void clearGrpNamePtr(void)
 
 const char *G_DefaultGrpFile(void)
 {
-    return "notblood.pk3";
+    return APPBASENAME ".pk3";
 }
 
 const char *G_DefaultDefFile(void)
@@ -278,8 +278,30 @@ void G_AddSearchPaths(void)
 {
 #ifndef EDUKE32_TOUCH_DEVICES
 #if defined __linux__ || defined EDUKE32_BSD
-    addsearchpath("/usr/share/games/notblood");
-    addsearchpath("/usr/local/share/games/notblood");
+    char buf[BMAX_PATH];
+    char *homepath = Bgethomedir();
+    const char *xdg_docs_path = getenv("XDG_DOCUMENTS_DIR");
+    const char *xdg_config_path = getenv("XDG_CONFIG_HOME");
+
+    if (xdg_config_path) {
+        Bsnprintf(buf, sizeof(buf), "%s/" APPBASENAME, xdg_config_path);
+        addsearchpath(buf);
+    }
+
+    if (xdg_docs_path) {
+        Bsnprintf(buf, sizeof(buf), "%s/" APPNAME, xdg_docs_path);
+        addsearchpath(buf);
+    }
+    else {
+        Bsnprintf(buf, sizeof(buf), "%s/Documents/" APPNAME, homepath);
+        addsearchpath(buf);
+    }
+
+    Xfree(homepath);
+
+    addsearchpath("/usr/share/games/" APPBASENAME);
+    addsearchpath("/usr/local/share/games/" APPBASENAME);
+    addsearchpath("/app/extensions/extra");
 #elif defined EDUKE32_OSX
     char buf[BMAX_PATH];
     int32_t i;
@@ -288,7 +310,7 @@ void G_AddSearchPaths(void)
 
     for (i = 0; i < 2; i++)
     {
-        Bsnprintf(buf, sizeof(buf), "%s/NotBlood", support[i]);
+        Bsnprintf(buf, sizeof(buf), "%s/" APPNAME, support[i]);
         addsearchpath(buf);
     }
 

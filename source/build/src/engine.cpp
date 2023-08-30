@@ -5016,8 +5016,9 @@ typedef zint_t voxint_t;
 //
 static void classicDrawVoxel(int32_t dasprx, int32_t daspry, int32_t dasprz, int32_t dasprang,
                              int32_t daxscale, int32_t dayscale, int32_t daindex,
-                             int8_t dashade, char dapal, const int32_t *daumost, const int32_t *dadmost,
-                             const int16_t cstat, const int32_t tsprflags, int32_t floorz, int32_t ceilingz)
+                             char dapal, const int32_t *daumost, const int32_t *dadmost,
+                             const int16_t cstat, const int32_t tsprflags, int32_t floorz, int32_t ceilingz,
+                             const int32_t yp)
 {
     int32_t i, j, k, x, y, mip;
 
@@ -5027,8 +5028,9 @@ static void classicDrawVoxel(int32_t dasprx, int32_t daspry, int32_t dasprz, int
     int32_t sprsinang = sintable[dasprang&2047];
 
     i = klabs(dmulscale6(dasprx-globalposx, cosang, daspry-globalposy, sinang));
-    j = getpalookup(mulscale21(globvis,i), dashade)<<8;
-    setupdrawslab(ylookup[1], FP_OFF(palookup[dapal])+j);
+    int32_t const swallx = mulscale19(yp, xdimscale);
+    intptr_t const palookupoffs = FP_OFF(palookup[dapal]) + getpalookupsh(mulscale16(swallx,globvis));
+    setupdrawslab(ylookup[1], palookupoffs);
 
     j = 2097152;
     j *= max(daxscale,dayscale); j >>= 5;  //New hacks (for sized-down voxels)
@@ -5906,7 +5908,7 @@ static void classicDrawSprite(int32_t snum)
         const int32_t floorz = (sec->floorstat&3) == 0 ? sec->floorz : INT32_MAX;
 
         classicDrawVoxel(x,y,z,i,daxrepeat,(int32_t)tspr->yrepeat,vtilenum,
-            tspr->shade,tspr->pal,lwall,swall,tspr->cstat,tspr->clipdist,floorz,ceilingz);
+            tspr->pal,lwall,swall,tspr->cstat,tspr->clipdist,floorz,ceilingz,yp);
     }
     else if ((cstat & CSTAT_SPRITE_ALIGNMENT) == CSTAT_SPRITE_ALIGNMENT_FACING)
     {
@@ -9189,11 +9191,11 @@ int32_t engineInit(void)
 
     Bmemset(voxoff, 0, sizeof(voxoff));
     Bmemset(voxlock, 0, sizeof(voxlock));
+    Bmemset(voxflags, 0, sizeof(voxflags));
 
     for (i=0; i<MAXTILES; i++)
         tiletovox[i] = -1;
     clearbuf(voxscale, sizeof(voxscale)>>2, 65536);
-    clearbufbyte(voxrotate, sizeof(voxrotate), 0);
 
     paletteloaded = 0;
 
@@ -12276,7 +12278,6 @@ void vox_undefine(int32_t const tile)
         voxlock[voxindex][j] = CACHE1D_FREE;
         voxoff[voxindex][j] = 0;
     }
-    bitmap_clear(voxrotate, voxindex);
     voxscale[voxindex] = 65536;
     voxflags[voxindex] = 0;
     tiletovox[tile] = -1;
