@@ -179,6 +179,8 @@ const DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST117.DEM", (int32_t)0x00001549, 0xABD36DE5, 0x00000640, {(int32_t)0x00009ACB, (int32_t)0x00006CC1, (int32_t)0x00003550}, 1}, // this demo crashes DOS v1.21 (ERROR (3339) src\actor.cpp Bad Dude Failed: initial=0 type=0 NORMAL)
     {"/validatedemos/TEST118.DEM", (int32_t)0x00001B56, 0xF88C22B7, 0x00000640, {(int32_t)0x00009C57, (int32_t)0x00006F1B, (int32_t)0x00003550}, 1},
     {"/validatedemos/TEST119.DEM", (int32_t)0x00000E93, 0x499EF35B, 0x00000000, {(int32_t)0x00009AD5, (int32_t)0x000096BC, (int32_t)0x000159A4}, 1},
+    {"/validatedemos/TEST120.DEM", (int32_t)0x000022A5, 0xC323F11D, 0x00000000, {(int32_t)0xFFFFAF9D, (int32_t)0xFFFF93D4, (int32_t)0x000009A4}, 1},
+    {"/validatedemos/TEST121.DEM", (int32_t)0x0000349D, 0x2A8C0171, 0x00000000, {(int32_t)0xFFFFC62C, (int32_t)0xFFFFA38D, (int32_t)0x000009A4}, 1},
 };
 
 int nBuild = 0;
