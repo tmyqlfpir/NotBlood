@@ -887,6 +887,7 @@ void StartNetworkLevel(void)
 {
     if (gDemo.bRecording)
         gDemo.Close();
+    VanillaModeUpdate();
     if (!(gGameOptions.uGameFlags&kGameFlagContinuing))
     {
         gGameOptions.nEpisode = gPacketStartGame.episodeId;
@@ -1909,7 +1910,6 @@ int app_main(int argc, char const * const * argv)
     CONFIG_ReadSetup();
     if (bCustomName)
         strcpy(szPlayerName, gPName);
-    VanillaModeUpdate();
 
     if (enginePreInit())
     {
