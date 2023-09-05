@@ -204,7 +204,7 @@ bool CanMove(spritetype *pSprite, int a2, int nAngle, int nRange)
             return true;
         break;
     case kDudeCerberusOneHead:
-        if (VanillaMode())
+        if (!EnemiesNBlood() || VanillaMode())
         {
             if (Crusher)
                 return false;
