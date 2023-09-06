@@ -2515,7 +2515,7 @@ void UpdateFrame(void)
     {
         const int nTile = kHudFullBackTile;
         const int nHalfScreen = klabs(gViewX1S-gViewX0S)>>1;
-        if (tilesiz[nTile].x == 64) // if for whatever reason this changed, DO NOT attempt to render the new boarder
+        if (tilesiz[nTile].x == 64) // if for whatever reason this changed, DO NOT attempt to render the new border
         {
             for (int i = 0; i <= nHalfScreen; i += (int)tilesiz[nTile].x) // extend new bottom border across screen
             {
