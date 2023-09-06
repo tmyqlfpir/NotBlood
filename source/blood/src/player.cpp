@@ -2264,7 +2264,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         {
             pKiller->fragCount--;
             pKiller->fragInfo[nKiller]--;
-            gMultiKillsFrags[nVictim] = 0; // reset multi kill counter
+            gMultiKillsFrags[nKiller] = 0; // reset multi kill counter
         }
         if (gGameOptions.nGameType == kGameTypeTeams)
             gPlayerScores[pKiller->teamId]--;
@@ -2289,7 +2289,7 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
         if (VanillaMode() || gGameOptions.nGameType != kGameTypeCoop)
         {
             pKiller->fragCount++;
-            pKiller->fragInfo[nKiller]++;
+            pKiller->fragInfo[nVictim]++;
             gMultiKillsFrags[nVictim] = 0;
             if (gKillMsg) // calculate kill message notification
             {
