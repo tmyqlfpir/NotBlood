@@ -2509,17 +2509,22 @@ void UpdateFrame(void)
 {
     const char bOrigTile = !gHudBgVanilla ? VanillaMode() : (gHudBgVanilla == 2);
     const int nPalette = !bOrigTile ? playerColorPalHud(gView->teamId) : 0;
-    const char bDrawNewBottomBorder = gHudBgNewBorder && (gViewSize == 5);
+    char bDrawNewBottomBorder = gHudBgNewBorder && (gViewSize == 5);
 
     if (bDrawNewBottomBorder)
     {
         const int nTile = kHudFullBackTile;
         const int nHalfScreen = klabs(gViewX1S-gViewX0S)>>1;
-        for (int i = 0; i <= nHalfScreen; i += (int)tilesiz[nTile].x) // extend new bottom border across screen
+        if (tilesiz[nTile].x == 64) // if for whatever reason this changed, DO NOT attempt to render the new boarder
         {
-            DrawStatMaskedSprite(nTile, -i, 172, 16, nPalette); // left side
-            DrawStatMaskedSprite(nTile, i+320, 172, 16, nPalette); // right side
+            for (int i = 0; i <= nHalfScreen; i += (int)tilesiz[nTile].x) // extend new bottom border across screen
+            {
+                DrawStatMaskedSprite(nTile, -i, 172, 16, nPalette); // left side
+                DrawStatMaskedSprite(nTile, i+320, 172, 16, nPalette); // right side
+            }
         }
+        else
+            bDrawNewBottomBorder = 0;
     }
 
     const int nTile = !bOrigTile ? kBackTile : kBackTileVanilla;
