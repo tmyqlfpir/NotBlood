@@ -1421,8 +1421,6 @@ void dbShuffleEnemy(void)
 
     for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i]) // build table of sprites for shuffling logic
     {
-        if (&sprite[i] == NULL)
-            continue;
         if (!IsDudeSprite(&sprite[i]) || IsPlayerSprite(&sprite[i])) // not an enemy sprite, skip
             continue;
         const int type = sprite[i].type;
