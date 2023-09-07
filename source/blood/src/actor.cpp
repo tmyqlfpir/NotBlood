@@ -6099,9 +6099,10 @@ void actProcessSprites(void)
 
                             switch (pSprite->type) {
                                 case kThingDroppedLifeLeech:
-                                    if (!Chance(0x4000) && nNextSprite >= 0) continue;
-                                    if (pSprite2->cstat & CLIPMASK0) pXSprite->target = pSprite2->index;
-                                    else continue;
+                                    if ((Chance(0x4000) || nNextSprite < 0) && (pSprite2->cstat & CLIPMASK0))
+                                        pXSprite->target = pSprite2->index;
+                                    else
+                                        continue;
                                     break;
                                 #ifdef NOONE_EXTENSIONS
                                 case kModernThingTNTProx:
@@ -6710,7 +6711,7 @@ void actProcessSprites(void)
             GibSprite(pSprite, GIBTYPE_17, NULL, NULL);
             actPostSprite(pSprite->index, kStatFree);
         }
-        if (pTarget->extra > 0 && xsprite[pTarget->extra].health > 0)
+        if ((!VanillaMode() ? pTarget->extra > 0 : pTarget->extra) && xsprite[pTarget->extra].health > 0)
         {
             int x = pTarget->x+mulscale30r(Cos(pXSprite->goalAng+pTarget->ang), pTarget->clipdist*2);
             int y = pTarget->y+mulscale30r(Sin(pXSprite->goalAng+pTarget->ang), pTarget->clipdist*2);

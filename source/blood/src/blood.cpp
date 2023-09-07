@@ -872,6 +872,8 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     viewSetMessage("");
     viewSetErrorMessage("");
     viewResizeView(gViewSize);
+    if (!VanillaMode())
+        viewClearInterpolations();
     netWaitForEveryone(0);
     totalclock = 0;
     gPaused = 0;
