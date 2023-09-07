@@ -111,6 +111,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Improved beast stomp attack sector scanning
    - Fix bloated butchers cleavers hitting prone players
    - Turn enemy around if stuck running into a corner for a few seconds
+   - Limit impulse damage when shooting enemies downward at point-blank
 * Random cultist TNT
    - This will make cultists use a variety of random thrown sprites such as:
    - Napalm balls, proxy bundles, armed spray cans or pod projectiles
