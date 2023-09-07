@@ -5592,9 +5592,12 @@ static bool MoveMissileBulletVectorTest(spritetype *pSource, spritetype *pShoote
                 if (t > 0 && pVectorData->impulse)
                 {
                     int t2 = divscale8(pVectorData->impulse, t);
+                    int t3 = mulscale16(a6, t2);
+                    if (EnemiesNotBlood() && !VanillaMode()) // clamp downward impulse damage to stop players from cheesing bosses
+                        t3 = ClipHigh(t3, 32767);
                     xvel[nSprite] += mulscale16(a4, t2) * boost;
                     yvel[nSprite] += mulscale16(a5, t2) * boost;
-                    zvel[nSprite] += mulscale16(a6, t2) * boostz;
+                    zvel[nSprite] += t3 * boostz;
                 }
                 if (pVectorData->burnTime)
                 {
@@ -7449,9 +7452,12 @@ void actFireVector(spritetype *pShooter, int a2, int a3, int a4, int a5, int a6,
                 if (t > 0 && pVectorData->impulse)
                 {
                     int t2 = divscale8(pVectorData->impulse, t);
+                    int t3 = mulscale16(a6, t2);
+                    if (EnemiesNotBlood() && !VanillaMode()) // clamp downward impulse damage to stop players from cheesing bosses
+                        t3 = ClipHigh(t3, 32767);
                     xvel[nSprite] += mulscale16(a4, t2) * boost * invertVal;
                     yvel[nSprite] += mulscale16(a5, t2) * boost * invertVal;
-                    zvel[nSprite] += mulscale16(a6, t2) * boostz * invertVal;
+                    zvel[nSprite] += t3 * boostz * invertVal;
                 }
                 if (pVectorData->burnTime)
                 {
