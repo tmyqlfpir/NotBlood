@@ -98,14 +98,24 @@ static void playStatueBreakSnd(spritetype* pSprite, XSPRITE* pXSprite) {
     aiPlay3DSound(pSprite, 313, AI_SFX_PRIORITY_1, -1);
 }
 
-inline void SlashFSeqCallbackFixed(spritetype *pSprite, int dx, int dy, int dz)
+inline void SlashFSeqCallbackFixed(spritetype *pSprite, XSPRITE *pXSprite, spritetype *pTarget)
 {
+    int tx = pXSprite->targetX-pSprite->x;
+    int ty = pXSprite->targetY-pSprite->y;
+    int nAngle = getangle(tx, ty);
+    int dx = Cos(nAngle)>>16;
+    int dy = Sin(nAngle)>>16;
+    int dz = pTarget->z-pSprite->z;
     const int bakVecDist = gVectorData[kVectorGargSlash].maxDist;
     if (pSprite->type == kDudeGargoyleStone) // only increase slash distance by 150% for Cheogh
         gVectorData[kVectorGargSlash].maxDist += gVectorData[kVectorGargSlash].maxDist>>1;
     actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorGargSlash);
-    actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorGargSlash);
-    actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorGargSlash);
+    int r1 = Random(50);
+    int r2 = Random(50);
+    actFireVector(pSprite, 0, 0, dx+r2, dy-r1, dz, kVectorGargSlash);
+    r1 = Random(50);
+    r2 = Random(50);
+    actFireVector(pSprite, 0, 0, dx-r2, dy+r1, dz, kVectorGargSlash);
     gVectorData[kVectorGargSlash].maxDist = bakVecDist;
 }
 
@@ -123,7 +133,7 @@ static void SlashFSeqCallback(int, int nXSprite)
     int dx = Cos(pSprite->ang)>>16;
     int dy = Sin(pSprite->ang)>>16;
     if ((gGameOptions.nDifficulty > 1) && EnemiesNotBlood() && !VanillaMode()) // use fixed calculation and increase vector distance
-        return SlashFSeqCallbackFixed(pSprite, dx, dy, pTarget->z-pSprite->z);
+        return SlashFSeqCallbackFixed(pSprite, pXSprite, pTarget);
     actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorGargSlash);
     int r1 = Random(50);
     int r2 = Random(50);
@@ -573,10 +583,8 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         {
                             if (nDist < 0x680)
                                 aiNewState(pSprite, pXSprite, &gargoyleFSlash);
-                            else if (nDist < 0x1400)
+                            else if (nDist < 0x1000)
                                 aiNewState(pSprite, pXSprite, &gargoyleSwoop);
-                            else if ((nDist < 0x2000) && Chance(0x1800*(gGameOptions.nDifficulty+1)))
-                                aiNewState(pSprite, pXSprite, &gargoyleSBlast), sfxPlay3DSound(pSprite, 1457, 0, 0);
                         }
                         aiPlay3DSound(pSprite, 1450, AI_SFX_PRIORITY_1, -1);
                     }
