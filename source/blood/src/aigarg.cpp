@@ -393,7 +393,7 @@ static void MoveDodgeDown(spritetype *pSprite, XSPRITE *pXSprite)
 
 inline int thinkChaseGetTargetHeight(spritetype *pSprite, DUDEINFO *pDudeInfo, spritetype *pTarget)
 {
-    if (EnemiesNotBlood() && !VanillaMode())
+    if (VanillaMode() || !EnemiesNotBlood())
         return 0;
     DUDEINFO *pDudeInfoT = getDudeInfo(pTarget->type);
     int height = (pSprite->yrepeat*pDudeInfo->eyeHeight)<<2;
