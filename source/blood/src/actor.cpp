@@ -4901,6 +4901,12 @@ void MoveDude(spritetype *pSprite)
                     case kDudeBoneEel:
                         actKillDude(pSprite->index, pSprite, kDamageFall, 1000<<4);
                         break;
+                    case kDudeBeast:
+                        if (!EnemiesNotBlood() || VanillaMode())
+                            break;
+                        aiNewState(pSprite, pXSprite, &beastGoto);
+                        pSprite->flags |= 6;
+                        break;
                 }
 
                 #ifdef NOONE_EXTENSIONS
@@ -4993,6 +4999,14 @@ void MoveDude(spritetype *pSprite)
                 case kDudeRat:
                 case kDudeBurningInnocent:
                     actKillDude(pSprite->index, pSprite, kDamageFall, 1000 << 4);
+                    break;
+                case kDudeBeast:
+                    if (!EnemiesNotBlood() || VanillaMode())
+                        break;
+                    pXSprite->burnTime = 0;
+                    sfxPlay3DSound(pSprite, 720, -1, 0);
+                    aiNewState(pSprite, pXSprite, &beastSwimGoto);
+                    pSprite->flags &= ~6;
                     break;
                 }
 
