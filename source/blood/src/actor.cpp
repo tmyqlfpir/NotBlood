@@ -2641,7 +2641,7 @@ void actInit(bool bSaveLoad) {
                     seqSpawn(seqStartId, 3, pSprite->extra);
             }
         }
-        aiInit();
+        aiInit(bSaveLoad);
     }
 }
 
