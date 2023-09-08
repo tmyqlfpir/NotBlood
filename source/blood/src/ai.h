@@ -92,7 +92,7 @@ int aiDamageSprite(spritetype *pSprite, XSPRITE *pXSprite, int nSource, DAMAGE_T
 void aiThinkTarget(spritetype *pSprite, XSPRITE *pXSprite);
 void aiLookForTarget(spritetype *pSprite, XSPRITE *pXSprite);
 void aiProcessDudes(void);
-void aiInit(void);
+void aiInit(bool bSaveLoad);
 void aiInitSprite(spritetype *pSprite);
 bool CanMove(spritetype* pSprite, int a2, int nAngle, int nRange);
 void RecoilDude(spritetype* pSprite, XSPRITE* pXSprite);
