@@ -112,7 +112,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Fix bloated butchers cleavers hitting prone players
    - Turn enemy around if stuck running into a corner for a few seconds
    - Limit impulse damage when shooting enemies downward at point-blank
-   - Cheogh behavior has been improved to hit prone players
+   - Cheogh blasting/attacking can now hit prone players (only for well done and above difficulties)
 * Random cultist TNT
    - This will make cultists use a variety of random thrown sprites such as:
    - Napalm balls, proxy bundles, armed spray cans or pod projectiles
@@ -287,8 +287,6 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable wall/floor aligned transparent voxels
 * skill
    - Changes the skill handicap for multiplayer (default: 2, range: 0-4)
-* team
-   - Set preferred team in multiplayer (0: none, 1: blue, 2: red)
 * snd_earangle
    - Set the listening ear offset (15-90 degrees)
 * snd_ding
@@ -305,3 +303,5 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable lowering sound volume by 50% for occluded sound sources
 * snd_underwaterpitch
    - Enable/disable lowering sound pitch by 7% while underwater
+* team
+   - Set preferred team in multiplayer (0: none, 1: blue, 2: red)

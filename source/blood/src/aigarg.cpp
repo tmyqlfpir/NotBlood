@@ -132,7 +132,7 @@ static void SlashFSeqCallback(int, int nXSprite)
     int dz = height-height2;
     int dx = Cos(pSprite->ang)>>16;
     int dy = Sin(pSprite->ang)>>16;
-    if ((gGameOptions.nDifficulty > 1) && EnemiesNotBlood() && !VanillaMode()) // use fixed calculation and increase vector distance
+    if ((gGameOptions.nDifficulty >= 2) && EnemiesNotBlood() && !VanillaMode()) // use fixed calculation and increase vector distance
         return SlashFSeqCallbackFixed(pSprite, pXSprite, pTarget);
     actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorGargSlash);
     int r1 = Random(50);
@@ -200,7 +200,7 @@ static void BlastSSeqCallback(int, int nXSprite)
         GetSpriteExtents(pSprite2, &top, &bottom);
         if (tz-tsr > bottom || tz+tsr < top)
         {
-            if ((gGameOptions.nDifficulty > 1) && IsDudeSprite(pSprite2) && EnemiesNotBlood() && !VanillaMode()) // use fixed calculation for missile projectile
+            if ((gGameOptions.nDifficulty >= 2) && IsDudeSprite(pSprite2) && EnemiesNotBlood() && !VanillaMode()) // use fixed calculation for missile projectile
                 aim.dz = divscale10(pSprite2->z-pSprite->z, ClipHigh(nDist, 0x1800));
             continue;
         }
@@ -403,7 +403,7 @@ static void MoveDodgeDown(spritetype *pSprite, XSPRITE *pXSprite)
 
 inline int thinkChaseGetTargetHeight(spritetype *pSprite, DUDEINFO *pDudeInfo, spritetype *pTarget)
 {
-    if (VanillaMode() || !EnemiesNotBlood())
+    if ((gGameOptions.nDifficulty < 2) || VanillaMode() || !EnemiesNotBlood())
         return 0;
     DUDEINFO *pDudeInfoT = getDudeInfo(pTarget->type);
     int height = (pSprite->yrepeat*pDudeInfo->eyeHeight)<<2;
@@ -578,16 +578,7 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         aiNewState(pSprite, pXSprite, &gargoyleSwoop);
                     }
                     else if ((height2-height < 0x2000 || floorZ-bottom < 0x2000) && klabs(nDeltaAngle) < 85)
-                    {
-                        if ((height-height2 < 0x800) && EnemiesNotBlood() && !VanillaMode()) // swoop/attack within range
-                        {
-                            if (nDist < 0x680)
-                                aiNewState(pSprite, pXSprite, &gargoyleFSlash);
-                            else if (nDist < 0x1000)
-                                aiNewState(pSprite, pXSprite, &gargoyleSwoop);
-                        }
                         aiPlay3DSound(pSprite, 1450, AI_SFX_PRIORITY_1, -1);
-                    }
                     break;
                 }
             }
