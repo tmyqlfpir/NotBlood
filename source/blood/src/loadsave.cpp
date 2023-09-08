@@ -523,7 +523,7 @@ void LoadSavedInfo(void)
             kclose(hFile);
             continue;
         }
-        nSlot = ((pIterator->name[nSlot-nNameMin] - '0') * 10) + (pIterator->name[nSlot-(nNameMin+1)] - '0');
+        nSlot = Batoi(&pIterator->name[nSlot-nNameMin]);
         if (nSlot > kLoadSaveSlot10) // slot id too big, skip
         {
             kclose(hFile);
@@ -572,8 +572,8 @@ void LoadAutosavedInfo(void)
             kclose(hFile);
             continue;
         }
-        nSlot = kLoadSaveSlotAutosave + (pIterator->name[nSlot-nNameMin] - '0');
-        if (nSlot > kLoadSaveSlotKey) // slot id too big, skip
+        nSlot = kLoadSaveSlotAutosave + Batoi(&pIterator->name[nSlot-nNameMin]);
+        if (nSlot < kLoadSaveSlotAutosave || nSlot > kLoadSaveSlotKey) // slot id too small/big, skip
         {
             kclose(hFile);
             continue;

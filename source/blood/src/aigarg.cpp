@@ -98,6 +98,17 @@ static void playStatueBreakSnd(spritetype* pSprite, XSPRITE* pXSprite) {
     aiPlay3DSound(pSprite, 313, AI_SFX_PRIORITY_1, -1);
 }
 
+inline void SlashFSeqCallbackFixed(spritetype *pSprite, int dx, int dy, int dz)
+{
+    const int bakVecDist = gVectorData[kVectorGargSlash].maxDist;
+    if (pSprite->type == kDudeGargoyleStone) // only increase slash distance by 150% for Cheogh
+        gVectorData[kVectorGargSlash].maxDist += gVectorData[kVectorGargSlash].maxDist>>1;
+    actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorGargSlash);
+    actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorGargSlash);
+    actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorGargSlash);
+    gVectorData[kVectorGargSlash].maxDist = bakVecDist;
+}
+
 static void SlashFSeqCallback(int, int nXSprite)
 {
     XSPRITE *pXSprite = &xsprite[nXSprite];
@@ -111,6 +122,8 @@ static void SlashFSeqCallback(int, int nXSprite)
     int dz = height-height2;
     int dx = Cos(pSprite->ang)>>16;
     int dy = Sin(pSprite->ang)>>16;
+    if ((gGameOptions.nDifficulty > 1) && EnemiesNotBlood() && !VanillaMode()) // use fixed calculation and increase vector distance
+        return SlashFSeqCallbackFixed(pSprite, dx, dy, pTarget->z-pSprite->z);
     actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorGargSlash);
     int r1 = Random(50);
     int r2 = Random(50);
@@ -176,7 +189,11 @@ static void BlastSSeqCallback(int, int nXSprite)
         int top, bottom;
         GetSpriteExtents(pSprite2, &top, &bottom);
         if (tz-tsr > bottom || tz+tsr < top)
+        {
+            if ((gGameOptions.nDifficulty > 1) && IsDudeSprite(pSprite2) && EnemiesNotBlood() && !VanillaMode()) // use fixed calculation for missile projectile
+                aim.dz = divscale10(pSprite2->z-pSprite->z, ClipHigh(nDist, 0x1800));
             continue;
+        }
         int dx = (tx-x2)>>4;
         int dy = (ty-y2)>>4;
         int dz = (tz-z2)>>8;
@@ -374,6 +391,16 @@ static void MoveDodgeDown(spritetype *pSprite, XSPRITE *pXSprite)
     zvel[nSprite] = 0x44444;
 }
 
+inline int thinkChaseGetTargetHeight(spritetype *pSprite, DUDEINFO *pDudeInfo, spritetype *pTarget)
+{
+    if (EnemiesNotBlood() && !VanillaMode())
+        return 0;
+    DUDEINFO *pDudeInfoT = getDudeInfo(pTarget->type);
+    int height = (pSprite->yrepeat*pDudeInfo->eyeHeight)<<2;
+    int height2 = (pTarget->yrepeat*pDudeInfoT->eyeHeight)<<2;
+    return height-height2;
+}
+
 static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
 {
     if (pXSprite->target == -1)
@@ -426,7 +453,8 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                 case kDudeGargoyleFlesh:
                     if (nDist < 0x1800 && nDist > 0xc00 && klabs(nDeltaAngle) < 85)
                     {
-                        int hit = HitScan(pSprite, pSprite->z, dx, dy, 0, CLIPMASK1, 0);
+                        int dz = thinkChaseGetTargetHeight(pSprite, pDudeInfo, pTarget);
+                        int hit = HitScan(pSprite, pSprite->z, dx, dy, dz, CLIPMASK1, 0);
                         switch (hit)
                         {
                         case -1:
@@ -451,7 +479,8 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                     }
                     else if (nDist < 0x400 && klabs(nDeltaAngle) < 85)
                     {
-                        int hit = HitScan(pSprite, pSprite->z, dx, dy, 0, CLIPMASK1, 0);
+                        int dz = thinkChaseGetTargetHeight(pSprite, pDudeInfo, pTarget);
+                        int hit = HitScan(pSprite, pSprite->z, dx, dy, dz, CLIPMASK1, 0);
                         switch (hit)
                         {
                         case -1:
@@ -485,7 +514,8 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                 case kDudeGargoyleStone:
                     if (nDist < 0x1800 && nDist > 0xc00 && klabs(nDeltaAngle) < 85)
                     {
-                        int hit = HitScan(pSprite, pSprite->z, dx, dy, 0, CLIPMASK1, 0);
+                        int dz = thinkChaseGetTargetHeight(pSprite, pDudeInfo, pTarget);
+                        int hit = HitScan(pSprite, pSprite->z, dx, dy, dz, CLIPMASK1, 0);
                         switch (hit)
                         {
                         case -1:
@@ -510,7 +540,8 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                     }
                     else if (nDist < 0x400 && klabs(nDeltaAngle) < 85)
                     {
-                        int hit = HitScan(pSprite, pSprite->z, dx, dy, 0, CLIPMASK1, 0);
+                        int dz = thinkChaseGetTargetHeight(pSprite, pDudeInfo, pTarget);
+                        int hit = HitScan(pSprite, pSprite->z, dx, dy, dz, CLIPMASK1, 0);
                         switch (hit)
                         {
                         case -1:
@@ -537,7 +568,18 @@ static void thinkChase(spritetype *pSprite, XSPRITE *pXSprite)
                         aiNewState(pSprite, pXSprite, &gargoyleSwoop);
                     }
                     else if ((height2-height < 0x2000 || floorZ-bottom < 0x2000) && klabs(nDeltaAngle) < 85)
+                    {
+                        if ((height-height2 < 0x800) && EnemiesNotBlood() && !VanillaMode()) // swoop/attack within range
+                        {
+                            if (nDist < 0x680)
+                                aiNewState(pSprite, pXSprite, &gargoyleFSlash);
+                            else if (nDist < 0x1400)
+                                aiNewState(pSprite, pXSprite, &gargoyleSwoop);
+                            else if ((nDist < 0x2000) && Chance(0x1800*(gGameOptions.nDifficulty+1)))
+                                aiNewState(pSprite, pXSprite, &gargoyleSBlast), sfxPlay3DSound(pSprite, 1457, 0, 0);
+                        }
                         aiPlay3DSound(pSprite, 1450, AI_SFX_PRIORITY_1, -1);
+                    }
                     break;
                 }
             }
