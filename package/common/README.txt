@@ -112,6 +112,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Fix bloated butchers cleavers hitting prone players
    - Turn enemy around if stuck running into a corner for a few seconds
    - Limit impulse damage when shooting enemies downward at point-blank
+   - Cheogh blasting/attacking can now hit prone players (only for well done and above difficulties)
 * Random cultist TNT
    - This will make cultists use a variety of random thrown sprites such as:
    - Napalm balls, proxy bundles, armed spray cans or pod projectiles
