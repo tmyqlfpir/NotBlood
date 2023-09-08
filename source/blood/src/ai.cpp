@@ -1458,15 +1458,13 @@ void aiProcessDudes(void)
     memset(cumulDamage, 0, sizeof(cumulDamage));
 }
 
-void aiInit(bool bSaveLoad) {
-    if (!bSaveLoad) { // reset these on new level
-        memset(cumulDamage, 0, sizeof(cumulDamage));
-        memset(gDudeSlope, 0, sizeof(gDudeSlope));
-        memset((void *)&gDudeExtra, 0, sizeof(gDudeExtra));
-        memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
-        memset((void *)&gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
-        memset(gSpritePrevSect, -1, sizeof(gSpritePrevSect));
-    }
+void aiInit(void) {
+    memset(cumulDamage, 0, sizeof(cumulDamage));
+    memset(gDudeSlope, 0, sizeof(gDudeSlope));
+    memset((void *)&gDudeExtra, 0, sizeof(gDudeExtra));
+    memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
+    memset((void *)&gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
+    memset(gSpritePrevSect, -1, sizeof(gSpritePrevSect));
     for (int nSprite = headspritestat[kStatDude]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
         aiInitSprite(&sprite[nSprite]);
     }
