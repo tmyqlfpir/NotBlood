@@ -1436,8 +1436,8 @@ void PrintHelp(void)
         "-mh [file.def]\tInclude an additional definitions module\n"
         "-noautoload\tDisable loading from autoload directory\n"
         "-nodemo\t\tNo Demos\n"
-        "-nodudes\t\tNo monsters\n"
-        "-playback\t\tPlay back a demo\n"
+        "-nodudes\tNo monsters\n"
+        "-playback\tPlay back a demo\n"
         "-pname\t\tOverride player name setting from config file\n"
         "-record\t\tRecord demo\n"
         "-validate\t\tRun DOS 1.21 compatibility unit test\n"
@@ -1446,22 +1446,29 @@ void PrintHelp(void)
 #ifdef STARTUP_SETUP_WINDOW
         "-setup/nosetup\tEnable or disable startup window\n"
 #endif
-        "-skill [0-4]\t\tSet player handicap; Range:0..4; Default:2; (NOT difficulty level.)\n"
+        "-skill [0-4]\tSet player handicap; Range:0..4; Default:2; (NOT difficulty level.)\n"
         "-snd\t\tSpecify an RFF Sound file name\n"
         "-usecwd\t\tRead data and configuration from current directory\n"
+        ;
+    static char const s_extras[] = "Usage: " APPBASENAME " [files] [options]\n"
+        "Example: " APPBASENAME " -usecwd -cfg myconfig.cfg -map nukeland.map\n\n"
+        "Files can be of type [grp|zip|map|def]\n"
+        "\n"
         "-mp_mode [0-2]\tSet game mode for multiplayer (0: co-op, 1: bloodbath, 2: teams)\n"
         "-mp_level [E M]\tSet level for multiplayer (e.g: 1 3)\n"
         "-mp_diff [0-4]\tSet difficulty for multiplayer (0-4)\n"
         "-mp_dudes [0-2]\tSet monster settings for multiplayer (0: none, 1: spawn, 2: respawn)\n"
         "-mp_weapons [0-3]\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
         "-mp_items [0-2]\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
-        "-mp_map [file.map]\tSet user map path for multiplayer\n"
-        ;
+        "-mp_map [map]\tSet user map path for multiplayer (e.g: filename.map)\n"
+		;
 #ifdef WM_MSGBOX_WINDOW
     Bsnprintf(tempbuf, sizeof(tempbuf), APPNAME " %s", s_buildRev);
     wm_msgbox(tempbuf, s);
+    wm_msgbox(tempbuf, s_extras);
 #else
     LOG_F(INFO, "%s", s);
+    LOG_F(INFO, "%s", s_extras);
 #endif
 #if 0
     puts("Blood Command-line Options:");
