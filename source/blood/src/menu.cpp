@@ -1490,6 +1490,8 @@ void SetupNetStartMenu(void)
     itemNetStart7.SetTextIndex(gMultiItems != -1 ? gMultiItems : 1);
 
     itemNetGameMode.SetTextIndex(gMultiModeInit != -1 ? gMultiModeInit : 1);
+    itemNetGameCycleLength.SetTextIndex(gMultiLength != -1 ? gMultiLength : 0);
+    itemNetGameCycleLimit.SetTextIndex(gMultiLimit != -1 ? gMultiLimit : 0);
     itemNetGameBoolAutoTeams.at20 = !gPlayerTeamPreference;
     itemNetGameCycleSpawnProtection.SetTextIndex(1);
     SetNetGameMode(&itemNetGameMode); // hide friendly fire/keys menu items depending on game mode
