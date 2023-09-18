@@ -1709,8 +1709,8 @@ void ProcessInput(PLAYER *pPlayer)
         gViewLookRecenter = false;
         gViewLookAdjust = 0.f;
     }
-	else if (gPlayerRoundEnding) // if round has finished, halt all input until next round starts
-		pInput->forward = pInput->strafe = pInput->buttonFlags.byte = pInput->keyFlags.word = pInput->useFlags.byte = pInput->newWeapon = 0;
+    else if (gPlayerRoundEnding) // if round has finished, halt all input until next round starts
+        pInput->forward = pInput->strafe = pInput->buttonFlags.byte = pInput->keyFlags.word = pInput->useFlags.byte = pInput->newWeapon = 0;
 
     pPlayer->isRunning = gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2 ? pInput->syncFlags.run : 0; // v1.0x weapon swaying 
     if (pInput->buttonFlags.byte || pInput->forward || pInput->strafe || pInput->q16turn)
