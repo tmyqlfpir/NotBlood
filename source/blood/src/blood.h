@@ -73,6 +73,8 @@ extern int gDoQuickSave;
 extern int gMenuPicnum;
 
 extern int gMultiModeInit;
+extern int gMultiLength;
+extern int gMultiLimit;
 extern int gMultiEpisodeInit;
 extern int gMultiLevelInit;
 extern int gMultiDiffInit;
