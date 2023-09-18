@@ -965,20 +965,20 @@ void playerStart(int nPlayer, int bNewLevel)
                         continue;
                     if (!sectRangeIsFine(gPlayer[i].pSprite->sectnum)) // invalid sector, skip
                         continue;
-                    const bool activeEnemy = (gPlayer[i].pXSprite->health > 0) && !IsTargetTeammate(pPlayer, gPlayer[i].pSprite);
-                    if ((i == nPlayer) && !activeEnemy) // only check our current location or that of an alive/enemy player, otherwise skip
+                    const char bActiveEnemy = (gPlayer[i].pXSprite->health > 0) && !IsTargetTeammate(pPlayer, gPlayer[i].pSprite);
+                    if ((i != nPlayer) && !bActiveEnemy) // only check our current location or that of an alive/enemy player, otherwise skip
                         continue;
                     const int nDist = approxDist3D(pStartZone->x-gPlayer[i].pSprite->x, pStartZone->y-gPlayer[i].pSprite->y, pStartZone->z-gPlayer[i].pSprite->z);
-                    if (nDist < 32*5) // if within 5 meters of each other
+                    if (nDist < 32*10) // if within 10 meters of each other
                     {
                         bSpawnTooClose = true;
                         break;
                     }
-                    const vec3_t startpos = {pStartZone->x, pStartZone->y, getflorzofslope(pStartZone->sectnum, pStartZone->x, pStartZone->y) - (32<<8)}; // get start/enemy position (and offset by 1 meter from floor)
-                    const vec3_t enemypos = {gPlayer[i].pSprite->x, gPlayer[i].pSprite->y, gPlayer[i].pSprite->z - (32<<8)};
+                    const vec3_t startpos = {pStartZone->x, pStartZone->y, pStartZone->z}; // get start/enemy position (and offset by 1 meter from floor)
+                    const vec3_t enemypos = {gPlayer[i].pSprite->x, gPlayer[i].pSprite->y, gPlayer[i].zView};
                     if (cansee(startpos.x, startpos.y, startpos.z, pStartZone->sectnum, enemypos.x, enemypos.y, enemypos.z, gPlayer[i].pSprite->sectnum)) // this spawn is in viewable range of another player/self, stop checking rest of players
                     {
-                        if (nDist < 32*12) // if within 12 meters of each other
+                        if (nDist < 32*20) // if within 20 meters of each other
                         {
                             bSpawnTooClose = true;
                             break;
