@@ -1877,7 +1877,7 @@ void viewDrawCtfHud(ClockTicks arg)
 
 void viewDrawKillMsg(ClockTicks arg)
 {
-    if ((gViewSize == 0) || (gKillMsg == 0))
+    if (gKillMsg == 0)
         return;
 
     const char bShowKillerMsg = (gPlayerKillMsgTicks > 0) && (gPlayerLastVictim >= 0) && (gPlayerLastVictim < kMaxPlayers);
@@ -1908,7 +1908,7 @@ void viewDrawKillMsg(ClockTicks arg)
 
 void viewDrawMultiKill(ClockTicks arg)
 {
-    if ((gViewSize == 0) || (gMultiKill == 0))
+    if (gMultiKill == 0)
         return;
 
     int nY = 40;
