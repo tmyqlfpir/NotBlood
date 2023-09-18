@@ -2534,7 +2534,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
 {
     dassert(nSource < kMaxSprites);
     dassert(pPlayer != NULL);
-    if (pPlayer->damageControl[nDamageType])
+    if (pPlayer->damageControl[nDamageType] || gPlayerRoundEnding) // don't harm player while round is ending
         return 0;
     if (gGameOptions.bDamageInvul && !VanillaMode()) // if invul timer option is active
     {
