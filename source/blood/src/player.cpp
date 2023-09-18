@@ -1709,6 +1709,8 @@ void ProcessInput(PLAYER *pPlayer)
         gViewLookRecenter = false;
         gViewLookAdjust = 0.f;
     }
+	else if (gPlayerRoundEnding) // if round has finished, halt all input until next round starts
+		pInput->forward = pInput->strafe = pInput->buttonFlags.byte = pInput->keyFlags.word = pInput->useFlags.byte = pInput->newWeapon = 0;
 
     pPlayer->isRunning = gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2 ? pInput->syncFlags.run : 0; // v1.0x weapon swaying 
     if (pInput->buttonFlags.byte || pInput->forward || pInput->strafe || pInput->q16turn)
@@ -2457,7 +2459,7 @@ void playerProcessRoundCheck(void)
             nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(nWinner) : 0;
         }
         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
-        evPost(kLevelExitNormal, 3, kTicRate * 5, kCallbackEndLevel); // trigger level end in five seconds
+        evPost(kLevelExitNormal, 3, kTicRate * 6, kCallbackEndLevel); // trigger level end in 6 seconds
         gPlayerRoundEnding = 1;
     }
 }
@@ -2532,7 +2534,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
 {
     dassert(nSource < kMaxSprites);
     dassert(pPlayer != NULL);
-    if (pPlayer->damageControl[nDamageType])
+    if (pPlayer->damageControl[nDamageType] || gPlayerRoundEnding) // don't harm player while round is ending
         return 0;
     if (gGameOptions.bDamageInvul && !VanillaMode()) // if invul timer option is active
     {
