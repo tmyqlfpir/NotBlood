@@ -2458,6 +2458,7 @@ void playerProcessRoundCheck(void)
             sprintf(buffer, "\r%s\r is the winner", nWinner ? "Red Team" : "Blue Team");
             nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(nWinner) : 0;
         }
+        viewDrawWinner(buffer, nPal);
         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
         evPost(kLevelExitNormal, 3, kTicRate * 4, kCallbackEndLevel); // trigger level end in 4 seconds
         gPlayerRoundEnding = 1;

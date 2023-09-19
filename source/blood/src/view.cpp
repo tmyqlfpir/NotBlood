@@ -2005,6 +2005,62 @@ void viewDrawMultiKill(ClockTicks arg)
     }
 }
 
+void viewDrawWinner(const char *pString, int nPal)
+{
+    static char buffer[kMaxMessageTextLength] = "";
+    static COLORSTR colorStr = {0, 0, {0, 0}, {0, 0}}; // set info for coloring sub-strings within string
+
+    if (pString)
+    {
+        int nColorPart = 0;
+        int nColorOffsets[4] = {-1, -1, -1, -1}; // stores 4 points in string where color is to be set for player names/flags
+        strncpy(buffer, pString, kMaxMessageTextLength);
+        size_t nLength = strlen(buffer);
+
+        for (size_t i = 0; i < nLength; i++)
+        {
+            if (buffer[i] != '\r') // this is the start/stop flag used to detect color offsets
+                continue;
+            Bmemmove((void *)&buffer[i], (void *)&buffer[i + 1], nLength - i); // remove \r character from string
+            if (nColorPart < 4)
+            {
+                nColorOffsets[nColorPart] = i;
+                nColorPart++;
+            }
+        }
+
+        if (gColorMsg)
+        {
+            if ((nColorPart != 2) && (nColorPart != 4)) // something went very wrong, don't color message
+                nColorOffsets[0] = nColorOffsets[1] = nColorOffsets[2] = nColorOffsets[3] = -1;
+
+            colorStr = {nPal, 0, {nColorOffsets[0], nColorOffsets[1]}, {nColorOffsets[2], nColorOffsets[3]}}; // set info for coloring sub-strings within string
+        }
+        else // no colors
+        {
+            Bmemset((void *)&colorStr, 0, sizeof(colorStr));
+        }
+    }
+
+    if (!gPlayerRoundEnding)
+        return;
+
+    if ((int)totalclock & 16) // flash multi kill message
+        return;
+
+    int nY = 40;
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer) // offset for multiplayer stats bar
+    {
+        for (int nRows = (gNetPlayers - 1) / 4; nRows >= 0; nRows--)
+        {
+            nY += 5;
+        }
+    }
+
+    viewDrawText(0, buffer, 160, nY, -128, 0, 1, 1, 0, 0, &colorStr);
+    return;
+}
+
 void UpdateStatusBar(ClockTicks arg)
 {
     PLAYER *pPlayer = gView;
@@ -2265,7 +2321,10 @@ void UpdateStatusBar(ClockTicks arg)
     if (gGameOptions.nGameType >= kGameTypeBloodBath)
     {
         viewDrawKillMsg(arg);
-        viewDrawMultiKill(arg);
+        if (gPlayerRoundEnding) // let winner message override multikill message
+            viewDrawWinner();
+        else
+            viewDrawMultiKill(arg);
     }
 
     if (gGameOptions.nGameType == kGameTypeTeams)

@@ -148,6 +148,7 @@ void DrawStatNumber(const char *pFormat, int nNumber, int nTile, int x, int y, i
 void TileHGauge(int nTile, int x, int y, int nMult, int nDiv, int nStat = 0, int nScale = 65536);
 void viewDrawPack(PLAYER *pPlayer, int x, int y);
 void DrawPackItemInStatusBar(PLAYER *pPlayer, int x, int y, int x2, int y2, int nStat = 0);
+void viewDrawWinner(const char *pString = NULL, int nPal = 0);
 void UpdateStatusBar(ClockTicks arg);
 void viewInit(void);
 void viewUpdateHudRatio(void);
