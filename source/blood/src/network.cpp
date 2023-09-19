@@ -172,6 +172,7 @@ void netResetToSinglePlayer(void)
     UpdateNetworkMenus();
     gGameMenuMgr.Deactivate();
     gNetNotifyProfileUpdate = false;
+    gPlayerRoundEnding = 0;
 }
 
 void netSendPacket(int nDest, char *pBuffer, int nSize)
@@ -540,7 +541,7 @@ void netGetPackets(void)
             SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
             if (gPlayerRoundEnding)
             {
-                evKill(kLevelExitNormal, 3, kCallbackEndLevel);
+                evKill(kLevelExitNormal, 3, kCallbackEndRound);
                 gPlayerRoundEnding = 0;
             }
             break;
