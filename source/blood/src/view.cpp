@@ -367,8 +367,6 @@ void fakeProcessInput(PLAYER *pPlayer, GINPUT *pInput)
         gViewLookRecenter = false;
         gViewLookAdjust = 0.f;
     }
-    if (gPlayerRoundEnding) // if round has finished, halt all input until next round starts
-        pInput->forward = pInput->strafe = pInput->buttonFlags.byte = pInput->keyFlags.word = pInput->useFlags.byte = pInput->newWeapon = 0;
 
     predict.at70 = (gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || VanillaMode() ? pInput->syncFlags.run : 0; // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
     predict.at71 = pInput->buttonFlags.jump;
