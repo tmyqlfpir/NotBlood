@@ -147,6 +147,9 @@ kNetGameFlagHideWeaponsAlways   =  1 << 7,
 kNetGameFlagLimitBase           =  8, // this bit range stores our limit value (0-255)
 kNetGameFlagLimitMask           =  1 << 8|1 << 9|1 << 10|1 << 11|1 << 12|1 << 13|1 << 14|1 << 15,
 
+kNetGameFlagSpawnSmart          =  1 << 16,
+kNetGameFlagSpawnDist           =  1 << 17,
+
 };
 
 // MEDIUM /////////////////////////////////////////////////////

@@ -955,7 +955,7 @@ void playerStart(int nPlayer, int bNewLevel)
     #endif
     else {
         int zoneId = Random(kMaxPlayers);
-        if ((gGameOptions.nGameType >= kGameTypeBloodBath) && !VanillaMode()) { // search for a safe random spawn for bloodbath/teams mode
+        if ((gGameOptions.nGameType >= kGameTypeBloodBath) && (gGameOptions.uNetGameFlags&kNetGameFlagSpawnSmart)) { // search for a safe random spawn for bloodbath/teams mode
             const int nSearchList = zoneId;
             for (int nZone = 0; nZone < kMaxPlayers; nZone++) {
                 pStartZone = &gStartZone[nZoneRandList[nSearchList][nZone]];
@@ -989,6 +989,30 @@ void playerStart(int nPlayer, int bNewLevel)
                 {
                     zoneId = nZoneRandList[nSearchList][nZone];
                     break;
+                }
+            }
+        }
+        else if ((gGameOptions.nGameType >= kGameTypeBloodBath) && (gGameOptions.uNetGameFlags&kNetGameFlagSpawnDist)) { // get furthest spawn location
+            int nZoneDist[kMaxPlayers] = {0};
+            for (int nZone = 0; nZone < kMaxPlayers; nZone++) {
+                pStartZone = &gStartZone[nZone];
+                for (int i = connecthead; i >= 0; i = connectpoint2[i]) { // check every connected player
+                    if (!gPlayer[i].pSprite || !gPlayer[i].pXSprite) // invalid player, skip
+                        continue;
+                    if (!sectRangeIsFine(gPlayer[i].pSprite->sectnum)) // invalid sector, skip
+                        continue;
+                    const char bActiveEnemy = (gPlayer[i].pXSprite->health > 0) && !IsTargetTeammate(pPlayer, gPlayer[i].pSprite);
+                    if ((i != nPlayer) && !bActiveEnemy) // only check our current location or that of an alive/enemy player, otherwise skip
+                        continue;
+                    const int nDist = approxDist(pStartZone->x-gPlayer[i].pSprite->x, pStartZone->y-gPlayer[i].pSprite->y);
+                    if (nDist > nZoneDist[nZone])
+                        nZoneDist[nZone] = nDist;
+                }
+            }
+            for (int nZone = 0, nDist = 0; nZone < kMaxPlayers; nZone++) {
+                if (nDist < nZoneDist[nZone]) {
+                    nDist = nZoneDist[nZone];
+                    zoneId = nZone;
                 }
             }
         }
