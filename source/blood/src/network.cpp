@@ -27,11 +27,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "enet.h"
 #endif
 #include "compat.h"
+#include "callback.h"
+#include "chatpipe.h"
 #include "config.h"
 #include "controls.h"
+#include "eventq.h"
 #include "globals.h"
 #include "network.h"
-#include "chatpipe.h"
 #include "menu.h"
 #include "player.h"
 #include "seq.h"
@@ -536,6 +538,8 @@ void netGetPackets(void)
                 ThrowError("\nThese versions of Blood cannot play together.\n");
             gStartNewGame = 1;
             SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
+            if (gPlayerRoundEnding)
+                evKill(kLevelExitNormal, 3, kCallbackEndLevel);
             break;
         case 255:
             keystatus[1] = 1;
