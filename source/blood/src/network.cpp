@@ -539,7 +539,10 @@ void netGetPackets(void)
             gStartNewGame = 1;
             SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
             if (gPlayerRoundEnding)
+            {
                 evKill(kLevelExitNormal, 3, kCallbackEndLevel);
+                gPlayerRoundEnding = 0;
+            }
             break;
         case 255:
             keystatus[1] = 1;

@@ -827,6 +827,7 @@ void fxPodGreenBloodSpray(int nSprite) // 24
 void TriggerEndLevel(int bSecretExit) // kCallbackMax-1
 {
     levelEndLevel(bSecretExit ? kLevelExitSecret : kLevelExitNormal);
+    gPlayerRoundEnding = 0;
 }
 
 void(*gCallback[kCallbackMax])(int) =
