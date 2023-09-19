@@ -1467,7 +1467,7 @@ void PrintHelp(void)
         "-mp_weaps [0-3]\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
         "-mp_items [0-2]\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
         "-mp_map [map]\tSet user map path for multiplayer (e.g: filename.map)\n"
-		;
+        ;
 #ifdef WM_MSGBOX_WINDOW
     Bsnprintf(tempbuf, sizeof(tempbuf), APPNAME " %s", s_buildRev);
     wm_msgbox(tempbuf, s);
@@ -2326,8 +2326,8 @@ RESTART:
         }
         //if (byte_148e29 && gStartNewGame)
         //{
-        //	gStartNewGame = 0;
-        //	gQuitGame = 1;
+        //    gStartNewGame = 0;
+        //    gQuitGame = 1;
         //}
         if (gStartNewGame)
             StartLevel(&gGameOptions);
