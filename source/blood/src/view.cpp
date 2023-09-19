@@ -1919,14 +1919,13 @@ void viewDrawMultiKill(ClockTicks arg)
             nY += 5;
         }
     }
-    const int nPlayer = gMe->nPlayer;
-    const int nPalette = gColorMsg ? playerColorPalMultiKill(gMe->teamId) : 0;
-    const char bShowMultiKill = (gFrameClock - gMultiKillsTicks[nPlayer]) < (int)(kTicRate * 1.5); // show multi kill message for 1.5 seconds
+    const char bShowMultiKill = (gFrameClock - gMultiKillsTicks[gMe->nPlayer]) < (int)(kTicRate * 1.5); // show multi kill message for 1.5 seconds
     if (bShowMultiKill)
     {
+        const int nPalette = gColorMsg ? playerColorPalMultiKill(gMe->teamId) : 0;
         if ((int)totalclock & 16) // flash multi kill message
             return;
-        switch (gMultiKillsFrags[nPlayer])
+        switch (gMultiKillsFrags[gMe->nPlayer])
         {
             case 0:
             case 1:
@@ -1947,6 +1946,7 @@ void viewDrawMultiKill(ClockTicks arg)
     }
     else if ((gAnnounceKillingSpreeTicks > 0) && (gAnnounceKillingSpreePlayer < kMaxPlayers)) // announce player's kill streak
     {
+        const int nPalette = gColorMsg ? playerColorPalMultiKill(gPlayer[gAnnounceKillingSpreePlayer].teamId) : 0;
         char buffer[128] = "";
         switch (gMultiKillsFrags[gAnnounceKillingSpreePlayer])
         {
