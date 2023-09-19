@@ -2460,7 +2460,7 @@ void playerProcessRoundCheck(void)
         }
         viewDrawWinner(buffer, nPal);
         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
-        evPost(kLevelExitNormal, 3, kTicRate * 4, kCallbackEndLevel); // trigger level end in 4 seconds
+        evPost(kLevelExitNormal, 3, kTicRate * 4, kCallbackEndRound); // trigger level end in 4 seconds
         gPlayerRoundEnding = 1;
     }
 }
