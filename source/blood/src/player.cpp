@@ -2417,43 +2417,63 @@ void playerProcessRoundCheck(void)
             return;
     }
 
-    int nScore = INT_MIN, nWinner = 0;
-    if (gGameOptions.nGameType == kGameTypeBloodBath)
+    int nWinner = 0, nWinners = 0;
+    int nScore[kMaxPlayers], nScoreMax = INT_MIN;
+    for (int i = 0; i < kMaxPlayers; i++)
+        nScore[i] = INT_MIN;
+
+    if (gGameOptions.nGameType == kGameTypeBloodBath) // count scores and check for ties
     {
         for (int p = connecthead; p >= 0; p = connectpoint2[p])
         {
-            if (nScore < gPlayer[p].fragCount)
-                nScore = gPlayer[p].fragCount, nWinner = p;
+            nScore[p] = gPlayer[p].fragCount;
+            if (nScoreMax < nScore[p])
+                nScoreMax = nScore[p], nWinner = p;
+        }
+        for (int p = connecthead; p >= 0; p = connectpoint2[p])
+        {
+            if (nScoreMax == nScore[p])
+                nWinners++;
         }
     }
     else if (gGameOptions.nGameType == kGameTypeTeams)
     {
         for (int i = 0; i < 2; i++)
         {
-            if (nScore < gPlayerScores[i])
-                nScore = gPlayerScores[i], nWinner = i;
+            nScore[i] = gPlayerScores[i];
+            if (nScoreMax < nScore[i])
+                nScoreMax = nScore[i], nWinner = i;
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            if (nScoreMax == nScore[i])
+                nWinners++;
         }
     }
 
-    if ((gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) || (nScore >= gPlayerRoundLimit))
+    if ((gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags) && (nScoreMax < gPlayerRoundLimit))
+        return;
+
+    char buffer[80] = "Ending round...";
+    int nPal = 0;
+    if (nWinners > 1) // if there is more than one winner, count as tie
     {
-        char buffer[80] = "Ending round...";
-        int nPal = 0;
-        if (gGameOptions.nGameType == kGameTypeBloodBath)
-        {
-            sprintf(buffer, "\r%s\r is the winner", gProfile[nWinner].name);
-            nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(gPlayer[nWinner].teamId) : 0;
-        }
-        else if (gGameOptions.nGameType == kGameTypeTeams)
-        {
-            sprintf(buffer, "\r%s\r is the winner", nWinner ? "Red Team" : "Blue Team");
-            nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(nWinner) : 0;
-        }
-        viewDrawWinner(buffer, nPal);
-        viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
-        evPost(kLevelExitNormal, 3, kTicRate * 5, kCallbackEndRound); // trigger level end in 5 seconds
-        gPlayerRoundEnding = 1;
+        sprintf(buffer, "It's a tie of %d! Ending round...", nWinners);
     }
+    else if (gGameOptions.nGameType == kGameTypeBloodBath)
+    {
+        sprintf(buffer, "\r%s\r is the winner", gProfile[nWinner].name);
+        nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(gPlayer[nWinner].teamId) : 0;
+    }
+    else if (gGameOptions.nGameType == kGameTypeTeams)
+    {
+        sprintf(buffer, "\r%s\r is the winner", nWinner ? "Red Team" : "Blue Team");
+        nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(nWinner) : 0;
+    }
+    viewDrawWinner(buffer, nPal);
+    viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
+    evPost(kLevelExitNormal, 3, kTicRate * 5, kCallbackEndRound); // trigger level end in 5 seconds
+    gPlayerRoundEnding = 1;
 }
 
 int playerDamageArmor(PLAYER *pPlayer, DAMAGE_TYPE nType, int nDamage)
