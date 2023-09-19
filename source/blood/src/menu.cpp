@@ -2480,7 +2480,7 @@ void SetMessages(CGameMenuItemZBool *pItem)
 
 void SetMouseSensitivity(CGameMenuItemSliderFloat *pItem)
 {
-	CONTROL_MouseSensitivity = pItem->fValue;
+    CONTROL_MouseSensitivity = pItem->fValue;
 }
 
 void SetMouseAimFlipped(CGameMenuItemZBool *pItem)
