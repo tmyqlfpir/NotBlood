@@ -2396,19 +2396,12 @@ void FragPlayer(PLAYER *pPlayer, int nSprite)
 void playerInitRoundCheck(void)
 {
     gPlayerRoundLimit = gPlayerRoundEnding = 0;
-    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit5)
-        gPlayerRoundLimit += 5;
-    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit10)
-        gPlayerRoundLimit += 10;
-    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit20)
-        gPlayerRoundLimit += 20;
-    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit50)
-        gPlayerRoundLimit += 50;
-    if (gGameOptions.uNetGameFlags&kNetGameFlagLimit100)
-        gPlayerRoundLimit += 100;
-
-    if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) // convert to minutes
-        gPlayerRoundLimit *= kTicsPerSec*60;
+    if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMask)
+    {
+        gPlayerRoundLimit = (gGameOptions.uNetGameFlags&kNetGameFlagLimitMask)>>kNetGameFlagLimitBase;
+        if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) // convert to minutes
+            gPlayerRoundLimit *= kTicsPerSec*60;
+    }
 }
 
 void playerProcessRoundCheck(void)

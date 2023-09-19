@@ -141,11 +141,10 @@ kNetGameFlagSkillIssue          =  1 << 2,
 kNetGameFlagNoTeamColors        =  1 << 3,
 kNetGameFlagLimitMinutes        =  1 << 4,
 kNetGameFlagLimitFrags          =  1 << 5,
-kNetGameFlagLimit5              =  1 << 6,
-kNetGameFlagLimit10             =  1 << 7,
-kNetGameFlagLimit20             =  1 << 8,
-kNetGameFlagLimit50             =  1 << 9,
-kNetGameFlagLimit100            = 1 << 10,
+
+kNetGameFlagLimitBase           =  8, // this bit range stores our limit value (0-255)
+kNetGameFlagLimitMask           =  1 << 8|1 << 9|1 << 10|1 << 11|1 << 12|1 << 13|1 << 14|1 << 15,
+
 };
 
 // MEDIUM /////////////////////////////////////////////////////

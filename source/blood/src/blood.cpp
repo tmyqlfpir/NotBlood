@@ -1460,7 +1460,7 @@ void PrintHelp(void)
         "\n"
         "-mp_mode [0-2]\tSet game mode for multiplayer (0: co-op, 1: bloodbath, 2: teams)\n"
         "-mp_length [0-2]\tSet score/time length for multiplayer (0: unlimited, 1: minutes, 2: frags)\n"
-        "-mp_limit [0-10]\tSet limit setting for multiplayer (0: 5, 1: 10, 2: 20, 3: 25, 4: 30, 5: 50, 6: 60, 7: 75, 8: 100, 9: 125, 10: 150)\n"
+        "-mp_limit [1-255]\tSet limit setting for multiplayer\n"
         "-mp_level [E M]\tSet level for multiplayer (e.g: 1 3)\n"
         "-mp_diff [0-4]\tSet difficulty for multiplayer (0-4)\n"
         "-mp_dudes [0-2]\tSet monster settings for multiplayer (0: none, 1: spawn, 2: respawn)\n"
@@ -1769,7 +1769,7 @@ void ParseOptions(void)
         case 47: // mp_limit
             if (OptArgc < 1)
                 ThrowError("Missing argument");
-            gMultiLimit = ClipRange(atoi(OptArgv[0]), 0, 10);
+            gMultiLimit = ClipRange(atoi(OptArgv[0]), 1, 255);
             break;
         case 48: // mp_level
             if (OptArgc < 2)
