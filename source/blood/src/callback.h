@@ -52,7 +52,7 @@ enum CALLBACK_ID {
     kCallbackMissileSpriteBlock = 23,
     kCallbackFxPodGreenBloodSpray = 24,
     #endif
-    kCallbackEndLevel,
+    kCallbackEndRound,
     kCallbackMax,
 };
 
