@@ -228,9 +228,9 @@ const char *zSpawnWeaponStrings[] =
 
 const char *zRespawnStrings[] =
 {
-    "At Random Locations",
-    "Close to Weapons",
-    "Away from Enemies",
+    "Random",
+    "Smart Random",
+    "Furthest From Enemies",
 };
 
 const char *zLengthStrings[] =
@@ -488,14 +488,15 @@ CGameMenuItemTitle itemNetGameTitle("GAME SETTINGS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetGameMode("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zNetGameTypes, ARRAY_SSIZE(zNetGameTypes), 0);
 CGameMenuItemZCycle itemNetGameCycleLength("LENGTH:", 3, 66, 45, 180, 0, SetNetGameMode, zLengthStrings, ARRAY_SSIZE(zLengthStrings), 0);
 CGameMenuItemSlider itemNetGameSliderLimit("LIMIT:", 3, 66, 55, 180, 1, 1, 255, 1, NULL, -1, -1, kMenuSliderValue);
-CGameMenuItemZBool itemNetGameBoolExit("LEVEL EXIT:", 3, 66, 75, 180, true, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetGameBoolTeleFrag("TELEFRAGS:", 3, 66, 85, 180, true, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetGameBoolSkillOverride("PLAYER HANDICAP:", 3, 66, 95, 180, true, NULL, "ALLOWED", "OFF");
-CGameMenuItemZBool itemNetGameBoolFriendlyFire("FRIENDLY FIRE:", 3, 66, 105, 180, true, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetGameCycleKey("KEYS SETTING:", 3, 66, 115, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemZCycle itemNetGameCycleItemWeapon("ITEM/WEAPON SETTING:", 3, 66, 125, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
-CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 115, 180, true, 0, NULL, NULL);
-CGameMenuItemZBool itemNetGameBoolTeamColors("TEAM COLORS:", 3, 66, 125, 180, true, 0, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolExit("LEVEL EXIT:", 3, 66, 65, 180, true, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolTeleFrag("TELEFRAGS:", 3, 66, 75, 180, true, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolSkillOverride("PLAYER HANDICAP:", 3, 66, 85, 180, true, NULL, "ALLOWED", "OFF");
+CGameMenuItemZBool itemNetGameBoolFriendlyFire("FRIENDLY FIRE:", 3, 66, 95, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetGameCycleKey("KEYS SETTING:", 3, 66, 105, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleItemWeapon("ITEM/WEAPON SETTING:", 3, 66, 115, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
+CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 105, 180, true, 0, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolTeamColors("TEAM COLORS:", 3, 66, 115, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetGameCycleSpawnLocation("SPAWN AREA:", 3, 66, 125, 180, 0, 0, zRespawnStrings, ARRAY_SSIZE(zRespawnStrings), 0);
 CGameMenuItemZCycle itemNetGameCycleShowWeaponsOverride("SHOW WEAPONS:", 3, 66, 135, 180, 0, 0, zShowWeapon, ARRAY_SSIZE(zShowWeapon), 0);
 CGameMenuItemZCycle itemNetGameCycleSpawnProtection("SPAWN PROTECTION:", 3, 66, 145, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
 CGameMenuItemZCycle itemNetGameCycleSpawnWeapon("SPAWN WITH WEAPON:", 3, 66, 155, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
@@ -1411,6 +1412,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameMode.Add(&itemNetGameCycleItemWeapon, false);
     menuNetworkGameMode.Add(&itemNetGameBoolAutoTeams, false);
     menuNetworkGameMode.Add(&itemNetGameBoolTeamColors, false);
+    menuNetworkGameMode.Add(&itemNetGameCycleSpawnLocation, false);
     menuNetworkGameMode.Add(&itemNetGameCycleShowWeaponsOverride, false);
     menuNetworkGameMode.Add(&itemNetGameCycleSpawnProtection, false);
     menuNetworkGameMode.Add(&itemNetGameCycleSpawnWeapon, false);
@@ -1421,6 +1423,7 @@ void SetupNetStartMenu(void)
     itemNetGameBoolSkillOverride.tooltip_pzTextLower = "(When off, use difficulty setting)";
     itemNetGameBoolAutoTeams.tooltip_pzTextUpper = "Automatically sort players into teams";
     itemNetGameBoolTeamColors.tooltip_pzTextUpper = "Highlight players with team colors";
+    itemNetGameCycleSpawnLocation.tooltip_pzTextUpper = "Set spawn location behavior";
     itemNetGameCycleShowWeaponsOverride.tooltip_pzTextUpper = "Set global setting for show weapons option";
     itemNetGameCycleShowWeaponsOverride.tooltip_pzTextLower = "(This is applied to all players in round)";
 
@@ -1489,6 +1492,7 @@ void SetupNetStartMenu(void)
     itemNetGameCycleLength.SetTextIndex(gMultiLength != -1 ? gMultiLength : 0);
     itemNetGameSliderLimit.nValue = gMultiLimit != -1 ? gMultiLimit : itemNetGameSliderLimit.nValue;
     itemNetGameBoolAutoTeams.at20 = !gPlayerTeamPreference;
+    itemNetGameCycleSpawnLocation.SetTextIndex(1);
     itemNetGameCycleShowWeaponsOverride.SetTextIndex(1);
     itemNetGameCycleSpawnProtection.SetTextIndex(1);
     SetNetGameMode(&itemNetGameMode); // hide friendly fire/keys menu items depending on game mode
@@ -3154,6 +3158,7 @@ void SetNetGameMode(CGameMenuItemZCycle *pItem)
         itemNetGameBoolAutoTeams.bNoDraw = !itemNetGameBoolAutoTeams.bEnable;
         itemNetGameBoolTeamColors.bEnable = (pItem->m_nFocus+1) == kGameTypeTeams;
         itemNetGameBoolTeamColors.bNoDraw = !itemNetGameBoolTeamColors.bEnable;
+        itemNetGameCycleSpawnLocation.bEnable = (pItem->m_nFocus+1) != kGameTypeCoop;
         return;
     }
 
@@ -4037,7 +4042,9 @@ void StartNetGame(CGameMenuItemChain *pItem)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagSkillIssue;
     if (!itemNetGameBoolTeamColors.at20)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagNoTeamColors;
-    if (itemNetGameCycleShowWeaponsOverride.m_nFocus)
+    if (itemNetGameCycleSpawnLocation.m_nFocus > 0)
+        gPacketStartGame.uNetGameFlags = itemNetGameCycleSpawnLocation.m_nFocus == 1 ? kNetGameFlagSpawnSmart : kNetGameFlagSpawnDist;
+    if (itemNetGameCycleShowWeaponsOverride.m_nFocus > 0)
         gPacketStartGame.uNetGameFlags |= itemNetGameCycleShowWeaponsOverride.m_nFocus == 1 ? kNetGameFlagHideWeaponsCloak : kNetGameFlagHideWeaponsAlways;
     gPacketStartGame.episodeId = itemNetStart2.m_nFocus;
     gPacketStartGame.levelId = itemNetStart3.m_nFocus;
