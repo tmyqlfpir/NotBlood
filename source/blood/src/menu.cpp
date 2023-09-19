@@ -233,21 +233,6 @@ const char *zLengthStrings[] =
     "Frags",
 };
 
-const char *zLimitStrings[] =
-{
-    "5",
-    "10",
-    "20",
-    "25",
-    "30",
-    "50",
-    "60",
-    "75",
-    "100",
-    "125",
-    "150",
-};
-
 const char *zDiffStrings[] =
 {
     "STILL KICKING",
