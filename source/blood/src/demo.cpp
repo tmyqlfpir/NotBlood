@@ -558,7 +558,6 @@ _DEMOPLAYBACK:
         {
             if (!v4)
             {
-                int nAutoAim = 1;
                 viewResizeView(gViewSize);
                 viewSetMessage("");
                 gNetPlayers = atf.nNetPlayers;
@@ -574,6 +573,14 @@ _DEMOPLAYBACK:
                 gGameOptions.uGameFlags &= ~kGameFlagContinuing; // don't let demo attempt to load player health from gHealthTemp
                 playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
                 for (int i = 0; i < kMaxPlayers; i++)
+                {
+                    gProfile[i].nAutoAim = 1;
+                    gProfile[i].nWeaponSwitch = 1;
+                    gProfile[i].bWeaponFastSwitch = 0;
+                    gProfile[i].nWeaponHBobbing = 1;
+                    gProfileNet[i] = gProfile[i];
+                }
+                for (int i = 0; i < kMaxPlayers; i++)
                     playerInit(i, 0);
                 StartLevel(&gGameOptions);
                 if (gDemoRunValidation) // if we're executing validation test
@@ -585,19 +592,11 @@ _DEMOPLAYBACK:
                         if (!pCurrentDemo || Bstrcasecmp(pCurrentDemo->zName, gDemoValidate[index].zName)) // demo name does not match, skip
                             continue;
                         pValidateInfo = &gDemoValidate[index]; // found demo's verified results, set as validate info
-                        nAutoAim = pValidateInfo->nAutoAim; // assign auto aim setting from validate info
+                        gProfile[myconnectindex].nAutoAim = pValidateInfo->nAutoAim; // assign auto aim setting from validate info
                         break;
                     }
                     if (!pValidateInfo) // run newly added verify demos at a slower speed for visual verification
                         timerInit(CLOCKTICKSPERSECOND*5);
-                }
-                for (int i = 0; i < kMaxPlayers; i++)
-                {
-                    gProfile[i].nAutoAim = nAutoAim;
-                    gProfile[i].nWeaponSwitch = 1;
-                    gProfile[i].bWeaponFastSwitch = 0;
-                    gProfile[i].nWeaponHBobbing = 1;
-                    gProfileNet[i] = gProfile[i];
                 }
             }
             ready2send = 0;
