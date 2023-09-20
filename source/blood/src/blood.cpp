@@ -824,7 +824,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         }
         else if ((gGameOptions.nGameType == kGameTypeTeams) && !VanillaMode()) // if ctf mode and went to next level, reset scores
             playerResetScores(i);
-        gProfileNet[i] = gProfile[i];
+        gProfile[i] = gProfileNet[i]; // gProfileNet should always be the latest profile from remote players
         playerStart(i, 1);
     }
     playerInitRoundCheck();
