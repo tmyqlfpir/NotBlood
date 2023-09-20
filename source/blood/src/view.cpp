@@ -2073,7 +2073,10 @@ void UpdateStatusBar(ClockTicks arg)
     if (gViewSize == 1)
     {
         DrawStatMaskedSprite(2169, 12-xscalehud, 195, 0, 0, 256, (int)(65536*0.56));
-        DrawStatNumber("%d", pXSprite->health>>4, kSBarNumberHealth, 28-xscalehud, 187, 0, 0, 256);
+        if (pXSprite->health >= (gHealthBlink ? 16<<4 : 16) || ((int)totalclock&16) || pXSprite->health == 0)
+        {
+            DrawStatNumber("%d", pXSprite->health>>4, kSBarNumberHealth, 28-xscalehud, 187, 0, 0, 256);
+        }
         if (pPlayer->armor[1])
         {
             DrawStatMaskedSprite(2578, 70-xscalehud, 186, 0, 0, 256, (int)(65536*0.5));
@@ -2136,7 +2139,7 @@ void UpdateStatusBar(ClockTicks arg)
             DrawStatSprite(30457, (37/2)+(34-xscalehud), 187, 16, nPalette, 256); // use key holder hud tile from notblood.pk3/TILES099.ART
         else
             DrawStatSprite(2201, 34-xscalehud, 187, 16, nPalette, 256);
-        if (pXSprite->health >= 16 || ((int)totalclock&16) || pXSprite->health == 0)
+        if (pXSprite->health >= (gHealthBlink ? 16<<4 : 16) || ((int)totalclock&16) || pXSprite->health == 0)
         {
             DrawStatNumber("%3d", pXSprite->health>>4, 2190, 8-xscalehud, 183, 0, 0, 256);
         }
@@ -2219,7 +2222,7 @@ void UpdateStatusBar(ClockTicks arg)
         viewDrawPack(pPlayer, 160, 200-tilesiz[2200].y);
         DrawStatMaskedSprite(2200, 160, 172, 16, nPalette);
         DrawPackItemInStatusBar(pPlayer, 265, 186, 260, 172);
-        if (pXSprite->health >= 16 || ((int)totalclock&16) || pXSprite->health == 0)
+        if (pXSprite->health >= (gHealthBlink ? 16<<4 : 16) || ((int)totalclock&16) || pXSprite->health == 0)
         {
             DrawStatNumber("%3d", pXSprite->health>>4, 2190, 86, 183, 0, 0);
         }
@@ -3540,8 +3543,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
                 
                 if (gShowWeapon && (gGameOptions.nGameType != kGameTypeSinglePlayer) && !(gGameOptions.uNetGameFlags&kNetGameFlagHideWeaponsAlways) && gView) {
-                    const char bDrawDudeWeap = (powerupCheck(pPlayer, kPwUpShadowCloak) && !(gGameOptions.uNetGameFlags&kNetGameFlagHideWeaponsCloak)) || bIsTeammateOrDoppleganger; // don't draw enemy weapon if they are cloaked
-                    if (((bDrawDudeWeap || pPlayer == gView) && !VanillaMode()) || (pPlayer != gView && VanillaMode()))
+                    const char bDrawDudeWeap = (powerupCheck(pPlayer, kPwUpShadowCloak) && !(gGameOptions.uNetGameFlags&kNetGameFlagHideWeaponsCloak)) || bIsTeammateOrDoppleganger || (pPlayer == gView && gViewPos == VIEWPOS_1); // don't draw enemy weapon if they are cloaked
+                    if ((bDrawDudeWeap && !VanillaMode()) || (pPlayer != gView && VanillaMode()))
                         viewAddEffect(nTSprite, kViewEffectShowWeapon);
                 }
 

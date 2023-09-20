@@ -71,6 +71,7 @@ extern int32_t gAutoRun;
 extern int32_t gCalebTalk;
 extern int32_t gChatSnd;
 extern int32_t gColorMsg;
+extern int32_t gHealthBlink;
 extern int32_t gKillObituary;
 extern int32_t gKillMsg;
 extern int32_t gMultiKill;
