@@ -1463,8 +1463,9 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                     gPlayer[i].hasKey[pItem->type-99] = 1;
                 }
                 if (pPlayer != gMe) { // display message if network player collected key
-                    sprintf(buffer, "%s picked up %s", gProfile[pPlayer->nPlayer].name, gItemText[pItem->type - kItemBase]);
-                    viewSetMessage(buffer, 0, MESSAGE_PRIORITY_PICKUP);
+                    sprintf(buffer, "\r%s\r picked up %s", gProfile[pPlayer->nPlayer].name, gItemText[pItem->type - kItemBase]);
+                    const int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
+                    viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_PICKUP, nPal);
                 }
             }
             break;
