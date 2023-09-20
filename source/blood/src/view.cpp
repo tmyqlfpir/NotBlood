@@ -1653,16 +1653,8 @@ void viewDrawAimedPlayerName(void)
     if (!gShowPlayerNames || (gView->aim.dx == 0 && gView->aim.dy == 0) || (gGameOptions.nGameType == kGameTypeSinglePlayer))
         return;
 
-    int hit;
-    if (VanillaMode())
-    {
-        hit = HitScan(gView->pSprite, gView->pSprite->z, gView->aim.dx, gView->aim.dy, gView->aim.dz, CLIPMASK0, 512);
-    }
-    else
-    {
-        const int nDist = (gGameOptions.nGameType == kGameTypeCoop) ? 640 : 512; // set hitscan distance to 20/16 meters for co-op mode
-        hit = HitScan(gView->pSprite, gView->zView, gView->aim.dx, gView->aim.dy, gView->aim.dz, CLIPMASK0, nDist);
-    }
+    const int nDist = (gGameOptions.nGameType == kGameTypeCoop) ? 640 : 512; // set hitscan distance to 20/16 meters for co-op mode
+    const int hit = HitScan(gView->pSprite, gView->zView, gView->aim.dx, gView->aim.dy, gView->aim.dz, CLIPMASK0, nDist);
     if (hit == 3)
     {
         spritetype* pSprite = &sprite[gHitInfo.hitsprite];
