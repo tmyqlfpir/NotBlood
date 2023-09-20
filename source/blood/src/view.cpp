@@ -1482,7 +1482,8 @@ void viewDrawWeaponSelect(PLAYER* pPlayer, XSPRITE *pXSprite)
 
     const float animPosRange = animPosMax + (-animPosMin);
     const int lerpTime = gViewInterpolate ? rotatespritesmoothratio / (65536 / kTicsPerFrame) : 0; // don't use interpolate value if view interpolation is disabled
-    const int curTime = (gLevelTime*kTicsPerFrame)+lerpTime;
+    const int curClock = numplayers > 1 ? int(totalclock)/4U : gLevelTime; // use totalclock for multiplayer (lag friendly 120-based timer)
+    const int curTime = (curClock*kTicsPerFrame)+lerpTime;
     static int animClock = 0, animState = 0;
     float animPos = 0;
 
