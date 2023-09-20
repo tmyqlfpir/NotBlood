@@ -3540,8 +3540,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
                 
                 if (gShowWeapon && (gGameOptions.nGameType != kGameTypeSinglePlayer) && !(gGameOptions.uNetGameFlags&kNetGameFlagHideWeaponsAlways) && gView) {
-                    const char bDrawDudeWeap = (powerupCheck(pPlayer, kPwUpShadowCloak) && !(gGameOptions.uNetGameFlags&kNetGameFlagHideWeaponsCloak)) || bIsTeammateOrDoppleganger; // don't draw enemy weapon if they are cloaked
-                    if (((bDrawDudeWeap || pPlayer == gView) && !VanillaMode()) || (pPlayer != gView && VanillaMode()))
+                    const char bDrawDudeWeap = (powerupCheck(pPlayer, kPwUpShadowCloak) && !(gGameOptions.uNetGameFlags&kNetGameFlagHideWeaponsCloak)) || bIsTeammateOrDoppleganger || (pPlayer == gView && gViewPos == VIEWPOS_1); // don't draw enemy weapon if they are cloaked
+                    if ((bDrawDudeWeap && !VanillaMode()) || (pPlayer != gView && VanillaMode()))
                         viewAddEffect(nTSprite, kViewEffectShowWeapon);
                 }
 
