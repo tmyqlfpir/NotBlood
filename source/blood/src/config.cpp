@@ -494,7 +494,7 @@ void CONFIG_SetDefaults(void)
     gCalebTalk = 0;
     gChatSnd = 1;
     gColorMsg = 1;
-    gHealthBlink = 0;
+    gHealthBlink = 1;
     gKillObituary = 1;
     gKillMsg = 1;
     gMultiKill = 2;

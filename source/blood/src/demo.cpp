@@ -184,6 +184,7 @@ const DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST122.DEM", (int32_t)0x00001205, 0xFBAFA0C9, 0x00000000, {(int32_t)0x0000399A, (int32_t)0x0000033F, (int32_t)0x0000B9A4}, 1},
     {"/validatedemos/TEST123.DEM", (int32_t)0x00002672, 0x5660A5AA, 0x00000AF6, {(int32_t)0xFFFFFAD0, (int32_t)0xFFFFD48D, (int32_t)0x0000FDE4}, 1},
     {"/validatedemos/TEST124.DEM", (int32_t)0x000015A5, 0xFC3CC30B, 0x00000000, {(int32_t)0xFFFF9DE6, (int32_t)0xFFFF907D, (int32_t)0x000009A4}, 1},
+    {"/validatedemos/TEST125.DEM", (int32_t)0x000009AB, 0x68DB200E, 0x00000000, {(int32_t)0xFFFFF93C, (int32_t)0x00006C0C, (int32_t)0xFFFEFDA4}, 1},
 };
 
 int nBuild = 0;
@@ -558,7 +559,6 @@ _DEMOPLAYBACK:
         {
             if (!v4)
             {
-                int nAutoAim = 1;
                 viewResizeView(gViewSize);
                 viewSetMessage("");
                 gNetPlayers = atf.nNetPlayers;
@@ -574,6 +574,14 @@ _DEMOPLAYBACK:
                 gGameOptions.uGameFlags &= ~kGameFlagContinuing; // don't let demo attempt to load player health from gHealthTemp
                 playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
                 for (int i = 0; i < kMaxPlayers; i++)
+                {
+                    gProfile[i].nAutoAim = 1;
+                    gProfile[i].nWeaponSwitch = 1;
+                    gProfile[i].bWeaponFastSwitch = 0;
+                    gProfile[i].nWeaponHBobbing = 1;
+                    gProfileNet[i] = gProfile[i];
+                }
+                for (int i = 0; i < kMaxPlayers; i++)
                     playerInit(i, 0);
                 StartLevel(&gGameOptions);
                 if (gDemoRunValidation) // if we're executing validation test
@@ -585,19 +593,11 @@ _DEMOPLAYBACK:
                         if (!pCurrentDemo || Bstrcasecmp(pCurrentDemo->zName, gDemoValidate[index].zName)) // demo name does not match, skip
                             continue;
                         pValidateInfo = &gDemoValidate[index]; // found demo's verified results, set as validate info
-                        nAutoAim = pValidateInfo->nAutoAim; // assign auto aim setting from validate info
+                        gProfile[myconnectindex].nAutoAim = pValidateInfo->nAutoAim; // assign auto aim setting from validate info
                         break;
                     }
                     if (!pValidateInfo) // run newly added verify demos at a slower speed for visual verification
                         timerInit(CLOCKTICKSPERSECOND*5);
-                }
-                for (int i = 0; i < kMaxPlayers; i++)
-                {
-                    gProfile[i].nAutoAim = nAutoAim;
-                    gProfile[i].nWeaponSwitch = 1;
-                    gProfile[i].bWeaponFastSwitch = 0;
-                    gProfile[i].nWeaponHBobbing = 1;
-                    gProfileNet[i] = gProfile[i];
                 }
             }
             ready2send = 0;
@@ -772,11 +772,11 @@ void CDemo::NextDemo(void)
     SetupPlayback(NULL);
 }
 
-const int nInputSize = 22;
+#define kInputSize 22
+static char pBuffer[kInputSize*kInputBufferSize];
 
 void CDemo::FlushInput(int nCount)
 {
-    char pBuffer[nInputSize*kInputBufferSize];
     BitWriter bitWriter(pBuffer, sizeof(pBuffer));
     for (int i = 0; i < nCount; i++)
     {
@@ -822,13 +822,12 @@ void CDemo::FlushInput(int nCount)
         bitWriter.write(pInput->newWeapon, 8);
         bitWriter.write(fix16_to_int(pInput->q16mlook*4), 8);
     }
-    fwrite(pBuffer, 1, nInputSize*nCount, hRFile);
+    fwrite(pBuffer, 1, kInputSize*nCount, hRFile);
 }
 
 void CDemo::ReadInput(int nCount)
 {
-    char pBuffer[nInputSize*kInputBufferSize];
-    kread(hPFile, pBuffer, nInputSize*nCount);
+    kread(hPFile, pBuffer, kInputSize*nCount);
     BitReader bitReader(pBuffer, sizeof(pBuffer));
     memset(at1aa, 0, nCount * sizeof(GINPUT));
     for (int i = 0; i < nCount; i++)
