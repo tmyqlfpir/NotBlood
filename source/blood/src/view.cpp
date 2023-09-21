@@ -1027,38 +1027,35 @@ void viewAddInterpolation(void *data, INTERPOLATE_TYPE type)
 
 void CalcInterpolations(void)
 {
-    int i;
+    int i, value, diff;
     INTERPOLATE *pInterpolate = gInterpolation;
     for (i = 0; i < nInterpolations; i++, pInterpolate++)
     {
+        value = pInterpolate->value;
         switch (pInterpolate->type)
         {
         case INTERPOLATE_TYPE_INT:
-        {
             pInterpolate->value2 = *((int*)pInterpolate->pointer);
-            int newValue = interpolate(pInterpolate->value, *((int*)pInterpolate->pointer), gInterpolate);
-            *((int*)pInterpolate->pointer) = newValue;
+            if (pInterpolate->value2 == value)
+                continue;
+            *((int*)pInterpolate->pointer) = (int)interpolate(value, pInterpolate->value2, gInterpolate);
             break;
-        }
         case INTERPOLATE_TYPE_SHORT:
-        {
             pInterpolate->value2 = *((short*)pInterpolate->pointer);
-            int newValue = interpolate(pInterpolate->value, *((short*)pInterpolate->pointer), gInterpolate);
-            *((short*)pInterpolate->pointer) = newValue;
+            if (pInterpolate->value2 == value)
+                continue;
+            *((short*)pInterpolate->pointer) = (short)interpolate(value, pInterpolate->value2, gInterpolate);
             break;
-        }
         case INTERPOLATE_TYPE_CHAR:
-        {
             pInterpolate->value2 = *((char*)pInterpolate->pointer);
-            const int nDiff = pInterpolate->value - pInterpolate->value2;
-            if (nDiff > 127) // handle overflow gracefully
-                pInterpolate->value -= 256;
-            else if (nDiff < -128) // handle overflow gracefully
-                pInterpolate->value += 256;
-            int newValue = interpolate(pInterpolate->value, *((char*)pInterpolate->pointer), gInterpolate);
-            *((char*)pInterpolate->pointer) = newValue;
+            if ((diff = value - pInterpolate->value2) == 0)
+                continue;
+            if (diff > 127) // handle overflow gracefully
+                value -= 256;
+            else if (diff < -128)
+                value += 256;
+            *((char*)pInterpolate->pointer) = (char)interpolate(value, pInterpolate->value2, gInterpolate);
             break;
-        }
         }
     }
 }
