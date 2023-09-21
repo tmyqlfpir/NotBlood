@@ -771,11 +771,11 @@ void CDemo::NextDemo(void)
     SetupPlayback(NULL);
 }
 
-const int nInputSize = 22;
+#define kInputSize 22
+static char pBuffer[kInputSize*kInputBufferSize];
 
 void CDemo::FlushInput(int nCount)
 {
-    char pBuffer[nInputSize*kInputBufferSize];
     BitWriter bitWriter(pBuffer, sizeof(pBuffer));
     for (int i = 0; i < nCount; i++)
     {
@@ -821,13 +821,12 @@ void CDemo::FlushInput(int nCount)
         bitWriter.write(pInput->newWeapon, 8);
         bitWriter.write(fix16_to_int(pInput->q16mlook*4), 8);
     }
-    fwrite(pBuffer, 1, nInputSize*nCount, hRFile);
+    fwrite(pBuffer, 1, kInputSize*nCount, hRFile);
 }
 
 void CDemo::ReadInput(int nCount)
 {
-    char pBuffer[nInputSize*kInputBufferSize];
-    kread(hPFile, pBuffer, nInputSize*nCount);
+    kread(hPFile, pBuffer, kInputSize*nCount);
     BitReader bitReader(pBuffer, sizeof(pBuffer));
     memset(at1aa, 0, nCount * sizeof(GINPUT));
     for (int i = 0; i < nCount; i++)
