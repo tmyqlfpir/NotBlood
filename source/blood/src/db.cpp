@@ -1417,21 +1417,32 @@ void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
 void dbShuffleEnemy(void)
 {
     int nSprites = 0;
-    spritetype *pSprite[kMaxSprites];
 
-    for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i]) // build table of sprites for shuffling logic
+    for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i]) // count enemies
     {
         if (!IsDudeSprite(&sprite[i]) || IsPlayerSprite(&sprite[i])) // not an enemy sprite, skip
             continue;
         const int type = sprite[i].type;
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother) && (type != kDudeBoneEel)) // filter problematic enemy types
-        {
-            pSprite[nSprites] = &sprite[i];
             nSprites++;
-        }
     }
-    if (nSprites < 2) // only a single enemy in the level, abort
+    if (nSprites < 2) // only two enemies in the level, abort
         return;
+
+    nSprites = ClipRange(nSprites, 0, kMaxSprites-1);
+    spritetype **pSprite = (spritetype **)Bmalloc((nSprites+1) * sizeof(spritetype));
+    if (!pSprite)
+        return;
+    nSprites = 0;
+
+    for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i]) // assign sprites to pointer array
+    {
+        if (!IsDudeSprite(&sprite[i]) || IsPlayerSprite(&sprite[i])) // not an enemy sprite, skip
+            continue;
+        const int type = sprite[i].type;
+        if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother) && (type != kDudeBoneEel)) // filter problematic enemy types
+            pSprite[nSprites++] = &sprite[i];
+    }
 
     for (int i = 0; i < nSprites - 1; i++) // shuffle enemies
     {
@@ -1465,6 +1476,7 @@ void dbShuffleEnemy(void)
         pSprite[j]->inittype = pSprite[i]->inittype;
         pSprite[i]->inittype = tempInittype;
     }
+    Bfree(pSprite);
 }
 
 bool byte_1A76C6, byte_1A76C7, byte_1A76C8;
