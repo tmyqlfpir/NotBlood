@@ -2003,7 +2003,7 @@ void viewDrawWinner(const char *pString, int nPal)
         int nColorPart = 0;
         int nColorOffsets[4] = {-1, -1, -1, -1}; // stores 4 points in string where color is to be set for player names/flags
         strncpy(buffer, pString, kMaxMessageTextLength);
-        size_t nLength = strlen(buffer);
+        size_t nLength = strnlen(buffer, kMaxMessageTextLength);
 
         for (size_t i = 0; i < nLength; i++)
         {
