@@ -3823,12 +3823,19 @@ void viewBurnTime(int gScale)
     }
 }
 
+inline bool viewPaused(void)
+{
+    if (gDemo.bPlaying)
+        return false;
+    return gPaused || gEndGameMgr.at0 || (gGameOptions.nGameType == kGameTypeSinglePlayer && (gGameMenuMgr.m_bActive || ((osd->flags & OSD_DRAW) == OSD_DRAW)));
+}
+
 inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopehoriz, float fFov)
 {
     const int32_t nStat = r_usenewaspect ? RS_AUTO : RS_AUTO | RS_STRETCH;
     const char bBannedWeapon = (pPlayer->curWeapon == kWeaponNone) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponProxyTNT) || (pPlayer->curWeapon == kWeaponRemoteTNT);
     const char bShowAutoAimTarget = (gAimReticle == 2) && pPlayer->aimTargetsCount && !bBannedWeapon;
-    const char bPaused = !((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != kGameTypeSinglePlayer))) || gDemo.bPlaying);
+    const char bPaused = viewPaused();
     int q16SlopeTilt = fix16_from_float(0.82f);
     int cX = 160;
     int cY = defaultHoriz;
@@ -4183,7 +4190,7 @@ void viewDrawScreen(void)
     if (delta < 0)
         delta = 0;
     lastUpdate = totalclock;
-    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != kGameTypeSinglePlayer))) || gDemo.bPlaying)
+    if (!viewPaused())
     {
         gInterpolate = ((totalclock-gNetFifoClock)+4).toScale16()/4;
     }
@@ -4196,10 +4203,7 @@ void viewDrawScreen(void)
         CalcInterpolations();
     }
 
-    if ((!gPaused && ((!CGameMenuMgr::m_bActive && ((osd->flags & OSD_DRAW) != OSD_DRAW)) || (gGameOptions.nGameType != kGameTypeSinglePlayer))) || gDemo.bPlaying)
-        rotatespritesmoothratio = gInterpolate;
-    else
-        rotatespritesmoothratio = 65536;
+    rotatespritesmoothratio = !viewPaused() ? gInterpolate : 65536;
 
     if (gViewMode == 3 || gViewMode == 4 || gOverlayMap)
     {
