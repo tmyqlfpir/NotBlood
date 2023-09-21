@@ -3505,7 +3505,7 @@ int actDamageSprite(int nSource, spritetype *pSprite, DAMAGE_TYPE damageType, in
 
             }
 
-            if (gSoundDing && (pSourcePlayer == gMe) && (pSprite != gMe->pSprite) && (damage > 0) && bWasAlive) {
+            if (gSoundDing && (pSourcePlayer == gMe) && gMe && (pSprite != gMe->pSprite) && (damage > 0) && bWasAlive) {
                 for (int i = 0; i < 4; i++) {
                     DMGFEEDBACK *pSoundDmgSprite = &gSoundDingSprite[i];
                     if (pSoundDmgSprite->nSprite == -1) {
