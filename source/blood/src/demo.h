@@ -100,7 +100,6 @@ public:
     DEMOHEADER atf;
     GAMEOPTIONS m_gameOptions;
     GINPUT at1aa[kInputBufferSize];
-    const char **pzDemoFile;
     DEMOCHAIN *pFirstDemo;
     DEMOCHAIN *pCurrentDemo;
     int nDemosFound;
