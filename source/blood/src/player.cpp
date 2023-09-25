@@ -2487,12 +2487,12 @@ void playerProcessRoundCheck(void)
     }
     else if (gGameOptions.nGameType == kGameTypeBloodBath)
     {
-        sprintf(buffer, "\r%s\r is the winner", gProfile[nWinner].name);
+        sprintf(buffer, "\r%s\r is the winner!", gProfile[nWinner].name);
         nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(gPlayer[nWinner].teamId) : 0;
     }
     else if (gGameOptions.nGameType == kGameTypeTeams)
     {
-        sprintf(buffer, "\r%s\r is the winner", nWinner ? "Red Team" : "Blue Team");
+        sprintf(buffer, "\r%s\r is the winner!", nWinner ? "Red Team" : "Blue Team");
         nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(nWinner) : 0;
     }
     viewDrawWinner(buffer, nPal);
