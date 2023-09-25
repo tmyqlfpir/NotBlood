@@ -1447,7 +1447,13 @@ void dbShuffleEnemy(void)
 
     for (int i = 0; i < nSprites; i++) // shuffle enemies
     {
-        const int j = qrand() % nSprites;
+        int j = qrand() % nSprites;
+        if (i == j)
+        {
+            j = qrand() % nSprites; // re-roll
+            if (i == j) // bah! just our luck...
+                continue;
+        }
 
         const int16_t tempType = pSprite[j]->type;
         pSprite[j]->type = pSprite[i]->type;
