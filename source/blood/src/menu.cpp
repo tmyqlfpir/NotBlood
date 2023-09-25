@@ -4043,7 +4043,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     if (!itemNetGameBoolTeamColors.at20)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagNoTeamColors;
     if (itemNetGameCycleSpawnLocation.m_nFocus > 0)
-        gPacketStartGame.uNetGameFlags = itemNetGameCycleSpawnLocation.m_nFocus == 1 ? kNetGameFlagSpawnSmart : kNetGameFlagSpawnDist;
+        gPacketStartGame.uNetGameFlags |= itemNetGameCycleSpawnLocation.m_nFocus == 1 ? kNetGameFlagSpawnSmart : kNetGameFlagSpawnDist;
     if (itemNetGameCycleShowWeaponsOverride.m_nFocus > 0)
         gPacketStartGame.uNetGameFlags |= itemNetGameCycleShowWeaponsOverride.m_nFocus == 1 ? kNetGameFlagHideWeaponsCloak : kNetGameFlagHideWeaponsAlways;
     gPacketStartGame.episodeId = itemNetStart2.m_nFocus;
