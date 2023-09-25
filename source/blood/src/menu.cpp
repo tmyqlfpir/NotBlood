@@ -230,7 +230,7 @@ const char *zRespawnStrings[] =
 {
     "Random",
     "Smart Random",
-    "Furthest From Enemies",
+    "Farthest From Enemies",
 };
 
 const char *zLengthStrings[] =
