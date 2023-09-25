@@ -1445,7 +1445,7 @@ void dbShuffleEnemy(void)
         return;
     dbShuffleEnemyList(pSprite); // assign sprites to pointer array
 
-    for (int i = 0; i < nSprites - 1; i++) // shuffle enemies
+    for (int i = 0; i < nSprites; i++) // shuffle enemies
     {
         const int j = qrand() % nSprites;
 
