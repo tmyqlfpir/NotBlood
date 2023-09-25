@@ -1414,18 +1414,28 @@ void dbRandomizerModeScale(spritetype *pSprite, XSPRITE* pXSprite)
     }
 }
 
-void dbShuffleEnemy(void)
+inline int dbShuffleEnemyList(spritetype **pSpriteList = NULL)
 {
     int nSprites = 0;
-
-    for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i]) // count enemies
+    for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i])
     {
         if (!IsDudeSprite(&sprite[i]) || IsPlayerSprite(&sprite[i])) // not an enemy sprite, skip
             continue;
         const int type = sprite[i].type;
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother) && (type != kDudeBoneEel)) // filter problematic enemy types
+        {
+            if (pSpriteList)
+                pSpriteList[nSprites] = &sprite[i];
             nSprites++;
+        }
     }
+
+    return nSprites;
+}
+
+void dbShuffleEnemy(void)
+{
+    int nSprites = dbShuffleEnemyList(); // get total enemies to shuffle
     if (nSprites < 2) // only two enemies in the level, abort
         return;
 
@@ -1433,20 +1443,17 @@ void dbShuffleEnemy(void)
     spritetype **pSprite = (spritetype **)Bmalloc((nSprites+1) * sizeof(spritetype));
     if (!pSprite)
         return;
-    nSprites = 0;
+    dbShuffleEnemyList(pSprite); // assign sprites to pointer array
 
-    for (int i = headspritestat[kStatDude]; i >= 0; i = nextspritestat[i]) // assign sprites to pointer array
+    for (int i = 0; i < nSprites; i++) // shuffle enemies
     {
-        if (!IsDudeSprite(&sprite[i]) || IsPlayerSprite(&sprite[i])) // not an enemy sprite, skip
-            continue;
-        const int type = sprite[i].type;
-        if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother) && (type != kDudeBoneEel)) // filter problematic enemy types
-            pSprite[nSprites++] = &sprite[i];
-    }
-
-    for (int i = 0; i < nSprites - 1; i++) // shuffle enemies
-    {
-        const int j = qrand() % nSprites;
+        int j = qrand() % nSprites;
+        if (i == j)
+        {
+            j = qrand() % nSprites; // re-roll
+            if (i == j) // bah! just our luck...
+                continue;
+        }
 
         const int16_t tempType = pSprite[j]->type;
         pSprite[j]->type = pSprite[i]->type;
