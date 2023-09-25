@@ -992,7 +992,7 @@ void playerStart(int nPlayer, int bNewLevel)
                 }
             }
         }
-        else if ((gGameOptions.nGameType >= kGameTypeBloodBath) && (gGameOptions.uNetGameFlags&kNetGameFlagSpawnDist)) { // get furthest spawn location
+        else if ((gGameOptions.nGameType >= kGameTypeBloodBath) && (gGameOptions.uNetGameFlags&kNetGameFlagSpawnDist)) { // get farthest spawn location
             int nZoneDist[kMaxPlayers] = {0};
             for (int nZone = 0; nZone < kMaxPlayers; nZone++) {
                 pStartZone = &gStartZone[nZone];
