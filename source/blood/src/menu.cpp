@@ -3137,6 +3137,8 @@ void PreDrawDisplayPolymost(CGameMenuItem *pItem)
 
 void SetNetGameMode(CGameMenuItemZCycle *pItem)
 {
+    static bool bLevelExit = 1;
+
     itemNetGameCycleLength.bEnable = ((itemNetGameMode.m_nFocus+1) != kGameTypeCoop); // hide game length settings when set to co-op
     itemNetGameCycleLength.bNoDraw = !itemNetGameCycleLength.bEnable;
     itemNetGameSliderLimit.bEnable = ((itemNetGameMode.m_nFocus+1) != kGameTypeCoop) && (itemNetGameCycleLength.m_nFocus != 0); // don't show limit option if set to unlimited/co-op
@@ -3146,7 +3148,14 @@ void SetNetGameMode(CGameMenuItemZCycle *pItem)
     {
         itemNetStart1.m_pzText2 = zNetGameTypes[pItem->m_nFocus];
         if ((pItem->m_nFocus+1) == kGameTypeCoop) // always set level exit to on for co-op mode
+        {
+            bLevelExit = itemNetGameBoolExit.at20;
             itemNetGameBoolExit.at20 = 1;
+        }
+        else
+        {
+            itemNetGameBoolExit.at20 = bLevelExit;
+        }
         itemNetGameBoolExit.bEnable = ((itemNetGameMode.m_nFocus+1) != kGameTypeCoop);
         itemNetGameBoolFriendlyFire.bEnable = (pItem->m_nFocus+1) != kGameTypeBloodBath;
         itemNetGameBoolFriendlyFire.bNoDraw = !itemNetGameBoolFriendlyFire.bEnable;
