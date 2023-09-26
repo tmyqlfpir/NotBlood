@@ -1428,8 +1428,8 @@ void SetupNetStartMenu(void)
     itemNetGameCycleShowWeaponsOverride.tooltip_pzTextLower = "(This is applied to all players in round)";
 
     menuNetworkGameMonsters.Add(&itemNetMonsterTitle, false);
-    menuNetworkGameMonsters.Add(&itemNetMonsterSettings, false);
-    menuNetworkGameMonsters.Add(&itemNetMonsterQuantity, true);
+    menuNetworkGameMonsters.Add(&itemNetMonsterSettings, true);
+    menuNetworkGameMonsters.Add(&itemNetMonsterQuantity, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterHealth, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterSpeed, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterBats, false);
