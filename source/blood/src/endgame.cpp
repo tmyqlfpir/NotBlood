@@ -187,7 +187,8 @@ void CKillMgr::CountTotalKills(void)
         spritetype* pSprite = &sprite[nSprite];
         if (pSprite->type < kDudeBase || pSprite->type >= kDudeMax)
             ThrowError("Non-enemy sprite (%d) in the enemy sprite list.", nSprite);
-        AddCount(pSprite);
+        if (AllowedType(pSprite))
+            AddCount(1);
     }
 }
 
