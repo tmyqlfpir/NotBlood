@@ -166,7 +166,7 @@ void CKillMgr::AddCount(spritetype* pSprite)
 void CKillMgr::AddKill(spritetype* pSprite)
 {
     dassert(pSprite != NULL);
-    if (VanillaMode() || AllowedType(pSprite)) // check type before adding to enemy kills
+    if (AllowedType(pSprite)) // check type before adding to enemy kills
         at4++;
 }
 
