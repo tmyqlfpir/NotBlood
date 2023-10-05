@@ -305,11 +305,9 @@ void initcrc16()
 }
 
 // adapted from build.c
-static void getclosestpointonwall_internal(vec2_t const p, int32_t const dawall, vec2_t *const closest)
+void getclosestpointonline(vec2_t const p, vec2_t w, vec2_t w2, vec2_t *const closest)
 {
-    vec2_t const w  = wall[dawall].xy;
-    vec2_t const w2 = wall[wall[dawall].point2].xy;
-    vec2_t const d  = { w2.x - w.x, w2.y - w.y };
+    vec2_t const d = w2 - w;
 
     int64_t i = d.x * ((int64_t)p.x - w.x) + d.y * ((int64_t)p.y - w.y);
 
@@ -330,6 +328,11 @@ static void getclosestpointonwall_internal(vec2_t const p, int32_t const dawall,
     i = tabledivide64((i << 15), j) << 15;
 
     *closest = { (int32_t)(w.x + ((d.x * i) >> 30)), (int32_t)(w.y + ((d.y * i) >> 30)) };
+}
+
+static FORCE_INLINE void getclosestpointonwall_internal(vec2_t const p, int32_t const dawall, vec2_t *const closest)
+{
+    getclosestpointonline(p, wall[dawall].xy, wall[wall[dawall].point2].xy, closest);
 }
 
 ////////// YAX //////////
@@ -1788,7 +1791,7 @@ static inline int findUnusedTile(void)
     static int lastUnusedTile = MAXUSERTILES-1;
 
     for (; lastUnusedTile >= 0; --lastUnusedTile)
-        if ((tilesiz[lastUnusedTile].x|tilesiz[lastUnusedTile].y) == 0)
+        if ((tilesiz[lastUnusedTile].x|tilesiz[lastUnusedTile].y) == 0 && !waloff[lastUnusedTile])
             return lastUnusedTile;
 
     return -1;
@@ -3834,23 +3837,23 @@ static void fgrouscan(int32_t dax1, int32_t dax2, int32_t sectnum, char dastat)
 
             globalx3 = globalx2*(1.f/1024.f);
             globaly3 = globaly2*(1.f/1024.f);
-            float bz = (y2*globalzd)*(1.f/65536.f) + globalzx*(1.f/64.f);
+            float bz = (y2*globalzd)*(1.f/65536.f) + globalzx*(1.f/64.f), bzr = 1.f/bz;
             uint8_t *p = (uint8_t*)(ylookup[y2]+x+frameoffset);
             intptr_t* A_C_RESTRICT slopalptr = (intptr_t*)nptr2;
             const char* const A_C_RESTRICT trans = paletteGetBlendTable(0);
             uint32_t u, v;
             int cnt = y2-y1+1;
 #define LINTERPSIZ 4
-            int u0 = Blrintf(1048576.f*globalx3/bz);
-            int v0 = Blrintf(1048576.f*globaly3/bz);
+            int u0 = Blrintf(1048576.f*globalx3*bzr);
+            int v0 = Blrintf(1048576.f*globaly3*bzr);
             switch (globalorientation&0x180)
             {
             case 0:
                 while (cnt > 0)
                 {
-                    bz += bzinc*(1<<LINTERPSIZ);
-                    int u1 = Blrintf(1048576.f*globalx3/bz);
-                    int v1 = Blrintf(1048576.f*globaly3/bz);
+                    bz += bzinc*(1<<LINTERPSIZ), bzr = 1.f/bz;
+                    int u1 = Blrintf(1048576.f*globalx3*bzr);
+                    int v1 = Blrintf(1048576.f*globaly3*bzr);
                     u1 = (u1-u0)>>LINTERPSIZ;
                     v1 = (v1-v0)>>LINTERPSIZ;
                     int cnt2 = min(cnt, 1<<LINTERPSIZ);
@@ -3870,9 +3873,9 @@ static void fgrouscan(int32_t dax1, int32_t dax2, int32_t sectnum, char dastat)
             case 128:
                 while (cnt > 0)
                 {
-                    bz += bzinc*(1<<LINTERPSIZ);
-                    int u1 = Blrintf(1048576.f*globalx3/bz);
-                    int v1 = Blrintf(1048576.f*globaly3/bz);
+                    bz += bzinc*(1<<LINTERPSIZ), bzr = 1.f/bz;
+                    int u1 = Blrintf(1048576.f*globalx3*bzr);
+                    int v1 = Blrintf(1048576.f*globaly3*bzr);
                     u1 = (u1-u0)>>LINTERPSIZ;
                     v1 = (v1-v0)>>LINTERPSIZ;
                     int cnt2 = min(cnt, 1<<LINTERPSIZ);
@@ -3894,9 +3897,9 @@ static void fgrouscan(int32_t dax1, int32_t dax2, int32_t sectnum, char dastat)
             case 256:
                 while (cnt > 0)
                 {
-                    bz += bzinc*(1<<LINTERPSIZ);
-                    int u1 = Blrintf(1048576.f*globalx3/bz);
-                    int v1 = Blrintf(1048576.f*globaly3/bz);
+                    bz += bzinc*(1<<LINTERPSIZ), bzr = 1.f/bz;
+                    int u1 = Blrintf(1048576.f*globalx3*bzr);
+                    int v1 = Blrintf(1048576.f*globaly3*bzr);
                     u1 = (u1-u0)>>LINTERPSIZ;
                     v1 = (v1-v0)>>LINTERPSIZ;
                     int cnt2 = min(cnt, 1<<LINTERPSIZ);
@@ -3921,9 +3924,9 @@ static void fgrouscan(int32_t dax1, int32_t dax2, int32_t sectnum, char dastat)
             case 384:
                 while (cnt > 0)
                 {
-                    bz += bzinc*(1<<LINTERPSIZ);
-                    int u1 = Blrintf(1048576.f*globalx3/bz);
-                    int v1 = Blrintf(1048576.f*globaly3/bz);
+                    bz += bzinc*(1<<LINTERPSIZ), bzr = 1.f/bz;
+                    int u1 = Blrintf(1048576.f*globalx3*bzr);
+                    int v1 = Blrintf(1048576.f*globaly3*bzr);
                     u1 = (u1-u0)>>LINTERPSIZ;
                     v1 = (v1-v0)>>LINTERPSIZ;
                     int cnt2 = min(cnt, 1<<LINTERPSIZ);
@@ -6803,6 +6806,7 @@ draw_as_face_sprite:
             //asm1 = -(globalzd>>(16-BITSOFPRECISION));
 #define LINTERPSIZ 4
             float const bzinc = -sgzd*(1.f/65536.f) * (1<<LINTERPSIZ);
+            float const bzinc2 = -sgzd*(1.f/65536.f);
             int32_t const vis = (sec->visibility != 0) ? mulscale4(globalhisibility, (uint8_t)(sec->visibility+16)) : globalhisibility;
             globvis = ((((int64_t)(vis*sdaz)) >> 13) * xdimscale) >> 16;
 
@@ -6866,22 +6870,34 @@ draw_as_face_sprite:
                     }
 
                     vec2f_t const sg_f3 = { sg_f2.x*(1.f/1024.f)*1048576.f, sg_f2.y*(1.f/1024.f)*1048576.f };
-                    float bz = (y2*sgzd)*(1.f/65536.f) + sgzx*(1.f/64.f);
+                    float bz = (y2*sgzd)*(1.f/65536.f) + sgzx*(1.f/64.f), bzr = 1.f/bz;
                     uint8_t *p = (uint8_t*)(ylookup[y2]+x+frameoffset);
                     intptr_t* A_C_RESTRICT slopalptr = (intptr_t*)nptr2;
                     int cnt = y2-y1+1;
-                    int u0 = Blrintf(sg_f3.x/bz);
-                    int v0 = Blrintf(sg_f3.y/bz);
+                    int u0 = Blrintf(sg_f3.x*bzr);
+                    int v0 = Blrintf(sg_f3.y*bzr);
                     if (ispow2)
                     {
                         if ((cstat&2)==0)
                         {
                             while (cnt > 0)
                             {
-                                bz += bzinc;
-                                int const u1 = ((int)(sg_f3.x/bz)-u0)>>LINTERPSIZ;
-                                int const v1 = ((int)(sg_f3.y/bz)-v0)>>LINTERPSIZ;
-                                int cnt2 = min(cnt, 1<<LINTERPSIZ);
+                                int cnt2;
+                                int u1, v1;
+                                if (cnt >= (1<<LINTERPSIZ))
+                                {
+                                    bz += bzinc, bzr = 1.f/bz;
+                                    u1 = ((int)(sg_f3.x*bzr)-u0)>>LINTERPSIZ;
+                                    v1 = ((int)(sg_f3.y*bzr)-v0)>>LINTERPSIZ;
+                                    cnt2 = 1<<LINTERPSIZ;
+                                }
+                                else
+                                {
+                                    bz += bzinc2 * cnt, bzr = 1.f/bz;
+                                    u1 = tabledivide32_branchfree_noinline((int)(sg_f3.x*bzr)-u0, cnt);
+                                    v1 = tabledivide32_branchfree_noinline((int)(sg_f3.y*bzr)-v0, cnt);
+                                    cnt2 = cnt;
+                                }
                                 for (; cnt2>0; cnt2--)
                                 {
                                     uint16_t u = (sg1.x+u0)&0xffff;
@@ -6904,10 +6920,22 @@ draw_as_face_sprite:
                             {
                                 while (cnt > 0)
                                 {
-                                    bz += bzinc;
-                                    int const u1 = ((int)(sg_f3.x/bz)-u0)>>LINTERPSIZ;
-                                    int const v1 = ((int)(sg_f3.y/bz)-v0)>>LINTERPSIZ;
-                                    int cnt2 = min(cnt, 1<<LINTERPSIZ);
+                                    int cnt2;
+                                    int u1, v1;
+                                    if (cnt >= (1<<LINTERPSIZ))
+                                    {
+                                        bz += bzinc, bzr = 1.f/bz;
+                                        u1 = ((int)(sg_f3.x*bzr)-u0)>>LINTERPSIZ;
+                                        v1 = ((int)(sg_f3.y*bzr)-v0)>>LINTERPSIZ;
+                                        cnt2 = 1<<LINTERPSIZ;
+                                    }
+                                    else
+                                    {
+                                        bz += bzinc2 * cnt, bzr = 1.f/bz;
+                                        u1 = tabledivide32_branchfree_noinline((int)(sg_f3.x*bzr)-u0, cnt);
+                                        v1 = tabledivide32_branchfree_noinline((int)(sg_f3.y*bzr)-v0, cnt);
+                                        cnt2 = cnt;
+                                    }
                                     for (; cnt2>0; cnt2--)
                                     {
                                         uint16_t u = (sg1.x+u0)&0xffff;
@@ -6930,10 +6958,22 @@ draw_as_face_sprite:
                             {
                                 while (cnt > 0)
                                 {
-                                    bz += bzinc;
-                                    int const u1 = ((int)(sg_f3.x/bz)-u0)>>LINTERPSIZ;
-                                    int const v1 = ((int)(sg_f3.y/bz)-v0)>>LINTERPSIZ;
-                                    int cnt2 = min(cnt, 1<<LINTERPSIZ);
+                                    int cnt2;
+                                    int u1, v1;
+                                    if (cnt >= (1<<LINTERPSIZ))
+                                    {
+                                        bz += bzinc, bzr = 1.f/bz;
+                                        u1 = ((int)(sg_f3.x*bzr)-u0)>>LINTERPSIZ;
+                                        v1 = ((int)(sg_f3.y*bzr)-v0)>>LINTERPSIZ;
+                                        cnt2 = 1<<LINTERPSIZ;
+                                    }
+                                    else
+                                    {
+                                        bz += bzinc2 * cnt, bzr = 1.f/bz;
+                                        u1 = tabledivide32_branchfree_noinline((int)(sg_f3.x*bzr)-u0, cnt);
+                                        v1 = tabledivide32_branchfree_noinline((int)(sg_f3.y*bzr)-v0, cnt);
+                                        cnt2 = cnt;
+                                    }
                                     for (; cnt2>0; cnt2--)
                                     {
                                         uint16_t u = (sg1.x+u0)&0xffff;
@@ -6960,10 +7000,22 @@ draw_as_face_sprite:
                         {
                             while (cnt > 0)
                             {
-                                bz += bzinc;
-                                int const u1 = ((int)(sg_f3.x/bz)-u0)>>LINTERPSIZ;
-                                int const v1 = ((int)(sg_f3.y/bz)-v0)>>LINTERPSIZ;
-                                int cnt2 = min(cnt, 1<<LINTERPSIZ);
+                                int cnt2;
+                                int u1, v1;
+                                if (cnt >= (1<<LINTERPSIZ))
+                                {
+                                    bz += bzinc, bzr = 1.f/bz;
+                                    u1 = ((int)(sg_f3.x*bzr)-u0)>>LINTERPSIZ;
+                                    v1 = ((int)(sg_f3.y*bzr)-v0)>>LINTERPSIZ;
+                                    cnt2 = 1<<LINTERPSIZ;
+                                }
+                                else
+                                {
+                                    bz += bzinc2 * cnt, bzr = 1.f/bz;
+                                    u1 = tabledivide32_branchfree_noinline((int)(sg_f3.x*bzr)-u0, cnt);
+                                    v1 = tabledivide32_branchfree_noinline((int)(sg_f3.y*bzr)-v0, cnt);
+                                    cnt2 = cnt;
+                                }
                                 for (; cnt2>0; cnt2--)
                                 {
                                     uint16_t u = (sg1.x+u0)&0xffff;
@@ -6986,10 +7038,22 @@ draw_as_face_sprite:
                             {
                                 while (cnt > 0)
                                 {
-                                    bz += bzinc;
-                                    int const u1 = ((int)(sg_f3.x/bz)-u0)>>LINTERPSIZ;
-                                    int const v1 = ((int)(sg_f3.y/bz)-v0)>>LINTERPSIZ;
-                                    int cnt2 = min(cnt, 1<<LINTERPSIZ);
+                                    int cnt2;
+                                    int u1, v1;
+                                    if (cnt >= (1<<LINTERPSIZ))
+                                    {
+                                        bz += bzinc, bzr = 1.f/bz;
+                                        u1 = ((int)(sg_f3.x*bzr)-u0)>>LINTERPSIZ;
+                                        v1 = ((int)(sg_f3.y*bzr)-v0)>>LINTERPSIZ;
+                                        cnt2 = 1<<LINTERPSIZ;
+                                    }
+                                    else
+                                    {
+                                        bz += bzinc2 * cnt, bzr = 1.f/bz;
+                                        u1 = tabledivide32_branchfree_noinline((int)(sg_f3.x*bzr)-u0, cnt);
+                                        v1 = tabledivide32_branchfree_noinline((int)(sg_f3.y*bzr)-v0, cnt);
+                                        cnt2 = cnt;
+                                    }
                                     for (; cnt2>0; cnt2--)
                                     {
                                         uint16_t u = (sg1.x+u0)&0xffff;
@@ -7012,10 +7076,22 @@ draw_as_face_sprite:
                             {
                                 while (cnt > 0)
                                 {
-                                    bz += bzinc;
-                                    int const u1 = ((int)(sg_f3.x/bz)-u0)>>LINTERPSIZ;
-                                    int const v1 = ((int)(sg_f3.y/bz)-v0)>>LINTERPSIZ;
-                                    int cnt2 = min(cnt, 1<<LINTERPSIZ);
+                                    int cnt2;
+                                    int u1, v1;
+                                    if (cnt >= (1<<LINTERPSIZ))
+                                    {
+                                        bz += bzinc, bzr = 1.f/bz;
+                                        u1 = ((int)(sg_f3.x*bzr)-u0)>>LINTERPSIZ;
+                                        v1 = ((int)(sg_f3.y*bzr)-v0)>>LINTERPSIZ;
+                                        cnt2 = 1<<LINTERPSIZ;
+                                    }
+                                    else
+                                    {
+                                        bz += bzinc2 * cnt, bzr = 1.f/bz;
+                                        u1 = tabledivide32_branchfree_noinline((int)(sg_f3.x*bzr)-u0, cnt);
+                                        v1 = tabledivide32_branchfree_noinline((int)(sg_f3.y*bzr)-v0, cnt);
+                                        cnt2 = cnt;
+                                    }
                                     for (; cnt2>0; cnt2--)
                                     {
                                         uint16_t u = (sg1.x+u0)&0xffff;
@@ -7845,7 +7921,7 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
 
         const float kBloodTicsPerSec = 4.f;
         const float tick4diff = (r_rotatespriteinterp == 1) ? kBloodTicsPerSec : (1000.f/(CLOCKTICKSPERSECOND/kBloodTicsPerSec)); // used to check when lerp frame has taken more than 4 ticks (or a single blood game tick)
-        auto &sm = smooth[uniqid];
+        auto &sm = smooth[uniqid & (MAXUNIQHUDID-1)];
         auto &sm0 = smooth[0];
         vec4_t const goal = { sx, sy, z, a };
         sm0 = { {sm.lerp[0], sm.lerp[1], sm.lerp[2], sm.lerp[3]}, (r_rotatespriteinterp > 1) ? timerGetTicks() : timer120(), picnum, (int16_t)(dastat & ~RS_TRANS_MASK) };
@@ -7859,14 +7935,14 @@ static void dorotatesprite(int32_t sx, int32_t sy, int32_t z, int16_t a, int16_t
         const bool tooLongSinceLastLerp = delta > (uint32_t)tick4diff; // if too long since last lerp frame, don't interpolate
         const bool lerpWouldLookDerp = (!(dastat & RS_LERP) && r_rotatespriteinterp < 3)
                    || (!(dastat & RS_FORCELERP) && (sm.flags != (dastat & ~RS_TRANS_MASK) || (tilesiz[picnum] != tilesiz[sm.picnum]
-                   && ((unsigned)(picnum - sm.picnum) > (int)(r_rotatespriteinterp == 4)))));
+                   && (unsigned)(r_rotatespriteinterp == 4 ? 0 : picnum - sm.picnum))));
         if (r_rotatespriteinterp && !(lerpWouldLookDerp || tooLongSinceLastLerp))
         {
             const float rotatespritesmoothratioF = (float)delta / tick4diff;
             sm0.lerp[0] = dastat&RS_NOPOSLERP ? (float)goal.x : lerpF(sm0.lerp[0], (float)goal.x, rotatespritesmoothratioF);
             sm0.lerp[1] = dastat&RS_NOPOSLERP ? (float)goal.y : lerpF(sm0.lerp[1], (float)goal.y, rotatespritesmoothratioF);
             sm0.lerp[2] = dastat&RS_NOZOOMLERP ? (float)goal.z : lerpF(sm0.lerp[2], (float)goal.z, rotatespritesmoothratioF);
-            const int rotateDiff = (goal.a+1024) - (((int)sm.lerp[3] & 2047)+1024);
+            const int rotateDiff = !(dastat&RS_NOANGLERP) ? (goal.a+1024) - (((int)sm.lerp[3] & 2047)+1024) : 0;
             const bool safeToLerp = !(dastat&RS_NOANGLERP) && (rotateDiff < (1024+512)) && (rotateDiff > (512));
             if (!safeToLerp)
                 sm0.lerp[3] = (float)goal.a; // next keyframe is too big to transition smoothly, so set lerp to expected keyframe
@@ -9499,25 +9575,25 @@ int32_t renderDrawRoomsQ16(int32_t daposx, int32_t daposy, int32_t daposz,
 
     for (int i = 0; i < numwalls; ++i)
     {
-        if (wall[i].cstat & CSTAT_WALL_ROTATE_90)
+        if ((wall[i].cstat & CSTAT_WALL_ROTATE_90) != CSTAT_WALL_ROTATE_90)
+            continue;
+
+        auto &w    = wall[i];
+        auto &tile = rottile[w.picnum+animateoffs(w.picnum,16384)];
+
+        if (tile.newtile == -1)
         {
-            auto &w    = wall[i];
-            auto &tile = rottile[w.picnum+animateoffs(w.picnum,16384)];
+            tile.newtile = findUnusedTile();
+            Bassert(tile.newtile != -1);
 
-            if (tile.newtile == -1 && tile.owner == -1)
-            {
-                tile.newtile = findUnusedTile();
-                Bassert(tile.newtile != -1);
+            rottile[tile.newtile].owner = w.picnum+animateoffs(w.picnum,16384);
 
-                rottile[tile.newtile].owner = w.picnum+animateoffs(w.picnum,16384);
-
-                auto &siz  = tilesiz[w.picnum+animateoffs(w.picnum,16384)];
-                tileSetSize(tile.newtile, siz.x, siz.y);
-
-                tileLoad(tile.newtile);
-                // Bassert(waloff[tile.newtile]);
-            }
+            auto &siz  = tilesiz[w.picnum+animateoffs(w.picnum,16384)];
+            tileSetSize(tile.newtile, siz.y, siz.x);
         }
+
+        if (tile.newtile != -1 && !waloff[tile.newtile])
+            tileLoad(tile.newtile);
     }
 
 #ifdef USE_OPENGL
@@ -12664,6 +12740,40 @@ int32_t cansee_19950829(int32_t xs, int32_t ys, int32_t zs, int16_t sectnums, in
     return 0;
 }
 
+#ifdef YAX_ENABLE
+// Traverse TROR transitions at the given (x,y) coordinates until no longer possible.
+// If the z coordinate is below the floor or above the ceiling, return the closest vertical sectnum.
+static int16_t yax_cansee_fixsector(int32_t x, int32_t y, int32_t z, int16_t startSect)
+{
+    if ((unsigned) (startSect) >= MAXSECTORS)
+        return startSect;
+
+    int16_t cb, fb;
+    yax_getbunches(startSect, &cb, &fb);
+    if (cb || fb)
+    {
+        int16_t curSect = startSect;
+        while(z < getcorrectceilzofslope(curSect, x, y))
+        {
+            int16_t prevSect = curSect;
+            curSect = yax_getneighborsect(x, y, curSect, YAX_CEILING);
+            if (curSect < 0) return prevSect;
+        }
+
+        while(z > getcorrectflorzofslope(curSect, x, y))
+        {
+            int16_t prevSect = curSect;
+            curSect = yax_getneighborsect(x, y, curSect, YAX_FLOOR);
+            if (curSect < 0) return prevSect;
+        }
+
+        return curSect;
+    }
+
+    return startSect;
+}
+#endif
+
 int32_t cansee(int32_t x1, int32_t y1, int32_t z1, int16_t orig_sect1, int32_t x2, int32_t y2, int32_t z2, int16_t orig_sect2, int32_t wallmask)
 {
     MICROPROFILE_SCOPEI("Engine", EDUKE32_FUNCTION, MP_AUTO);
@@ -12671,30 +12781,14 @@ int32_t cansee(int32_t x1, int32_t y1, int32_t z1, int16_t orig_sect1, int32_t x
     int16_t sect1 = orig_sect1;
     int16_t sect2 = orig_sect2;
 
-    if (enginecompatibilitymode == ENGINE_EDUKE32)
+#ifdef YAX_ENABLE
+    // If the z coordinate is out of bounds in a TROR sector, try to traverse TROR transitions to reach its containing sector.
+    if (enginecompatibilitymode == ENGINE_EDUKE32 && numyaxbunches > 0)
     {
-        // Failsafe: Try to correct the input sectors if the corresponding coordinates aren't actually within the given sector.
-        if (!inside_z_p(x1, y1, z1, sect1))
-        {
-            // DLOG_F(WARNING, "cansee: Origin coordinates x=%d, y=%d, z=%d are outside sector %d", x1, y1, z1, sect1);
-            updatesectorz(x1, y1, z1, &sect1);
-            if (sect1 < 0)
-            {
-                DLOG_F(WARNING, "cansee: Failed to correct origin sector, falling back to original sector %d", orig_sect1);
-                sect1 = orig_sect1;
-            }
-        }
-        if (!inside_z_p(x2, y2, z2, sect2))
-        {
-            // DLOG_F(WARNING, "cansee: Destination coordinates x=%d, y=%d, z=%d are outside sector %d", x2, y2, z2, sect2);
-            updatesectorz(x2, y2, z2, &sect2);
-            if (sect2 < 0)
-            {
-                DLOG_F(WARNING, "cansee: Failed to correct destination sector, falling back to original sector %d", orig_sect2);
-                sect2 = orig_sect2;
-            }
-        }
+        sect1 = yax_cansee_fixsector(x1, y1, z1, orig_sect1);
+        sect2 = yax_cansee_fixsector(x2, y2, z2, orig_sect2);
     }
+#endif
 
     if (enginecompatibilitymode == ENGINE_19950829)
         return cansee_19950829(x1, y1, z1, sect1, x2, y2, z2, sect2);
