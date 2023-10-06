@@ -342,10 +342,10 @@ void sndStartSample(unsigned int nSound, int nVolume, int nChannel, bool bLoop)
     }
 }
 
-void sndStartWavID(unsigned int nSound, int nVolume, int nChannel)
+int *sndStartWavID(unsigned int nSound, int nVolume, int nChannel)
 {
     if (!SoundToggle)
-        return;
+        return NULL;
     dassert(nChannel >= -1 && nChannel < kChannelMax);
     if ((nSound == 3017) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is active, do not play quote about having two guns
         nSound = 3016;
@@ -358,9 +358,10 @@ void sndStartWavID(unsigned int nSound, int nVolume, int nChannel)
         sndKillSound(pChannel);
     pChannel->at5 = gSoundRes.Lookup(nSound, "WAV");
     if (!pChannel->at5)
-        return;
+        return NULL;
     char *pData = (char*)gSoundRes.Lock(pChannel->at5);
     pChannel->hVoice = FX_Play(pData, pChannel->at5->size, -1, -1, 0, nVolume, nVolume, nVolume, nVolume, fix16_one, (intptr_t)&pChannel->hVoice);
+    return &pChannel->hVoice;
 }
 
 void sndKillSound(SAMPLE2D *pChannel)
@@ -373,10 +374,10 @@ void sndKillSound(SAMPLE2D *pChannel)
     FX_StopSound(pChannel->hVoice);
 }
 
-void sndStartWavDisk(const char *pzFile, int nVolume, int nChannel)
+int *sndStartWavDisk(const char *pzFile, int nVolume, int nChannel)
 {
     if (!SoundToggle)
-        return;
+        return NULL;
     dassert(nChannel >= -1 && nChannel < kChannelMax);
     SAMPLE2D *pChannel;
     if (nChannel == -1)
@@ -389,19 +390,20 @@ void sndStartWavDisk(const char *pzFile, int nVolume, int nChannel)
     nVolume = clamp(nVolume, 0, 255); // clamp to range that audiolib accepts
     int hFile = kopen4loadfrommod(pzFile, 0);
     if (hFile == -1)
-        return;
+        return NULL;
     int nLength = kfilelength(hFile);
     char *pData = (char*)gSoundRes.Alloc(nLength);
     if (!pData)
     {
         kclose(hFile);
-        return;
+        return NULL;
     }
     kread(hFile, pData, kfilelength(hFile));
     kclose(hFile);
     pChannel->at5 = (DICTNODE*)pData;
     pChannel->at4 |= 2;
     pChannel->hVoice = FX_Play(pData, nLength, -1, -1, 0, nVolume, nVolume, nVolume, nVolume, fix16_one, (intptr_t)&pChannel->hVoice);
+    return &pChannel->hVoice;
 }
 
 void sndKillAllSounds(void)
