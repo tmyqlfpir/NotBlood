@@ -307,10 +307,10 @@ char credPlaySmk(const char *_pzSMK, const char *_pzWAV, int nWav)
         videoNextPage();
 
         ctrlClearAllInput();
-        nFrame++;
 
         if (nFrame < nFrames)
             Smacker_GetNextFrame(hSMK);
+        nFrame++;
     }
 
     Smacker_Close(hSMK);
