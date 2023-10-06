@@ -262,15 +262,16 @@ char credPlaySmk(const char *_pzSMK, const char *_pzWAV, int nWav)
         renderSetAspect(viewingrange, 65536);
     }
 
+    int *hVoice = NULL;
     if (nWav)
-        sndStartWavID(nWav, FXVolume);
+        hVoice = sndStartWavID(nWav, FXVolume);
     else
     {
         int nHandleWAV = credKOpen4Load(pzWAV);
         if (nHandleWAV != -1)
         {
             kclose(nHandleWAV);
-            sndStartWavDisk(pzWAV, FXVolume);
+            hVoice = sndStartWavDisk(pzWAV, FXVolume);
         }
     }
 
@@ -282,8 +283,11 @@ char credPlaySmk(const char *_pzSMK, const char *_pzWAV, int nWav)
     ctrlClearAllInput();
 
     int nFrame = 0;
-    do
+    while (1)
     {
+        if ((nFrame >= nFrames) && (!hVoice || hVoice && *hVoice <= 0)) // if smk and audio have played to their end
+            break;
+
         gameHandleEvents();
         if (scale((int)(totalclock-nStartTime), nFrameRate, kTicRate) < nFrame)
             continue;
@@ -304,8 +308,10 @@ char credPlaySmk(const char *_pzSMK, const char *_pzWAV, int nWav)
 
         ctrlClearAllInput();
         nFrame++;
-        Smacker_GetNextFrame(hSMK);
-    } while(nFrame < nFrames);
+
+        if (nFrame < nFrames)
+            Smacker_GetNextFrame(hSMK);
+    }
 
     Smacker_Close(hSMK);
     ctrlClearAllInput();
