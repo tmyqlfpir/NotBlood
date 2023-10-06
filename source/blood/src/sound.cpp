@@ -360,7 +360,7 @@ void sndStartWavID(unsigned int nSound, int nVolume, int nChannel)
     if (!pChannel->at5)
         return;
     char *pData = (char*)gSoundRes.Lock(pChannel->at5);
-    pChannel->hVoice = FX_Play(pData, pChannel->at5->size, 0, -1, 0, nVolume, nVolume, nVolume, nVolume, fix16_one, (intptr_t)&pChannel->hVoice);
+    pChannel->hVoice = FX_Play(pData, pChannel->at5->size, -1, -1, 0, nVolume, nVolume, nVolume, nVolume, fix16_one, (intptr_t)&pChannel->hVoice);
 }
 
 void sndKillSound(SAMPLE2D *pChannel)
@@ -401,7 +401,7 @@ void sndStartWavDisk(const char *pzFile, int nVolume, int nChannel)
     kclose(hFile);
     pChannel->at5 = (DICTNODE*)pData;
     pChannel->at4 |= 2;
-    pChannel->hVoice = FX_Play(pData, nLength, 0, -1, 0, nVolume, nVolume, nVolume, nVolume, fix16_one, (intptr_t)&pChannel->hVoice);
+    pChannel->hVoice = FX_Play(pData, nLength, -1, -1, 0, nVolume, nVolume, nVolume, nVolume, fix16_one, (intptr_t)&pChannel->hVoice);
 }
 
 void sndKillAllSounds(void)
