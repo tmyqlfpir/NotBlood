@@ -737,7 +737,7 @@ const int nVSyncValues[] = {
     -1,
     0,
     1,
-#if defined _WIN32 && defined RENDERTYPESDL
+#if defined USE_OPENGL && defined _WIN32 && defined RENDERTYPESDL
     2
 #endif
 };
