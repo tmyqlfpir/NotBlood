@@ -1091,7 +1091,7 @@ CGameMenuItemChain itemNetworkJoin("JOIN A GAME", 1, 0, 90, 320, 1, &menuNetwork
 CGameMenuItemChain itemNetworkPlayer("PLAYER SETUP", 1, 0, 110, 320, 1, &menuOptionsPlayer, -1, NULL, 0);
 
 CGameMenuItemTitle itemNetworkHostTitle("HOST A GAME", 1, 160, 20, 2038);
-CGameMenuItemSlider itemNetworkHostPlayerNum("PLAYER NUMBER:", 3, 66, 70, 180, 1, 1, kMaxPlayers, 1, NULL, -1, -1, kMenuSliderValue);
+CGameMenuItemSlider itemNetworkHostPlayerNum("PLAYER NUMBER:", 3, 66, 70, 180, 1, 2, kMaxPlayers, 1, NULL, -1, -1, kMenuSliderValue);
 CGameMenuItemZEdit itemNetworkHostPort("NETWORK PORT:", 3, 66, 80, 180, zNetPortBuffer, 6, 0, NULL, 0);
 CGameMenuItemZBool itemNetworkHostBroadcast("ANNOUNCE ON INTERNET:", 3, 66, 90, 180, 0, 0, NULL, NULL);
 CGameMenuItemChain itemNetworkHostHost("HOST A GAME", 3, 66, 110, 180, 1, NULL, -1, NetworkHostGame, 0);
