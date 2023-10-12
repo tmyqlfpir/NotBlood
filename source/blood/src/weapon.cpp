@@ -275,7 +275,7 @@ void WeaponDraw(PLAYER *pPlayer, int a2, int x, int y, int a5)
     pQAV->x = x;
     pQAV->y = y;
     int flags = 2 | kQavOrientationQ16 | RS_LERP;
-    if (gWeaponInterpolate <= 1) // if interpolate weapon animation is off, remove interpolation flag
+    if ((gWeaponInterpolate <= 1) || (pPlayer->curWeapon == kWeaponSprayCan && pPlayer->weaponState == 4)) // if interpolate weapon animation is off or problematic lerp state, remove interpolation flag
     {
         flags &= ~RS_LERP;
     }
