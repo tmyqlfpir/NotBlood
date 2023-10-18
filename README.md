@@ -12,7 +12,6 @@
 
 ### Downloads
 Download for Windows/Linux/MacOS can be found on [https://github.com/clipmove/NotBlood/releases](https://github.com/clipmove/NotBlood/releases)
-<details><summary><h3 dir="auto">New Features For NotBlood</h3></summary>
 
 ### Features
 * Switch to last active weapon if TNT/spray can is active when entering water
@@ -59,8 +58,7 @@ Download for Windows/Linux/MacOS can be found on [https://github.com/clipmove/No
 * Make blood splatter/flare gun glow effect slope on sloped surfaces
 </details>
 
-<details><summary><h3 dir="auto">Installing</h3></summary>
-
+### Installing
 1. Extract NotBlood to a new directory
 2. Copy the following files from Blood 1.21 to NotBlood folder:
    * BLOOD.INI
