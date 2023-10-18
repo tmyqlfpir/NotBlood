@@ -285,11 +285,10 @@ const char *pzWeaponsVersionStrings[] = {
 };
 
 const char *pzHitscanProjectilesStrings[] = {
-    "OFF",
-    "ON (50%)",
-    "ON (75%)",
-    "ON (100%)",
-    "ON (125%)",
+    "Off",
+    "On (Slow)",
+    "On (Normal)",
+    "On (Fast)",
 };
 
 const char *pzRandomizerModeStrings[] = {
