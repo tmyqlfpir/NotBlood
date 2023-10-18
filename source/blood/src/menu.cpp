@@ -62,7 +62,7 @@ void SetEnemyBehavior(CGameMenuItemZCycle*);
 void SetEnemyRandomTNT(CGameMenuItemZBool*);
 void SetWeaponsVer(CGameMenuItemZCycle*);
 void SetSectorBehavior(CGameMenuItemZBool*);
-void SetHitscanProjectiles(CGameMenuItemZBool*);
+void SetHitscanProjectiles(CGameMenuItemZCycle*);
 void SetRandomizerMode(CGameMenuItemZCycle*);
 void SetRandomizerSeed(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
 
@@ -282,6 +282,13 @@ const char *pzWeaponsVersionStrings[] = {
     "Original",
     "NotBlood",
     "V1.0x",
+};
+
+const char *pzHitscanProjectilesStrings[] = {
+    "Off",
+    "On (Slow)",
+    "On (Normal)",
+    "On (Fast)",
 };
 
 const char *pzRandomizerModeStrings[] = {
@@ -526,7 +533,7 @@ CGameMenuItemZCycle itemNetMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 18
 CGameMenuItemZBool itemNetMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, false, NULL, NULL, NULL);
 CGameMenuItemZCycle itemNetMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, NULL, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZBool itemNetMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 125, 180, false, NULL, "NOTBLOOD", "ORIGINAL");
-CGameMenuItemZBool itemNetMutatorBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 135, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetMutatorHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 135, 180, 0, NULL, pzHitscanProjectilesStrings, ARRAY_SSIZE(pzHitscanProjectilesStrings), 0);
 CGameMenuItemZCycle itemNetMutatorRandomizerMode("RANDOMIZER MODE:", 3, 66, 145, 180, 0, NULL, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
 CGameMenuItemZEdit itemNetMutatorRandomizerSeed("RANDOMIZER SEED:", 3, 66, 155, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
@@ -683,7 +690,7 @@ CGameMenuItemZCycle itemMutatorEnemyBehavior("ENEMY BEHAVIOR:", 3, 66, 95, 180, 
 CGameMenuItemZBool itemMutatorBoolEnemyRandomTNT("RANDOM CULTIST TNT:", 3, 66, 105, 180, false, SetEnemyRandomTNT, NULL, NULL);
 CGameMenuItemZCycle itemMutatorWeaponsVer("WEAPON BEHAVIOR:", 3, 66, 115, 180, 0, SetWeaponsVer, pzWeaponsVersionStrings, ARRAY_SSIZE(pzWeaponsVersionStrings), 0);
 CGameMenuItemZBool itemMutatorSectorBehavior("SECTOR BEHAVIOR:", 3, 66, 125, 180, false, SetSectorBehavior, "NOTBLOOD", "ORIGINAL");
-CGameMenuItemZBool itemMutatorBoolHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 135, 180, false, SetHitscanProjectiles, NULL, NULL);
+CGameMenuItemZCycle itemMutatorHitscanProjectiles("HITSCAN PROJECTILES:", 3, 66, 135, 180, 0, SetHitscanProjectiles, pzHitscanProjectilesStrings, ARRAY_SSIZE(pzHitscanProjectilesStrings), 0);
 CGameMenuItemZCycle itemMutatorRandomizerMode("RANDOMIZER MODE:", 3, 66, 145, 180, 0, SetRandomizerMode, pzRandomizerModeStrings, ARRAY_SSIZE(pzRandomizerModeStrings), 0);
 CGameMenuItemZEdit itemMutatorRandomizerSeed("RANDOMIZER SEED:", 3, 66, 155, 180, szRandomizerSeedMenu, sizeof(szRandomizerSeedMenu), 0, SetRandomizerSeed, 0);
 ///////////////////
@@ -1460,7 +1467,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameMutators.Add(&itemNetMutatorBoolEnemyRandomTNT, false);
     menuNetworkGameMutators.Add(&itemNetMutatorWeaponsVer, false);
     menuNetworkGameMutators.Add(&itemNetMutatorSectorBehavior, false);
-    menuNetworkGameMutators.Add(&itemNetMutatorBoolHitscanProjectiles, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorHitscanProjectiles, false);
     menuNetworkGameMutators.Add(&itemNetMutatorRandomizerMode, false);
     menuNetworkGameMutators.Add(&itemNetMutatorRandomizerSeed, false);
     menuNetworkGameMutators.Add(&itemBloodQAV, false);
@@ -1480,8 +1487,8 @@ void SetupNetStartMenu(void)
     itemNetMutatorWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
     itemNetMutatorSectorBehavior.tooltip_pzTextUpper = "Improve room over room sector handling";
     itemNetMutatorSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: firing above water)";
-    itemNetMutatorBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
-    itemNetMutatorBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
+    itemNetMutatorHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
+    itemNetMutatorHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
     itemNetMutatorRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
     itemNetMutatorRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
     itemNetMutatorRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
@@ -1516,7 +1523,7 @@ void SetupNetStartMenu(void)
     itemNetMutatorBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
     itemNetMutatorWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     itemNetMutatorSectorBehavior.at20 = !!gSectorBehavior;
-    itemNetMutatorBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
+    itemNetMutatorHitscanProjectiles.m_nFocus = gHitscanProjectiles % ARRAY_SSIZE(pzHitscanProjectilesStrings);
     itemNetMutatorRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bstrncpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(gPacketStartGame.szRandomizerSeed));
     ///////
@@ -1709,7 +1716,7 @@ void SetupOptionsMenu(void)
     menuOptionsGameMutators.Add(&itemMutatorBoolEnemyRandomTNT, false);
     menuOptionsGameMutators.Add(&itemMutatorWeaponsVer, false);
     menuOptionsGameMutators.Add(&itemMutatorSectorBehavior, false);
-    menuOptionsGameMutators.Add(&itemMutatorBoolHitscanProjectiles, false);
+    menuOptionsGameMutators.Add(&itemMutatorHitscanProjectiles, false);
     menuOptionsGameMutators.Add(&itemMutatorRandomizerMode, false);
     menuOptionsGameMutators.Add(&itemMutatorRandomizerSeed, false);
     menuOptionsGameMutators.Add(&itemBloodQAV, false);
@@ -1732,8 +1739,8 @@ void SetupOptionsMenu(void)
     itemMutatorWeaponsVer.tooltip_pzTextLower = "list of weapon changes";
     itemMutatorSectorBehavior.tooltip_pzTextUpper = "Improve room over room sector handling";
     itemMutatorSectorBehavior.tooltip_pzTextLower = "for hitscans (e.g: firing above water)";
-    itemMutatorBoolHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
-    itemMutatorBoolHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
+    itemMutatorHitscanProjectiles.tooltip_pzTextUpper = "Set hitscan enemies to";
+    itemMutatorHitscanProjectiles.tooltip_pzTextLower = "spawn bullet projectiles";
     itemMutatorRandomizerMode.tooltip_pzTextUpper = "Set the randomizer's mode";
     itemMutatorRandomizerSeed.tooltip_pzTextUpper = "Set the randomizer's seed";
     itemMutatorRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
@@ -1761,7 +1768,7 @@ void SetupOptionsMenu(void)
     itemMutatorBoolEnemyRandomTNT.at20 = !!gEnemyRandomTNT;
     itemMutatorWeaponsVer.m_nFocus = gWeaponsVer % ARRAY_SSIZE(pzWeaponsVersionStrings);
     itemMutatorSectorBehavior.at20 = !!gSectorBehavior;
-    itemMutatorBoolHitscanProjectiles.at20 = !!gHitscanProjectiles;
+    itemMutatorHitscanProjectiles.m_nFocus = gHitscanProjectiles % ARRAY_SSIZE(pzHitscanProjectilesStrings);
     itemMutatorRandomizerMode.m_nFocus = gRandomizerMode % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bstrncpy(szRandomizerSeedMenu, gzRandomizerSeed, sizeof(szRandomizerSeedMenu));
     ///////
@@ -2371,13 +2378,13 @@ void SetSectorBehavior(CGameMenuItemZBool *pItem)
     }
 }
 
-void SetHitscanProjectiles(CGameMenuItemZBool *pItem)
+void SetHitscanProjectiles(CGameMenuItemZCycle *pItem)
 {
     if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
-        gHitscanProjectiles = pItem->at20;
-        gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
+        gHitscanProjectiles = pItem->m_nFocus % ARRAY_SSIZE(pzHitscanProjectilesStrings);
+        gGameOptions.nHitscanProjectiles = gHitscanProjectiles;
     } else {
-        pItem->at20 = !!gHitscanProjectiles;
+        pItem->m_nFocus = gHitscanProjectiles % ARRAY_SSIZE(pzHitscanProjectilesStrings);
     }
 }
 
@@ -4081,7 +4088,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     gPacketStartGame.bEnemyRandomTNT = itemNetMutatorBoolEnemyRandomTNT.at20;
     gPacketStartGame.nWeaponsVer = itemNetMutatorWeaponsVer.m_nFocus % ARRAY_SSIZE(pzWeaponsVersionStrings);
     gPacketStartGame.bSectorBehavior = itemNetMutatorSectorBehavior.at20;
-    gPacketStartGame.bHitscanProjectiles = itemNetMutatorBoolHitscanProjectiles.at20;
+    gPacketStartGame.nHitscanProjectiles = itemNetMutatorHitscanProjectiles.m_nFocus % ARRAY_SSIZE(pzHitscanProjectilesStrings);
     gPacketStartGame.randomizerMode = itemNetMutatorRandomizerMode.m_nFocus % ARRAY_SSIZE(pzRandomizerModeStrings);
     Bstrncpy(gPacketStartGame.szRandomizerSeed, szRandomizerSeedMenu, sizeof(gPacketStartGame.szRandomizerSeed));
     if (gPacketStartGame.szRandomizerSeed[0] == '\0') // if no seed entered, generate new one before sending packet
