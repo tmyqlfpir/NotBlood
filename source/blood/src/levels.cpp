@@ -77,7 +77,7 @@ GAMEOPTIONS gSingleGameOptions = {
     0,     // bool bEnemyRandomTNT;
     1,     // int nWeaponsVer;
     0,     // bool bSectorBehavior;
-    0,     // bool bHitscanProjectiles;
+    0,     // int nHitscanProjectiles;
     0,     // char nRandomizerMode;
     "",    // char szRandomizerSeed[9];
     -1,    // int nRandomizerCheat;
