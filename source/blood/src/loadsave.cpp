@@ -237,7 +237,7 @@ void LoadSave::LoadGame(char *pzFile)
         gGameOptions.bEnemyRandomTNT = gEnemyRandomTNT;
         gGameOptions.nWeaponsVer = gWeaponsVer;
         gGameOptions.bSectorBehavior = gSectorBehavior;
-        gGameOptions.bHitscanProjectiles = gHitscanProjectiles;
+        gGameOptions.nHitscanProjectiles = gHitscanProjectiles;
         gGameOptions.nRandomizerMode = gRandomizerMode;
         Bmemcpy(gGameOptions.szRandomizerSeed, gzRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
     }
