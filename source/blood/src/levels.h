@@ -63,7 +63,7 @@ struct GAMEOPTIONS {
     bool bEnemyRandomTNT;
     int nWeaponsVer;
     bool bSectorBehavior;
-    int nHitscanProjectiles;
+    char nHitscanProjectiles;
     char nRandomizerMode;
     char szRandomizerSeed[9];
     int nRandomizerCheat;
