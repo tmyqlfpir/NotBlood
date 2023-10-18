@@ -148,7 +148,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Use Raze phase calculation for smoother elevator rides
 * Hitscan projectiles
    - Makes enemies that use hitscan bullets spawn physical sprite based bullets with travel time
-   - Projectile speed is adjusted depending on difficulty and if bullet is underwater
+   - Projectile speed is adjusted if bullet is underwater (25% speed penalty)
    - This mutator does not support custom modern map enemies
 * Randomizer mode
    - Set the enemy/pickups randomizer mode

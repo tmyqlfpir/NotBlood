@@ -5762,8 +5762,10 @@ void MoveMissileBullet(spritetype *pSprite)
     int dz = zvel[nSprite]>>7;
     const VECTOR_TYPE nType = pSprite->type == kMissileShell ? kVectorShell : kVectorBullet;
     int speed = missileInfo[pSprite->type - kMissileBase].velocity;
-    if (gGameOptions.nDifficulty < 3) // if on lower difficulties, adjust hitscan range by 75%
+    if (gGameOptions.nHitscanProjectiles == 1) // if hitscan projectile speed is 75%, adjust hitscan range
         speed = (speed>>1) + (speed>>2);
+    else if (gGameOptions.nHitscanProjectiles == 3) // if hitscan projectile speed is 125%, adjust hitscan range
+        speed += (speed>>2);
     if (bulletIsUnderwater) // if bullet is underwater, adjust hitscan range by 75%
         speed = (speed>>1) + (speed>>2);
     bool weHitSomething = MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, dx, dy, dz, nType, (speed>>12) + (speed>>13));
@@ -7067,11 +7069,17 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
         pMissile->cstat &= ~(CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_BLOCK_HITSCAN);
         if (gTransparentHitscanProjectiles)
             pMissile->cstat |= CSTAT_SPRITE_TRANSLUCENT;
-        if (gGameOptions.nDifficulty < 3) // slow down by 75% if on lower difficulties
+        if (gGameOptions.nHitscanProjectiles == 1) // if hitscan projectile speed is 75%, adjust speed
         {
             xvel[nMissile] = (xvel[nMissile]>>1) + (xvel[nMissile]>>2);
             yvel[nMissile] = (yvel[nMissile]>>1) + (yvel[nMissile]>>2);
             zvel[nMissile] = (zvel[nMissile]>>1) + (zvel[nMissile]>>2);
+        }
+        else if (gGameOptions.nHitscanProjectiles == 3) // if hitscan projectile speed is 125%, adjust speed
+        {
+            xvel[nMissile] += (xvel[nMissile]>>2);
+            yvel[nMissile] += (yvel[nMissile]>>2);
+            zvel[nMissile] += (zvel[nMissile]>>2);
         }
     }
     int nXSprite = pMissile->extra;
