@@ -392,7 +392,7 @@ inline void playerSetSkill(int nSkill)
 {
     nSkill = ClipRange(nSkill, 0, 4);
     for (int i = 0; i < kMaxPlayers; i++) // set all player's skill setting
-        gProfile[i].skill = nSkill;
+        gProfile[i].skill = gProfileNet[i].skill = nSkill;
 }
 
 #define kFlagBluePal 10 // 10: dark blue

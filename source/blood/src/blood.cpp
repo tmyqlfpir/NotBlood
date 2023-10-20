@@ -811,6 +811,8 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     evInit();
     for (int i = connecthead; i >= 0; i = connectpoint2[i])
     {
+        if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer))
+            gProfile[i] = gProfileNet[i]; // gProfileNet should always be the latest profile from remote players
         if (!(gameOptions->uGameFlags&kGameFlagContinuing)) // if new game
         {
             if (numplayers == 1)
@@ -824,7 +826,6 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         }
         else if ((gGameOptions.nGameType == kGameTypeTeams) && !VanillaMode()) // if ctf mode and went to next level, reset scores
             playerResetScores(i);
-        gProfile[i] = gProfileNet[i]; // gProfileNet should always be the latest profile from remote players
         playerStart(i, 1);
     }
     playerInitRoundCheck();
