@@ -189,6 +189,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable Caleb's dialog lines (0: on, 1: no idle, 2: no explosion/gib, 3: off)
 * cl_chatsnd
    - Enable/disable multiplayer chat message beep
+* cl_dim
+   - Enable/disable dimming background when menu is active
 * cl_interpolatepanning
    - Enable/disable sector texture panning interpolation (cl_interpolate must be set on)
 * cl_interpolateweapon

@@ -1000,6 +1000,7 @@ int32_t registerosdcommands(void)
         { "cl_interpolatepanning", "enable/disable sector texture panning interpolation (cl_interpolate must be set on)", (void *)&gPanningInterpolate, CVAR_BOOL, 0, 1 },
         { "cl_interpolateweapon", "enable/disable view interpolation for drawn weapon (0: disable, 1: position, 2: position/qav animation)", (void *)&gWeaponInterpolate, CVAR_INT, 0, 2 },
         { "cl_colormsg", "enable/disable colored player names in messages", (void *)&gColorMsg, CVAR_BOOL, 0, 1 },
+        { "cl_dim", "enable/disable dimming background when menu is active", (void *)&gViewDim, CVAR_BOOL, 0, 1 },
         { "cl_healthblink", "enable/disable health blinking when under 15 health points", (void *)&gHealthBlink, CVAR_BOOL, 0, 1 },
         { "cl_killmsg", "enable/disable kill messages", (void *)&gKillMsg, CVAR_BOOL, 0, 1 },
         { "cl_killobituaries", "enable/disable random obituary kill messages", (void *)&gKillObituary, CVAR_BOOL, 0, 1 },
