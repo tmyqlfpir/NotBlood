@@ -128,6 +128,7 @@ bool gSaveGameActive;
 int gCacheMiss;
 int gMenuPicnum = 2518; // default menu picnum
 
+bool gNetPortOverride = false;
 int gMultiModeInit = -1;
 int gMultiLength = -1;
 int gMultiLimit = -1;
@@ -1730,6 +1731,7 @@ void ParseOptions(void)
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gNetPort = strtoul(OptArgv[0], NULL, 0);
+            gNetPortOverride = true;
             break;
         case 40:
             if (OptArgc < 1)
@@ -2106,6 +2108,8 @@ int app_main(int argc, char const * const * argv)
     // PORT-TODO: CD audio init
 
     LOG_F(INFO, "Initializing network users");
+    if (gNetPortOverride) // do this after cfg has loaded
+        Bsnprintf(zNetPortBuffer, sizeof(zNetPortBuffer), "%d", gNetPort);
     netInitialize(true);
     scrSetGameMode(gSetup.fullscreen, gSetup.xdim, gSetup.ydim, gSetup.bpp);
     if (gCustomPalette || gCustomPaletteGrayscale || gCustomPaletteInvert) // load modified palette
