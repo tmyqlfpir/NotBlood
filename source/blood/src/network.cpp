@@ -1181,6 +1181,13 @@ void netInitialize(bool bConsole, bool bAnnounce)
             LOG_F(ERROR, "Could not connect to %s:%i", gNetAddress, gNetPort);
             netDeinitialize();
             netResetToSinglePlayer();
+            videoNextPage();
+            handleevents();
+            if (gNetRetry && !KB_KeyPressed(sc_Escape))
+            {
+                gNetMode = NETWORK_CLIENT;
+                return netInitialize(bConsole, bAnnounce);
+            }
             return;
         }
         bool bWaitServer = true;

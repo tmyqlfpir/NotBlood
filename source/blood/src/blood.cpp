@@ -128,6 +128,9 @@ bool gSaveGameActive;
 int gCacheMiss;
 int gMenuPicnum = 2518; // default menu picnum
 
+bool gNetPortOverride = false;
+bool gNetRetry = false;
+
 int gMultiModeInit = -1;
 int gMultiLength = -1;
 int gMultiLimit = -1;
@@ -1417,6 +1420,7 @@ SWITCH switches[] = {
     { "mp_weaps", 51, 1 },
     { "mp_items", 52, 1 },
     { "mp_map", 53, 1 },
+    { "netretry", 54, 0 },
     { NULL, 0, 0 }
 };
 
@@ -1468,6 +1472,7 @@ void PrintHelp(void)
         "-mp_weaps [0-3]\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
         "-mp_items [0-2]\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
         "-mp_map [map]\tSet user map path for multiplayer (e.g: filename.map)\n"
+        "-netretry\t\tReattempts client connection automatically (hold down escape to end loop)\n"
         ;
 #ifdef WM_MSGBOX_WINDOW
     Bsnprintf(tempbuf, sizeof(tempbuf), APPNAME " %s", s_buildRev);
@@ -1730,6 +1735,7 @@ void ParseOptions(void)
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gNetPort = strtoul(OptArgv[0], NULL, 0);
+            gNetPortOverride = true;
             break;
         case 40:
             if (OptArgc < 1)
@@ -1802,6 +1808,9 @@ void ParseOptions(void)
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             Bstrncpyz(zUserMapName, OptArgv[0], sizeof(zUserMapName));
+            break;
+        case 54: // netretry
+            gNetRetry = true;
             break;
         }
     }
@@ -2106,6 +2115,8 @@ int app_main(int argc, char const * const * argv)
     // PORT-TODO: CD audio init
 
     LOG_F(INFO, "Initializing network users");
+    if (gNetPortOverride) // do this after cfg has loaded
+        Bsnprintf(zNetPortBuffer, sizeof(zNetPortBuffer), "%d", gNetPort);
     netInitialize(true);
     scrSetGameMode(gSetup.fullscreen, gSetup.xdim, gSetup.ydim, gSetup.bpp);
     if (gCustomPalette || gCustomPaletteGrayscale || gCustomPaletteInvert) // load modified palette
