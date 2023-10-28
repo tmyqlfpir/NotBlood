@@ -1421,6 +1421,7 @@ SWITCH switches[] = {
     { "mp_items", 52, 1 },
     { "mp_map", 53, 1 },
     { "netretry", 54, 0 },
+    { "clientport", 55, 1 },
     { NULL, 0, 0 }
 };
 
@@ -1473,6 +1474,7 @@ void PrintHelp(void)
         "-mp_items [0-2]\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
         "-mp_map [map]\tSet user map path for multiplayer (e.g: filename.map)\n"
         "-netretry\t\tReattempts client connection automatically (hold down escape to end loop)\n"
+        "-clientport\tSets the local port used for network binding for clients\n"
         ;
 #ifdef WM_MSGBOX_WINDOW
     Bsnprintf(tempbuf, sizeof(tempbuf), APPNAME " %s", s_buildRev);
@@ -1811,6 +1813,9 @@ void ParseOptions(void)
             break;
         case 54: // netretry
             gNetRetry = true;
+            break;
+        case 55: // clientport
+            gNetPortLocal = strtoul(OptArgv[0], NULL, 0);
             break;
         }
     }

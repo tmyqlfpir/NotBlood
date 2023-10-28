@@ -68,6 +68,7 @@ extern bool gNetNotifyProfileUpdate;
 extern NETWORKMODE gNetMode;
 extern char gNetAddress[32];
 extern int gNetPort;
+extern int gNetPortLocal;
 
 extern void netIRCDeinitialize(void);
 extern int netIRCIinitialize(void);

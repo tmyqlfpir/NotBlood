@@ -71,6 +71,7 @@ NETWORKMODE gNetMode = NETWORK_NONE;
 char gNetAddress[32];
 // PORT-TODO: Use different port?
 int gNetPort = kNetDefaultPort;
+int gNetPortLocal = kNetDefaultPort;
 
 const short kNetVersion = 0x228;
 
@@ -80,6 +81,7 @@ PKT_STARTGAME gPacketStartGame;
 
 #ifndef NETCODE_DISABLE
 ENetAddress gNetENetAddress;
+ENetAddress gNetENetAddressLocal;
 ENetHost *gNetENetServer;
 ENetHost *gNetENetClient;
 ENetPeer *gNetENetPeer;
@@ -1163,7 +1165,9 @@ void netInitialize(bool bConsole, bool bAnnounce)
             viewLoadingScreen(gMenuPicnum, "Network Game", NULL, buffer);
             videoNextPage();
         }
-        gNetENetClient = enet_host_create(NULL, 1, BLOOD_ENET_CHANNEL_MAX, 0, 0);
+        gNetENetAddressLocal.host = ENET_HOST_ANY;
+        gNetENetAddressLocal.port = gNetPortLocal;
+        gNetENetClient = enet_host_create(&gNetENetAddressLocal, 1, BLOOD_ENET_CHANNEL_MAX, 0, 0);
         enet_address_set_host(&gNetENetAddress, gNetAddress);
         gNetENetAddress.port = gNetPort;
         gNetENetPeer = enet_host_connect(gNetENetClient, &gNetENetAddress, BLOOD_ENET_CHANNEL_MAX, 0);
