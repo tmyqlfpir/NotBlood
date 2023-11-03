@@ -489,7 +489,9 @@ LIBDIRS :=
 
 ASFORMAT := elf$(BITS)
 ifeq ($(PLATFORM),WINDOWS)
-    LINKERFLAGS += -static -Wl,-subsystem,windows
+    WINDOWS_MAJOR := 6
+    WINDOWS_MINOR := 1
+    LINKERFLAGS += -static -Wl,-subsystem,windows:$(WINDOWS_MAJOR).$(WINDOWS_MINOR),--major-os-version,$(WINDOWS_MAJOR),--minor-os-version,$(WINDOWS_MINOR)
     COMPILERFLAGS += -DUNDERSCORES
     COMPILERFLAGS += -mno-ms-bitfields
     ASFORMAT := win$(BITS)
@@ -558,7 +560,7 @@ ifndef OPTOPT
         else
             OPTOPT := -march=core2
         endif
-        OPTOPT += -mmmx -msse -msse2 -msse3 -mssse3 -mfpmath=sse
+        OPTOPT += -mmmx -msse -msse2 -msse3 -mfpmath=sse
     endif
     ifeq ($(findstring i386, $(IMPLICIT_ARCH)),i386)
         ifeq ($(PLATFORM),DARWIN)
@@ -940,6 +942,9 @@ ifeq ($(RENDERTYPE),SDL)
         endif
     else
         ifneq ($(SDLCONFIG),)
+            ifeq ($(PLATFORM),DARWIN)
+                override SDL_STATIC := 0
+            endif
             ifneq ($(SDL_STATIC),0)
                 override SDLCONFIG_LIBS := -Wl,-Bstatic -l$(SDLNAME) -Wl,-Bdynamic $(strip $(subst -l$(SDLNAME),,$(shell CC=$(CC) $(SDLCONFIG) --static-libs)))
                 # for some reason SteamRT has a GCC with --enable-default-pie but its SDL2 has it disabled. WTF?
