@@ -1464,7 +1464,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
         }
         else
         {
-            DrawStatNumber("%d", nTime, kSBarNumberInv, x + 15, y, 0, nTime > nWarning ? 0 : 2, 256, 65536 * 0.5);
+            DrawStatNumber("%d", nTime, kSBarNumberInv, x + 15, y, 0, nTime > nWarning ? 0 : 2, 256, fix16_from_float(0.5f));
         }
         y += 20;
     }
