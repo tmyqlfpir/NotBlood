@@ -1379,7 +1379,7 @@ const struct POWERUPDISPLAY {
     {gPowerUpInfo[kPwUpShadowCloak].picnum, fix16_from_float(0.4f), 0}, // invisibility
     {gPowerUpInfo[kPwUpReflectShots].picnum, fix16_from_float(0.4f), 5}, // reflects enemy shots
     {gPowerUpInfo[kPwUpDeathMask].picnum, fix16_from_float(0.3f), 9}, // invulnerability
-    {gPowerUpInfo[kPwUpTwoGuns].picnum, fix16_from_float(0.25f), 5}, // guns akimbo
+    {gPowerUpInfo[kPwUpTwoGuns].picnum, fix16_from_float(0.25f), 4}, // guns akimbo
     {30463, fix16_from_float(0.45f), 7}, // quad damage
     {gPowerUpInfo[kPwUpShadowCloakUseless].picnum, fix16_from_float(0.4f), 9}, // shadow cloak (does nothing, only appears at near the end of CP04)
 
@@ -1452,7 +1452,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
         if (nTime > nWarning || ((int)totalclock & 32))
         {
             if (gPowerupStyle)
-                DrawStatMaskedSprite(pPowerups->nTile, x, y + pPowerups->yOffset + 1, 0, 0, 256, mulscale16(fix16_from_float(1.4f), pPowerups->nScaleRatio));
+                DrawStatMaskedSprite(pPowerups->nTile, x, y + pPowerups->yOffset, 0, 0, 256, mulscale16(fix16_from_float(1.35f), pPowerups->nScaleRatio));
             else
                 DrawStatMaskedSprite(pPowerups->nTile, x, y + pPowerups->yOffset, 0, 0, 256, pPowerups->nScaleRatio);
         }
@@ -1460,7 +1460,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
         if (gPowerupStyle)
         {
             Bsprintf(buffer, "%02d", nTime);
-            viewDrawText(3, buffer, x-28, y-3, 0, nTime > nWarning ? 0 : 2, 2, 0);
+            viewDrawText(3, buffer, x-28, y-5, 0, nTime > nWarning ? 0 : 2, 2, 0);
         }
         else
         {
