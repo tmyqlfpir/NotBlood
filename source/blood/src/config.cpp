@@ -488,7 +488,7 @@ void CONFIG_SetDefaults(void)
     //ud.weaponswitch           = 3;  // new+empty
     gFov = 90;
     gRollAngle = 0;
-    gCenterHoriz = 1;
+    gCenterHoriz = 0;
     gDeliriumBlur = 1;
     gViewSize = 3;
     gTurnSpeed = 92;
