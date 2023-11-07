@@ -1452,7 +1452,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
         if (nTime > nWarning || ((int)totalclock & 32))
         {
             if (gPowerupStyle)
-                DrawStatMaskedSprite(pPowerups->nTile, x, y + pPowerups->yOffset, 0, 0, 256, mulscale16(fix16_from_float(1.35f), pPowerups->nScaleRatio));
+                DrawStatMaskedSprite(pPowerups->nTile, x, y + pPowerups->yOffset, 0, 0, 256, mulscale16(fix16_from_float(1.75f), pPowerups->nScaleRatio));
             else
                 DrawStatMaskedSprite(pPowerups->nTile, x, y + pPowerups->yOffset, 0, 0, 256, pPowerups->nScaleRatio);
         }
@@ -1460,11 +1460,13 @@ void viewDrawPowerUps(PLAYER* pPlayer)
         if (gPowerupStyle)
         {
             Bsprintf(buffer, "%02d", nTime);
-            viewDrawText(3, buffer, x-28, y-5, 0, nTime > nWarning ? 0 : 2, 2, 0);
+            viewDrawText(3, buffer, x-28, y-6, 0, nTime > nWarning ? 0 : 2, 2, 0);
+            y += 35;
         }
         else
         {
             DrawStatNumber("%d", nTime, kSBarNumberInv, x + 15, y, 0, nTime > nWarning ? 0 : 2, 256, fix16_from_float(0.5f));
+            y += 20;
         }
         y += 20;
     }
