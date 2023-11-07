@@ -120,6 +120,7 @@ extern int32_t gHudBgNewBorder;
 extern int32_t gHudBgScale;
 extern int32_t gHudBgVanilla;
 extern int32_t gPowerupDuration;
+extern int32_t gPowerupStyle;
 extern int32_t gPowerupTicks;
 extern int32_t gShowCompleteTime;
 extern int32_t gShowMapTitle;

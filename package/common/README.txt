@@ -245,6 +245,10 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable showing level statistics display only on map view
 * hud_ratio
    - Enable/disable level statistics display (0: off, 1: on [default], 2: on [4:3], 3: on [16:10], 4: on [16:9], 5: on [21:9])
+* hud_powerupduration
+   - Enable/disable displaying the remaining time for power-ups (0: off, 1: on [default], 2: on [4:3], 3: on [16:10], 4: on [16:9], 5: on [21:9])
+* hud_powerupdurationstyle
+   - Set the display style for the remaining time for power-ups (0: nblood, 1: notblood)
 * hud_powerupdurationticks
    - Set the tickrate divide value used for displaying the remaining time for power-ups (default: 100, realtime seconds: 120)
 * hud_showendtime
