@@ -1468,7 +1468,6 @@ void viewDrawPowerUps(PLAYER* pPlayer)
             DrawStatNumber("%d", nTime, kSBarNumberInv, x + 15, y, 0, nTime > nWarning ? 0 : 2, 256, fix16_from_float(0.5f));
             y += 20;
         }
-        y += 20;
     }
 }
 
