@@ -140,6 +140,7 @@ int32_t gHudBgNewBorder;
 int32_t gHudBgScale;
 int32_t gHudBgVanilla;
 int32_t gPowerupDuration;
+int32_t gPowerupStyle;
 int32_t gPowerupTicks;
 int32_t gShowCompleteTime;
 int32_t gShowMapTitle;
@@ -434,6 +435,7 @@ void CONFIG_SetDefaults(void)
     gHudBgScale = 1;
     gHudBgVanilla = 0;
     gPowerupDuration = 4;
+    gPowerupStyle = 1;
     gPowerupTicks = 100;
     gShowCompleteTime = 1;
     gShowMapTitle = 1;
