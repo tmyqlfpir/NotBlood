@@ -1460,7 +1460,7 @@ void viewDrawPowerUps(PLAYER* pPlayer)
         if (gPowerupStyle)
         {
             Bsprintf(buffer, "%02d", nTime);
-            viewDrawText(3, buffer, x-28, y-3, 0, nTime > nWarning ? 0 : 2, 256, 65536 * 0.5);
+            viewDrawText(3, buffer, x-28, y-3, 0, nTime > nWarning ? 0 : 2, 2, 0);
         }
         else
         {
