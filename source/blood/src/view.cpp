@@ -1442,7 +1442,6 @@ void viewDrawPowerUps(PLAYER* pPlayer)
     }
 
     const int nWarning = 5;
-    const int x = gPowerupStyle ? 390 + xscalepowerups : 15 - xscalepowerups;
     int y = 50;
     char buffer[8];
     for (int i = 0; i < nSortCount; i++)
@@ -1452,20 +1451,20 @@ void viewDrawPowerUps(PLAYER* pPlayer)
         if (nTime > nWarning || ((int)totalclock & 32))
         {
             if (gPowerupStyle)
-                DrawStatMaskedSprite(pPowerups->nTile, x, y + pPowerups->yOffset, 0, 0, 256, mulscale16(fix16_from_float(1.75f), pPowerups->nScaleRatio));
+                DrawStatMaskedSprite(pPowerups->nTile, 283+xscalepowerups, y + pPowerups->yOffset, 0, 0, 512, mulscale16(fix16_from_float(1.75f), pPowerups->nScaleRatio));
             else
-                DrawStatMaskedSprite(pPowerups->nTile, x, y + pPowerups->yOffset, 0, 0, 256, pPowerups->nScaleRatio);
+                DrawStatMaskedSprite(pPowerups->nTile, 15-xscalepowerups, y + pPowerups->yOffset, 0, 0, 256, pPowerups->nScaleRatio);
         }
 
         if (gPowerupStyle)
         {
             Bsprintf(buffer, "%02d", nTime);
-            viewDrawText(3, buffer, x-28, y-6, 0, nTime > nWarning ? 0 : 2, 2, 0);
+            viewDrawText(3, buffer, 309+xscalepowerups, y-6, 0, nTime > nWarning ? 0 : 2, 2, 0, 512);
             y += 35;
         }
         else
         {
-            DrawStatNumber("%d", nTime, kSBarNumberInv, x + 15, y, 0, nTime > nWarning ? 0 : 2, 256, fix16_from_float(0.5f));
+            DrawStatNumber("%d", nTime, kSBarNumberInv, 15 - xscalepowerups + 15, y, 0, nTime > nWarning ? 0 : 2, 256, fix16_from_float(0.5f));
             y += 20;
         }
     }
