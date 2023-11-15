@@ -574,6 +574,9 @@ _DEMOPLAYBACK:
                 gGameOptions.uGameFlags &= ~kGameFlagContinuing; // don't let demo attempt to load player health from gHealthTemp
                 playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
                 for (int i = 0; i < kMaxPlayers; i++)
+                    playerInit(i, 0);
+                StartLevel(&gGameOptions);
+                for (int i = 0; i < kMaxPlayers; i++) // force player settings for demos
                 {
                     gProfile[i].nAutoAim = 1;
                     gProfile[i].nWeaponSwitch = 1;
@@ -581,9 +584,6 @@ _DEMOPLAYBACK:
                     gProfile[i].nWeaponHBobbing = 1;
                     gProfileNet[i] = gProfile[i];
                 }
-                for (int i = 0; i < kMaxPlayers; i++)
-                    playerInit(i, 0);
-                StartLevel(&gGameOptions);
                 if (gDemoRunValidation) // if we're executing validation test
                 {
                     for (int index = 0; index < ARRAY_SSIZE(gDemoValidate); index++) // search for current demo in list of known valid results
