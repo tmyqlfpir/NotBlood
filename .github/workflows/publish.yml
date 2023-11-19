@@ -40,3 +40,12 @@ jobs:
         title: "Latest Build"
         files: |
             ./upload/*.zip
+        
+    - name: Add download badges
+      uses: "irongut/EditRelease@v1.2.0"
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
+        id: ${{ github.event.release.id }}
+        body: |
+          ## Downloads
+          <a href="https://github.com/clipmove/NotBlood/releases/download/latest/notblood-win64.zip" target="_blank"><img src="https://img.shields.io/github/downloads/clipmove/notblood/latest/notblood-win64.zip?color=blue&label=Win64&logo=windows&style=for-the-badge"></a><br><a href="https://github.com/clipmove/NotBlood/releases/download/latest/notblood-win32.zip" target="_blank"><img src="https://img.shields.io/github/downloads/clipmove/notblood/latest/notblood-win32.zip?color=blue&label=Win32&logo=windows&style=for-the-badge"></a><br><a href="https://github.com/clipmove/NotBlood/releases/download/latest/notblood-winxp.zip" target="_blank"><img src="https://img.shields.io/github/downloads/clipmove/notblood/latest/notblood-winxp.zip?color=blue&label=WinXP&logo=windows&style=for-the-badge"></a><br><a href="https://github.com/clipmove/NotBlood/releases/download/latest/notblood-linux-gcc.zip" target="_blank"><img src="https://img.shields.io/github/downloads/clipmove/notblood/latest/notblood-linux-gcc.zip?color=blue&label=Linux-GCC&logo=linux&style=for-the-badge"></a><br><a href="https://github.com/clipmove/NotBlood/releases/download/latest/notblood-linux-clang.zip" target="_blank"><img src="https://img.shields.io/github/downloads/clipmove/notblood/latest/notblood-linux-clang.zip?color=blue&label=Linux-Clang&logo=linux&style=for-the-badge"></a><br><a href="https://github.com/clipmove/NotBlood/releases/download/latest/notblood-macos.zip" target="_blank"><img src="https://img.shields.io/github/downloads/clipmove/notblood/latest/notblood-macos.zip?color=blue&label=MacOs&logo=apple&style=for-the-badge"></a>
