@@ -1987,8 +1987,13 @@ int app_main(int argc, char const * const * argv)
 #endif
     G_LoadGroups(!bNoAutoLoad && !gSetup.noautoload);
 
-    //if (!g_useCwd)
-    //    G_CleanupSearchPaths();
+    if (!g_useCwd)
+    {
+        G_CleanupSearchPaths();
+
+        if (strcmp(pINISelected->zName, "CRYPTIC.INI"))
+            removesearchpaths_withuser(SEARCHPATH_CRYPTIC);
+    }
 
     LOG_F(INFO, "Initializing OSD...");
 
