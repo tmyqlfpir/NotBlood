@@ -972,18 +972,7 @@ void dbRandomizerMode(spritetype *pSprite)
         }
     }
 
-    if (gGameOptions.nEnemyQuantity <= 2) // don't always replace enemies/pickups
-    {
-        if (!dbRandomizerRNG(2)) return;
-    }
-    else if (gGameOptions.nEnemyQuantity == 3) // well done
-    {
-        if (!dbRandomizerRNG(4)) return;
-    }
-    else // extra crispy
-    {
-        if (!dbRandomizerRNG(5)) return;
-    }
+    if (!dbRandomizerRNG(5)) return;
 
     if (gGameOptions.nRandomizerMode & 1) // if enemies or enemies+weapons mode, randomize enemy
     {
