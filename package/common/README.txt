@@ -1,5 +1,5 @@
 ### NotBlood
-A gameplay modification of Blood, based upon the EDuke32 driven Blood reverse-engineer port NBlood
+An enhanced, refined fork of NBlood with quality-of-life options, optional mutators and expanded multiplayer features
 
 ### Features
 * Switch to last active weapon if TNT/spray can is active when entering water
