@@ -8,7 +8,7 @@
 </p><h1></h1>
 
 ### Overview
-**NotBlood** is a gameplay modification of Blood, based upon the reverse-engineer port [NBlood](https://github.com/nukeykt/NBlood)
+**NotBlood** is an enhanced, refined fork of [NBlood](https://github.com/nukeykt/NBlood) with quality-of-life options, optional mutators and expanded multiplayer features
 
 ### Downloads
 Download for Windows/Linux/MacOS can be found on [https://github.com/clipmove/NotBlood/releases](https://github.com/clipmove/NotBlood/releases)
