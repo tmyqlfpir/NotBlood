@@ -129,6 +129,7 @@ int gCacheMiss;
 int gMenuPicnum = 2518; // default menu picnum
 
 bool gNetPortOverride = false;
+char gNetMapOverride[BMAX_PATH] = "";
 bool gNetRetry = false;
 
 int gMultiModeInit = -1;
@@ -674,7 +675,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nSpawnProtection = gPacketStartGame.nSpawnProtection;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
         if (gPacketStartGame.userMap)
-            levelAddUserMap(gPacketStartGame.userMapName);
+            levelAddUserMap(gNetMapOverride[0] != '\0' ? gNetMapOverride : gPacketStartGame.userMapName);
         else
             levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
 
@@ -923,7 +924,7 @@ void StartNetworkLevel(void)
         gGameOptions.nSpawnProtection = gPacketStartGame.nSpawnProtection;
         gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
         if (gPacketStartGame.userMap)
-            levelAddUserMap(gPacketStartGame.userMapName);
+            levelAddUserMap(gNetMapOverride[0] != '\0' ? gNetMapOverride : gPacketStartGame.userMapName);
         else
             levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
         
@@ -1420,8 +1421,9 @@ SWITCH switches[] = {
     { "mp_weaps", 51, 1 },
     { "mp_items", 52, 1 },
     { "mp_map", 53, 1 },
-    { "netretry", 54, 0 },
-    { "clientport", 55, 1 },
+    { "mp_mapclient", 54, 1 },
+    { "netretry", 55, 0 },
+    { "clientport", 56, 1 },
     { NULL, 0, 0 }
 };
 
@@ -1473,6 +1475,7 @@ void PrintHelp(void)
         "-mp_weaps [0-3]\tSet weapon settings for multiplayer (0: don't respawn, 1: permanent, 2: respawn, 3: respawn with markers)\n"
         "-mp_items [0-2]\tSet item settings for multiplayer (0: don't respawn, 1: respawn, 2: respawn with markers)\n"
         "-mp_map [map]\tSet user map path for multiplayer (e.g: filename.map)\n"
+        "-mp_mapclient [map]\tOverride user map for multiplayer clients (e.g: filename.map)\n"
         "-netretry\t\tReattempts client connection automatically (hold down escape to end loop)\n"
         "-clientport\tSets the local port used for network binding for clients\n"
         ;
@@ -1811,10 +1814,15 @@ void ParseOptions(void)
                 ThrowError("Missing argument");
             Bstrncpyz(zUserMapName, OptArgv[0], sizeof(zUserMapName));
             break;
-        case 54: // netretry
+        case 54: // mp_mapclient
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            Bstrncpyz(gNetMapOverride, OptArgv[0], sizeof(gNetMapOverride));
+            break;
+        case 55: // netretry
             gNetRetry = true;
             break;
-        case 55: // clientport
+        case 56: // clientport
             gNetPortLocal = strtoul(OptArgv[0], NULL, 0);
             break;
         }
