@@ -149,6 +149,9 @@ kNetGameFlagLimitMask           =  1 << 8|1 << 9|1 << 10|1 << 11|1 << 12|1 << 13
 
 kNetGameFlagSpawnSmart          =  1 << 16,
 kNetGameFlagSpawnDist           =  1 << 17,
+kNetGameFlagNoTeamFlags         =  1 << 18,
+kNetGameFlagMirrorHoriz         =  1 << 19,
+kNetGameFlagMirrorVert          =  1 << 20,
 
 };
 

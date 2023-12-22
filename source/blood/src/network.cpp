@@ -73,7 +73,7 @@ char gNetAddress[32];
 int gNetPort = kNetDefaultPort;
 int gNetPortLocal = -1;
 
-const short kNetVersion = 0x229;
+const short kNetVersion = 0x22A;
 
 PKT_STARTGAME gPacketStartGame;
 
@@ -175,6 +175,8 @@ void netResetToSinglePlayer(void)
     gGameMenuMgr.Deactivate();
     gNetNotifyProfileUpdate = false;
     gPlayerRoundEnding = 0;
+    r_mirrormodelock = 0;
+    SetMirrorMode(NULL); // restore single-player setting for mirror mode
 }
 
 void netSendPacket(int nDest, char *pBuffer, int nSize)

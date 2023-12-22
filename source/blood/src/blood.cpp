@@ -612,6 +612,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gDemo.Close();
     netWaitForEveryone(0);
     VanillaModeUpdate();
+    r_mirrormodelock = 0;
     if (gGameOptions.nGameType == kGameTypeSinglePlayer)
     {
         if (!(gGameOptions.uGameFlags&kGameFlagContinuing))
@@ -705,6 +706,12 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gRedFlagDropped = false;
         gView = gMe;
         gViewIndex = myconnectindex;
+        r_mirrormodelock = 1;
+        r_mirrormode = 0;
+        if (gGameOptions.uNetGameFlags&kNetGameFlagMirrorHoriz)
+            r_mirrormode |= 1;
+        if (gGameOptions.uNetGameFlags&kNetGameFlagMirrorVert)
+            r_mirrormode |= 2;
     }
     if (gameOptions->uGameFlags&kGameFlagContinuing) // if episode is in progress, remember player stats
     {
@@ -744,7 +751,10 @@ void StartLevel(GAMEOPTIONS *gameOptions)
                 DeleteSprite(i);
                 continue;
             }
-
+            if ((gGameOptions.uNetGameFlags&kNetGameFlagNoTeamFlags) && (pSprite->type == kItemFlagABase || pSprite->type == kItemFlagBBase || pSprite->type == kItemFlagA || pSprite->type == kItemFlagB)) {
+                DeleteSprite(i);
+                continue;
+            }
             
             #ifdef NOONE_EXTENSIONS
             if (!gModernMap && nnExtEraseModernStuff(pSprite, pXSprite))
