@@ -2483,7 +2483,10 @@ void playerProcessRoundCheck(void)
     int nPal = 0;
     if (nWinners > 1) // if there is more than one winner, count as tie
     {
-        sprintf(buffer, "It's a tie of %d! Ending round...", nWinners);
+        if (gGameOptions.nGameType == kGameTypeTeams)
+            sprintf(buffer, "Both teams tied score! Ending round...");
+        else
+            sprintf(buffer, "It's a tie of %d! Ending round...", nWinners);
     }
     else if (gGameOptions.nGameType == kGameTypeBloodBath)
     {
