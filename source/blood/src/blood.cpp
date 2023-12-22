@@ -751,7 +751,10 @@ void StartLevel(GAMEOPTIONS *gameOptions)
                 DeleteSprite(i);
                 continue;
             }
-
+            if ((gGameOptions.uNetGameFlags&kNetGameFlagNoTeamFlags) && (pSprite->type == kItemFlagABase || pSprite->type == kItemFlagBBase || pSprite->type == kItemFlagA || pSprite->type == kItemFlagB)) {
+                DeleteSprite(i);
+                continue;
+            }
             
             #ifdef NOONE_EXTENSIONS
             if (!gModernMap && nnExtEraseModernStuff(pSprite, pXSprite))
