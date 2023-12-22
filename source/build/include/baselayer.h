@@ -62,7 +62,7 @@ extern int32_t r_usenewaspect, newaspect_enable;
 extern int32_t r_fpgrouscan;
 extern int32_t setaspect_new_use_dimen;
 extern uint32_t r_screenxy;
-extern int32_t r_mirrormode;
+extern int32_t r_mirrormode, r_mirrormodelock;
 extern int32_t xres, yres, bpp, fullscreen, bytesperline;
 extern double refreshfreq;
 extern intptr_t frameplace;

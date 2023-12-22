@@ -63,6 +63,7 @@ extern char zNetPortBuffer[6];
 void drawLoadingScreen(void);
 void SetupMenus(void);
 void UpdateNetworkMenus(void);
+void SetMirrorMode(CGameMenuItemZCycle *pItem);
 void SetGameVanillaMode(char nState);
 void NetworkBrowserAdd(const char *pString, int nPort);
 void NetworkBrowserState(const char *pString);
