@@ -811,6 +811,30 @@ static int osdcmd_cvar_set_baselayer(osdcmdptr_t parm)
     return r;
 }
 
+
+static int osdfunc_mirrormode(osdcmdptr_t parm)
+{
+    static const char *const modes[] = {"off", "mirror horizontal", "mirror vertically", "mirror horizontal/vertically"};
+
+    if (parm->numparms != 1)
+        return OSDCMD_SHOWHELP;
+
+    int32_t m = Bstrtol(parm->parms[0], NULL, 10);
+
+    if (m < 0 || m > 3)
+        return OSDCMD_SHOWHELP;
+
+    if (r_mirrormodelock)
+    {
+        VLOG_F(LOG_GFX, "Mirror mode: Not in a single-player game.");
+        return OSDCMD_OK;
+    }
+    r_mirrormode = m;
+    VLOG_F(LOG_GFX, "Mirror mode set to %s.", modes[r_mirrormode]);
+
+    return OSDCMD_OK;
+}
+
 int32_t baselayer_init(void)
 {
 #ifdef _WIN32
