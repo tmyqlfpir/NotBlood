@@ -679,6 +679,29 @@ static int osdfunc_setrendermode(osdcmdptr_t parm)
     return OSDCMD_OK;
 }
 
+static int osdfunc_mirrormode(osdcmdptr_t parm)
+{
+    static const char *const modes[] = {"off", "mirror horizontal", "mirror vertically", "mirror horizontal/vertically"};
+
+    if (parm->numparms != 1)
+        return OSDCMD_SHOWHELP;
+
+    int32_t m = Bstrtol(parm->parms[0], NULL, 10);
+
+    if (m < 0 || m > 3)
+        return OSDCMD_SHOWHELP;
+
+    if (r_mirrormodelock)
+    {
+        VLOG_F(LOG_GFX, "Mirror mode: Not in a single-player game.");
+        return OSDCMD_OK;
+    }
+    r_mirrormode = m;
+    VLOG_F(LOG_GFX, "Mirror mode set to %s.", modes[r_mirrormode]);
+
+    return OSDCMD_OK;
+}
+
 #ifdef DEBUGGINGAIDS
 static int osdcmd_hicsetpalettetint(osdcmdptr_t parm)
 {
@@ -798,7 +821,6 @@ int32_t baselayer_init(void)
         { "r_usenewaspect","enable/disable new screen aspect ratio determination code",(void *) &r_usenewaspect, CVAR_BOOL, 0, 1 },
         { "r_screenaspect","if using r_usenewaspect and in fullscreen, screen aspect ratio in the form XXYY, e.g. 1609 for 16:9",
           (void *) &r_screenxy, SCREENASPECT_CVAR_TYPE, 0, 9999 },
-        { "r_mirrormode","mirror output display: 0: off 1: mirror horizontal 2: mirror vertically 3: mirror horizontal/vertically",(void *) &r_mirrormode, CVAR_INT, 0, 3 },
         { "r_fpgrouscan","use floating-point numbers for slope rendering",(void *) &r_fpgrouscan, CVAR_BOOL, 0, 1 },
         { "r_hightile","enable/disable hightile texture rendering",(void *) &usehightile, CVAR_BOOL, 0, 1 },
         { "r_maxspritesonscreen","maximum number of sprites to draw per frame",(void *) &maxspritesonscreen, CVAR_INT, 0, MAXSPRITESONSCREEN },
@@ -837,6 +859,8 @@ int32_t baselayer_init(void)
 
     static osdcvardata_t displayindex = { "r_displayindex","index of output display",(void*)&r_displayindex, CVAR_INT | CVAR_FUNCPTR, 0, 8 };
     OSD_RegisterCvar(&displayindex, osdcmd_displayindex);
+
+    OSD_RegisterFunction("r_mirrormode", "mirror output display: 0: off 1: mirror horizontal 2: mirror vertically 3: mirror horizontal/vertically", osdfunc_mirrormode);
 
 #ifdef USE_OPENGL
     OSD_RegisterFunction("setrendermode","setrendermode <number>: sets the engine's rendering mode.\n"

@@ -241,6 +241,13 @@ const char *zLengthStrings[] =
     "Frags",
 };
 
+const char *pzMirrorModeStrings[] = {
+    "OFF",
+    "HORIZONTAL",
+    "VERTICAL",
+    "HORIZONTAL+VERTICAL"
+};
+
 const char *zDiffStrings[] =
 {
     "STILL KICKING",
@@ -505,9 +512,12 @@ CGameMenuItemZCycle itemNetGameCycleItemWeapon("ITEM/WEAPON SETTING:", 3, 66, 11
 CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 105, 180, true, 0, NULL, NULL);
 CGameMenuItemZBool itemNetGameBoolTeamColors("TEAM COLORS:", 3, 66, 115, 180, true, 0, NULL, NULL);
 CGameMenuItemZCycle itemNetGameCycleSpawnLocation("SPAWN AREA:", 3, 66, 125, 180, 0, 0, zRespawnStrings, ARRAY_SSIZE(zRespawnStrings), 0);
-CGameMenuItemZCycle itemNetGameCycleShowWeaponsOverride("ENEMY WEAPONS:", 3, 66, 135, 180, 0, 0, zShowWeapon, ARRAY_SSIZE(zShowWeapon), 0);
 CGameMenuItemZCycle itemNetGameCycleSpawnProtection("SPAWN PROTECTION:", 3, 66, 145, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
 CGameMenuItemZCycle itemNetGameCycleSpawnWeapon("SPAWN WITH WEAPON:", 3, 66, 155, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleShowWeaponsOverride("ENEMY WEAPONS:", 3, 66, 134, 180, 0, 0, zShowWeapon, ARRAY_SSIZE(zShowWeapon), 0);
+CGameMenuItemZCycle itemNetGameCycleSpawnProtection("SPAWN PROTECTION:", 3, 66, 143, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleSpawnWeapon("SPAWN WITH WEAPON:", 3, 66, 152, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleMirrorModeOverride("MIRROR MODE:", 3, 66, 161, 180, 0, NULL, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
 
 CGameMenuItemTitle itemNetMonsterTitle("MONSTERS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetMonsterSettings("MONSTERS:", 3, 66, 40, 180, 0, SetNetMonsterMenu, zMonsterStrings, ARRAY_SSIZE(zMonsterStrings), 0);
@@ -659,13 +669,6 @@ const char *pzWeaponInterpolateStrings[] = {
     "OFF",
     "ONLY SWAYING",
     "ALL ANIMATION"
-};
-
-const char *pzMirrorModeStrings[] = {
-    "OFF",
-    "HORIZONTAL",
-    "VERTICAL",
-    "HORIZONTAL+VERTICAL"
 };
 
 void SetAutoAim(CGameMenuItemZCycle *pItem);
@@ -1433,6 +1436,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameMode.Add(&itemNetGameCycleShowWeaponsOverride, false);
     menuNetworkGameMode.Add(&itemNetGameCycleSpawnProtection, false);
     menuNetworkGameMode.Add(&itemNetGameCycleSpawnWeapon, false);
+    menuNetworkGameMode.Add(&itemNetGameCycleMirrorModeOverride, false);
     menuNetworkGameMode.Add(&itemBloodQAV, false);
     itemNetGameBoolExit.tooltip_pzTextUpper = "Toggle level exit switch functionality";
     itemNetGameBoolTeleFrag.tooltip_pzTextUpper = "Toggle telefrags kills";
@@ -1443,6 +1447,8 @@ void SetupNetStartMenu(void)
     itemNetGameCycleSpawnLocation.tooltip_pzTextUpper = "Set spawn location behavior";
     itemNetGameCycleShowWeaponsOverride.tooltip_pzTextUpper = "Set global setting for show weapons option";
     itemNetGameCycleShowWeaponsOverride.tooltip_pzTextLower = "(This is applied to all players in round)";
+    itemNetGameCycleMirrorModeOverride.tooltip_pzTextUpper = "Set global setting for mirror mode";
+    itemNetGameCycleMirrorModeOverride.tooltip_pzTextLower = "(This is applied to all players in round)";
 
     menuNetworkGameMonsters.Add(&itemNetMonsterTitle, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterSettings, true);
@@ -1885,6 +1891,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewMirrorMode, false);
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolSlowRoomFlicker, false);
     menuOptionsDisplayView.Add(&itemBloodQAV, false);
+    itemOptionsDisplayViewMirrorMode.bDisableForNet = 1;
     itemOptionsDisplayViewBoolSlopeTilting.tooltip_pzTextUpper = "";
     itemOptionsDisplayViewBoolSlopeTilting.tooltip_pzTextLower = "Tilt view when looking towards slope";
     itemOptionsDisplayViewWeaponInterpolation.tooltip_pzTextUpper = "";
@@ -2479,7 +2486,10 @@ void SetLevelCompleteTime(CGameMenuItemZBool *pItem)
 
 void SetMirrorMode(CGameMenuItemZCycle *pItem)
 {
-    r_mirrormode = pItem->m_nFocus % ARRAY_SSIZE(pzMirrorModeStrings);
+    if (pItem == NULL)
+        pItem = &itemOptionsDisplayViewMirrorMode;
+    if (!r_mirrormodelock)
+        r_mirrormode = pItem->m_nFocus % ARRAY_SSIZE(pzMirrorModeStrings);
 }
 
 void SetSlowRoomFlicker(CGameMenuItemZBool *pItem)
@@ -4081,6 +4091,10 @@ void StartNetGame(CGameMenuItemChain *pItem)
         gPacketStartGame.uNetGameFlags |= itemNetGameCycleSpawnLocation.m_nFocus == 1 ? kNetGameFlagSpawnSmart : kNetGameFlagSpawnDist;
     if (itemNetGameCycleShowWeaponsOverride.m_nFocus > 0)
         gPacketStartGame.uNetGameFlags |= itemNetGameCycleShowWeaponsOverride.m_nFocus == 1 ? kNetGameFlagHideWeaponsCloak : kNetGameFlagHideWeaponsAlways;
+    if (itemNetGameCycleMirrorModeOverride.m_nFocus & 1)
+        gPacketStartGame.uNetGameFlags |= kNetGameFlagMirrorHoriz;
+    if (itemNetGameCycleMirrorModeOverride.m_nFocus & 2)
+        gPacketStartGame.uNetGameFlags |= kNetGameFlagMirrorVert;
     gPacketStartGame.episodeId = itemNetStart2.m_nFocus;
     gPacketStartGame.levelId = itemNetStart3.m_nFocus;
     gPacketStartGame.difficulty = itemNetStart4.m_nFocus;

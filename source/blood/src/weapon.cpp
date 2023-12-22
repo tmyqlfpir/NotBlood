@@ -204,7 +204,7 @@ char checkAmmo2(PLAYER *pPlayer, int ammotype, int amount)
 
 void SpawnBulletEject(PLAYER *pPlayer, int a2, int a3)
 {
-    if ((r_mirrormode & 1) && (numplayers == 1) && !VanillaMode(true)) // mirror mode enabled, invert position for bullet ejection
+    if ((r_mirrormode & 1) && (numplayers == 1 || r_mirrormodelock) && !VanillaMode(true)) // mirror mode enabled, invert position for bullet ejection
         a2 = -a2, a3 = -a3;
     POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
     pPlayer->zView = pPlayer->pSprite->z-pPosture->eyeAboveZ;
@@ -220,7 +220,7 @@ void SpawnBulletEject(PLAYER *pPlayer, int a2, int a3)
 
 void SpawnShellEject(PLAYER *pPlayer, int a2, int a3)
 {
-    if ((r_mirrormode & 1) && (numplayers == 1) && !VanillaMode(true)) // mirror mode enabled, invert position for shell ejection
+    if ((r_mirrormode & 1) && (numplayers == 1 || r_mirrormodelock) && !VanillaMode(true)) // mirror mode enabled, invert position for shell ejection
         a2 = -a2, a3 = -a3;
     POSTURE *pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
     pPlayer->zView = pPlayer->pSprite->z-pPosture->eyeAboveZ;
@@ -1439,7 +1439,7 @@ void AltFireSpread2(int nTrigger, PLAYER *pPlayer)
     dassert(nTrigger > 0 && nTrigger <= kMaxSpread);
     Aim *aim = &pPlayer->aim;
     int angle;
-    if ((r_mirrormode & 1) && (numplayers == 1) && !VanillaMode(true)) // mirror mode enabled, invert tommy gun spread (only for single-player)
+    if ((r_mirrormode & 1) && (numplayers == 1 || r_mirrormodelock) && !VanillaMode(true)) // mirror mode enabled, invert tommy gun spread (only for single-player)
         angle = (getangle(aim->dx, aim->dy)-((112*(nTrigger-1))/14-56))&2047;
     else
         angle = (getangle(aim->dx, aim->dy)+((112*(nTrigger-1))/14-56))&2047;
