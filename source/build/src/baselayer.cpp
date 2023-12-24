@@ -782,7 +782,6 @@ static int osdcmd_cvar_set_baselayer(osdcmdptr_t parm)
     return r;
 }
 
-
 static int osdfunc_mirrormode(osdcmdptr_t parm)
 {
     static const char *const modes[] = {"off", "mirror horizontal", "mirror vertically", "mirror horizontal/vertically"};
