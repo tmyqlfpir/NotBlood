@@ -1057,6 +1057,8 @@ void LocalKeys(void)
     if (gDoQuickSave)
     {
         keyFlushScans();
+        CONTROL_ClearButton(gamefunc_Quick_Save);
+        CONTROL_ClearButton(gamefunc_Quick_Load);
         if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath && !gDemo.bPlaying && !gDemo.bRecording) // if not in multiplayer session and not in demo playback, allow quicksave
         {
             switch (gDoQuickSave)
@@ -1074,6 +1076,18 @@ void LocalKeys(void)
         }
         gDoQuickSave = 0;
         return;
+    }
+    if (BUTTON(gamefunc_Quick_Save))
+    {
+        CONTROL_ClearButton(gamefunc_Quick_Save);
+        if (gGameOptions.nGameType == kGameTypeSinglePlayer)
+            return DoQuickSave();
+    }
+    if (BUTTON(gamefunc_Quick_Load))
+    {
+        CONTROL_ClearButton(gamefunc_Quick_Load);
+        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath)
+            return DoQuickLoad();
     }
     char key;
     if ((key = keyGetScan()) != 0)
