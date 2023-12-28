@@ -1167,11 +1167,21 @@ void LocalKeys(void)
             if (!gGameMenuMgr.m_bActive)
                 gGameMenuMgr.Push(&menuOptions,-1);
             return;
+        case sc_F6:
+            keyFlushScans();
+            if (gGameOptions.nGameType == kGameTypeSinglePlayer)
+                DoQuickSave();
+            break;
         case sc_F8:
             keyFlushScans();
             if (!gGameMenuMgr.m_bActive)
                 gGameMenuMgr.Push(&menuOptionsDisplayMode, -1);
             return;
+        case sc_F9:
+            keyFlushScans();
+            if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath)
+                DoQuickLoad();
+            break;
         case sc_F10:
             keyFlushScans();
             if (!gGameMenuMgr.m_bActive)
