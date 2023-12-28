@@ -1075,6 +1075,18 @@ void LocalKeys(void)
         gDoQuickSave = 0;
         return;
     }
+    if (BUTTON(gamefunc_Quick_Save))
+    {
+        CONTROL_ClearButton(gamefunc_Quick_Save);
+        if (gGameOptions.nGameType == kGameTypeSinglePlayer)
+            return DoQuickSave();
+    }
+    if (BUTTON(gamefunc_Quick_Load))
+    {
+        CONTROL_ClearButton(gamefunc_Quick_Load);
+        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath)
+            return DoQuickLoad();
+    }
     char key;
     if ((key = keyGetScan()) != 0)
     {
@@ -1155,21 +1167,11 @@ void LocalKeys(void)
             if (!gGameMenuMgr.m_bActive)
                 gGameMenuMgr.Push(&menuOptions,-1);
             return;
-        case sc_F6:
-            keyFlushScans();
-            if (gGameOptions.nGameType == kGameTypeSinglePlayer)
-                DoQuickSave();
-            break;
         case sc_F8:
             keyFlushScans();
             if (!gGameMenuMgr.m_bActive)
                 gGameMenuMgr.Push(&menuOptionsDisplayMode, -1);
             return;
-        case sc_F9:
-            keyFlushScans();
-            if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath)
-                DoQuickLoad();
-            break;
         case sc_F10:
             keyFlushScans();
             if (!gGameMenuMgr.m_bActive)
