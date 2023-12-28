@@ -1079,12 +1079,14 @@ void LocalKeys(void)
     }
     if (BUTTON(gamefunc_Quick_Save))
     {
+        keyFlushScans();
         CONTROL_ClearButton(gamefunc_Quick_Save);
         if (gGameOptions.nGameType == kGameTypeSinglePlayer)
             return DoQuickSave();
     }
     if (BUTTON(gamefunc_Quick_Load))
     {
+        keyFlushScans();
         CONTROL_ClearButton(gamefunc_Quick_Load);
         if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath)
             return DoQuickLoad();
