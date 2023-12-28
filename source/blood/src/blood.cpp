@@ -1075,6 +1075,18 @@ void LocalKeys(void)
         gDoQuickSave = 0;
         return;
     }
+    if (BUTTON(gamefunc_Quick_Save))
+    {
+        CONTROL_ClearButton(gamefunc_Quick_Save);
+        if (gGameOptions.nGameType == kGameTypeSinglePlayer)
+            return DoQuickSave();
+    }
+    if (BUTTON(gamefunc_Quick_Load))
+    {
+        CONTROL_ClearButton(gamefunc_Quick_Load);
+        if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && !gGameOptions.bPermaDeath)
+            return DoQuickLoad();
+    }
     char key;
     if ((key = keyGetScan()) != 0)
     {
