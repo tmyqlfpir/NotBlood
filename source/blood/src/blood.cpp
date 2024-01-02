@@ -202,7 +202,6 @@ void ShutDown(void)
         return;
     CONFIG_WriteSetup(0);
     netDeinitialize();
-    //netZtDeinitialize();
     sndTerm();
     sfxTerm();
     scrUnInit();
