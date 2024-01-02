@@ -96,6 +96,7 @@ unsigned int nMaxAlloc = 0x4000000;
 
 bool bCustomName = false;
 char bAddUserMap = false;
+char bUseInternalMap = false, bUseInternalE = 0, bUseInternalL = 0;
 bool bNoDemo = false;
 bool bQuickNetStart = false;
 bool bQuickStart = false;
@@ -201,6 +202,7 @@ void ShutDown(void)
         return;
     CONFIG_WriteSetup(0);
     netDeinitialize();
+    //netZtDeinitialize();
     sndTerm();
     sfxTerm();
     scrUnInit();
@@ -1392,7 +1394,7 @@ SWITCH switches[] = {
     { "broadcast", 1, 0 },
     { "map", 2, 1 },
     { "masterslave", 3, 0 },
-    //{ "net", 4, 1 },
+    { "level", 4, 2 },
     { "nodudes", 5, 1 },
     { "playback", 6, 1 },
     { "record", 7, 1 },
@@ -1471,6 +1473,7 @@ void PrintHelp(void)
         "-ini [file.ini]\tSpecify an INI file name (default is blood.ini)\n"
         "-j [dir]\t\tAdd a directory to " APPNAME "'s search list\n"
         "-map [file.map]\tLoad an external map file\n"
+        "-level [E M]\tLoad an internal map (e.g: 1 3)\n"
         "-mh [file.def]\tInclude an additional definitions module\n"
         "-noautoload\tDisable loading from autoload directory\n"
         "-nodemo\t\tNo Demos\n"
@@ -1601,10 +1604,12 @@ void ParseOptions(void)
             gPacketMode = PACKETMODE_2;
             break;
         case 4:
-            //if (OptArgc < 1)
-            //    ThrowError("Missing argument");
-            //if (gGameOptions.nGameType == kGameTypeSinglePlayer)
-            //    gGameOptions.nGameType = kGameTypeBloodBath;
+            if (OptArgc < 2)
+                ThrowError("Missing argument");
+            bUseInternalE = ClipRange(atoi(OptArgv[0]), 1, kMaxEpisodes)-1;
+            bUseInternalL = ClipRange(atoi(OptArgv[1]), 1, kMaxLevels)-1;
+            bUseInternalMap = 1;
+            bNoDemo = 1;
             break;
         case 30:
             if (OptArgc < 1)
@@ -2172,6 +2177,13 @@ int app_main(int argc, char const * const * argv)
         levelAddUserMap(gUserMapFilename);
         gStartNewGame = 1;
     }
+    if (bUseInternalMap)
+    {
+        bUseInternalE = ClipRange(bUseInternalE, 0, gEpisodeCount-1);
+        bUseInternalL = ClipRange(bUseInternalL, 0, gEpisodeInfo[bUseInternalE].nLevels-1);
+        levelSetupOptions(bUseInternalE, bUseInternalL);
+        levelRestart();
+    }
     SetupMenus();
     videoSetViewableArea(0, 0, xdim - 1, ydim - 1);
 
@@ -2209,11 +2221,11 @@ RESTART:
         KB_FlushKeyboardQueue();
         keyFlushScans();
     }
-    else if (gDemo.bPlaying && !bAddUserMap && !bNoDemo)
+    else if (gDemo.bPlaying && !bAddUserMap && !bUseInternalMap && !bNoDemo)
         gDemo.Playback();
     if (gDemo.nDemosFound > 0)
         gGameMenuMgr.Deactivate();
-    if (!bAddUserMap && !gGameStarted)
+    if (!bAddUserMap && !bUseInternalMap && !gGameStarted)
     {
         gGameMenuMgr.Push(&menuMain, -1);
         if (gGameOptions.nGameType != kGameTypeSinglePlayer)
