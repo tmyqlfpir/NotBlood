@@ -99,6 +99,7 @@ void SetVideoMode(CGameMenuItemChain *);
 void SetWidescreen(CGameMenuItemZBool *);
 void SetWeaponSelectMode(CGameMenuItemZCycle *);
 void SetDetail(CGameMenuItemSlider *);
+void SetVoxels(CGameMenuItemZBool *);
 void SetFOV(CGameMenuItemSlider *);
 void UpdateVideoModeMenuFrameLimit(CGameMenuItemZCycle *pItem);
 //void UpdateVideoModeMenuFPSOffset(CGameMenuItemSlider *pItem);
@@ -713,14 +714,15 @@ CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0
 CGameMenuItemChain itemOptionsDisplayMode("VIDEO MODE", 3, 66, 50, 180, 0, &menuOptionsDisplayMode, -1, SetupVideoModeMenu, 0);
 CGameMenuItemChain itemOptionsDisplayView("VIEW SETUP", 3, 66, 60, 180, 0, &menuOptionsDisplayView, -1, NULL, 0);
 CGameMenuItemSlider itemOptionsDisplayDetail("DETAIL:", 3, 66, 80, 180, &gDetail, 0, 4, 1, SetDetail, -1, -1);
-CGameMenuItemZCycle itemOptionsDisplayCrosshair("CROSSHAIR:", 3, 66, 90, 180, 0, SetCrosshair, pzCrosshairStrings, ARRAY_SSIZE(pzCrosshairStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayLevelStats("LEVEL STATS:", 3, 66, 100, 180, 0, SetLevelStats, pzStatsPowerupRatioStrings, ARRAY_SSIZE(pzStatsPowerupRatioStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayPowerupDuration("POWERUP DURATION:", 3, 66, 110, 180, 0, SetPowerupDuration, pzStatsPowerupRatioStrings, ARRAY_SSIZE(pzStatsPowerupRatioStrings), 0);
-CGameMenuItemZBool itemOptionsDisplayBoolShowMapTitle("MAP TITLE:", 3, 66, 120, 180, gShowMapTitle, SetShowMapTitle, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 130, 180, gMessageState, SetMessages, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 140, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 150, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
-CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 160, 180, &gFov, 75, 140, 1, SetFOV, -1, -1, kMenuSliderValue);
+CGameMenuItemZBool itemOptionsDisplayBoolVoxels("VOXELS:", 3, 66, 90, 180, 0, SetVoxels, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayCrosshair("CROSSHAIR:", 3, 66, 100, 180, 0, SetCrosshair, pzCrosshairStrings, ARRAY_SSIZE(pzCrosshairStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayLevelStats("LEVEL STATS:", 3, 66, 110, 180, 0, SetLevelStats, pzStatsPowerupRatioStrings, ARRAY_SSIZE(pzStatsPowerupRatioStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayPowerupDuration("POWERUP DURATION:", 3, 66, 120, 180, 0, SetPowerupDuration, pzStatsPowerupRatioStrings, ARRAY_SSIZE(pzStatsPowerupRatioStrings), 0);
+CGameMenuItemZBool itemOptionsDisplayBoolShowMapTitle("MAP TITLE:", 3, 66, 130, 180, gShowMapTitle, SetShowMapTitle, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 140, 180, gMessageState, SetMessages, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 150, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 160, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
+CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 170, 180, &gFov, 75, 140, 1, SetFOV, -1, -1, kMenuSliderValue);
 #ifdef USE_OPENGL
 CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 180, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
 #endif
@@ -1789,6 +1791,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayMode, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayView, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayDetail, false);
+    menuOptionsDisplay.Add(&itemOptionsDisplayBoolVoxels, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayCrosshair, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayLevelStats, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayPowerupDuration, false);
@@ -1801,6 +1804,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayPolymost, false);
 #endif
     menuOptionsDisplay.Add(&itemBloodQAV, false);
+    itemOptionsDisplayBoolVoxels.at20 = usevoxels;
     itemOptionsDisplayCrosshair.m_nFocus = gAimReticle % ARRAY_SSIZE(pzCrosshairStrings);
     itemOptionsDisplayLevelStats.m_nFocus = gLevelStats % ARRAY_SSIZE(pzStatsPowerupRatioStrings);
     itemOptionsDisplayPowerupDuration.m_nFocus = gPowerupDuration % ARRAY_SSIZE(pzStatsPowerupRatioStrings);
@@ -2267,6 +2271,11 @@ void SetMonoStereo(CGameMenuItemZBool *pItem)
 {
     gStereo = pItem->at20;
     itemOptionsSoundDoppler.bEnable = gStereo;
+}
+
+void SetVoxels(CGameMenuItemZBool *pItem)
+{
+    usevoxels = pItem->at20;
 }
 
 void SetCrosshair(CGameMenuItemZCycle *pItem)
