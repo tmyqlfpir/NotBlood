@@ -3706,7 +3706,7 @@ void actImpactMissile(spritetype *pMissile, int hitCode)
                     actBurnSprite(pMissile->owner, pXSpriteHit, 360);
 
                 // by NoOne: make Life Leech heal user, just like it was in 1.0x versions
-                if (WeaponsV10x() && !VanillaMode() && pDudeInfo != NULL) {
+                if ((WeaponsV10x() || WeaponsNotBlood()) && !VanillaMode() && pDudeInfo != NULL) {
                     spritetype* pSource = &sprite[nOwner];
                     XSPRITE* pXSource = (pSource->extra >= 0) ? &xsprite[pSource->extra] : NULL;
 
