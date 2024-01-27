@@ -123,6 +123,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Autoaim is always enabled for pitchfork
    - Adjust pitch offset for spray/missile firing
    - Adds a charge up stab for pitchfork's alt fire
+   - Lifeleech steals enemy's health (like V1.X behavior)
    - Makes lifeleech throwable and increases damage while in sentry mode
    - Do double melee damage if attacking enemies from 45 degrees behind
    - Allows tesla projectiles to be reflected back with reflective shots powerup
