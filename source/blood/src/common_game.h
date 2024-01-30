@@ -793,7 +793,8 @@ inline float ClipRangeF(float a, float b, float c)
 inline int interpolate(int a, int b, int c, char bOrigCal = 0)
 {
     extern bool VanillaMode(const bool bDemoCheck = false);
-    if (bOrigCal || VanillaMode())
+    extern int32_t gViewInterpolateMethod;
+    if (bOrigCal || !gViewInterpolateMethod || VanillaMode())
         return a+mulscale16(b-a,c);
     if (a == b)
         return b;

@@ -99,6 +99,7 @@ int32_t gMultiKill;
 int32_t gStompSound;
 int32_t gViewDim;
 int32_t gViewInterpolate;
+int32_t gViewInterpolateMethod;
 int32_t gPanningInterpolate;
 int32_t gWeaponInterpolate;
 int32_t gViewHBobbing;
@@ -508,6 +509,7 @@ void CONFIG_SetDefaults(void)
     gStompSound = 0;
     gViewDim = 1;
     gViewInterpolate = 1;
+    gViewInterpolateMethod = 1;
     gPanningInterpolate = 1;
     gWeaponInterpolate = 1;
     gViewHBobbing = 1;
