@@ -509,7 +509,7 @@ void CONFIG_SetDefaults(void)
     gStompSound = 0;
     gViewDim = 1;
     gViewInterpolate = 1;
-    gViewInterpolateMethod = 1;
+    gViewInterpolateMethod = 0;
     gPanningInterpolate = 1;
     gWeaponInterpolate = 1;
     gViewHBobbing = 1;

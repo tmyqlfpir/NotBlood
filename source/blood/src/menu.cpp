@@ -2674,6 +2674,7 @@ void SetGameVanillaMode(char nState)
     gVanilla = nState % ARRAY_SSIZE(pzVanillaModeStrings);
     itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
+    itemOptionsDisplayViewBoolInterpolation.bEnable = !gVanilla;
     itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     itemOptionsChainMutators.bEnable = !gVanilla;
     VanillaModeUpdate();
