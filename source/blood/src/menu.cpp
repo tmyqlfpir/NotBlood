@@ -74,6 +74,7 @@ void SetViewBobbing(CGameMenuItemZBool *);
 void SetViewSwaying(CGameMenuItemZBool *);
 void SetWeaponSwaying(CGameMenuItemZCycle *);
 void SetWeaponInterpolate(CGameMenuItemZCycle *);
+void SetViewInterpolate(CGameMenuItemZBool *);
 void SetLevelCompleteTime(CGameMenuItemZBool *);
 void SetMirrorMode(CGameMenuItemZCycle *);
 void SetSlowRoomFlicker(CGameMenuItemZBool *);
@@ -809,14 +810,15 @@ CGameMenuItemSliderFloat itemOptionsDisplayColorVisibility("VISIBILITY:", 3, 66,
 CGameMenuItemChain itemOptionsDisplayColorReset("RESET TO DEFAULTS", 3, 66, 150, 180, 0, NULL, 0, ResetVideoColor, 0);
 
 CGameMenuItemTitle itemOptionsDisplayViewTitle("VIEW SETUP", 1, 160, 20, 2038);
-CGameMenuItemSlider itemOptionsDisplayViewHudSize("HUD SIZE:", 3, 66, 60, 180, &gViewSize, 0, 9, 1, SetHudSize, -1, -1, kMenuSliderValue);
-CGameMenuItemZCycle itemOptionsDisplayViewHudRatio("HUD ALIGNMENT:", 3, 66, 70, 180, 0, SetHudRatio, pzHudRatioStrings, ARRAY_SSIZE(pzHudRatioStrings), 0);
-CGameMenuItemZBool itemOptionsDisplayViewBoolCenterHoriz("CENTER HORIZON LINE:", 3, 66, 80, 180, gCenterHoriz, SetCenterHoriz, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayViewBoolSlopeTilting("SLOPE TILTING:", 3, 66, 90, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayViewBoolViewBobbing("VIEW BOBBING:", 3, 66, 100, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayViewBoolViewSwaying("VIEW SWAYING:", 3, 66, 110, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayViewWeaponSwaying("WEAPON SWAYING:", 3, 66, 120, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayViewWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 130, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
+CGameMenuItemSlider itemOptionsDisplayViewHudSize("HUD SIZE:", 3, 66, 50, 180, &gViewSize, 0, 9, 1, SetHudSize, -1, -1, kMenuSliderValue);
+CGameMenuItemZCycle itemOptionsDisplayViewHudRatio("HUD ALIGNMENT:", 3, 66, 60, 180, 0, SetHudRatio, pzHudRatioStrings, ARRAY_SSIZE(pzHudRatioStrings), 0);
+CGameMenuItemZBool itemOptionsDisplayViewBoolCenterHoriz("CENTER HORIZON LINE:", 3, 66, 70, 180, gCenterHoriz, SetCenterHoriz, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayViewBoolSlopeTilting("SLOPE TILTING:", 3, 66, 80, 180, gSlopeTilting, SetSlopeTilting, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayViewBoolViewBobbing("VIEW BOBBING:", 3, 66, 90, 180, gViewVBobbing, SetViewBobbing, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayViewBoolViewSwaying("VIEW SWAYING:", 3, 66, 100, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayViewWeaponSwaying("WEAPON SWAYING:", 3, 66, 110, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayViewWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 120, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
+CGameMenuItemZBool itemOptionsDisplayViewBoolInterpolation("VIEW INTERPOLATE:", 3, 66, 130, 180, gViewInterpolateMethod, SetViewInterpolate, "NOTBLOOD", "ORIGINAL");
 CGameMenuItemZBool itemOptionsDisplayViewBoolLevelCompleteTime("LEVEL TIME AT INTERMISSION:", 3, 66, 140, 180, gShowCompleteTime, SetLevelCompleteTime, "SHOW", "HIDE");
 CGameMenuItemZBool itemOptionsDisplayViewBoolPowerupStyle("POWERUP STYLE:", 3, 66, 150, 180, gPowerupStyle, SetPowerupStyle, "NOTBLOOD", "NBLOOD");
 CGameMenuItemZCycle itemOptionsDisplayViewMirrorMode("MIRROR MODE:", 3, 66, 160, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
@@ -1891,6 +1893,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolViewSwaying, false);
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewWeaponSwaying, false);
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewWeaponInterpolation, false);
+    menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolInterpolation, false);
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolLevelCompleteTime, false);
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewBoolPowerupStyle, false);
     menuOptionsDisplayView.Add(&itemOptionsDisplayViewMirrorMode, false);
@@ -1901,6 +1904,8 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayViewBoolSlopeTilting.tooltip_pzTextLower = "Tilt view when looking towards slope";
     itemOptionsDisplayViewWeaponInterpolation.tooltip_pzTextUpper = "";
     itemOptionsDisplayViewWeaponInterpolation.tooltip_pzTextLower = "Interpolate QAV weapon animations (experimental)";
+    itemOptionsDisplayViewBoolInterpolation.tooltip_pzTextUpper = "";
+    itemOptionsDisplayViewBoolInterpolation.tooltip_pzTextLower = "Set interpolation (original/integer or notblood/float-point)";
     itemOptionsDisplayViewBoolPowerupStyle.tooltip_pzTextUpper = "";
     itemOptionsDisplayViewBoolPowerupStyle.tooltip_pzTextLower = "Set the display style for power-ups";
     itemOptionsDisplayViewBoolSlowRoomFlicker.tooltip_pzTextUpper = "";
@@ -1913,6 +1918,7 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayViewBoolViewSwaying.at20 = gViewHBobbing;
     itemOptionsDisplayViewWeaponSwaying.m_nFocus = gWeaponHBobbing % ARRAY_SSIZE(pzWeaponHBobbingStrings);
     itemOptionsDisplayViewWeaponInterpolation.m_nFocus = gWeaponInterpolate % ARRAY_SSIZE(pzWeaponInterpolateStrings);
+    itemOptionsDisplayViewBoolInterpolation.at20 = gViewInterpolateMethod;
     itemOptionsDisplayViewBoolLevelCompleteTime.at20 = gShowCompleteTime;
     itemOptionsDisplayViewBoolPowerupStyle.at20 = gPowerupStyle;
     itemOptionsDisplayViewMirrorMode.m_nFocus = r_mirrormode % ARRAY_SSIZE(pzMirrorModeStrings);
@@ -2489,6 +2495,11 @@ void SetWeaponInterpolate(CGameMenuItemZCycle *pItem)
     gWeaponInterpolate = pItem->m_nFocus % ARRAY_SSIZE(pzWeaponInterpolateStrings);
 }
 
+void SetViewInterpolate(CGameMenuItemZBool *pItem)
+{
+    gViewInterpolateMethod = pItem->at20;
+}
+
 void SetLevelCompleteTime(CGameMenuItemZBool *pItem)
 {
     gShowCompleteTime = pItem->at20;
@@ -2663,6 +2674,7 @@ void SetGameVanillaMode(char nState)
     gVanilla = nState % ARRAY_SSIZE(pzVanillaModeStrings);
     itemOptionsGameWeaponFastSwitch.bEnable = !gVanilla;
     itemOptionsGameBoolVanillaMode.m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
+    itemOptionsDisplayViewBoolInterpolation.bEnable = !gVanilla;
     itemOptionsDisplayWeaponSelect.bEnable = !gVanilla;
     itemOptionsChainMutators.bEnable = !gVanilla;
     VanillaModeUpdate();

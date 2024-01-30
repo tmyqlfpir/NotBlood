@@ -192,6 +192,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable multiplayer chat message beep
 * cl_dim
    - Enable/disable dimming background when menu is active
+* cl_interpolatemethod
+   - Set view interpolation method (0: original [integer], 1: notblood [floating-point])"
 * cl_interpolatepanning
    - Enable/disable sector texture panning interpolation (cl_interpolate must be set on)
 * cl_interpolateweapon
