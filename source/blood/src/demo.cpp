@@ -185,6 +185,10 @@ const DEMOVALIDATE gDemoValidate[] = {
     {"/validatedemos/TEST123.DEM", (int32_t)0x00002672, 0x5660A5AA, 0x00000AF6, {(int32_t)0xFFFFFAD0, (int32_t)0xFFFFD48D, (int32_t)0x0000FDE4}, 1},
     {"/validatedemos/TEST124.DEM", (int32_t)0x000015A5, 0xFC3CC30B, 0x00000000, {(int32_t)0xFFFF9DE6, (int32_t)0xFFFF907D, (int32_t)0x000009A4}, 1},
     {"/validatedemos/TEST125.DEM", (int32_t)0x000009AB, 0x68DB200E, 0x00000000, {(int32_t)0xFFFFF93C, (int32_t)0x00006C0C, (int32_t)0xFFFEFDA4}, 1},
+    {"/validatedemos/TEST126.DEM", (int32_t)0x000008F7, 0xC60781A6, 0x00000000, {(int32_t)0x000026A0, (int32_t)0x00004087, (int32_t)0xFFFFC9A4}, 0},
+    {"/validatedemos/TEST127.DEM", (int32_t)0x00001BD3, 0xA53BC5B3, 0x00000C21, {(int32_t)0x000017E7, (int32_t)0x000036A7, (int32_t)0xFFFFF1E4}, 0},
+    {"/validatedemos/TEST128.DEM", (int32_t)0x000022CE, 0x1F4DC465, 0x00000640, {(int32_t)0x000016D6, (int32_t)0x00003526, (int32_t)0xFFFFF1E4}, 0},
+    {"/validatedemos/TEST129.DEM", (int32_t)0x00000B4C, 0x4A2A6308, 0x00000000, {(int32_t)0x0000393F, (int32_t)0x00005E42, (int32_t)0x000051A4}, 0},
 };
 
 int nBuild = 0;
