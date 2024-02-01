@@ -818,7 +818,7 @@ CGameMenuItemZBool itemOptionsDisplayViewBoolViewBobbing("VIEW BOBBING:", 3, 66,
 CGameMenuItemZBool itemOptionsDisplayViewBoolViewSwaying("VIEW SWAYING:", 3, 66, 100, 180, gViewHBobbing, SetViewSwaying, NULL, NULL);
 CGameMenuItemZCycle itemOptionsDisplayViewWeaponSwaying("WEAPON SWAYING:", 3, 66, 110, 180, 0, SetWeaponSwaying, pzWeaponHBobbingStrings, ARRAY_SSIZE(pzWeaponHBobbingStrings), 0);
 CGameMenuItemZCycle itemOptionsDisplayViewWeaponInterpolation("WEAPON SMOOTHING:", 3, 66, 120, 180, 0, SetWeaponInterpolate, pzWeaponInterpolateStrings, ARRAY_SSIZE(pzWeaponInterpolateStrings), 0);
-CGameMenuItemZBool itemOptionsDisplayViewBoolInterpolation("VIEW INTERPOLATE:", 3, 66, 130, 180, gViewInterpolateMethod, SetViewInterpolate, "NOTBLOOD", "ORIGINAL");
+CGameMenuItemZBool itemOptionsDisplayViewBoolInterpolation("VIEW INTERPOLATE:", 3, 66, 130, 180, gViewInterpolateMethod, SetViewInterpolate, "MODERN", "ORIGINAL");
 CGameMenuItemZBool itemOptionsDisplayViewBoolLevelCompleteTime("LEVEL TIME AT INTERMISSION:", 3, 66, 140, 180, gShowCompleteTime, SetLevelCompleteTime, "SHOW", "HIDE");
 CGameMenuItemZBool itemOptionsDisplayViewBoolPowerupStyle("POWERUP STYLE:", 3, 66, 150, 180, gPowerupStyle, SetPowerupStyle, "NOTBLOOD", "NBLOOD");
 CGameMenuItemZCycle itemOptionsDisplayViewMirrorMode("MIRROR MODE:", 3, 66, 160, 180, 0, SetMirrorMode, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
@@ -1905,7 +1905,7 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayViewWeaponInterpolation.tooltip_pzTextUpper = "";
     itemOptionsDisplayViewWeaponInterpolation.tooltip_pzTextLower = "Interpolate QAV weapon animations (experimental)";
     itemOptionsDisplayViewBoolInterpolation.tooltip_pzTextUpper = "";
-    itemOptionsDisplayViewBoolInterpolation.tooltip_pzTextLower = "Set interpolation (original/integer or notblood/float-point)";
+    itemOptionsDisplayViewBoolInterpolation.tooltip_pzTextLower = "Set interpolation method (original/integer or modern/float)";
     itemOptionsDisplayViewBoolPowerupStyle.tooltip_pzTextUpper = "";
     itemOptionsDisplayViewBoolPowerupStyle.tooltip_pzTextLower = "Set the display style for power-ups";
     itemOptionsDisplayViewBoolSlowRoomFlicker.tooltip_pzTextUpper = "";
