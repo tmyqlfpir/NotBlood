@@ -121,6 +121,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Select between original weapon behavior, NBlood's V1.X behavior or NotBlood's tweaked weapon set which include:
    - Tommy gun alt fire uses autoaim
    - Autoaim is always enabled for pitchfork
+   - Make beast vision see through nearby walls
    - Adjust pitch offset for spray/missile firing
    - Adds a charge up stab for pitchfork's alt fire
    - Lifeleech steals enemy's health (like V1.X behavior)
