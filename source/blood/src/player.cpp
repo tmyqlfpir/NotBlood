@@ -436,7 +436,7 @@ void powerupSetState(PLAYER *pPlayer, int nPowerUp, char bState)
 
 void powerupProcess(PLAYER *pPlayer)
 {
-    pPlayer->packItemTime = ClipLow(pPlayer->packItemTime-4, 0);
+    pPlayer->packItemTime = ClipLow(pPlayer->packItemTime-kTicsPerFrame, 0);
     for (int i = kMaxPowerUps-1; i >= 0; i--)
     {
         int nPack = powerupToPackItem(i);
@@ -444,7 +444,7 @@ void powerupProcess(PLAYER *pPlayer)
         {
             if (pPlayer->packSlots[nPack].isActive)
             {
-                pPlayer->pwUpTime[i] = ClipLow(pPlayer->pwUpTime[i]-4, 0);
+                pPlayer->pwUpTime[i] = ClipLow(pPlayer->pwUpTime[i]-kTicsPerFrame, 0);
                 if (pPlayer->pwUpTime[i])
                     pPlayer->packSlots[nPack].curAmount = (100*pPlayer->pwUpTime[i])/gPowerUpInfo[i].bonusTime;
                 else
@@ -464,7 +464,7 @@ void powerupProcess(PLAYER *pPlayer)
                 else
                     sfxPlay3DSoundCP(pPlayer->pSprite, 776, -1, 0, 0, 192, "NOTBLOOD1");
             }
-            pPlayer->pwUpTime[i] = ClipLow(pPlayer->pwUpTime[i]-4, 0);
+            pPlayer->pwUpTime[i] = ClipLow(pPlayer->pwUpTime[i]-kTicsPerFrame, 0);
             if (!pPlayer->pwUpTime[i])
                 powerupDeactivate(pPlayer, i);
         }
@@ -1966,7 +1966,7 @@ void ProcessInput(PLAYER *pPlayer)
         }
         }
         if (pPlayer->handTime > 0)
-            pPlayer->handTime = ClipLow(pPlayer->handTime-4*(6-gGameOptions.nDifficulty), 0);
+            pPlayer->handTime = ClipLow(pPlayer->handTime-kTicsPerFrame*(6-gGameOptions.nDifficulty), 0);
         if (pPlayer->handTime <= 0 && pPlayer->hand)
         {
             spritetype *pSprite2 = actSpawnDude(pPlayer->pSprite, kDudeHand, pPlayer->pSprite->clipdist<<1, 0);
@@ -2197,12 +2197,12 @@ void playerProcess(PLAYER *pPlayer)
         pPlayer->swayWidth = mulscale30(pPosture->swayH*pPlayer->bobPhase, Sin(pPlayer->swayAmp-0x155));
     }
     pPlayer->flickerEffect = 0;
-    pPlayer->quakeEffect = ClipLow(pPlayer->quakeEffect-4, 0);
-    pPlayer->tiltEffect = ClipLow(pPlayer->tiltEffect-4, 0);
-    pPlayer->visibility = ClipLow(pPlayer->visibility-4, 0);
-    pPlayer->painEffect = ClipLow(pPlayer->painEffect-4, 0);
-    pPlayer->blindEffect = ClipLow(pPlayer->blindEffect-4, 0);
-    pPlayer->pickupEffect = ClipLow(pPlayer->pickupEffect-4, 0);
+    pPlayer->quakeEffect = ClipLow(pPlayer->quakeEffect-kTicsPerFrame, 0);
+    pPlayer->tiltEffect = ClipLow(pPlayer->tiltEffect-kTicsPerFrame, 0);
+    pPlayer->visibility = ClipLow(pPlayer->visibility-kTicsPerFrame, 0);
+    pPlayer->painEffect = ClipLow(pPlayer->painEffect-kTicsPerFrame, 0);
+    pPlayer->blindEffect = ClipLow(pPlayer->blindEffect-kTicsPerFrame, 0);
+    pPlayer->pickupEffect = ClipLow(pPlayer->pickupEffect-kTicsPerFrame, 0);
     if (pPlayer == gMe && gMe->pXSprite->health == 0)
         pPlayer->hand = 0;
     if (!pXSprite->health)
