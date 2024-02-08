@@ -3678,6 +3678,23 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 if ((pTSprite->flags & kPhysMove) && getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) >= cZ)
                     viewAddEffect(nTSprite, kViewEffectShadow);
             }
+            const char bArmedBomb = (pTSprite->type == kThingArmedTNTStick) || (pTSprite->type == kThingArmedTNTBundle) || (pTSprite->type == kThingArmedProxBomb) || (pTSprite->type == kThingArmedRemoteBomb);
+            if (WeaponsNotBlood() && !VanillaMode() && bArmedBomb && !cansee(cX, cY, cZ, gView->pSprite->sectnum, pTSprite->x, pTSprite->y, pTSprite->z, pTSprite->sectnum)) // janky x-ray vision
+            {
+                auto pNSprite = viewInsertTSprite(gView->pSprite->sectnum, 32767, pTSprite);
+                if (!pNSprite)
+                    break;
+                pNSprite->ang = pTSprite->ang;
+                pNSprite->shade = -64;
+                pNSprite->pal = pTSprite->pal;
+                pNSprite->cstat = pTSprite->cstat;
+                pNSprite->cstat |= 2;
+                pNSprite->picnum = pTSprite->picnum;
+                pNSprite->x = interpolate(pTSprite->x, cX, 65536-(65536/0x30));
+                pNSprite->y = interpolate(pTSprite->y, cY, 65536-(65536/0x30));
+                pNSprite->z = interpolate(pTSprite->z, cZ, 65536-(65536/0x30));
+                pNSprite->xrepeat = pNSprite->yrepeat = 1;
+            }
         }
         break;
         }
