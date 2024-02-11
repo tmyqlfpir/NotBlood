@@ -730,6 +730,8 @@ CCheatMgr::CHEATINFO CCheatMgr::s_CheatInfo[] = {
     {"RTLGB", kCheatQskfa, 0 }, // QSKFA (Enable/Disable alpha pitchfork)
     {"TPOJD", kCheatSonic, 0 }, // SONIC (Enable/Disable player speed increase)
     {"OP!V", kCheatNoU, 0 }, // NO U (Gives reflect shots power-up)
+    {"KBNFT!IBSEJF", kCheatJamesHardie, 0 }, // JAMES HARDIE (Gives asbestos armor)
+    {"WVMPWJD", kCheatVulovic, 0 }, // VULOVIC (Gives feather fall)
 };
 
 bool CCheatMgr::m_bPlayerCheated = false;
@@ -741,7 +743,7 @@ bool CCheatMgr::Check(char *pzString)
     Bstrupr(buffer);
     for (size_t i = 0; i < strlen(pzString); i++)
         buffer[i]++;
-    for (int i = 0; i < 40; i++)
+    for (int i = 0; i < 42; i++)
     {
         int nCheatLen = strlen(s_CheatInfo[i].pzString);
         if (s_CheatInfo[i].flags & 1)
@@ -961,6 +963,18 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         break;
     case kCheatNoU:
         powerupActivate(gMe, kPwUpReflectShots);
+        break;
+    case kCheatJamesHardie:
+        if (VanillaMode()) // not supported by vanilla mode
+            return;
+        powerupActivate(gMe, kPwUpAsbestArmor);
+        viewSetMessage("Asbestos Armos! Oh so itchy!");
+        break;
+    case kCheatVulovic:
+        if (VanillaMode()) // not supported by vanilla mode
+            return;
+        powerupActivate(gMe, kPwUpFeatherFall);
+        viewSetMessage("I feel as light as a feather!");
         break;
     default:
         break;
