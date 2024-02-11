@@ -164,6 +164,8 @@ It should be noted that vanilla mode does not work with modern maps
 * QSKFA - Toggle blood alpha alt fire missile for pitchfork
 * SONIC - Toggle fast player movement
 * NO U - Activates reflect shots power-up
+* JAMES HARDIE - Activates asbestos armor power-up
+* VULOVIC - Activates feather fall power-up
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only
