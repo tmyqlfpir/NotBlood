@@ -1205,7 +1205,7 @@ static void tsf_voice_render(tsf* f, struct tsf_voice* v, float* outputBuffer, i
 						alpha = (float)(tmpSourceSamplePosition - pos[1]);
 						pos[2] = isLooping ? (pos[1] >= tmpLoopEnd ? tmpLoopStart : pos[1] + 1) : (pos[1] + 1 == region->end ? pos[1] : pos[1] + 1);
 						if (f->interpolatemode == TSF_INTERP_CUBIC)
-							pos[0] = (pos[1] == tmpLoopStart && isLooping ? tmpLoopEnd - 1 : pos[1] == 0 ? 0 : pos[1] - 1), pos[3] = isLooping ? (pos[2] >= tmpLoopEnd ? tmpLoopStart : pos[2] + 1) : (pos[2] + 1 == region->end ? pos[2] : pos[2] + 1);
+							pos[0] = (pos[1] == tmpLoopStart && isLooping ? tmpLoopEnd : pos[1] == 0 ? 0 : pos[1] - 1), pos[3] = isLooping ? (pos[2] >= tmpLoopEnd ? tmpLoopStart : pos[2] + 1) : (pos[2] + 1 < region->end ? pos[2] + 1 : pos[2]);
 					}
 
 					// Interpolation.
@@ -1234,7 +1234,7 @@ static void tsf_voice_render(tsf* f, struct tsf_voice* v, float* outputBuffer, i
 						alpha = (float)(tmpSourceSamplePosition - pos[1]);
 						pos[2] = isLooping ? (pos[1] >= tmpLoopEnd ? tmpLoopStart : pos[1] + 1) : (pos[1] + 1 == region->end ? pos[1] : pos[1] + 1);
 						if (f->interpolatemode == TSF_INTERP_CUBIC)
-							pos[0] = (pos[1] == tmpLoopStart && isLooping ? tmpLoopEnd - 1 : pos[1] == 0 ? 0 : pos[1] - 1), pos[3] = isLooping ? (pos[2] >= tmpLoopEnd ? tmpLoopStart : pos[2] + 1) : (pos[2] + 1 == region->end ? pos[2] : pos[2] + 1);
+							pos[0] = (pos[1] == tmpLoopStart && isLooping ? tmpLoopEnd : pos[1] == 0 ? 0 : pos[1] - 1), pos[3] = isLooping ? (pos[2] >= tmpLoopEnd ? tmpLoopStart : pos[2] + 1) : (pos[2] + 1 < region->end ? pos[2] + 1 : pos[2]);
 					}
 
 					// Interpolation.
@@ -1262,7 +1262,7 @@ static void tsf_voice_render(tsf* f, struct tsf_voice* v, float* outputBuffer, i
 						alpha = (float)(tmpSourceSamplePosition - pos[1]);
 						pos[2] = isLooping ? (pos[1] >= tmpLoopEnd ? tmpLoopStart : pos[1] + 1) : (pos[1] + 1 == region->end ? pos[1] : pos[1] + 1);
 						if (f->interpolatemode == TSF_INTERP_CUBIC)
-							pos[0] = (pos[1] == tmpLoopStart && isLooping ? tmpLoopEnd - 1 : pos[1] == 0 ? 0 : pos[1] - 1), pos[3] = isLooping ? (pos[2] >= tmpLoopEnd ? tmpLoopStart : pos[2] + 1) : (pos[2] + 1 == region->end ? pos[2] : pos[2] + 1);
+							pos[0] = (pos[1] == tmpLoopStart && isLooping ? tmpLoopEnd : pos[1] == 0 ? 0 : pos[1] - 1), pos[3] = isLooping ? (pos[2] >= tmpLoopEnd ? tmpLoopStart : pos[2] + 1) : (pos[2] + 1 < region->end ? pos[2] + 1 : pos[2]);
 					}
 
 					// Interpolation.
