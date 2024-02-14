@@ -495,6 +495,7 @@ void CGameMessageMgr::Clear(void)
         {
             messageStruct* pMessage = &messages[i];
             pMessage->deleted = true;
+            pMessage->lastTickWhenVisible = 0;
         }
     }
 }
