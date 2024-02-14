@@ -2690,6 +2690,7 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem)
     else
         pItem->m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
     viewResizeView(gViewSize);
+    gGameMessageMgr.Clear();
 }
 
 inline unsigned int SetBannedSprites(char bSinglePlayer)
