@@ -1165,9 +1165,8 @@ static void tsf_voice_render(tsf* f, struct tsf_voice* v, float* outputBuffer, i
 
 	while (numSamples)
 	{
-		float gainMono, gainLeft, gainRight, alpha;
+		float gainMono, gainLeft, gainRight;
 		int blockSamples = (numSamples > TSF_RENDER_EFFECTSAMPLEBLOCK ? TSF_RENDER_EFFECTSAMPLEBLOCK : numSamples);
-		unsigned int pos[4];
 		numSamples -= blockSamples;
 
 		if (dynamicLowpass)
