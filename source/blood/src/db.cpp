@@ -30,11 +30,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "crc32.h"
 #include "md4.h"
 
-//#include "actor.h"
+#include "actor.h"
+#include "config.h"
 #include "globals.h"
+#include "blood.h"
 #include "db.h"
 #include "iob.h"
 #include "eventq.h"
+#include "levels.h"
 #ifdef NOONE_EXTENSIONS
 #include "nnexts.h"
 #include "view.h"
