@@ -4446,7 +4446,7 @@ void viewDrawScreen(void)
             q16horiz += interpolate(fix16_from_int(mulscale30(0x40000000-Cos((gView->tiltEffect+4)<<2), 30)), q16tilt, gInterpolate);
         else
             q16horiz += q16tilt;
-        if (gViewPos == 0)
+        if (gViewPos == VIEWPOS_0)
         {
             if (gViewHBobbing)
             {
@@ -4729,7 +4729,7 @@ RORHACK:
         fix16_t deliriumPitchI = gViewInterpolate ? interpolate(fix16_from_int(deliriumPitchO), fix16_from_int(deliriumPitch), gInterpolate) : fix16_from_int(deliriumPitch);
         DrawMirrors(cX, cY, cZ, cA, q16horiz + fix16_from_int(defaultHoriz) + deliriumPitchI, gInterpolate, bLink && !VanillaMode() ? gViewIndex : -1); // only hide self sprite while traversing between sector
         int bakCstat = gView->pSprite->cstat;
-        if (gViewPos == 0) // don't render self while in first person view
+        if (gViewPos == VIEWPOS_0) // don't render self while in first person view
         {
             gView->pSprite->cstat |= CSTAT_SPRITE_INVISIBLE;
         }
@@ -4866,7 +4866,7 @@ RORHACK:
             }
         }
 #endif
-        if (gViewPos == 0)
+        if (gViewPos == VIEWPOS_0)
         {
             if (gAimReticle)
                 viewAimReticle(gView, defaultHoriz, q16slopehoriz, fFov);
@@ -4908,7 +4908,7 @@ RORHACK:
            
 
         }
-        if (gViewPos == 0 && gView->pXSprite->burnTime > 60)
+        if (gViewPos == VIEWPOS_0 && gView->pXSprite->burnTime > 60)
         {
             viewBurnTime(gView->pXSprite->burnTime);
         }
