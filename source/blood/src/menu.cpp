@@ -980,7 +980,6 @@ void UpdatePlayerColorMessages(CGameMenuItemZBool *pItem);
 void UpdatePlayerKillObituaryMessages(CGameMenuItemZBool *pItem);
 void UpdatePlayerKillMessage(CGameMenuItemZBool *pItem);
 void UpdatePlayerMultiKill(CGameMenuItemZCycle *pItem);
-void UpdatePlayerStompKillSound(CGameMenuItemZBool *pItem);
 
 const char *pzPlayerMultiKillStrings[] = {
     "OFF",
@@ -1019,7 +1018,6 @@ CGameMenuItemZBool itemOptionsPlayerColorMsg("COLORED MESSAGES:", 3, 66, 120, 18
 CGameMenuItemZBool itemOptionsPlayerObituaryMsg("USE OBITUARY MESSAGES:", 3, 66, 130, 180, true, UpdatePlayerKillObituaryMessages, NULL, NULL);
 CGameMenuItemZBool itemOptionsPlayerKillMsg("SHOW KILLS ON HUD:", 3, 66, 140, 180, true, UpdatePlayerKillMessage, NULL, NULL);
 CGameMenuItemZCycle itemOptionsPlayerMultiKill("MULTI KILL MESSAGES:", 3, 66, 150, 180, 0, UpdatePlayerMultiKill, pzPlayerMultiKillStrings, ARRAY_SIZE(pzPlayerMultiKillStrings), 0);
-CGameMenuItemZBool itemOptionsPlayerStompKillSound("STOMP KILL SOUND:", 3, 66, 160, 180, 0, UpdatePlayerStompKillSound, NULL, NULL);
 
 #define JOYSTICKITEMSPERPAGE 16 // this must be an even value, as double tap inputs rely on odd index position
 #define MAXJOYSTICKBUTTONPAGES (max(1, (MAXJOYBUTTONSANDHATS*2 / JOYSTICKITEMSPERPAGE))) // we double all buttons/hats so each input can be bind for double tap
@@ -1985,7 +1983,6 @@ void SetupOptionsMenu(void)
     menuOptionsPlayer.Add(&itemOptionsPlayerObituaryMsg, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerKillMsg, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerMultiKill, false);
-    menuOptionsPlayer.Add(&itemOptionsPlayerStompKillSound, false);
     menuOptionsPlayer.Add(&itemBloodQAV, false);
     itemOptionsPlayerSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
     itemOptionsPlayerTeamPreference.tooltip_pzTextUpper = "Set player's preferred team for team mode";
@@ -2000,7 +1997,6 @@ void SetupOptionsMenu(void)
     itemOptionsPlayerKillMsg.tooltip_pzTextLower = "(for bloodbath/teams mode)";
     itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
     itemOptionsPlayerMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
-    itemOptionsPlayerStompKillSound.tooltip_pzTextUpper = "Play sound when stomp killing another player";
 
     itemOptionsPlayerSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
     itemOptionsPlayerTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
@@ -2011,7 +2007,6 @@ void SetupOptionsMenu(void)
     itemOptionsPlayerObituaryMsg.at20 = gKillObituary;
     itemOptionsPlayerKillMsg.at20 = gKillMsg;
     itemOptionsPlayerMultiKill.m_nFocus = gMultiKill % ARRAY_SSIZE(pzPlayerMultiKillStrings);
-    itemOptionsPlayerStompKillSound.at20 = gStompSound;
 }
 
 void SetupControlsMenu(void)
@@ -3445,11 +3440,6 @@ void UpdatePlayerKillMessage(CGameMenuItemZBool *pItem)
 void UpdatePlayerMultiKill(CGameMenuItemZCycle *pItem)
 {
     gMultiKill = pItem->m_nFocus % ARRAY_SIZE(pzPlayerMultiKillStrings);
-}
-
-void UpdatePlayerStompKillSound(CGameMenuItemZBool *pItem)
-{
-    gStompSound = pItem->at20;
 }
 
 void SetMouseAimMode(CGameMenuItemZBool *pItem)

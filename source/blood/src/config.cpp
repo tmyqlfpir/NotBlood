@@ -96,7 +96,6 @@ int32_t gHealthBlink;
 int32_t gKillObituary;
 int32_t gKillMsg;
 int32_t gMultiKill;
-int32_t gStompSound;
 int32_t gViewDim;
 int32_t gViewInterpolate;
 int32_t gViewInterpolateMethod;
@@ -502,7 +501,6 @@ void CONFIG_SetDefaults(void)
     gKillObituary = 1;
     gKillMsg = 1;
     gMultiKill = 2;
-    gStompSound = 0;
     gViewDim = 1;
     gViewInterpolate = 1;
     gViewInterpolateMethod = 0;
