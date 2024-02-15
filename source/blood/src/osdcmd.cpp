@@ -1114,6 +1114,7 @@ int32_t registerosdcommands(void)
         { "in_turnacceleration", "set keyboard turning acceleration (0: off, 1: only when running, 2: always on)", (void *)&gTurnAcceleration, CVAR_INT, 0, 2 },
 
 //
+        { "model", "set player model for multiplayer (0: caleb, 1: cultist)", (void *)&gPlayerModel, CVAR_BOOL, 0, 1 },
         { "mus_enabled", "enables/disables music", (void *)&MusicToggle, CVAR_BOOL, 0, 1 },
         { "mus_restartonload", "restart the music when loading a saved game with the same map or not", (void *)&MusicRestartsOnLoadToggle, CVAR_BOOL, 0, 1 },
         { "mus_volume", "controls music volume", (void *)&MusicVolume, CVAR_INT, 0, 255 },
