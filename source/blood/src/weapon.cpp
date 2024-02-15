@@ -652,7 +652,7 @@ void WeaponRaise(PLAYER *pPlayer)
             StartQAV(pPlayer, 74, -1, 0);
         }
         break;
-    case kWeaponNapalm: // napalm
+    case kWeaponNapalm:
         if (powerupCheck(pPlayer, kPwUpTwoGuns) && (!gGameOptions.bQuadDamagePowerup || VanillaMode()))
         {
             StartQAV(pPlayer, 120, -1, 0);
@@ -2582,16 +2582,16 @@ void WeaponProcess(PLAYER *pPlayer) {
                 return;
             }
         }
-        if (pPlayer->pXSprite->health == 0 || pPlayer->hasWeapon[pPlayer->input.newWeapon] == 0)
+        if ((pPlayer->pXSprite->health > 0) && !pPlayer->hasWeapon[pPlayer->input.newWeapon] && !pPlayer->curWeapon && !VanillaMode()) // if trying to switch to missing/out of ammo weapon, switch to loaded weapon instead of holstering
         {
-            if ((pPlayer->hasWeapon[pPlayer->input.newWeapon] == 0) && !pPlayer->curWeapon && !VanillaMode()) // if trying to switch to missing/out of ammo weapon, switch to loaded weapon instead of holstering
-            {
-                int t;
-                char weapon = WeaponFindLoaded(pPlayer, &t);
-                pPlayer->weaponMode[weapon] = t;
-                pPlayer->input.newWeapon = weapon;
-                return;
-            }
+            int t;
+            char weapon = WeaponFindLoaded(pPlayer, &t);
+            pPlayer->weaponMode[weapon] = t;
+            pPlayer->input.newWeapon = weapon;
+            return;
+        }
+        if (pPlayer->pXSprite->health == 0 || !pPlayer->hasWeapon[pPlayer->input.newWeapon])
+        {
             pPlayer->input.newWeapon = kWeaponNone;
             return;
         }
