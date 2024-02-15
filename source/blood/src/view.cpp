@@ -3281,6 +3281,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                         pTSprite->pal = 11;
                 }
             }
+            if (EnemiesNotBlood() && !gSpriteHit[nXSprite].florhit && (zvel[nSprite] > 250000) && ((nTile == 2825) || (nTile >= 2860 && nTile <= 2885)) && (bReplacedPlayerTile || (pTSprite->type == kDudeCultistTommy) || (pTSprite->type == kDudeCultistShotgun) || (pTSprite->type == kDudeCultistTommyProne) || (pTSprite->type == kDudeCultistShotgunProne) || (pTSprite->type == kDudeCultistTesla) || (pTSprite->type == kDudeCultistTNT) || (pTSprite->type == kDudeCultistBeast))) // replace tile with unused jump tile for falling cultists
+                nTile = pTSprite->picnum = (zvel[nSprite] <= 500000) ? 2890 : ((zvel[nSprite] <= 750000) ? 2895 : 2900);
         }
         auto const tsprflags = pTSprite->clipdist;
 
