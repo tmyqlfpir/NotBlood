@@ -591,6 +591,7 @@ void netBroadcastPlayerInfo(int nPlayer)
     pProfile->nWeaponSwitch = gWeaponSwitch;
     pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
     pProfile->nTeamPreference = gPlayerTeamPreference;
+    pProfile->nModel = gPlayerModel;
     pProfile->nWeaponHBobbing = gWeaponHBobbing;
     gProfileNet[nPlayer] = gProfile[nPlayer];
     if (numplayers < 2)
@@ -610,6 +611,7 @@ void netBroadcastPlayerInfoUpdate(int nPlayer)
     pProfile->nWeaponSwitch = gWeaponSwitch;
     pProfile->bWeaponFastSwitch = gWeaponFastSwitch;
     pProfile->nTeamPreference = gPlayerTeamPreference;
+    pProfile->nModel = gPlayerModel;
     pProfile->nWeaponHBobbing = gWeaponHBobbing;
     if (numplayers < 2)
         return;
