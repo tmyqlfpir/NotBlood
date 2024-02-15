@@ -3207,7 +3207,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         if (!VanillaMode() && (pTSprite->statnum == kStatDude))
         {
             char bReplacedPlayerTile = 0;
-            if ((numplayers > 1) && IsPlayerSprite(pTSprite) && gProfile[pTSprite->type-kDudePlayer1].nModel) // replace player caleb sprite with cultist sprite
+            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && IsPlayerSprite(pTSprite) && gProfile[pTSprite->type-kDudePlayer1].nModel) // replace player caleb sprite with cultist sprite
             {
                 bReplacedPlayerTile = 1;
                 switch (nTile)
@@ -3301,7 +3301,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     }
                 }
             }
-            if (EnemiesNotBlood() && !gSpriteHit[nXSprite].florhit && (zvel[nSprite] > 250000) && ((nTile == 2825) || (nTile >= 2860 && nTile <= 2885)) && (bReplacedPlayerTile || (pTSprite->type == kDudeCultistTommy) || (pTSprite->type == kDudeCultistShotgun) || (pTSprite->type == kDudeCultistTommyProne) || (pTSprite->type == kDudeCultistShotgunProne) || (pTSprite->type == kDudeCultistTesla) || (pTSprite->type == kDudeCultistTNT) || (pTSprite->type == kDudeCultistBeast))) // replace tile with unused jump tile for falling cultists
+            if ((EnemiesNotBlood() || bReplacedPlayerTile) && !gSpriteHit[nXSprite].florhit && (zvel[nSprite] > 250000) && ((nTile == 2825) || (nTile >= 2860 && nTile <= 2885)) && (bReplacedPlayerTile || (pTSprite->type == kDudeCultistTommy) || (pTSprite->type == kDudeCultistShotgun) || (pTSprite->type == kDudeCultistTommyProne) || (pTSprite->type == kDudeCultistShotgunProne) || (pTSprite->type == kDudeCultistTesla) || (pTSprite->type == kDudeCultistTNT) || (pTSprite->type == kDudeCultistBeast))) // replace tile with unused jump tile for falling cultists
                 nTile = pTSprite->picnum = (zvel[nSprite] <= 500000) ? 2890 : ((zvel[nSprite] <= 750000) ? 2895 : 2900);
         }
         int nAnim = 0;
