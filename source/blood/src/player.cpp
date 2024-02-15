@@ -2652,7 +2652,9 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         {
             DAMAGEINFO *pDamageInfo = &damageInfo[nDamageType];
             int nSound;
-            if (nDamage >= (10<<4))
+            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && (numplayers > 1) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // use cultist hurt and burn sounds
+                nSound = nDamageType == kDamageBurn ? 1031+Random(2) : 1013+Random(2);
+            else if (nDamage >= (10<<4))
                 nSound = pDamageInfo->at4[0];
             else
                 nSound = pDamageInfo->at4[Random(3)];
