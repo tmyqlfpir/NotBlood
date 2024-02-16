@@ -2379,10 +2379,10 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
             sndStartSample(nSound, 255, 2, 0);
     }
     int nPal1 = 0, nPal2 = 0;
-    if (!VanillaMode()) // tint names within message string
+    if (gColorMsg && !VanillaMode()) // tint names within message string
     {
-        nPal1 = gColorMsg ? playerColorPalMessage(pKiller->teamId) : 0;
-        nPal2 = gColorMsg ? playerColorPalMessage(pVictim->teamId) : 0;
+        nPal1 = playerColorPalMessage(pKiller->teamId);
+        nPal2 = playerColorPalMessage(pVictim->teamId);
     }
     if ((buffer[0] != '\0') || VanillaMode())
         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal1, nPal2);
