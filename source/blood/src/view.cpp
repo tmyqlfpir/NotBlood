@@ -1689,7 +1689,7 @@ void viewDrawAimedPlayerName(void)
         if (!IsPlayerSprite(pSprite))
             return;
         char nPlayer = pSprite->type-kDudePlayer1;
-        if (!VanillaMode() && powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite)) // if doppleganger powerup is active, set player id as viewer
+        if (powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite)) // if doppleganger powerup is active, set player id as viewer
             nPlayer = gView->pSprite->type-kDudePlayer1;
         char* szName = gProfile[nPlayer].name;
         int nPalette = !VanillaMode() ? playerColorPalAimName(gPlayer[nPlayer].teamId) : playerColorPalDefault(gPlayer[nPlayer].teamId);
