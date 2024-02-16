@@ -896,6 +896,8 @@ static void playerResetTeamId(int nPlayer, int bNewLevel)
             viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPalPlayer, nPalTeam);
         }
     }
+    else if (gProfile[nPlayer].nColorPreference > 0)
+        pPlayer->teamId = gProfile[nPlayer].nColorPreference-1;
 }
 
 const int nZoneRandList[kMaxPlayers][kMaxPlayers] = {
@@ -1038,7 +1040,7 @@ void playerStart(int nPlayer, int bNewLevel)
     int top, bottom;
     GetSpriteExtents(pSprite, &top, &bottom);
     pSprite->z -= bottom - pSprite->z;
-    pSprite->pal = !VanillaMode() && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors) ? playerColorPalSprite(pPlayer->teamId) : playerColorPalDefault(pPlayer->teamId);
+    pSprite->pal = !VanillaMode() && (gGameOptions.nGameType == kGameTypeTeams) && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors) ? playerColorPalSprite(pPlayer->teamId) : playerColorPalDefault(pPlayer->teamId);
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
     pSprite->type = kDudePlayer1+nPlayer;
@@ -2379,10 +2381,10 @@ void playerFrag(PLAYER *pKiller, PLAYER *pVictim)
             sndStartSample(nSound, 255, 2, 0);
     }
     int nPal1 = 0, nPal2 = 0;
-    if (!VanillaMode()) // tint names within message string
+    if (gColorMsg && !VanillaMode()) // tint names within message string
     {
-        nPal1 = gColorMsg ? playerColorPalMessage(pKiller->teamId) : 0;
-        nPal2 = gColorMsg ? playerColorPalMessage(pVictim->teamId) : 0;
+        nPal1 = playerColorPalMessage(pKiller->teamId);
+        nPal2 = playerColorPalMessage(pVictim->teamId);
     }
     if ((buffer[0] != '\0') || VanillaMode())
         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal1, nPal2);

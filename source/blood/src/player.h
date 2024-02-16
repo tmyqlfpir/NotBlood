@@ -235,7 +235,8 @@ struct PROFILE
     int nWeaponSwitch;
     int bWeaponFastSwitch;
     int skill;
-    short nTeamPreference;
+    char nTeamPreference;
+    char nColorPreference;
     short nModel;
     int nWeaponHBobbing;
     char name[MAXPLAYERNAME];
