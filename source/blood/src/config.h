@@ -96,6 +96,7 @@ extern int32_t gMessageTime;
 extern int32_t gMessageFont;
 extern int32_t gStereo;
 extern int32_t gPlayerTeamPreference;
+extern int32_t gPlayerColorPreference;
 extern int32_t gPlayerModel;
 extern int32_t gShowLoadingSavingBackground;
 extern int32_t gShowPlayerNames;

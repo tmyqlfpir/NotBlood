@@ -234,6 +234,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable fast weapon switching
 * cl_packitemswitch
    - Enable/disable item slot switching to activated item (always enabled in multiplayer)
+* color
+   - Set preferred player color palette in multiplayer (0: none, 1: blue, 2: red, 3: green, 4: gray)
 * crosshair
    - Enable/disable crosshair (0: off, 1: on, 2: on [autoaim])
 * detail

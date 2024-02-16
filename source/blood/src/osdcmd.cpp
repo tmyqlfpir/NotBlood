@@ -890,11 +890,6 @@ static int osdcmd_cvar_set_game(osdcmdptr_t parm)
 
         ud.player_skill = ud.m_player_skill;
     }
-    else if (!Bstrcasecmp(parm->name, "color"))
-    {
-        ud.color = G_CheckPlayerColor(ud.color);
-        g_player[0].ps->palookup = g_player[0].pcolor = ud.color;
-    }
     else if (!Bstrcasecmp(parm->name, "osdscale"))
     {
         osdrscale = 1.f/osdscale;
@@ -1037,6 +1032,7 @@ int32_t registerosdcommands(void)
         { "cl_weaponswitch", "enable/disable auto weapon switching", (void *)&gWeaponSwitch, CVAR_INT|CVAR_MULTI, 0, 3 },
         { "cl_weaponfastswitch", "enable/disable fast weapon switching", (void *)&gWeaponFastSwitch, CVAR_BOOL|CVAR_MULTI, 0, 1 },
         { "cl_packitemswitch", "enable/disable item slot switching to activated item (always enabled in multiplayer)", (void *)&gPackSlotSwitch, CVAR_BOOL, 0, 1 },
+        { "color", "set preferred player color palette in multiplayer (0: none, 1: blue, 2: red, 3: green, 4: gray)", (void *)&gPlayerColorPreference, CVAR_INT, 0, 4 },
 //
 //        { "color", "changes player palette", (void *)&ud.color, CVAR_INT|CVAR_MULTI, 0, MAXPALOOKUPS-1 },
 //
