@@ -896,6 +896,8 @@ static void playerResetTeamId(int nPlayer, int bNewLevel)
             viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPalPlayer, nPalTeam);
         }
     }
+    else if (gProfile[nPlayer].nColorPreference > 0)
+        pPlayer->teamId = gProfile[nPlayer].nColorPreference-1;
 }
 
 const int nZoneRandList[kMaxPlayers][kMaxPlayers] = {
@@ -1038,7 +1040,7 @@ void playerStart(int nPlayer, int bNewLevel)
     int top, bottom;
     GetSpriteExtents(pSprite, &top, &bottom);
     pSprite->z -= bottom - pSprite->z;
-    pSprite->pal = !VanillaMode() && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors) ? playerColorPalSprite(pPlayer->teamId) : playerColorPalDefault(pPlayer->teamId);
+    pSprite->pal = !VanillaMode() && (gGameOptions.nGameType == kGameTypeTeams) && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors) ? playerColorPalSprite(pPlayer->teamId) : playerColorPalDefault(pPlayer->teamId);
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
     pSprite->type = kDudePlayer1+nPlayer;

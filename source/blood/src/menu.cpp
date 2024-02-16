@@ -973,6 +973,7 @@ CGameMenuItemChain itemOptionsSoundApplyChanges("APPLY CHANGES", 3, 66, 170, 180
 void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent);
 void UpdatePlayerSkill(CGameMenuItemZCycle *pItem);
 void UpdatePlayerTeamPreference(CGameMenuItemZCycle *pItem);
+void UpdatePlayerColorPreference(CGameMenuItemZCycle *pItem);
 void UpdatePlayerModel(CGameMenuItemZBool *pItem);
 void SetShowPlayerNames(CGameMenuItemZBool *);
 void SetShowWeapons(CGameMenuItemZCycle *);
@@ -1002,6 +1003,15 @@ const char *pzPlayerTeamPreferenceStrings[] = {
     "RED"
 };
 
+
+const char *pzPlayerColorPreferenceStrings[] = {
+    "NONE",
+    "BLUE",
+    "RED",
+    "TEAL",
+    "GRAY",
+};
+
 const char *pzShowWeaponStrings[] = {
     "OFF",
     "SPRITE",
@@ -1009,9 +1019,10 @@ const char *pzShowWeaponStrings[] = {
 };
 
 CGameMenuItemTitle itemOptionsPlayerTitle("PLAYER SETUP", 1, 160, 20, 2038);
-CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 50, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
-CGameMenuItemZCycle itemOptionsPlayerSkill("HEALTH HANDICAP:", 3, 66, 60, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
-CGameMenuItemZCycle itemOptionsPlayerTeamPreference("TEAM PREFERENCE:", 3, 66, 70, 180, 0, UpdatePlayerTeamPreference, pzPlayerTeamPreferenceStrings, ARRAY_SIZE(pzPlayerTeamPreferenceStrings), 0);
+CGameMenuItemZEdit itemOptionsPlayerName("PLAYER NAME:", 3, 66, 40, 180, szPlayerName, MAXPLAYERNAME, 0, UpdatePlayerName, 0);
+CGameMenuItemZCycle itemOptionsPlayerSkill("HEALTH HANDICAP:", 3, 66, 50, 180, 0, UpdatePlayerSkill, pzPlayerSkillStrings, ARRAY_SIZE(pzPlayerSkillStrings), 0);
+CGameMenuItemZCycle itemOptionsPlayerTeamPreference("TEAM PREFERENCE:", 3, 66, 60, 180, 0, UpdatePlayerTeamPreference, pzPlayerTeamPreferenceStrings, ARRAY_SIZE(pzPlayerTeamPreferenceStrings), 0);
+CGameMenuItemZCycle itemOptionsPlayerColorPreference("COLOR PREFERENCE:", 3, 66, 70, 180, 0, UpdatePlayerColorPreference, pzPlayerColorPreferenceStrings, ARRAY_SIZE(pzPlayerColorPreferenceStrings), 0);
 CGameMenuItemZBool itemOptionsPlayerModel("PLAYER MODEL:", 3, 66, 80, 180, false, UpdatePlayerModel, "CULTIST", "CALEB");
 CGameMenuItemZBool itemOptionsPlayerBoolShowPlayerNames("SHOW PLAYER NAMES:", 3, 66, 100, 180, gShowPlayerNames, SetShowPlayerNames, NULL, NULL);
 CGameMenuItemZCycle itemOptionsPlayerShowWeapons("SHOW WEAPONS:", 3, 66, 110, 180, 0, SetShowWeapons, pzShowWeaponStrings, ARRAY_SSIZE(pzShowWeaponStrings), 0);
@@ -1978,6 +1989,7 @@ void SetupOptionsMenu(void)
     menuOptionsPlayer.Add(&itemOptionsPlayerName, true);
     menuOptionsPlayer.Add(&itemOptionsPlayerSkill, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerTeamPreference, false);
+    menuOptionsPlayer.Add(&itemOptionsPlayerColorPreference, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerModel, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerBoolShowPlayerNames, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerShowWeapons, false);
@@ -1988,7 +2000,9 @@ void SetupOptionsMenu(void)
     menuOptionsPlayer.Add(&itemOptionsPlayerMultiKill, false);
     menuOptionsPlayer.Add(&itemBloodQAV, false);
     itemOptionsPlayerSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
-    itemOptionsPlayerTeamPreference.tooltip_pzTextUpper = "Set player's preferred team for team mode";
+    itemOptionsPlayerTeamPreference.tooltip_pzTextUpper = "Set player's preferred team";
+    itemOptionsPlayerColorPreference.tooltip_pzTextUpper = "Set player's preferred color";
+    itemOptionsPlayerColorPreference.tooltip_pzTextLower = "(for bloodbath/co-op mode)";
     itemOptionsPlayerModel.tooltip_pzTextUpper = "Set player's sprite model";
     itemOptionsPlayerBoolShowPlayerNames.tooltip_pzTextUpper = "Display player's name";
     itemOptionsPlayerBoolShowPlayerNames.tooltip_pzTextLower = "over crosshair";
@@ -2004,6 +2018,7 @@ void SetupOptionsMenu(void)
 
     itemOptionsPlayerSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
     itemOptionsPlayerTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
+    itemOptionsPlayerColorPreference.m_nFocus = gPlayerColorPreference % ARRAY_SSIZE(pzPlayerColorPreferenceStrings);
     itemOptionsPlayerModel.at20 = gPlayerModel;
     itemOptionsPlayerBoolShowPlayerNames.at20 = gShowPlayerNames;
     itemOptionsPlayerShowWeapons.m_nFocus = gShowWeapon;
@@ -3408,6 +3423,13 @@ void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
 void UpdatePlayerTeamPreference(CGameMenuItemZCycle *pItem)
 {
     gPlayerTeamPreference = pItem->m_nFocus % ARRAY_SIZE(pzPlayerTeamPreferenceStrings);
+    if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
+        netBroadcastPlayerInfoUpdate(myconnectindex);
+}
+
+void UpdatePlayerColorPreference(CGameMenuItemZCycle *pItem)
+{
+    gPlayerColorPreference = pItem->m_nFocus % ARRAY_SIZE(pzPlayerColorPreferenceStrings);
     if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         netBroadcastPlayerInfoUpdate(myconnectindex);
 }
