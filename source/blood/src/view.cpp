@@ -1673,23 +1673,27 @@ void viewDrawMapTitle(void)
 
 void viewDrawAimedPlayerName(void)
 {
-    if (!gShowPlayerNames || (gView->aim.dx == 0 && gView->aim.dy == 0) || (gGameOptions.nGameType == kGameTypeSinglePlayer))
+    if (!gShowPlayerNames || (gGameOptions.nGameType == kGameTypeSinglePlayer) || !gView->pSprite)
         return;
+    const int nX = gAimReticle == 2 ? gView->aim.dx : Cos(gView->pSprite->ang)>>16;
+    const int nY = gAimReticle == 2 ? gView->aim.dy : Sin(gView->pSprite->ang)>>16;
+    if (nX == 0 && nY == 0)
+        return;
+    const int nZ = gAimReticle == 2 ? gView->aim.dz : gView->slope;
 
     const int nDist = (gGameOptions.nGameType == kGameTypeCoop) ? 640 : 512; // set hitscan distance to 20/16 meters for co-op mode
-    const int hit = HitScan(gView->pSprite, gView->zView, gView->aim.dx, gView->aim.dy, gView->aim.dz, CLIPMASK0, nDist);
+    const int hit = HitScan(gView->pSprite, gView->zView, nX, nY, nZ, CLIPMASK0, nDist);
     if (hit == 3)
     {
         spritetype* pSprite = &sprite[gHitInfo.hitsprite];
-        if (IsPlayerSprite(pSprite))
-        {
-            char nPlayer = pSprite->type-kDudePlayer1;
-            if (!VanillaMode() && powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite)) // if doppleganger powerup is active, set player id as viewer
-                nPlayer = gView->pSprite->type-kDudePlayer1;
-            char* szName = gProfile[nPlayer].name;
-            int nPalette = !VanillaMode() ? playerColorPalAimName(gPlayer[nPlayer].teamId) : playerColorPalDefault(gPlayer[nPlayer].teamId);
-            viewDrawText(4, szName, 160, 125, -128, nPalette, 1, 1);
-        }
+        if (!IsPlayerSprite(pSprite))
+            return;
+        char nPlayer = pSprite->type-kDudePlayer1;
+        if (!VanillaMode() && powerupCheck(&gPlayer[nPlayer], kPwUpDoppleganger) && !IsTargetTeammate(gView, gPlayer[nPlayer].pSprite)) // if doppleganger powerup is active, set player id as viewer
+            nPlayer = gView->pSprite->type-kDudePlayer1;
+        char* szName = gProfile[nPlayer].name;
+        int nPalette = !VanillaMode() ? playerColorPalAimName(gPlayer[nPlayer].teamId) : playerColorPalDefault(gPlayer[nPlayer].teamId);
+        viewDrawText(4, szName, 160, 125, -128, nPalette, 1, 1);
     }
 }
 
