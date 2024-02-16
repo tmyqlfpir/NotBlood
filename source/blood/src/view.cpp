@@ -3285,12 +3285,17 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
                 if (bReplacedPlayerTile)
                 {
-                    int topnew, topold, bottomnew, bottomold;
-                    GetSpriteExtents(pTSprite, &topold, &bottomold);
-                    pTSprite->picnum = nTile;
-                    GetSpriteExtents(pTSprite, &topnew, &bottomnew);
-                    if (bottomnew != bottomold) // align bottom of new tile to old tile
-                        pTSprite->z -= bottomnew - bottomold;
+                    if (gSpriteHit[nXSprite].florhit) // only do this if player is standing on ground
+                    {
+                        int topnew, topold, bottomnew, bottomold;
+                        GetSpriteExtents(pTSprite, &topold, &bottomold);
+                        pTSprite->picnum = nTile;
+                        GetSpriteExtents(pTSprite, &topnew, &bottomnew);
+                        if (bottomnew != bottomold) // align bottom of new tile to old tile
+                            pTSprite->z -= bottomnew - bottomold;
+                    }
+                    else
+                        pTSprite->picnum = nTile;
 
                     if ((gGameOptions.nGameType == kGameTypeTeams) && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors)) // force correct palette for teams color mode
                     {
