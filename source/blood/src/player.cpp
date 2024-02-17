@@ -2185,7 +2185,7 @@ void playerProcess(PLAYER *pPlayer)
     else
         pPlayer->zWeaponVel += mulscale16(dz<<8, 0xc00);
     pPlayer->zWeapon += pPlayer->zWeaponVel>>8;
-    pPlayer->bobPhase = ClipLow(pPlayer->bobPhase-4, 0);
+    pPlayer->bobPhase = ClipLow(pPlayer->bobPhase-kTicsPerFrame, 0);
     nSpeed >>= 16;
     if (pPlayer->posture == kPostureSwim)
     {

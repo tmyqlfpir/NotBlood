@@ -306,7 +306,7 @@ void WeaponPlay(PLAYER *pPlayer)
     QAV *pQAV = weaponQAV[pPlayer->weaponQav];
     pQAV->nSprite = pPlayer->pSprite->index;
     int nTicks = pQAV->at10 - pPlayer->weaponTimer;
-    pQAV->Play(nTicks-4, nTicks, pPlayer->qavCallback, pPlayer);
+    pQAV->Play(nTicks-kTicsPerFrame, nTicks, pPlayer->qavCallback, pPlayer);
 }
 
 void StartQAV(PLAYER *pPlayer, int nWeaponQAV, int a3 = -1, char a4 = 0)
@@ -318,7 +318,7 @@ void StartQAV(PLAYER *pPlayer, int nWeaponQAV, int a3 = -1, char a4 = 0)
     pPlayer->qavLoop = a4;
     weaponQAV[nWeaponQAV]->Preload();
     WeaponPlay(pPlayer);
-    pPlayer->weaponTimer -= 4;
+    pPlayer->weaponTimer -= kTicsPerFrame;
 }
 
 struct WEAPONTRACK
@@ -551,7 +551,7 @@ void WeaponRaise(PLAYER *pPlayer)
     case kWeaponTNT:
         if (gInfiniteAmmo || checkAmmo2(pPlayer, 5, 1))
         {
-            if ((pPlayer->weaponState == 2) && !prevWeapon && !VanillaMode()) // if quickly switching from tnt to spray can and back, don't put away lighter
+            if ((pPlayer->weaponState == 2) && (prevWeapon == kWeaponNone) && !VanillaMode()) // if quickly switching from tnt to spray can and back, don't put away lighter
                 prevWeapon = kWeaponSprayCan;
             pPlayer->weaponState = 3;
             if (prevWeapon == kWeaponSprayCan)
@@ -2338,7 +2338,7 @@ void WeaponProcess(PLAYER *pPlayer) {
     }
     WeaponPlay(pPlayer);
     UpdateAimVector(pPlayer);
-    pPlayer->weaponTimer -= 4;
+    pPlayer->weaponTimer -= kTicsPerFrame;
     char bShoot = pPlayer->input.buttonFlags.shoot;
     char bShoot2 = pPlayer->input.buttonFlags.shoot2;
     if (pPlayer->qavLoop && pPlayer->pXSprite->health > 0)
