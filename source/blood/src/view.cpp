@@ -3208,14 +3208,24 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             pTSprite->z = interpolate(pPrevLoc->z, pTSprite->z, gInterpolate);
             pTSprite->ang = pPrevLoc->ang+mulscale16(((pTSprite->ang-pPrevLoc->ang+1024)&2047)-1024, gInterpolate);
         }
-        if (!VanillaMode() && (pTSprite->statnum == kStatDude))
+        while (!VanillaMode())
         {
             char bReplacedPlayerTile = 0;
-            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && IsPlayerSprite(pTSprite) && gProfile[pTSprite->type-kDudePlayer1].nModel) // replace player caleb sprite with cultist sprite
+            if (!((pTSprite->statnum == kStatDude) || ((pTSprite->type == kThingBloodChunks) && (pTSprite->statnum == kStatThing) && (sprite[nSprite].inittype >= kDudePlayer1) && (sprite[nSprite].inittype <= kDudePlayer8)))) // this is not the sprite we're looking for, move along...
+                break;
+            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && (IsPlayerSprite(pTSprite) && gProfile[pTSprite->type-kDudePlayer1].nModel || (pTSprite->type == kThingBloodChunks && gProfile[sprite[nSprite].inittype-kDudePlayer1].nModel))) // replace player caleb sprite with cultist sprite
             {
                 bReplacedPlayerTile = 1;
                 switch (nTile)
                 {
+                    // 3150-6 DESPAWN
+                    case 3150: nTile = 2583; break;
+                    case 3151: nTile = 2584; break;
+                    case 3152: nTile = 2585; break;
+                    case 3153: nTile = 2587; break;
+                    case 3154: nTile = 2589; break;
+                    case 3155: nTile = 2590; break;
+                    case 3156: nTile = 2591; break;
                     // 3840 L IMPACT
                     case 3840: nTile = 2865; break;
                     // 3845 L LIFT
@@ -3312,6 +3322,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             }
             if ((EnemiesNotBlood() || bReplacedPlayerTile) && !gSpriteHit[nXSprite].florhit && (zvel[nSprite] > 250000) && ((nTile == 2825) || (nTile >= 2860 && nTile <= 2885)) && (bReplacedPlayerTile || (pTSprite->type == kDudeCultistTommy) || (pTSprite->type == kDudeCultistShotgun) || (pTSprite->type == kDudeCultistTommyProne) || (pTSprite->type == kDudeCultistShotgunProne) || (pTSprite->type == kDudeCultistTesla) || (pTSprite->type == kDudeCultistTNT) || (pTSprite->type == kDudeCultistBeast))) // replace tile with unused jump tile for falling cultists
                 nTile = pTSprite->picnum = (zvel[nSprite] <= 500000) ? 2890 : ((zvel[nSprite] <= 750000) ? 2895 : 2900);
+            break;
         }
         int nAnim = 0;
         switch (picanm[nTile].extra & 7) {
