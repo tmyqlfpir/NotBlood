@@ -3310,14 +3310,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     }
                     else
                         pTSprite->picnum = nTile;
-
-                    if ((gGameOptions.nGameType == kGameTypeTeams) && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors)) // force correct palette for teams color mode
-                    {
-                        if (pTSprite->pal == 2)
-                            pTSprite->pal = 12;
-                        else if (pTSprite->pal == 10)
-                            pTSprite->pal = 11;
-                    }
                 }
             }
             if ((EnemiesNotBlood() || bReplacedPlayerTile) && !gSpriteHit[nXSprite].florhit && (zvel[nSprite] > 250000) && ((nTile == 2825) || (nTile >= 2860 && nTile <= 2885)) && (bReplacedPlayerTile || (pTSprite->type == kDudeCultistTommy) || (pTSprite->type == kDudeCultistShotgun) || (pTSprite->type == kDudeCultistTommyProne) || (pTSprite->type == kDudeCultistShotgunProne) || (pTSprite->type == kDudeCultistTesla) || (pTSprite->type == kDudeCultistTNT) || (pTSprite->type == kDudeCultistBeast))) // replace tile with unused jump tile for falling cultists
