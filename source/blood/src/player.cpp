@@ -1772,7 +1772,11 @@ void ProcessInput(PLAYER *pPlayer)
             else if (!gDemo.bPlaying && (seqGetStatus(3, pPlayer->pSprite->extra) < 0))
             {
                 if (pPlayer->pSprite)
+                {
+                    if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && !VanillaMode()) // we need to keep track of inittype to replace dead cultist player model
+                        pPlayer->pSprite->inittype = pPlayer->pSprite->type;
                     pPlayer->pSprite->type = kThingBloodChunks;
+                }
                 actPostSprite(pPlayer->nSprite, kStatThing);
                 seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
                 playerReset(pPlayer);
