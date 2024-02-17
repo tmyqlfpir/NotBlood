@@ -1774,16 +1774,17 @@ void ProcessInput(PLAYER *pPlayer)
                 if (pPlayer->pSprite)
                     pPlayer->pSprite->type = kThingBloodChunks;
                 actPostSprite(pPlayer->nSprite, kStatThing);
-                if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // cultist death sequence
+                if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // override with cultist death sequence
                 {
                     seqSpawn(dudeInfo[kDudeCultistShotgun-kDudeBase].seqStartID+1, 3, pPlayer->pSprite->extra, -1);
                     SEQINST *pInst = GetInstance(3, pPlayer->pSprite->extra);
                     if (pInst) // skip the falling to ground animation (as the player is already dead here)
                     {
-                        pInst->timeCount = 0;
+                        pInst->timeCount = kTicRate * 20; // stall death seq by 20 seconds to match original death seq
                         pInst->frameIndex = 6;
                         pPlayer->pSprite->z += -1572; // offset off ground
                         viewBackupSpriteLoc(pPlayer->nSprite, pPlayer->pSprite); // update last position
+                        seqUpdateSprite(pPlayer->pSprite->extra, &pInst->pSequence->frames[pInst->frameIndex]); // manually update sprite from seq frame
                     }
                 }
                 else
