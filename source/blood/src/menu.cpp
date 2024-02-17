@@ -1008,7 +1008,7 @@ const char *pzPlayerColorPreferenceStrings[] = {
     "NONE",
     "BLUE",
     "RED",
-    "GREEN",
+    "TEAL",
     "GRAY",
 };
 
