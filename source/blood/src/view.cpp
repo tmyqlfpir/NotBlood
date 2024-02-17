@@ -3216,6 +3216,14 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 bReplacedPlayerTile = 1;
                 switch (nTile)
                 {
+                    // 3150-6 DESPAWN
+                    case 3150: nTile = 2583; break;
+                    case 3151: nTile = 2584; break;
+                    case 3152: nTile = 2585; break;
+                    case 3153: nTile = 2587; break;
+                    case 3154: nTile = 2589; break;
+                    case 3155: nTile = 2590; break;
+                    case 3156: nTile = 2591; break;
                     // 3840 L IMPACT
                     case 3840: nTile = 2865; break;
                     // 3845 L LIFT

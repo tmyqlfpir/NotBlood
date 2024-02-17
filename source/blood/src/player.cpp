@@ -1774,7 +1774,10 @@ void ProcessInput(PLAYER *pPlayer)
                 if (pPlayer->pSprite)
                     pPlayer->pSprite->type = kThingBloodChunks;
                 actPostSprite(pPlayer->nSprite, kStatThing);
-                seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
+                if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // cultist death sequence
+                    seqSpawn(dudeInfo[kDudeCultistShotgun-kDudeBase].seqStartID+1, 3, pPlayer->pSprite->extra, -1);
+                else
+                    seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
                 playerReset(pPlayer);
                 playerRestoreItems(pPlayer);
                 if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // if single-player
