@@ -3208,12 +3208,10 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             pTSprite->z = interpolate(pPrevLoc->z, pTSprite->z, gInterpolate);
             pTSprite->ang = pPrevLoc->ang+mulscale16(((pTSprite->ang-pPrevLoc->ang+1024)&2047)-1024, gInterpolate);
         }
-        while (!VanillaMode())
+        if (!VanillaMode() && (pTSprite->statnum == kStatDude))
         {
             char bReplacedPlayerTile = 0;
-            if (!((pTSprite->statnum == kStatDude) || ((pTSprite->type == kThingBloodChunks) && (pTSprite->statnum == kStatThing) && (sprite[nSprite].inittype >= kDudePlayer1) && (sprite[nSprite].inittype <= kDudePlayer8)))) // this is not the sprite we're looking for, move along...
-                break;
-            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && (IsPlayerSprite(pTSprite) && gProfile[pTSprite->type-kDudePlayer1].nModel || (pTSprite->type == kThingBloodChunks && gProfile[sprite[nSprite].inittype-kDudePlayer1].nModel))) // replace player caleb sprite with cultist sprite
+            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && IsPlayerSprite(pTSprite) && gProfile[pTSprite->type-kDudePlayer1].nModel) // replace player caleb sprite with cultist sprite
             {
                 bReplacedPlayerTile = 1;
                 switch (nTile)
@@ -3314,7 +3312,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             }
             if ((EnemiesNotBlood() || bReplacedPlayerTile) && !gSpriteHit[nXSprite].florhit && (zvel[nSprite] > 250000) && ((nTile == 2825) || (nTile >= 2860 && nTile <= 2885)) && (bReplacedPlayerTile || (pTSprite->type == kDudeCultistTommy) || (pTSprite->type == kDudeCultistShotgun) || (pTSprite->type == kDudeCultistTommyProne) || (pTSprite->type == kDudeCultistShotgunProne) || (pTSprite->type == kDudeCultistTesla) || (pTSprite->type == kDudeCultistTNT) || (pTSprite->type == kDudeCultistBeast))) // replace tile with unused jump tile for falling cultists
                 nTile = pTSprite->picnum = (zvel[nSprite] <= 500000) ? 2890 : ((zvel[nSprite] <= 750000) ? 2895 : 2900);
-            break;
         }
         int nAnim = 0;
         switch (picanm[nTile].extra & 7) {
