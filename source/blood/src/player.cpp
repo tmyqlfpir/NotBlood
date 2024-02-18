@@ -1772,23 +1772,17 @@ void ProcessInput(PLAYER *pPlayer)
             else if (!gDemo.bPlaying && (seqGetStatus(3, pPlayer->pSprite->extra) < 0))
             {
                 if (pPlayer->pSprite)
-                    pPlayer->pSprite->type = kThingBloodChunks;
-                actPostSprite(pPlayer->nSprite, kStatThing);
-                if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // override with cultist death sequence
                 {
-                    seqSpawn(dudeInfo[kDudeCultistShotgun-kDudeBase].seqStartID+1, 3, pPlayer->pSprite->extra, -1);
-                    SEQINST *pInst = GetInstance(3, pPlayer->pSprite->extra);
-                    if (pInst) // skip the falling to ground animation (as the player is already dead here)
+                    if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // set to unused thing, so it can be easily replaced with cultist tile
                     {
-                        pInst->timeCount = kTicRate * 20; // stall death seq by 20 seconds to match original death seq
-                        pInst->frameIndex = 6;
-                        pPlayer->pSprite->z += -1572; // offset off ground
-                        viewBackupSpriteLoc(pPlayer->nSprite, pPlayer->pSprite); // update last position
-                        seqUpdateSprite(pPlayer->pSprite->extra, &pInst->pSequence->frames[pInst->frameIndex]); // manually update sprite from seq frame
+                        pPlayer->pSprite->inittype = pPlayer->pSprite->type;
+                        pPlayer->pSprite->type = kThingVoodooHead;
                     }
+                    else
+                        pPlayer->pSprite->type = kThingBloodChunks;
                 }
-                else
-                    seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
+                actPostSprite(pPlayer->nSprite, kStatThing);
+                seqSpawn(pPlayer->pDudeInfo->seqStartID+15, 3, pPlayer->pSprite->extra, -1);
                 playerReset(pPlayer);
                 playerRestoreItems(pPlayer);
                 if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // if single-player
