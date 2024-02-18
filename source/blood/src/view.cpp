@@ -3158,6 +3158,92 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     return NULL;
 }
 
+inline char viewApplyPlayerModel(int *nTile)
+{
+    switch (*nTile)
+    {
+        // 3150-6 DESPAWN
+        case 3150: *nTile = 2583; break;
+        case 3151: *nTile = 2584; break;
+        case 3152: *nTile = 2585; break;
+        case 3153: *nTile = 2587; break;
+        case 3154: *nTile = 2589; break;
+        case 3155: *nTile = 2590; break;
+        case 3156: *nTile = 2591; break;
+        // 3840 L IMPACT
+        case 3840: *nTile = 2865; break;
+        // 3845 L LIFT
+        case 3845: *nTile = 2870; break;
+        // 3850 MID
+        case 3850: *nTile = 2875; break;
+        // 3855 R IMPACT
+        case 3855: *nTile = 2880; break;
+        // 3860 R LIFT
+        case 3860: *nTile = 2885; break;
+        // 3865 MID
+        case 3865: *nTile = 2860; break;
+        // 3870 STAND
+        case 3870: *nTile = 2825; break;
+        // 3875 LEANED
+        case 3875: *nTile = 2925; break;
+        // 3880-4 SHOT AND FALL
+        case 3880: *nTile = 2930; break;
+        case 3881: *nTile = 2931; break;
+        case 3882: *nTile = 2932; break;
+        case 3883: *nTile = 2933; break;
+        case 3884: *nTile = 2934; break;
+        // 3885-6 DEAD FLAT
+        case 3885: *nTile = 2935; break;
+        case 3886: *nTile = 2936; break;
+        // 3887 SWIM L IMPACT
+        case 3887: *nTile = 3241; break;
+        // 3892 SWIM L LIFT
+        case 3892: *nTile = 3241; break;
+        // 3897 MID
+        case 3897: *nTile = 3246; break;
+        // 3902 SWIM R IMPACT
+        case 3902: *nTile = 3246; break;
+        // 3907 SWIM R LIFT
+        case 3907: *nTile = 3251; break;
+        // 3912 SWIM MID
+        case 3912: *nTile = 3256; break;
+        // 3917 PRONE R1
+        case 3917: *nTile = 3375; break;
+        // 3922 PRONE R2
+        case 3922: *nTile = 3380; break;
+        // 3927 PRONE L1
+        case 3927: *nTile = 3385; break;
+        // 3932 PRONE L2
+        case 3932: *nTile = 3390; break;
+        // 3937-48 FINISH HIM DEATH SEQ
+        case 3937: *nTile = 2930; break;
+        case 3938: *nTile = 2931; break;
+        case 3939: *nTile = 2932; break;
+        case 3940: *nTile = 2932; break;
+        case 3941: *nTile = 2932; break;
+        case 3942: *nTile = 2933; break;
+        case 3943: *nTile = 2933; break;
+        case 3944: *nTile = 2933; break;
+        case 3945: *nTile = 2934; break;
+        case 3946: *nTile = 2935; break;
+        case 3947: *nTile = 2936; break;
+        case 3948: *nTile = 2937; break;
+        // 3949-53 FINISH HIM HEADLESS SEQ
+        case 3949: *nTile = 2933; break;
+        case 3950: *nTile = 2934; break;
+        case 3951: *nTile = 2935; break;
+        case 3952: *nTile = 2936; break;
+        case 3953: *nTile = 2937; break;
+        // 3959 UNUSED JUMP
+        case 3959: *nTile = 2895; break;
+        // 3964-65 FINISH HIM KNEEL LOOP
+        case 3964: *nTile = 2932; break;
+        case 3965: *nTile = 2933; break;
+        default: return 0;
+    }
+    return 1;
+}
+
 LOCATION gPrevSpriteLoc[kMaxSprites];
 
 static void viewApplyDefaultPal(tspritetype *pTSprite, sectortype const *pSector)
@@ -3211,100 +3297,12 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
         if (!VanillaMode() && ((pTSprite->statnum == kStatDude) || (pTSprite->type == kThingVoodooHead)))
         {
             char bReplacedPlayerTile = 0;
-            while (gGameOptions.nGameType != kGameTypeSinglePlayer) // replace player caleb sprite with cultist sprite
+            while ((gGameOptions.nGameType != kGameTypeSinglePlayer) && !(gGameOptions.uNetGameFlags&kNetGameFlagCalebOnly)) // replace player caleb sprite with cultist sprite
             {
-                PROFILE *pProfile = NULL;
-                if (IsPlayerSprite(pTSprite)) // get player and profile
-                    pProfile = &gProfile[pTSprite->type-kDudePlayer1];
-                else if (pTSprite->type == kThingVoodooHead && sprite[nSprite].inittype >= kDudePlayer1 && sprite[nSprite].inittype <= kDudePlayer8)
-                    pProfile = &gProfile[sprite[nSprite].inittype-kDudePlayer1];
-                else
+                if (!(IsPlayerSprite(pTSprite) && gProfile[pTSprite->type-kDudePlayer1].nModel) && !(pTSprite->type == kThingVoodooHead && sprite[nSprite].inittype >= kDudePlayer1 && sprite[nSprite].inittype <= kDudePlayer8)) // if profile uses caleb, don't replace sprite
                     break;
-                if (!pProfile->nModel) // if profile uses caleb, don't replace sprite
-                    break;
-                bReplacedPlayerTile = 1;
-                switch (nTile)
-                {
-                    // 3150-6 DESPAWN
-                    case 3150: nTile = 2583; break;
-                    case 3151: nTile = 2584; break;
-                    case 3152: nTile = 2585; break;
-                    case 3153: nTile = 2587; break;
-                    case 3154: nTile = 2589; break;
-                    case 3155: nTile = 2590; break;
-                    case 3156: nTile = 2591; break;
-                    // 3840 L IMPACT
-                    case 3840: nTile = 2865; break;
-                    // 3845 L LIFT
-                    case 3845: nTile = 2870; break;
-                    // 3850 MID
-                    case 3850: nTile = 2875; break;
-                    // 3855 R IMPACT
-                    case 3855: nTile = 2880; break;
-                    // 3860 R LIFT
-                    case 3860: nTile = 2885; break;
-                    // 3865 MID
-                    case 3865: nTile = 2860; break;
-                    // 3870 STAND
-                    case 3870: nTile = 2825; break;
-                    // 3875 LEANED
-                    case 3875: nTile = 2925; break;
-                    // 3880-4 SHOT AND FALL
-                    case 3880: nTile = 2930; break;
-                    // 3885-6 DEAD FLAT
-                    case 3881: nTile = 2931; break;
-                    case 3882: nTile = 2932; break;
-                    case 3883: nTile = 2933; break;
-                    case 3884: nTile = 2934; break;
-                    case 3885: nTile = 2935; break;
-                    case 3886: nTile = 2936; break;
-                    // 3887 SWIM L IMPACT
-                    case 3887: nTile = 3241; break;
-                    // 3892 SWIM L LIFT
-                    case 3892: nTile = 3241; break;
-                    // 3897 MID
-                    case 3897: nTile = 3246; break;
-                    // 3902 SWIM R IMPACT
-                    case 3902: nTile = 3246; break;
-                    // 3907 SWIM R LIFT
-                    case 3907: nTile = 3251; break;
-                    // 3912 SWIM MID
-                    case 3912: nTile = 3256; break;
-                    // 3917 PRONE R1
-                    case 3917: nTile = 3375; break;
-                    // 3922 PRONE R2
-                    case 3922: nTile = 3380; break;
-                    // 3927 PRONE L1
-                    case 3927: nTile = 3385; break;
-                    // 3932 PRONE L2
-                    case 3932: nTile = 3390; break;
-                    // 3937-48 FINISH HIM DEATH SEQ
-                    case 3937: nTile = 2930; break;
-                    case 3938: nTile = 2931; break;
-                    case 3939: nTile = 2932; break;
-                    case 3940: nTile = 2932; break;
-                    case 3941: nTile = 2932; break;
-                    case 3942: nTile = 2933; break;
-                    case 3943: nTile = 2933; break;
-                    case 3944: nTile = 2933; break;
-                    case 3945: nTile = 2934; break;
-                    case 3946: nTile = 2935; break;
-                    case 3947: nTile = 2936; break;
-                    case 3948: nTile = 2937; break;
-                    // 3949-53 FINISH HIM HEADLESS SEQ
-                    case 3949: nTile = 2933; break;
-                    case 3950: nTile = 2934; break;
-                    case 3951: nTile = 2935; break;
-                    case 3952: nTile = 2936; break;
-                    case 3953: nTile = 2937; break;
-                    // 3959 UNUSED JUMP
-                    case 3959: nTile = 2895; break;
-                    // 3964-65 FINISH HIM KNEEL LOOP
-                    case 3964: nTile = 2932; break;
-                    case 3965: nTile = 2933; break;
-                    default: bReplacedPlayerTile = 0; break;
-                }
-                if (bReplacedPlayerTile)
+                bReplacedPlayerTile = viewApplyPlayerModel(&nTile);
+                if (bReplacedPlayerTile) // set TSprite picnum and adjust tile to floor
                 {
                     if (gSpriteHit[nXSprite].florhit) // only do this if player is standing on ground
                     {

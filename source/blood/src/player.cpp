@@ -1040,7 +1040,7 @@ void playerStart(int nPlayer, int bNewLevel)
     int top, bottom;
     GetSpriteExtents(pSprite, &top, &bottom);
     pSprite->z -= bottom - pSprite->z;
-    pSprite->pal = !VanillaMode() && (gGameOptions.nGameType == kGameTypeTeams) && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors) && !gProfile[pPlayer->nPlayer].nModel ? playerColorPalSprite(pPlayer->teamId) : playerColorPalDefault(pPlayer->teamId);
+    pSprite->pal = !VanillaMode() && (gGameOptions.nGameType == kGameTypeTeams) && !(gGameOptions.uNetGameFlags&kNetGameFlagNoTeamColors) && (gGameOptions.uNetGameFlags&kNetGameFlagCalebOnly || !gProfile[pPlayer->nPlayer].nModel) ? playerColorPalSprite(pPlayer->teamId) : playerColorPalDefault(pPlayer->teamId);
     pPlayer->angold = pSprite->ang = pStartZone->ang;
     pPlayer->q16ang = fix16_from_int(pSprite->ang);
     pSprite->type = kDudePlayer1+nPlayer;
@@ -1773,7 +1773,7 @@ void ProcessInput(PLAYER *pPlayer)
             {
                 if (pPlayer->pSprite)
                 {
-                    if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // set to unused thing, so it can be easily replaced with cultist tile
+                    if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && !(gGameOptions.uNetGameFlags&kNetGameFlagCalebOnly) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // set to unused thing, so it can be easily replaced with cultist tile
                     {
                         pPlayer->pSprite->inittype = pPlayer->pSprite->type;
                         pPlayer->pSprite->type = kThingVoodooHead;
@@ -2662,7 +2662,7 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         {
             DAMAGEINFO *pDamageInfo = &damageInfo[nDamageType];
             int nSound;
-            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // use cultist hurt and burn sounds
+            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && !(gGameOptions.uNetGameFlags&kNetGameFlagCalebOnly) && gProfile[pPlayer->nPlayer].nModel && !VanillaMode()) // use cultist hurt and burn sounds
                 nSound = (nDamageType == kDamageBurn ? 1031 : 1013) + Random(2);
             else if (nDamage >= (10<<4))
                 nSound = pDamageInfo->at4[0];
