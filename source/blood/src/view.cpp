@@ -3208,11 +3208,20 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             pTSprite->z = interpolate(pPrevLoc->z, pTSprite->z, gInterpolate);
             pTSprite->ang = pPrevLoc->ang+mulscale16(((pTSprite->ang-pPrevLoc->ang+1024)&2047)-1024, gInterpolate);
         }
-        if (!VanillaMode() && (pTSprite->statnum == kStatDude))
+        if (!VanillaMode() && ((pTSprite->statnum == kStatDude) || (pTSprite->type == kThingVoodooHead)))
         {
             char bReplacedPlayerTile = 0;
-            if ((gGameOptions.nGameType != kGameTypeSinglePlayer) && IsPlayerSprite(pTSprite) && gProfile[pTSprite->type-kDudePlayer1].nModel) // replace player caleb sprite with cultist sprite
+            while (gGameOptions.nGameType != kGameTypeSinglePlayer) // replace player caleb sprite with cultist sprite
             {
+                PROFILE *pProfile = NULL;
+                if (IsPlayerSprite(pTSprite)) // get player and profile
+                    pProfile = &gProfile[pTSprite->type-kDudePlayer1];
+                else if (pTSprite->type == kThingVoodooHead && sprite[nSprite].inittype >= kDudePlayer1 && sprite[nSprite].inittype <= kDudePlayer8)
+                    pProfile = &gProfile[sprite[nSprite].inittype-kDudePlayer1];
+                else
+                    break;
+                if (!pProfile->nModel) // if profile uses caleb, don't replace sprite
+                    break;
                 bReplacedPlayerTile = 1;
                 switch (nTile)
                 {
@@ -3309,6 +3318,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     else
                         pTSprite->picnum = nTile;
                 }
+                break;
             }
             if ((EnemiesNotBlood() || bReplacedPlayerTile) && !gSpriteHit[nXSprite].florhit && (zvel[nSprite] > 250000) && ((nTile == 2825) || (nTile >= 2860 && nTile <= 2885)) && (bReplacedPlayerTile || (pTSprite->type == kDudeCultistTommy) || (pTSprite->type == kDudeCultistShotgun) || (pTSprite->type == kDudeCultistTommyProne) || (pTSprite->type == kDudeCultistShotgunProne) || (pTSprite->type == kDudeCultistTesla) || (pTSprite->type == kDudeCultistTNT) || (pTSprite->type == kDudeCultistBeast))) // replace tile with unused jump tile for falling cultists
                 nTile = pTSprite->picnum = (zvel[nSprite] <= 500000) ? 2890 : ((zvel[nSprite] <= 750000) ? 2895 : 2900);
