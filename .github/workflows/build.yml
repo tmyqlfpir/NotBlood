@@ -47,7 +47,7 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{matrix.ref}}
     - uses: msys2/setup-msys2@v2
@@ -89,7 +89,7 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: msys2/setup-msys2@v2
       with:
         msystem: ${{matrix.sys}}
@@ -114,7 +114,7 @@ jobs:
     name: Linux ${{matrix.name}}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install-prerequisites
       run: |
         sudo apt-get update
@@ -151,7 +151,7 @@ jobs:
     name: Linux ${{matrix.name}}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install-prerequisites
       run: |
         sudo apt-get update
@@ -163,7 +163,7 @@ jobs:
     name: macOS Clang
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install-prerequisites
       run: |
         brew install sdl2 flac libvpx make

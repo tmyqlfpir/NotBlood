@@ -348,6 +348,7 @@ HAVE_XMP := 1
 RENDERTYPE := SDL
 SDL_TARGET := 2
 USE_PHYSFS := 0
+USE_MIMALLOC := 1
 
 ifneq (0,$(USE_PHYSFS))
     # PhysFS requires this to be off
@@ -892,6 +893,9 @@ endif
 ifneq (0,$(USE_LIBVPX))
     COMPILERFLAGS += -DUSE_LIBVPX
     LIBS += -lvpx
+endif
+ifneq (0,$(USE_MIMALLOC))
+    COMPILERFLAGS += -DUSE_MIMALLOC
 endif
 
 ifneq (0,$(HAVE_VORBIS))

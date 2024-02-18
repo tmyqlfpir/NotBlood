@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: 'Prepare files for upload'
       run: |
         mkdir -p ./upload
         cp ./notblood.pk3 ./upload
         cp -a ./package/common/. ./upload/
 
-    - uses: dawidd6/action-download-artifact@v2
+    - uses: dawidd6/action-download-artifact@v3
       with:
         workflow: build.yml
         workflow_conclusion: success
