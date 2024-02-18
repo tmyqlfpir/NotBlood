@@ -3213,14 +3213,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             char bReplacedPlayerTile = 0;
             while (gGameOptions.nGameType != kGameTypeSinglePlayer) // replace player caleb sprite with cultist sprite
             {
-                PROFILE *pProfile = NULL;
-                if (IsPlayerSprite(pTSprite)) // get player and profile
-                    pProfile = &gProfile[pTSprite->type-kDudePlayer1];
-                else if (pTSprite->type == kThingVoodooHead && sprite[nSprite].inittype >= kDudePlayer1 && sprite[nSprite].inittype <= kDudePlayer8)
-                    pProfile = &gProfile[sprite[nSprite].inittype-kDudePlayer1];
-                else
-                    break;
-                if (!pProfile->nModel) // if profile uses caleb, don't replace sprite
+                if (!(IsPlayerSprite(pTSprite) && gProfile[pTSprite->type-kDudePlayer1].nModel) && !(pTSprite->type == kThingVoodooHead && sprite[nSprite].inittype >= kDudePlayer1 && sprite[nSprite].inittype <= kDudePlayer8)) // if profile uses caleb, don't replace sprite
                     break;
                 bReplacedPlayerTile = 1;
                 switch (nTile)
