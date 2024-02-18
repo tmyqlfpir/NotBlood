@@ -792,7 +792,7 @@ namespace loguru
 			}
 		}
 
-	#if 0
+	#if 0 //#ifdef _WIN32 (this will not work with windows xp)
 		strncat_s(buff, buff_size - strlen(buff) - 1, s_argv0_filename.c_str(), buff_size - strlen(buff) - 1);
 		strncat_s(buff, buff_size - strlen(buff) - 1, "/",                      buff_size - strlen(buff) - 1);
 		write_date_time(buff + strlen(buff),    buff_size - strlen(buff));
@@ -1122,7 +1122,7 @@ namespace loguru
 				// Platforms that may not support setting a thread name
 				(void)name; // unused
 			#endif
-		#elif 0
+		#elif 0 //#elif LOGURU_WINTHREADS (this will not work with windows xp)
 			// Store thread name in a thread-local storage:
 			strncpy_s(thread_name_buffer(), LOGURU_THREADNAME_WIDTH + 1, name, _TRUNCATE);
 		#else // LOGURU_PTHREADS
@@ -1981,7 +1981,7 @@ namespace loguru
 		char* with_newline = reinterpret_cast<char*>(LOGURU_MALLOC(buffer_size));
 		CHECK_F(with_newline != nullptr, "Failed to allocate memory for error context.");
 		with_newline[0] = '\n';
-	#if 0
+	#if 0 //#ifdef _WIN32 (this will not work with windows xp)
 		strncpy_s(with_newline + 1, buffer_size, parent_ec.c_str(), buffer_size - 2);
 	#else
 		strcpy(with_newline + 1, parent_ec.c_str());
