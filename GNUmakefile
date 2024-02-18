@@ -213,16 +213,16 @@ engine_cflags :=
 
 engine_deps :=
 
-ifneq (0,$(USE_MIMALLOC))
-    engine_deps += mimalloc
-endif
-
 ifneq (1,$(SDL_TARGET))
     engine_deps += imgui
 endif
 
 ifneq (0,$(USE_PHYSFS))
     engine_deps += physfs
+endif
+
+ifneq (0,$(USE_MIMALLOC))
+    engine_deps += mimalloc
 endif
 
 engine_editor_objs := \
@@ -385,10 +385,7 @@ tools_obj := $(obj)/$(tools)
 
 tools_cflags := $(engine_cflags) -I$(engine_src)
 
-tools_deps := engine_tools
-ifneq (0,$(USE_MIMALLOC))
-    tools_deps += mimalloc
-endif
+tools_deps := engine_tools mimalloc
 
 tools_targets := \
     arttool \
@@ -428,9 +425,9 @@ endif
 
 ifeq ($(PLATFORM),DARWIN)
     LIBS += -lFLAC \
-            -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,OpenGL \
+            -Wl,-framework,Cocoa -Wl,-framework,Carbon \
             -Wl,-framework,CoreMIDI -Wl,-framework,AudioUnit \
-            -Wl,-framework,AudioToolbox -Wl,-framework,IOKit -Wl,-framework,AGL
+            -Wl,-framework,AudioToolbox -Wl,-framework,IOKit
     ifneq (00,$(DARWIN9)$(DARWIN10))
         LIBS += -Wl,-framework,QuickTime
     endif
@@ -587,14 +584,11 @@ COMPILERFLAGS += \
     -I$(mact_inc) \
     -I$(audiolib_inc) \
     -I$(glad_inc) \
+    -I$(mimalloc_inc) \
     -I$(imgui_inc) \
     -I$(libsmackerdec_inc) \
     -I$(hmpplay_inc) \
     -MP -MMD \
-
-ifneq (0,$(USE_MIMALLOC))
-    COMPILERFLAGS += -I$(mimalloc_inc)
-endif
 
 ifneq (0,$(USE_PHYSFS))
     COMPILERFLAGS += -I$(physfs_inc) -DUSE_PHYSFS
@@ -616,13 +610,10 @@ libraries := \
     glad \
     imgui \
     libxmplite \
+    mimalloc \
     mact \
     libsmackerdec \
     hmpplay \
-
-ifneq (0,$(USE_MIMALLOC))
-    libraries += mimalloc
-endif
 
 ifneq (0,$(USE_PHYSFS))
     libraries += physfs
