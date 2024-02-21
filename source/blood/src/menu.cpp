@@ -503,21 +503,22 @@ CGameMenuItemChain itemNetStart11("START GAME", 1, 0, 175, 320, 1, 0, -1, StartN
 
 CGameMenuItemTitle itemNetGameTitle("GAME SETTINGS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetGameMode("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zNetGameTypes, ARRAY_SSIZE(zNetGameTypes), 0);
-CGameMenuItemZCycle itemNetGameCycleLength("LENGTH:", 3, 66, 44, 180, 0, SetNetGameMode, zLengthStrings, ARRAY_SSIZE(zLengthStrings), 0);
-CGameMenuItemSlider itemNetGameSliderLimit("LIMIT:", 3, 66, 53, 180, 1, 1, 255, 1, NULL, -1, -1, kMenuSliderValue);
-CGameMenuItemZBool itemNetGameBoolExit("LEVEL EXIT:", 3, 66, 62, 180, true, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetGameBoolTeleFrag("TELEFRAGS:", 3, 66, 71, 180, true, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetGameBoolSkillOverride("PLAYER HANDICAP:", 3, 66, 80, 180, true, NULL, "ALLOWED", "OFF");
-CGameMenuItemZBool itemNetGameBoolFriendlyFire("FRIENDLY FIRE:", 3, 66, 89, 180, true, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetGameCycleKey("KEYS SETTING:", 3, 66, 98, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
-CGameMenuItemZCycle itemNetGameCycleItemWeapon("ITEM/WEAPON SETTING:", 3, 66, 107, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
-CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 98, 180, true, 0, NULL, NULL);
-CGameMenuItemZBool itemNetGameBoolTeamColors("TEAM COLORS:", 3, 66, 107, 180, true, 0, NULL, NULL);
-CGameMenuItemZBool itemNetGameBoolTeamFlags("TEAM FLAGS:", 3, 66, 116, 180, true, 0, NULL, NULL);
-CGameMenuItemZCycle itemNetGameCycleSpawnLocation("SPAWN AREA:", 3, 66, 125, 180, 0, 0, zRespawnStrings, ARRAY_SSIZE(zRespawnStrings), 0);
-CGameMenuItemZCycle itemNetGameCycleShowWeaponsOverride("ENEMY WEAPONS:", 3, 66, 134, 180, 0, 0, zShowWeapon, ARRAY_SSIZE(zShowWeapon), 0);
-CGameMenuItemZCycle itemNetGameCycleSpawnProtection("SPAWN PROTECTION:", 3, 66, 143, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
-CGameMenuItemZCycle itemNetGameCycleSpawnWeapon("SPAWN WITH WEAPON:", 3, 66, 152, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleLength("LENGTH:", 3, 66, 43, 180, 0, SetNetGameMode, zLengthStrings, ARRAY_SSIZE(zLengthStrings), 0);
+CGameMenuItemSlider itemNetGameSliderLimit("LIMIT:", 3, 66, 51, 180, 1, 1, 255, 1, NULL, -1, -1, kMenuSliderValue);
+CGameMenuItemZBool itemNetGameBoolExit("LEVEL EXIT:", 3, 66, 65, 180, true, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolTeleFrag("TELEFRAGS:", 3, 66, 73, 180, true, NULL, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolSkillOverride("PLAYER HANDICAP:", 3, 66, 81, 180, true, NULL, "ALLOWED", "OFF");
+CGameMenuItemZBool itemNetGameBoolModelOverride("PLAYER MODEL:", 3, 66, 89, 180, true, NULL, "CULTISTS/CALEB", "CALEB ONLY");
+CGameMenuItemZBool itemNetGameBoolFriendlyFire("FRIENDLY FIRE:", 3, 66, 97, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetGameCycleKey("KEYS SETTING:", 3, 66, 105, 180, 0, 0, zKeyStrings, ARRAY_SSIZE(zKeyStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleItemWeapon("ITEM/WEAPON SETTING:", 3, 66, 113, 180, 0, SetNetGameMode, zKeepItemWeaponStrings, ARRAY_SSIZE(zKeepItemWeaponStrings), 0);
+CGameMenuItemZBool itemNetGameBoolAutoTeams("AUTO TEAMS:", 3, 66, 105, 180, true, 0, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolTeamColors("TEAM COLORS:", 3, 66, 113, 180, true, 0, NULL, NULL);
+CGameMenuItemZBool itemNetGameBoolTeamFlags("TEAM FLAGS:", 3, 66, 121, 180, true, 0, NULL, NULL);
+CGameMenuItemZCycle itemNetGameCycleSpawnLocation("SPAWN AREA:", 3, 66, 129, 180, 0, 0, zRespawnStrings, ARRAY_SSIZE(zRespawnStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleShowWeaponsOverride("ENEMY WEAPONS:", 3, 66, 137, 180, 0, 0, zShowWeapon, ARRAY_SSIZE(zShowWeapon), 0);
+CGameMenuItemZCycle itemNetGameCycleSpawnProtection("SPAWN PROTECTION:", 3, 66, 145, 180, 0, 0, zSpawnProtectStrings, ARRAY_SSIZE(zSpawnProtectStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleSpawnWeapon("SPAWN WITH WEAPON:", 3, 66, 153, 180, 0, SetNetGameMode, zSpawnWeaponStrings, ARRAY_SSIZE(zSpawnWeaponStrings), 0);
 CGameMenuItemZCycle itemNetGameCycleMirrorModeOverride("MIRROR MODE:", 3, 66, 161, 180, 0, NULL, pzMirrorModeStrings, ARRAY_SSIZE(pzMirrorModeStrings), 0);
 
 CGameMenuItemTitle itemNetMonsterTitle("MONSTERS", 1, 160, 20, 2038);
@@ -1441,6 +1442,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameMode.Add(&itemNetGameBoolExit, false);
     menuNetworkGameMode.Add(&itemNetGameBoolTeleFrag, false);
     menuNetworkGameMode.Add(&itemNetGameBoolSkillOverride, false);
+    menuNetworkGameMode.Add(&itemNetGameBoolModelOverride, false);
     menuNetworkGameMode.Add(&itemNetGameBoolFriendlyFire, false);
     menuNetworkGameMode.Add(&itemNetGameCycleKey, false);
     menuNetworkGameMode.Add(&itemNetGameCycleItemWeapon, false);
@@ -1457,6 +1459,8 @@ void SetupNetStartMenu(void)
     itemNetGameBoolTeleFrag.tooltip_pzTextUpper = "Toggle telefrags kills";
     itemNetGameBoolSkillOverride.tooltip_pzTextUpper = "Toggle player health handicap";
     itemNetGameBoolSkillOverride.tooltip_pzTextLower = "(When off, use difficulty setting)";
+    itemNetGameBoolModelOverride.tooltip_pzTextUpper = "Set global setting for player models";
+    itemNetGameBoolModelOverride.tooltip_pzTextLower = "(This is applied to all players in round)";
     itemNetGameBoolAutoTeams.tooltip_pzTextUpper = "Automatically sort players into teams";
     itemNetGameBoolTeamColors.tooltip_pzTextUpper = "Highlight players with team colors";
     itemNetGameBoolTeamFlags.tooltip_pzTextUpper = "Toggle team flags for teams mode";
@@ -4134,6 +4138,8 @@ void StartNetGame(CGameMenuItemChain *pItem)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagNoTeleFrag;
     if (!itemNetGameBoolSkillOverride.at20)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagSkillIssue;
+    if (!itemNetGameBoolModelOverride.at20)
+        gPacketStartGame.uNetGameFlags |= kNetGameFlagCalebOnly;
     if (!itemNetGameBoolTeamColors.at20)
         gPacketStartGame.uNetGameFlags |= kNetGameFlagNoTeamColors;
     if (!itemNetGameBoolTeamFlags.at20)
