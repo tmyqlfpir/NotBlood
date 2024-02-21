@@ -152,6 +152,7 @@ kNetGameFlagSpawnDist           =  1 << 17,
 kNetGameFlagNoTeamFlags         =  1 << 18,
 kNetGameFlagMirrorHoriz         =  1 << 19,
 kNetGameFlagMirrorVert          =  1 << 20,
+kNetGameFlagCalebOnly           =  1 << 21, // no items, caleb only, final destination
 
 };
 
