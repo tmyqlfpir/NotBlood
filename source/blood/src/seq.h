@@ -84,7 +84,6 @@ inline int seqGetTile(SEQFRAME* pFrame)
 
 int seqRegisterClient(void(*pClient)(int, int));
 void seqPrecacheId(int id);
-void seqUpdateSprite(int nXSprite, SEQFRAME *pFrame);
 SEQINST* GetInstance(int nType, int nXIndex);
 void UnlockInstance(SEQINST *pInst);
 void seqSpawn(int nSeq, int nType, int nXIndex, int nCallbackID = -1);

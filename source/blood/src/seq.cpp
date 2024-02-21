@@ -91,7 +91,7 @@ SEQINST siFloor[kMaxXSectors];
 SEQINST siSprite[kMaxXSprites];
 SEQINST siMasked[kMaxXWalls];
 
-void seqUpdateSprite(int nXSprite, SEQFRAME *pFrame)
+void UpdateSprite(int nXSprite, SEQFRAME *pFrame)
 {
     dassert(nXSprite > 0 && nXSprite < kMaxXSprites);
     int nSprite = xsprite[nXSprite].reference;
@@ -286,7 +286,7 @@ void SEQINST::Update(ACTIVE *pActive)
         break;
     case 3: 
     {
-        seqUpdateSprite(pActive->xindex, &pSequence->frames[frameIndex]);
+        UpdateSprite(pActive->xindex, &pSequence->frames[frameIndex]);
         if (pSequence->frames[frameIndex].at6_1) {
             
             int sound = pSequence->nSoundID;
