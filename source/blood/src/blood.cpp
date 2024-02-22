@@ -1112,9 +1112,9 @@ void LocalKeys(void)
             CONTROL_ClearButton(gamefunc_See_Chase_View);
             return;
         }
-        else if (alt && (gGameOptions.nGameType != kGameTypeSinglePlayer) && (key == sc_F11) && !VanillaMode()) // secret fart hotkey
+        else if (alt && (gGameOptions.nGameType != kGameTypeSinglePlayer) && (key == sc_F11) && !VanillaMode()) // secret cultist speak hotkey
         {
-            netBroadcastFart(myconnectindex);
+            netBroadcastTauntRandom(myconnectindex);
             keyFlushScans();
             keystatus[key] = 0;
             return;
