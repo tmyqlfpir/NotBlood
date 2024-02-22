@@ -163,7 +163,7 @@ void netWaitForEveryone(char a1);
 void netBroadcastFrag(const char *pzString);
 void netGetPackets(void);
 void netBroadcastTaunt(int nPlayer, int nTaunt);
-void netBroadcastFart(int nPlayer);
+void netBroadcastTauntRandom(int nPlayer);
 void CalcGameChecksum(void);
 void netBroadcastPlayerLogoff(int nPlayer);
 void netBroadcastMyLogoff(bool bRestart);

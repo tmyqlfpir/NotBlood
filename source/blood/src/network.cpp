@@ -500,10 +500,10 @@ void netGetPackets(void)
                 if (gPlayer[nPlayer].pXSprite && (gPlayer[nPlayer].pXSprite->health == 0) && !VanillaMode()) // if player is dead, don't play taunt
                     break;
                 int nTaunt = GetPacketByte(pPacket);
-                if (gPlayer[nPlayer].pSprite && (nTaunt >= 10) && !VanillaMode()) // fart
+                if (gPlayer[nPlayer].pSprite && (nTaunt >= 10) && !VanillaMode()) // cultist talk
                 {
-                    nTaunt = ClipRange(nTaunt-10, 0, 1);
-                    sfxPlay3DSoundCP(gPlayer[nPlayer].pSprite, 172+nTaunt, 1, 0, 0, 128);
+                    nTaunt = ClipRange(nTaunt-10, 0, 4);
+                    sfxPlay3DSoundCP(gPlayer[nPlayer].pSprite, 1008+nTaunt, 1, 0, 0, 128);
                     break;
                 }
                 nTaunt = ClipRange(nTaunt, 0, 9);
@@ -651,19 +651,19 @@ void netBroadcastTaunt(int nPlayer, int nTaunt)
     sndStartSample(4400+nTaunt, 128, 1, 0);
 }
 
-void netBroadcastFart(int nPlayer)
+void netBroadcastTauntRandom(int nPlayer)
 {
-    if (gPlayer[nPlayer].pXSprite && (gPlayer[nPlayer].pXSprite->health == 0) && !VanillaMode()) // if player is dead, don't send fart message
+    if (gPlayer[nPlayer].pXSprite && (gPlayer[nPlayer].pXSprite->health == 0) && !VanillaMode()) // if player is dead, don't send taunt message
         return;
-    const int nFart = QRandom(2);
+    const int nTaunt = QRandom(5);
     if (numplayers > 1)
     {
         char *pPacket = packet;
         PutPacketByte(pPacket, 4);
-        PutPacketByte(pPacket, 10+nFart);
+        PutPacketByte(pPacket, 10+nTaunt);
         netSendPacketAll(packet, pPacket-packet);
     }
-    sndStartSample(172+nFart, 2, 1, 0);
+    sndStartSample(1008+nTaunt, 2, 1, 0);
 }
 
 void netBroadcastMessage(int nPlayer, const char *pzMessage)
