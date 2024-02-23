@@ -1111,7 +1111,7 @@ void NetworkBrowserJoin(CGameMenuItemChain *pItem);
 
 char zNetAddressBuffer[16] = "localhost";
 char zNetPortBuffer[6] = "23513";
-char zNetBrowserGame[8][16+1+5] = {{'\0'}};
+char zNetBrowserGame[8][64] = {{'\0'}};
 char zNetBrowserState[32] = "SEARCHING...";
 
 CGameMenuItemTitle itemNetworkTitle("MULTIPLAYER", 1, 160, 20, 2038);
@@ -3853,12 +3853,12 @@ void NetworkJoinGame(CGameMenuItemChain *pItem)
     gQuitGame = gRestartGame = true;
 }
 
-void NetworkBrowserAdd(const char *pString, int nPort)
+void NetworkBrowserAdd(const char *pString, int nPort, const char *pHost, int nClientsCur, int nClientsMax)
 {
-    char szTemp[16+1+5];
+    char szTemp[64];
     int nSlotEmpty = -1;
 
-    Bsnprintf(szTemp, sizeof(szTemp), "%s %d", pString, nPort);
+    Bsnprintf(szTemp, sizeof(szTemp), "%s:%d (Host: %s, Players: %01d\\%01d)", pString, nPort, pHost, nClientsCur, nClientsMax);
     for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
     {
         if (!Bstrncmp(szTemp, zNetBrowserGame[nSlot], sizeof(szTemp))) // already exists, don't add to server list
