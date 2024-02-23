@@ -65,7 +65,7 @@ void SetupMenus(void);
 void UpdateNetworkMenus(void);
 void SetMirrorMode(CGameMenuItemZCycle *pItem);
 void SetGameVanillaMode(char nState);
-void NetworkBrowserAdd(const char *pString, int nPort);
+void NetworkBrowserAdd(const char *pString, int nPort, const char *pHost, int nClientsCur, int nClientsMax);
 void NetworkBrowserState(const char *pString);
 void QuickSaveGame(void);
 void AutosaveGame(bool bLevelStartSave);

@@ -1,4 +1,6 @@
 #ifndef NETCODE_DISABLE
+#include "config.h"
+
 #define IRC_BUF_SIZE 4096
 
 #ifdef NDEBUG
@@ -111,7 +113,10 @@ static void ircd_parse(ircd_t *cl, char *buf, int len)
                     if ((gNetMode == NETWORK_SERVER) && (gIRCState == BLOOD_IRC_INSIDE_ROOM) && !bChanServ)
                     {
                         char pubaddress[128];
-                        Bsprintf(pubaddress, "BLADR_%s_%05d_BLADR", gWanIp4, ClipRange(gNetPort, 0, 65353));
+                        Bsprintf(pubaddress, "BLADR_%s_%05d", gWanIp4, ClipRange(gNetPort, 0, 65353));
+                        for (int i = 0; i < MAXPLAYERNAME-1; i++) // last character is always null, so skip it
+                            Bsprintf(pubaddress, "%s-%02d", pubaddress, (int)szPlayerName[i]&0x7F);
+                        Bsprintf(pubaddress, "%s_%01d_%01d_BLADR", pubaddress, numplayers, gNetPlayers);
                         netIRCSend(sock, pubaddress, "PRIVMSG", cl->chan);
                     }
                 }
@@ -128,19 +133,21 @@ static void ircd_parse(ircd_t *cl, char *buf, int len)
             }
             else if ((gNetMode == NETWORK_NONE) && !Bstrncmp(cmd, "PRIVMSG", len) && !Bstrncmp(dest, cl->chan, len) && !Bstrncmp(text, "BLADR", 5)) // test
             {
-                char sIp[16] = {'\0'};
-                int nIp[4] = {0}, nPort = 0;
-                if (Bsscanf(text, "BLADR_%d.%d.%d.%d_%d_BLADR", &nIp[0], &nIp[1], &nIp[2], &nIp[3], &nPort) == 5) // we found a valid server
+                char sIp[16] = {'\0'}, sName[MAXPLAYERNAME] = {'\0'};
+                int nIp[4] = {0}, nPort = 0, nName[MAXPLAYERNAME] = {0}, nClientsCur, nClientsMax;
+                if (Bsscanf(text, "BLADR_%d.%d.%d.%d_%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d_%d_%d_BLADR", &nIp[0], &nIp[1], &nIp[2], &nIp[3], &nPort, &nName[0], &nName[1], &nName[2], &nName[3], &nName[4], &nName[5], &nName[6], &nName[7], &nName[8], &nName[9], &nName[10], &nName[11], &nName[12], &nName[13], &nName[14], &nClientsCur, &nClientsMax) == 22) // we found a valid server
                 {
                     Bsprintf(sIp, "%d.%d.%d.%d", nIp[0]&0xFF, nIp[1]&0xFF, nIp[2]&0xFF, nIp[3]&0xFF);
+                    for (int i = 0; i < MAXPLAYERNAME-1; i++) // last character is always null, so skip it
+                        sName[i] = nName[i];
                     if (!Bstrncmp(&text[6], sIp, Bstrlen(sIp)) && (nPort == ClipRange(nPort, 0, 65353))) // if the sanitized string ip we've parsed matches the original string
                     {
-                        netIRCPrintf("Found: %d.%d.%d.%d:%d\n", nIp[0], nIp[1], nIp[2], nIp[3], nPort);
-                        NetworkBrowserAdd(sIp, nPort);
+                        netIRCPrintf("Found: %d.%d.%d.%d:%d (Host: %s, Players: %d\\%d)\n", nIp[0], nIp[1], nIp[2], nIp[3], nPort, sName, nClientsCur, nClientsMax);
+                        NetworkBrowserAdd(sIp, nPort, sName, nClientsCur, nClientsMax);
+                        return;
                     }
-                    else
-                        netIRCPrintf("Could not parse server address, ignoring\n");
                 }
+                netIRCPrintf("Could not parse server address, ignoring\n");
             }
         }
     }
