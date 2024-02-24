@@ -868,7 +868,7 @@ void playerResetPosture(PLAYER* pPlayer) {
         pPlayer->swayWidth = 0;
     }
     if (pPlayer == gMe) // only reset crouch toggle state if resetting our own posture
-        gCrouchToggleState = 0;
+        gCrouchToggleState = 0; // reset crouch toggle state
 }
 
 static void playerResetTeamId(int nPlayer, int bNewLevel)
