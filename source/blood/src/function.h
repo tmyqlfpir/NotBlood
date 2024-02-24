@@ -54,7 +54,6 @@ enum GameFunction_t
    gamefunc_Strafe_Right,
    gamefunc_Jump,
    gamefunc_Crouch,
-   gamefunc_Crouch_Toggle,
    gamefunc_Run,
    gamefunc_AutoRun,
    gamefunc_Open,
