@@ -908,9 +908,6 @@ endif
 ifneq (0,$(HAVE_XMP))
     COMPILERFLAGS += -DHAVE_XMP
 endif
-ifneq (1,$(USE_MIMALLOC))
-    COMPILERFLAGS += -DUSE_MIMALLOC=0
-endif
 
 ifeq ($(RENDERTYPE),SDL)
     ifeq ($(SDL_TARGET),2)
