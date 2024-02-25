@@ -38,7 +38,7 @@ jobs:
             sys: mingw32
             env: i686
             pkg: nasm sed unzip mingw-w64-i686-SDL
-            opt: SDL_TARGET=1 USE_MIMALLOC=0 USE_LIBVPX=0 USE_OPENGL=0 NETCODE=0
+            opt: SDL_TARGET=1 USE_MIMALLOC=0 USE_OPENGL=0 NETCODE=0
             additional-cmd: wget https://web.archive.org/web/20220310063221if_/https://a.tmp.ninja/rRpytNSd.zip -O temp.zip; unzip temp.zip -d ./upload; echo ADVAPI32.dll\0\0\0\0 with ZDVAPI32.dll\0\0\0\0; sed -i -b -e 's/\x41\x44\x56\x41\x50\x49\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/\x5A\x44\x56\x41\x50\x49\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/g' ./notblood.exe; echo KERNEL32.dll\0\0\0\0 with ZERNEL32.dll\0\0\0\0; sed -i -b -e 's/\x4B\x45\x52\x4E\x45\x4C\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/\x5A\x45\x52\x4E\x45\x4C\x33\x32\x2E\x64\x6C\x6C\x00\x00\x00\x00/g' ./notblood.exe; echo WS2_32.dll\0\0 with ZS2_32.dll\0\0; sed -i -b -e 's/\x57\x53\x32\x5F\x33\x32\x2E\x64\x6C\x6C\x00\x00/\x5A\x53\x32\x5F\x33\x32\x2E\x64\x6C\x6C\x00\x00/g' ./notblood.exe
             zipname: winxp
     name: Windows MSYS2 ${{matrix.name}}
@@ -63,7 +63,7 @@ jobs:
         mkdir -p ./upload
         ${{matrix.additional-cmd}}
         cp ./notblood.exe ./upload
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: notblood-${{matrix.zipname}}
         path: ./upload
@@ -118,14 +118,14 @@ jobs:
     - name: install-prerequisites
       run: |
         sudo apt-get update
-        sudo apt-get -y install libvorbis-dev libflac-dev libvpx-dev libglu1-mesa-dev libgtk2.0-dev ${{matrix.pkg}}
+        sudo apt-get -y install libvorbis-dev libflac-dev libglu1-mesa-dev libgtk2.0-dev ${{matrix.pkg}}
     - name: build
       run: make -j$(nproc) blood tools ${{matrix.opt}}
     - name: 'prepare files for upload'
       run: |
         mkdir -p ./upload
         cp ./notblood ./upload
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: notblood-linux-${{matrix.zipname}}
         path: ./upload
@@ -155,7 +155,7 @@ jobs:
     - name: install-prerequisites
       run: |
         sudo apt-get update
-        sudo apt-get -y install libflac-dev libvpx-dev libgtk2.0-dev ${{matrix.pkg}}
+        sudo apt-get -y install libflac-dev libgtk2.0-dev ${{matrix.pkg}}
     - name: build
       run: make -j$(nproc) blood tools ${{matrix.opt}}
 
@@ -166,7 +166,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: install-prerequisites
       run: |
-        brew install sdl2 flac libvpx make
+        brew install sdl2 flac make
         brew unlink lz4
     - name: build
       run: gmake -j2 blood tools
@@ -174,7 +174,7 @@ jobs:
       run: |
         mkdir -p ./upload
         cp ./notblood ./upload
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: notblood-macos
         path: ./upload
