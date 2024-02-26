@@ -483,7 +483,7 @@ void ctrlGetInput(void)
         if (BUTTON(gamefunc_Turn_Right))
             turnRight = 1;
     }
-    if (r_mirrormode & 1) // mirror mode (horiz), invert controls
+    if (MIRRORMODE & 1) // mirror mode (horiz), invert controls
     {
         input.strafe = -input.strafe;
         info.mousex = -info.mousex;
@@ -494,7 +494,7 @@ void ctrlGetInput(void)
         info.dx = -info.dx;
         info.dyaw = -info.dyaw;
     }
-    if ((r_mirrormode & 2) && gMouseAim) // mirror mode (vert), invert y axis for mouse aiming
+    if ((MIRRORMODE & 2) && gMouseAim) // mirror mode (vert), invert y axis for mouse aiming
     {
         info.mousey = -info.mousey;
         info.dpitch = -info.dpitch;

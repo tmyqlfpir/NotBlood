@@ -130,7 +130,7 @@ int32_t oxyaspect = -1;
 // r_usenewaspect is the cvar, newaspect_enable to trigger the new behaviour in the code
 int32_t r_usenewaspect = 1, newaspect_enable=0;
 uint32_t r_screenxy = 0;
-int32_t r_mirrormode = 0, r_mirrormodelock = 0;
+int32_t r_mirrormode = 0, r_mirrormodemulti = 0;
 
 int32_t r_rotatespriteinterp = 2;
 int32_t r_rotatespriteinterpquantize = 0;

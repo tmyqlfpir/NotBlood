@@ -1222,7 +1222,7 @@ int32_t polymost_voxdraw(voxmodel_t *m, tspriteptr_t const tspr)
         glFrontFace(GL_CCW);
 
     buildgl_setEnabled(GL_CULL_FACE);
-    switch (r_mirrormode)
+    switch (MIRRORMODE)
     {
     case 2: // vert
     case 1: // hoz

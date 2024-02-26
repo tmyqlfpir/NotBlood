@@ -613,7 +613,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gDemo.Close();
     netWaitForEveryone(0);
     VanillaModeUpdate();
-    r_mirrormodelock = 0;
+    r_mirrormodemulti = 0;
     if (gGameOptions.nGameType == kGameTypeSinglePlayer)
     {
         if (!(gGameOptions.uGameFlags&kGameFlagContinuing))
@@ -707,12 +707,11 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gRedFlagDropped = false;
         gView = gMe;
         gViewIndex = myconnectindex;
-        r_mirrormodelock = 1;
-        r_mirrormode = 0;
+        r_mirrormodemulti = 4; // set active flag
         if (gGameOptions.uNetGameFlags&kNetGameFlagMirrorHoriz)
-            r_mirrormode |= 1;
+            r_mirrormodemulti |= 1;
         if (gGameOptions.uNetGameFlags&kNetGameFlagMirrorVert)
-            r_mirrormode |= 2;
+            r_mirrormodemulti |= 2;
     }
     if (gameOptions->uGameFlags&kGameFlagContinuing) // if episode is in progress, remember player stats
     {

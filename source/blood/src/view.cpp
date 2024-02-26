@@ -4015,7 +4015,7 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
     int q16SlopeTilt = fix16_from_float(0.82f);
     int cX = 160;
     int cY = defaultHoriz;
-    if (!gCenterHoriz && (r_mirrormode & 1)) // offset crosshair if mirror mode is set to vertical mode
+    if (!gCenterHoriz && (MIRRORMODE & 1)) // offset crosshair if mirror mode is set to vertical mode
         cY += 19;
     cX <<= 16;
     cY <<= 16;
@@ -4026,12 +4026,12 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
         const int q16hfov = divscale16(90, gFov);
         const int q16vfov = Blrintf(float(fix16_one) * fFov);
         int cZ = pPlayer->relAim.dy * 160 / pPlayer->relAim.dx; // calculate aiming target offset from center
-        if (r_mirrormode & 1) // mirror mode flip
+        if (MIRRORMODE & 1) // mirror mode flip
             cZ = -cZ;
         cX += mulscale16(cZ<<16, q16hfov); // scale to current fov
         cZ = mulscale16((8<<4)<<16, q16vfov)>>16; // calculate vertical fov scale
         cZ = (pPlayer->relAim.dz / cZ)<<16; // convert target z to on screen units
-        if (r_mirrormode & 2) // mirror mode flip
+        if (MIRRORMODE & 2) // mirror mode flip
             cZ = -cZ;
         cY += cZ;
 
@@ -4055,7 +4055,7 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
     if (gSlopeTilting && (gSlopeReticle || bShowAutoAimTarget)) // adjust crosshair for slope tilting/auto aim
     {
         q16SlopeTilt = mulscale16(q16slopehoriz, q16SlopeTilt);
-        if (r_mirrormode & 2) // mirror mode flip
+        if (MIRRORMODE & 2) // mirror mode flip
             q16SlopeTilt = -q16SlopeTilt;
         cY += q16SlopeTilt;
     }
@@ -4790,7 +4790,7 @@ RORHACK:
         sub_557C4(cX, cY, gInterpolate);
         renderDrawMasks();
         gView->pSprite->cstat = bakCstat;
-        char bMirrorScreen = (videoGetRenderMode() == REND_CLASSIC) && r_mirrormode; // mirror framebuffer for classic renderer
+        char bMirrorScreen = (videoGetRenderMode() == REND_CLASSIC) && MIRRORMODE; // mirror framebuffer for classic renderer
 
         if ((videoGetRenderMode() == REND_CLASSIC) && (gRenderScale > 1) && !bRenderScaleRefresh)
         {

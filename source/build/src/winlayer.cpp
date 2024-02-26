@@ -1754,7 +1754,7 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
     uint8_t *pBuff = mirroredLine;
     const char bAllocBuff = nSize > sizeof(mirroredLine); // if bigger than static mirrored line, allocate from memory (very slow!)
 
-    if (!r_mirrormode || !pTile || !nSize)
+    if (!MIRRORMODE || !pTile || !nSize)
         return;
     if (bAllocBuff)
     {
@@ -1763,7 +1763,7 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
             return;
     }
 
-    if (r_mirrormode & 1) // mirror mode (horiz)
+    if (MIRRORMODE & 1) // mirror mode (horiz)
     {
         uint8_t *pRow, *pEnd = &pTile[(nHeight-1)*nWidth];
         for (pRow = pTile; pRow <= pEnd; pRow += nWidth)
@@ -1772,7 +1772,7 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
             copybufreverse((void *)&pBuff[nWidth-1], (void *)pRow, nWidth);
         }
     }
-    if (r_mirrormode & 2) // mirror mode (vert)
+    if (MIRRORMODE & 2) // mirror mode (vert)
     {
         uint8_t *pLow, *pHigh = &pTile[(nHeight-1)*nWidth];
         for (pLow = pTile; pLow < pHigh; pLow += nWidth, pHigh -= nWidth)
@@ -1792,8 +1792,6 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
 //
 void videoMirrorDrawing(void)
 {
-    if (!r_mirrormode)
-        return;
     if (!frameplace)
         return;
     if ((xres <= 0) || (yres <= 0))
