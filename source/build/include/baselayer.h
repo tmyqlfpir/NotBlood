@@ -62,12 +62,15 @@ extern int32_t r_usenewaspect, newaspect_enable;
 extern int32_t r_fpgrouscan;
 extern int32_t setaspect_new_use_dimen;
 extern uint32_t r_screenxy;
-extern int32_t r_mirrormode, r_mirrormodelock;
+extern int32_t r_mirrormode, r_mirrormodemulti;
 extern int32_t xres, yres, bpp, fullscreen, bytesperline;
 extern double refreshfreq;
 extern intptr_t frameplace;
 extern char offscreenrendering;
 extern int32_t nofog;
+
+// NOTE: this returns either r_mirrormode or r_mirrormodemulti. r_mirrormodemulti is used for multiplayer to ensure sync across clients (4 == active flag)
+#define MIRRORMODE (r_mirrormodemulti & 4 ? r_mirrormodemulti&3 : r_mirrormode)
 
 extern int32_t r_maxfps;
 extern int32_t g_numdisplays;

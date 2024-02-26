@@ -2526,10 +2526,7 @@ void SetLevelCompleteTime(CGameMenuItemZBool *pItem)
 
 void SetMirrorMode(CGameMenuItemZCycle *pItem)
 {
-    if (pItem == NULL)
-        pItem = &itemOptionsDisplayViewMirrorMode;
-    if (!r_mirrormodelock)
-        r_mirrormode = pItem->m_nFocus % ARRAY_SSIZE(pzMirrorModeStrings);
+    r_mirrormode = pItem->m_nFocus % ARRAY_SSIZE(pzMirrorModeStrings);
 }
 
 void SetSlowRoomFlicker(CGameMenuItemZBool *pItem)
