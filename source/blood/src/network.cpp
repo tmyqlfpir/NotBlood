@@ -175,8 +175,9 @@ void netResetToSinglePlayer(void)
     gGameMenuMgr.Deactivate();
     gNetNotifyProfileUpdate = false;
     gPlayerRoundEnding = 0;
+    if (r_mirrormodemulti)
+        SetMirrorMode(NULL); // restore single-player setting for mirror mode
     r_mirrormodemulti = 0;
-    SetMirrorMode(NULL); // restore single-player setting for mirror mode
 }
 
 void netSendPacket(int nDest, char *pBuffer, int nSize)
