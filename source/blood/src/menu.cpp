@@ -2526,8 +2526,6 @@ void SetLevelCompleteTime(CGameMenuItemZBool *pItem)
 
 void SetMirrorMode(CGameMenuItemZCycle *pItem)
 {
-    if (pItem == NULL)
-        pItem = &itemOptionsDisplayViewMirrorMode;
     r_mirrormode = pItem->m_nFocus % ARRAY_SSIZE(pzMirrorModeStrings);
 }
 
