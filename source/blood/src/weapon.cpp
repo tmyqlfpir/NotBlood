@@ -1648,7 +1648,7 @@ void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
                 }
             }
 
-            if (WeaponsNotBlood()) // use all ammo on alt fire
+            if (WeaponsNotBlood() && !gInfiniteAmmo) // use all ammo on alt fire
             {
                 UseAmmo(pPlayer, 9, pPlayer->ammoCount[9]);
                 pPlayer->hasWeapon[kWeaponVoodoo] = 0;
@@ -1693,6 +1693,11 @@ void AltFireVoodoo(int nTrigger, PLAYER *pPlayer)
             }
         }
         UseAmmo(pPlayer, 9, pPlayer->ammoCount[9]);
+        if (gInfiniteAmmo && !VanillaMode())
+        {
+            pPlayer->weaponState = 0;
+            return;
+        }
         pPlayer->hasWeapon[kWeaponVoodoo] = 0;
         pPlayer->weaponState = -1;
     }
