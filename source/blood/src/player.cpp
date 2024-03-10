@@ -1094,6 +1094,11 @@ void playerStart(int nPlayer, int bNewLevel)
     if (pPlayer->godMode)
         playerSetGodMode(pPlayer, 1);
     gInfiniteAmmo = 0;
+    gLifeleechRnd = 0;
+    gAlphaPitchfork = 0;
+    gSonicMode = 0;
+    gNukeMode = 0;
+    gMatrixMode = 0;
     gFullMap = 0;
     pPlayer->throwPower = pPlayer->throwPowerOld = 0;
     pPlayer->deathTime = 0;
