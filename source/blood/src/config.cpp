@@ -133,6 +133,7 @@ bool gLifeleechRnd;
 bool gAlphaPitchfork;
 bool gSonicMode;
 bool gNukeMode;
+bool gMatrixMode;
 bool gFullMap;
 int32_t gUpscaleFactor;
 int32_t gRenderScale;

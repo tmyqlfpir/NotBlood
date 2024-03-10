@@ -457,6 +457,8 @@ void powerupProcess(PLAYER *pPlayer)
         }
         else if (pPlayer->pwUpTime[i] > 0)
         {
+            if ((i == kPwUpTwoGuns) && gMatrixMode && !VanillaMode())
+                continue;
             if (!VanillaMode() && gGameOptions.bQuadDamagePowerup && (i == kPwUpTwoGuns) && (pPlayer->pwUpTime[i] == ((int)(2.987f * kTicsPerSec) * kTicsPerFrame))) // if quad damage is ending
             {
                 if (pPlayer == gMe) // play quad damage ending sfx
