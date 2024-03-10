@@ -107,29 +107,28 @@ static void ircd_parse(ircd_t *cl, char *buf, int len)
             const char bSelf = Bstrncmp(from, cl->nick, len) == 0;
             if (!Bstrncmp(cmd, "JOIN", len))
             {
-                if (!bSelf) // someone new joined, inform them that we have a game available
-                {
-                    const char bChanServ = Bstrncmp(from, "ChanServ", len) == 0;
-                    if ((gNetMode == NETWORK_SERVER) && (gIRCState == BLOOD_IRC_INSIDE_ROOM) && !bChanServ)
-                    {
-                        char pubaddress[128];
-                        Bsprintf(pubaddress, "BLADR_%s_%05d", gWanIp4, ClipRange(gNetPort, 0, 65353));
-                        for (int i = 0; i < MAXPLAYERNAME-1; i++) // last character is always null, so skip it
-                            Bsprintf(pubaddress, "%s-%02d", pubaddress, (int)szPlayerName[i]&0x7F);
-                        Bsprintf(pubaddress, "%s_%01d_%01d_BLADR", pubaddress, numplayers, gNetPlayers);
-                        netIRCSend(sock, pubaddress, "PRIVMSG", cl->chan);
-                    }
-                }
-                else // we finally joined the channel
+                const char bChanServ = Bstrncmp(from, "ChanServ", len) == 0;
+                if (bSelf) // we finally joined the channel
                 {
                     gIRCState = BLOOD_IRC_INSIDE_ROOM;
-                    NetworkBrowserState("CONNECTED TO MASTER LIST");
+                    if (gNetMode == NETWORK_NONE)
+                        NetworkBrowserState("CONNECTED TO MASTER LIST");
+                }
+                if ((gNetMode == NETWORK_SERVER) && (gIRCState == BLOOD_IRC_INSIDE_ROOM) && !bChanServ)
+                {
+                    char pubaddress[128];
+                    Bsprintf(pubaddress, "BLADR_%s_%05d", gWanIp4, ClipRange(gNetPort, 0, 65353));
+                    for (int i = 0; i < MAXPLAYERNAME-1; i++) // last character is always null, so skip it
+                        Bsprintf(pubaddress, "%s-%02d", pubaddress, (int)szPlayerName[i]&0x7F);
+                    Bsprintf(pubaddress, "%s_%01d_%01d_BLADR", pubaddress, numplayers, gNetPlayers);
+                    netIRCSend(sock, pubaddress, "PRIVMSG", cl->chan);
                 }
             }
             else if ((!Bstrncmp(cmd, "PART", len) && bSelf) || !Bstrncmp(cmd, "KICK", len)) // we left channel/someone was kicked/something horrible has happened, close irc connection
             {
                 gIRCState = BLOOD_IRC_CONNECTED;
-                NetworkBrowserState("DISCONNECTED");
+                if (gNetMode == NETWORK_NONE)
+                    NetworkBrowserState("DISCONNECTED");
             }
             else if ((gNetMode == NETWORK_NONE) && !Bstrncmp(cmd, "PRIVMSG", len) && !Bstrncmp(dest, cl->chan, len) && !Bstrncmp(text, "BLADR", 5)) // test
             {
