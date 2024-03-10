@@ -1402,9 +1402,9 @@ void viewDrawPowerUps(PLAYER* pPlayer)
     nPowerActive[1] = pPlayer->pwUpTime[kPwUpReflectShots]; // reflects enemy shots
     nPowerActive[2] = pPlayer->pwUpTime[kPwUpDeathMask]; // invulnerability
     if (powerupCheck(pPlayer, kPwUpTwoGuns) && gGameOptions.bQuadDamagePowerup && !VanillaMode()) // if quad damage is enabled, use quad damage icon from notblood.pk3/TILES099.ART
-        nPowerActive[3] = 0, nPowerActive[4] = pPlayer->pwUpTime[kPwUpTwoGuns]; // quad damage
+        nPowerActive[3] = 0, nPowerActive[4] = !gMatrixMode ? pPlayer->pwUpTime[kPwUpTwoGuns] : 0; // quad damage
     else
-        nPowerActive[3] = pPlayer->pwUpTime[kPwUpTwoGuns], nPowerActive[4] = 0; // guns akimbo
+        nPowerActive[3] = !gMatrixMode ? pPlayer->pwUpTime[kPwUpTwoGuns] : 0, nPowerActive[4] = 0; // guns akimbo
     nPowerActive[5] = pPlayer->pwUpTime[kPwUpShadowCloakUseless]; // shadow cloak
 
     // not in official maps
