@@ -2653,6 +2653,8 @@ void ConcussSprite(int a1, spritetype *pSprite, int x, int y, int z, int a6)
     int dz = (pSprite->z-z)>>4;
     int dist2 = 0x40000+dx*dx+dy*dy+dz*dz;
     dassert(dist2 > 0);
+    if (gNukeMode && !VanillaMode()) // nuke cheat
+        a6 *= 4;
     a6 = scale(0x40000, a6, dist2);
 
     if (pSprite->flags & kPhysMove) {
@@ -6356,6 +6358,8 @@ void actProcessSprites(void)
             radius = pXSprite->data4;
         #endif
 
+        if (gNukeMode && !VanillaMode()) // nuke cheat
+            radius <<= 2;
         // GetClosestSpriteSectors() has issues checking some sectors due to optimizations
         // the new flag newSectCheckMethod for GetClosestSpriteSectors() does rectify these issues, but this may cause unintended side effects for level scripted explosions
         // so only allow this new checking method for dude spawned explosions
@@ -6374,12 +6378,13 @@ void actProcessSprites(void)
         for (int nSprite2 = headspritestat[kStatDude]; nSprite2 >= 0; nSprite2 = nextspritestat[nSprite2])
         {
             spritetype *pDude = &sprite[nSprite2];
+            const char bNukeMode = gNukeMode && IsPlayerSprite(pDude) && (nOwner >= 0) && (&sprite[nOwner] == pDude) && !VanillaMode(); // do not use larger radius for player created explosions with nuke cheat
 
             if (pDude->flags & 32)
                 continue;
             if (TestBitString(sectmap, pDude->sectnum))
             {
-                if (pXSprite->data1 && CheckProximity(pDude, x, y, z, nSector, radius))
+                if (pXSprite->data1 && CheckProximity(pDude, x, y, z, nSector, bNukeMode ? radius>>2 : radius))
                 {
                     if (pExplodeInfo->dmg && pXSprite->target == 0)
                     {

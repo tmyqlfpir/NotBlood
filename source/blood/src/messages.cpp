@@ -735,6 +735,7 @@ CCheatMgr::CHEATINFO CCheatMgr::s_CheatInfo[] = {
     {"OP!V", kCheatNoU, 0 }, // NO U (Gives reflect shots power-up)
     {"KBNFT!IBSEJF", kCheatJamesHardie, 0 }, // JAMES HARDIE (Gives asbestos armor)
     {"WVMPWJD", kCheatVulovic, 0 }, // VULOVIC (Gives feather fall)
+    {"PQQFOIFJNFS", kCheatOppenheimer, 0 }, // OPPENHEIMER (Increases explosion damage by 4x)
 };
 
 bool CCheatMgr::m_bPlayerCheated = false;
@@ -746,7 +747,7 @@ bool CCheatMgr::Check(char *pzString)
     Bstrupr(buffer);
     for (size_t i = 0; i < strlen(pzString); i++)
         buffer[i]++;
-    for (int i = 0; i < 42; i++)
+    for (int i = 0; i < 43; i++)
     {
         int nCheatLen = strlen(s_CheatInfo[i].pzString);
         if (s_CheatInfo[i].flags & 1)
@@ -979,6 +980,12 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         powerupActivate(gMe, kPwUpFeatherFall);
         viewSetMessage("I feel as light as a feather!");
         break;
+    case kCheatOppenheimer:
+        if (VanillaMode()) // not supported by vanilla mode
+            return;
+        gNukeMode = !gNukeMode;
+        viewSetMessage(gNukeMode ? "Cultist dropped that TNT on me from an egregious angle" : "This shit ain't nothin' to me, man");
+        break;
     default:
         break;
     }
@@ -997,6 +1004,7 @@ void CCheatMgr::ResetCheats(void)
     gLifeleechRnd = 0;
     gAlphaPitchfork = 0;
     gSonicMode = 0;
+    gNukeMode = 0;
 }
 
 class MessagesLoadSave : public LoadSave

@@ -111,6 +111,7 @@ extern bool gInfiniteAmmo;
 extern bool gLifeleechRnd;
 extern bool gAlphaPitchfork;
 extern bool gSonicMode;
+extern bool gNukeMode;
 extern bool gFullMap;
 extern hashtable_t h_gamefuncs;
 extern int32_t gUpscaleFactor;

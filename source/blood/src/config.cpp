@@ -132,6 +132,7 @@ bool gInfiniteAmmo;
 bool gLifeleechRnd;
 bool gAlphaPitchfork;
 bool gSonicMode;
+bool gNukeMode;
 bool gFullMap;
 int32_t gUpscaleFactor;
 int32_t gRenderScale;
