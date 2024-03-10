@@ -167,6 +167,8 @@ It should be noted that vanilla mode does not work with modern maps
 * NO U - Activates reflect shots power-up
 * JAMES HARDIE - Activates asbestos armor power-up
 * VULOVIC - Activates feather fall power-up
+* OPPPENHEIMER - Increases TNT explosion damage by 4 times against enemies
+* THE ONE - Toggles infinite guns akimbo/quad damage mode, infinite ammo, and all weapons
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only

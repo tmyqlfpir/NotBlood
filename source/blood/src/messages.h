@@ -154,6 +154,8 @@ public:
         kCheatNoU,
         kCheatJamesHardie,
         kCheatVulovic,
+        kCheatOppenheimer,
+        kCheatMatrixNeo,
         kCheatMax
     };
     struct CHEATINFO
