@@ -3297,7 +3297,7 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             pTSprite->z = interpolate(pPrevLoc->z, pTSprite->z, gInterpolate);
             pTSprite->ang = pPrevLoc->ang+mulscale16(((pTSprite->ang-pPrevLoc->ang+1024)&2047)-1024, gInterpolate);
         }
-        if (!VanillaMode() && gViewInterpolate && IsPlayerSprite(pTSprite) && (gView->pSprite == &sprite[nSprite])) // improve network player prediction while in third person/co-op view
+        if (!VanillaMode() && gViewInterpolate && IsPlayerSprite(pTSprite) && gView && (gView->pSprite == &sprite[nSprite])) // improve network player prediction while in third person/co-op view
         {
             pTSprite->x = gViewSpritePredictLoc.x;
             pTSprite->y = gViewSpritePredictLoc.y;
