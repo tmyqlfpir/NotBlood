@@ -736,7 +736,7 @@ CCheatMgr::CHEATINFO CCheatMgr::s_CheatInfo[] = {
     {"KBNFT!IBSEJF", kCheatJamesHardie, 0 }, // JAMES HARDIE (Gives asbestos armor)
     {"WVMPWJD", kCheatVulovic, 0 }, // VULOVIC (Gives feather fall)
     {"PQQFOIFJNFS", kCheatOppenheimer, 0 }, // OPPENHEIMER (Increases explosion damage by 4x)
-    {"UIF!POF", kCheatMatrixNeo, 0 }, // THE ONE (Increases explosion damage by 4x)
+    {"UIF!POF", kCheatMatrixNeo, 0 }, // THE ONE (Grants all weapons and infinite akimbo powerup)
 };
 
 bool CCheatMgr::m_bPlayerCheated = false;
