@@ -123,15 +123,6 @@ static void ircd_parse(ircd_t *cl, char *buf, int len)
                     Bsprintf(pubaddress, "%s_%01d_%01d_BLADR", pubaddress, numplayers, gNetPlayers);
                     netIRCSend(sock, pubaddress, "PRIVMSG", cl->chan);
                 }
-                if ((gNetMode == NETWORK_SERVER) && (gIRCState == BLOOD_IRC_INSIDE_ROOM) && !bChanServ)
-                {
-                    char pubaddress[128];
-                    Bsprintf(pubaddress, "BLADR_%s_%05d", gWanIp4, ClipRange(gNetPort, 0, 65353));
-                    for (int i = 0; i < MAXPLAYERNAME-1; i++) // last character is always null, so skip it
-                        Bsprintf(pubaddress, "%s-%02d", pubaddress, (int)szPlayerName[i]&0x7F);
-                    Bsprintf(pubaddress, "%s_%01d_%01d_BLADR", pubaddress, numplayers, gNetPlayers);
-                    netIRCSend(sock, pubaddress, "PRIVMSG", cl->chan);
-                }
             }
             else if ((!Bstrncmp(cmd, "PART", len) && bSelf) || !Bstrncmp(cmd, "KICK", len)) // we left channel/someone was kicked/something horrible has happened, close irc connection
             {
