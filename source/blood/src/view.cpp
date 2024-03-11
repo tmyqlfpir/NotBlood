@@ -3289,7 +3289,14 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
 
         auto const tsprflags = pTSprite->clipdist;
 
-        if (gViewInterpolate && TestBitString(gInterpolateSprite, nSprite) && !(pTSprite->flags&512))
+        if (!VanillaMode() && gViewInterpolate && gPrediction && IsPlayerSprite(pTSprite) && gView && (gView->pSprite == &sprite[nSprite])) // improve network player prediction while in third person/co-op view
+        {
+            pTSprite->x = gViewSpritePredictLoc.x;
+            pTSprite->y = gViewSpritePredictLoc.y;
+            pTSprite->z = gViewSpritePredictLoc.z;
+            pTSprite->ang = gViewSpritePredictLoc.ang;
+        }
+        else if (gViewInterpolate && TestBitString(gInterpolateSprite, nSprite) && !(pTSprite->flags&512))
         {
             LOCATION *pPrevLoc = &gPrevSpriteLoc[nSprite];
             pTSprite->x = interpolate(pPrevLoc->x, pTSprite->x, gInterpolate);
