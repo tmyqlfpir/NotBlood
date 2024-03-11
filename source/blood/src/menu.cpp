@@ -3855,12 +3855,15 @@ void NetworkBrowserAdd(const char *pString, int nPort, const char *pHost, int nC
     char szTemp[64];
     int nSlotEmpty = -1;
 
-    Bsnprintf(szTemp, sizeof(szTemp), "%s:%d (Host: %s, Players: %01d\\%01d)", pString, nPort, pHost, nClientsCur, nClientsMax);
+    Bsnprintf(szTemp, sizeof(szTemp), "%s %d", pString, nPort);
     for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
     {
-        if (!Bstrncmp(szTemp, zNetBrowserGame[nSlot], sizeof(szTemp))) // already exists, don't add to server list
-            return;
-        if (zNetBrowserGame[nSlot][0] == '\0')
+        if (!Bstrncmp(szTemp, zNetBrowserGame[nSlot], Bstrlen(szTemp))) // already exists, update server listing
+        {
+            nSlotEmpty = nSlot;
+            break;
+        }
+        else if (zNetBrowserGame[nSlot][0] == '\0') // listing is new, add to empty slot
         {
             nSlotEmpty = nSlot;
             break;
@@ -3869,6 +3872,7 @@ void NetworkBrowserAdd(const char *pString, int nPort, const char *pHost, int nC
     if (nSlotEmpty < 0) // server list is full, return (WTF!? NOBODY KNOWS ABOUT THIS OBSCURE FORK)
         return;
 
+    Bsnprintf(szTemp, sizeof(szTemp), "%s (Host: %s, Players: %01d\\%01d)", szTemp, pHost, nClientsCur, nClientsMax);
     Bstrncpyz(zNetBrowserGame[nSlotEmpty], szTemp, sizeof(zNetBrowserGame[nSlotEmpty]));
     pItemNetworkBrowserGame[nSlotEmpty]->bCanSelect = 1;
     pItemNetworkBrowserGame[nSlotEmpty]->bEnable = 1;
@@ -3906,7 +3910,7 @@ void NetworkBrowserJoin(CGameMenuItemChain *pItem)
     sndStopSong();
     FX_StopAllSounds();
     UpdateDacs(0, true);
-    Bsscanf(pItem->m_pzText, "%s %d", gNetAddress, &gNetPort);
+    Bsscanf(pItem->m_pzText, "%s %d (", gNetAddress, &gNetPort);
     gNetMode = NETWORK_CLIENT;
     netIRCDeinitialize();
     netInitialize(false);
