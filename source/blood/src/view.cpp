@@ -3304,13 +3304,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             pTSprite->z = interpolate(pPrevLoc->z, pTSprite->z, gInterpolate);
             pTSprite->ang = pPrevLoc->ang+mulscale16(((pTSprite->ang-pPrevLoc->ang+1024)&2047)-1024, gInterpolate);
         }
-        if (!VanillaMode() && gViewInterpolate && gPrediction && IsPlayerSprite(pTSprite) && gView && (gView->pSprite == &sprite[nSprite])) // improve network player prediction while in third person/co-op view
-        {
-            pTSprite->x = gViewSpritePredictLoc.x;
-            pTSprite->y = gViewSpritePredictLoc.y;
-            pTSprite->z = gViewSpritePredictLoc.z;
-            pTSprite->ang = gViewSpritePredictLoc.ang;
-        }
         if (!VanillaMode() && ((pTSprite->statnum == kStatDude) || (pTSprite->type == kThingVoodooHead)))
         {
             char bReplacedPlayerTile = 0;
