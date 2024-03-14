@@ -68,8 +68,8 @@ An fork of NBlood with gameplay options, optional mutators and expanded multipla
 3. Optionally, if you want to use CD audio tracks instead of MIDI, provide FLAC/OGG recordings in following format: bloodXX.flac/ogg, where XX is track number. Make sure to enable Redbook audio option in sound menu.
 4. Optionally, if you want cutscenes and you have the original CD, copy the `movie` folder into NotBlood's folder (the folder itself too).
 If you have the GOG version of the game, do the following:
-   - make a copy of `game.ins` (or `game.inst`) named `game.bin`
-   - mount the `.bin` as a virtual CD (for example with `WinCDEmu`)
+   - make a copy of `game.ins` (or `game.inst`) named `game.cue`
+   - mount the `.cue` as a virtual CD (for example with `WinCDEmu`)
    - copy the `movie` folder from the mounted CD into NotBlood's folder
 5. Launch NotBlood (on Linux, to play Cryptic Passage, launch with the `-ini CRYPTIC.INI` parameter)
 
