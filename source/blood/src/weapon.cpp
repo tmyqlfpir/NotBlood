@@ -853,7 +853,7 @@ void WeaponLower(PLAYER *pPlayer)
     pPlayer->curWeapon = kWeaponNone;
     pPlayer->qavLoop = 0;
 
-    if ((prevWeapon != 6) && (prevWeapon != 7) && !VanillaMode()) // reset weapon state after switching weapon (except when switching from tnt/spray)
+    if ((prevWeapon != kWeaponTNT && prevWeapon != kWeaponSprayCan) && !VanillaMode()) // reset weapon state after switching weapon (except when switching from tnt/spray)
         pPlayer->weaponState = 0;
 }
 
