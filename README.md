@@ -21,7 +21,7 @@ Download for Windows/Linux/MacOS can be found on [https://github.com/clipmove/No
 * Vanilla mode (v1.21) with optional DOS mouse handling
 * BloodGDX style difficulty options for singleplayer
 * Set item box selection to activated item
-* Ability to record 1.21 compatible demos
+* Ability to record DOS compatible demos
 * Interpolated level texture panning
 * Drag and drop folder mod support ([demo](https://web.archive.org/web/20220514203004if_/https://files.catbox.moe/lb7nxb.mp4))
 * Customizable palette adjustment
@@ -60,7 +60,7 @@ Download for Windows/Linux/MacOS can be found on [https://github.com/clipmove/No
 
 ### Installing
 1. Extract NotBlood to a new directory
-2. Copy the following files from Blood 1.21 to NotBlood folder:
+2. Copy the following files from Blood (v1.21) to NotBlood folder:
    * BLOOD.INI
    * BLOOD.RFF
    * BLOOD000.DEM, ..., BLOOD003.DEM (optional)
