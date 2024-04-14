@@ -9,7 +9,7 @@ An fork of NBlood with gameplay options, optional mutators and expanded multipla
 * Vanilla mode (v1.21) with optional DOS mouse handling
 * BloodGDX style difficulty options for singleplayer
 * Set item box selection to activated item
-* Ability to record 1.21 compatible demos
+* Ability to record DOS compatible demos
 * Interpolated level texture panning
 * Drag and drop folder mod support
 * Customizable palette adjustment
@@ -46,7 +46,7 @@ An fork of NBlood with gameplay options, optional mutators and expanded multipla
 
 ### Installing
 1. Extract NotBlood to a new directory
-2. Copy the following files from Blood 1.21 to NotBlood folder:
+2. Copy the following files from Blood (v1.21) to NotBlood folder:
 
    BLOOD.INI
    BLOOD.RFF
