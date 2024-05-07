@@ -1535,6 +1535,8 @@ void SetupNetStartMenu(void)
     itemNetGameCycleLength.SetTextIndex(gMultiLength != -1 ? gMultiLength : 0);
     itemNetGameSliderLimit.nValue = gMultiLimit != -1 ? gMultiLimit : itemNetGameSliderLimit.nValue;
     itemNetGameBoolAutoTeams.at20 = !gPlayerTeamPreference;
+    if (gMultiModeNoFlag)
+        itemNetGameBoolTeamFlags.at20 = 0;
     itemNetGameCycleSpawnLocation.SetTextIndex(gMultiSpawnLocation != -1 ? gMultiSpawnLocation : 1);
     itemNetGameCycleShowWeaponsOverride.SetTextIndex(1);
     itemNetGameCycleSpawnProtection.SetTextIndex(gMultiSpawnProtection != -1 ? gMultiSpawnProtection : 1);

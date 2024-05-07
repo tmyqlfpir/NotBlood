@@ -77,6 +77,7 @@ extern bool gNetRetry;
 extern int gMultiModeInit;
 extern int gMultiLength;
 extern int gMultiLimit;
+extern bool gMultiModeNoFlag;
 extern int gMultiEpisodeInit;
 extern int gMultiLevelInit;
 extern int gMultiDiffInit;
