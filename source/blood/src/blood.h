@@ -83,6 +83,8 @@ extern int gMultiDiffInit;
 extern int gMultiMonsters;
 extern int gMultiWeapons;
 extern int gMultiItems;
+extern int gMultiSpawnLocation;
+extern int gMultiSpawnProtection;
 
 void QuitGame(void);
 void PreloadCache(void);
