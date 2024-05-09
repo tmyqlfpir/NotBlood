@@ -136,6 +136,7 @@ bool gNetRetry = false;
 int gMultiModeInit = -1;
 int gMultiLength = -1;
 int gMultiLimit = -1;
+bool gMultiModeNoExit = false;
 bool gMultiModeNoFlag = false;
 int gMultiEpisodeInit = -1;
 int gMultiLevelInit = -1;
@@ -1446,18 +1447,19 @@ SWITCH switches[] = {
     { "mp_mode", 45, 1 },
     { "mp_length", 46, 1 },
     { "mp_limit", 47, 1 },
-    { "mp_noflag", 48, 0 },
-    { "mp_level", 49, 2 },
-    { "mp_diff", 50, 1 },
-    { "mp_dudes", 51, 1 },
-    { "mp_weaps", 52, 1 },
-    { "mp_items", 53, 1 },
-    { "mp_spawn", 54, 1 },
-    { "mp_protect", 55, 1 },
-    { "mp_map", 56, 1 },
-    { "mp_mapclient", 57, 1 },
-    { "netretry", 58, 0 },
-    { "clientport", 59, 1 },
+    { "mp_noexit", 48, 0 },
+    { "mp_noflag", 49, 0 },
+    { "mp_level", 50, 2 },
+    { "mp_diff", 51, 1 },
+    { "mp_dudes", 52, 1 },
+    { "mp_weaps", 53, 1 },
+    { "mp_items", 54, 1 },
+    { "mp_spawn", 55, 1 },
+    { "mp_protect", 56, 1 },
+    { "mp_map", 57, 1 },
+    { "mp_mapclient", 58, 1 },
+    { "netretry", 59, 0 },
+    { "clientport", 60, 1 },
     { NULL, 0, 0 }
 };
 
@@ -1504,6 +1506,7 @@ void PrintHelp(void)
         "-mp_mode [0-2]\tSet game mode for multiplayer (0: co-op, 1: bloodbath, 2: teams)\n"
         "-mp_length [0-2]\tSet score/time length for multiplayer (0: unlimited, 1: minutes, 2: frags)\n"
         "-mp_limit [1-255]\tSet limit setting for multiplayer\n"
+        "-mp_noexit\tDisables the exit button for multiplayer\n"
         "-mp_noflag\tRemoves the flag for multiplayer teams mode\n"
         "-mp_level [E M]\tSet level for multiplayer (e.g: 1 3)\n"
         "-mp_diff [0-4]\tSet difficulty for multiplayer (0-4)\n"
@@ -1823,59 +1826,62 @@ void ParseOptions(void)
                 ThrowError("Missing argument");
             gMultiLimit = ClipRange(atoi(OptArgv[0]), 1, 255);
             break;
-        case 48: // mp_noflag
+        case 48: // mp_noexit
+            gMultiModeNoExit = true;
+            break;
+        case 49: // mp_noflag
             gMultiModeNoFlag = true;
             break;
-        case 49: // mp_level
+        case 50: // mp_level
             if (OptArgc < 2)
                 ThrowError("Missing argument");
             gMultiEpisodeInit = ClipRange(atoi(OptArgv[0]), 1, kMaxEpisodes)-1;
             gMultiLevelInit = ClipRange(atoi(OptArgv[1]), 1, kMaxLevels)-1;
             break;
-        case 50: // mp_difficulty
+        case 51: // mp_difficulty
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gMultiDiffInit = ClipRange(atoi(OptArgv[0]), 0, 4);
             break;
-        case 51: // mp_dudes
+        case 52: // mp_dudes
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gMultiMonsters = ClipRange(atoi(OptArgv[0]), 0, 2);
             break;
-        case 52: // mp_weaps
+        case 53: // mp_weaps
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gMultiWeapons = ClipRange(atoi(OptArgv[0]), 0, 3);
             break;
-        case 53: // mp_items
+        case 54: // mp_items
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gMultiItems = ClipRange(atoi(OptArgv[0]), 0, 2);
             break;
-        case 54: // mp_spawn
+        case 55: // mp_spawn
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gMultiSpawnLocation = ClipRange(atoi(OptArgv[0]), 0, 2);
             break;
-        case 55: // mp_protect
+        case 56: // mp_protect
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gMultiSpawnProtection = ClipRange(atoi(OptArgv[0]), 0, 3);
             break;
-        case 56: // mp_map
+        case 57: // mp_map
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             Bstrncpyz(zUserMapName, OptArgv[0], sizeof(zUserMapName));
             break;
-        case 57: // mp_mapclient
+        case 58: // mp_mapclient
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             Bstrncpyz(gNetMapOverride, OptArgv[0], sizeof(gNetMapOverride));
             break;
-        case 58: // netretry
+        case 59: // netretry
             gNetRetry = true;
             break;
-        case 59: // clientport
+        case 60: // clientport
             gNetPortLocal = strtoul(OptArgv[0], NULL, 0);
             break;
         }
