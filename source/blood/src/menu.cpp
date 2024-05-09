@@ -1534,6 +1534,8 @@ void SetupNetStartMenu(void)
     itemNetGameMode.SetTextIndex(gMultiModeInit != -1 ? gMultiModeInit : 1);
     itemNetGameCycleLength.SetTextIndex(gMultiLength != -1 ? gMultiLength : 0);
     itemNetGameSliderLimit.nValue = gMultiLimit != -1 ? gMultiLimit : itemNetGameSliderLimit.nValue;
+    if (gMultiModeNoExit)
+        itemNetGameBoolExit.at20 = 0;
     itemNetGameBoolAutoTeams.at20 = !gPlayerTeamPreference;
     if (gMultiModeNoFlag)
         itemNetGameBoolTeamFlags.at20 = 0;
