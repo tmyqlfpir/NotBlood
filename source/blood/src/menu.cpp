@@ -2706,11 +2706,14 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem)
     {
         SetGameVanillaMode((char)pItem->m_nFocus);
         viewClearInterpolations();
+        viewResizeView(gViewSize);
+        gGameMessageMgr.Clear();
     }
     else
+    {
         pItem->m_nFocus = gVanilla % ARRAY_SSIZE(pzVanillaModeStrings);
-    viewResizeView(gViewSize);
-    gGameMessageMgr.Clear();
+        viewSetMessage("Vanilla mode is disabled for multiplayer");
+    }
 }
 
 inline unsigned int SetBannedSprites(char bSinglePlayer)
