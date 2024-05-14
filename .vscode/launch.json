@@ -6,10 +6,10 @@
             "type": "cppdbg",
             "request": "launch",
             "linux": {
-                "program": "${workspaceRoot}/NotBlood",
+                "program": "${workspaceRoot}/notblood",
             },
             "windows": {
-                "program": "${workspaceRoot}/NotBlood.exe",
+                "program": "${workspaceRoot}/notblood.exe",
             },
             "cwd": "${workspaceRoot}",
         }
