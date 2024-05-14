@@ -458,7 +458,7 @@ void CGameMessageMgr::Display(void)
             SortMessagesByTime(messagesToDisplay, messagesToDisplayCount);
 
             int shade = ClipHigh(messagesToDisplayCount*8, 48);
-            int x = gViewX0S-xoffset;
+            int x = gViewMode == 3 ? gViewX0S - xoffset : xoffset;
             int y = this->y + (int)at9;
             for (int i = 0; i < messagesToDisplayCount; i++)
             {

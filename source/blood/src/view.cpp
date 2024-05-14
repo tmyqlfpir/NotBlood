@@ -2525,6 +2525,7 @@ void viewUpdateSkyRatio(void)
 
 void viewResizeView(int size)
 {
+    const char bDrawFragsBg = (gGameOptions.nGameType != kGameTypeSinglePlayer) && (!VanillaMode() || gGameOptions.nGameType != kGameTypeTeams);
     int xdimcorrect = ClipHigh(scale(ydim, 4, 3), xdim);
     gViewXCenter = xdim-xdim/2;
     gViewYCenter = ydim-ydim/2;
@@ -2540,7 +2541,7 @@ void viewResizeView(int size)
         gViewX1 = xdim-1;
         gViewY0 = 0;
         gViewY1 = ydim-1;
-        if (gGameOptions.nGameType != kGameTypeSinglePlayer)
+        if (bDrawFragsBg)
         {
             gViewY0 = (tilesiz[2229].y*ydim*((gNetPlayers+3)/4))/200;
         }
@@ -2555,7 +2556,7 @@ void viewResizeView(int size)
         gViewY0 = 0;
         gViewX1 = xdim-1;
         gViewY1 = ydim-1-(25*ydim)/200;
-        if (gGameOptions.nGameType != kGameTypeSinglePlayer)
+        if (bDrawFragsBg)
         {
             gViewY0 = (tilesiz[2229].y*ydim*((gNetPlayers+3)/4))/200;
         }
@@ -2571,14 +2572,21 @@ void viewResizeView(int size)
         gViewY1S = divscale16(gViewY1, yscale);
     }
     videoSetViewableArea(gViewX0, gViewY0, gViewX1, gViewY1);
-    if ((gGameOptions.nGameType == kGameTypeTeams) && VanillaMode()) // lower text for vanilla CTF hud (v1.21 did not do this btw)
+    if (gViewMode == 4) // 2D map view
     {
-        gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+15);
+        int nOffset = bDrawFragsBg ? tilesiz[2229].y*((gNetPlayers+3)/4) : 0;
+        nOffset = divscale16(nOffset, yscale);
+        nOffset += gGameOptions.nGameType == kGameTypeSinglePlayer && !VanillaMode() ? 6 : 1;
+        gGameMessageMgr.SetCoordinates(1, nOffset);
     }
     else
     {
-        const int nOffset = !VanillaMode() && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (gViewSize < 6) ? 6 : 1; // lower message position for single-player
-        gGameMessageMgr.SetCoordinates(gViewX0S+1, gViewY0S+nOffset);
+        int nOffset = 1;
+        if ((gGameOptions.nGameType == kGameTypeTeams) && VanillaMode()) // lower text for vanilla CTF hud (v1.21 did not do this)
+            nOffset = 15;
+        else if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (gViewSize < 4) && !VanillaMode()) // lower message position for single-player
+            nOffset = 6;
+        gGameMessageMgr.SetCoordinates(gViewX0S + 1, gViewY0S + nOffset);
     }
     gGameMessageMgr.maxNumberOfMessagesToDisplay = !VanillaMode() && (gGameOptions.nGameType != kGameTypeSinglePlayer) ? 3 : 4; // set max displayed messages to 3 for multiplayer (reduces on screen clutter)
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
