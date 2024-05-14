@@ -3,13 +3,13 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "Build EDuke32 and Mapster32 Debug",
+            "label": "Build NotBlood Debug",
             "linux": {
-                "command": "make RELEASE=0",
+                "command": "make blood RELEASE=0",
                 "details": "GNU Make for Linux"
             },
             "windows": {
-                "command": "mingw32-make.exe RELEASE=0",
+                "command": "mingw32-make.exe blood RELEASE=0",
                 "detail": "GNU Make with mingw32 for Windows"
             },
             "group": "build",
