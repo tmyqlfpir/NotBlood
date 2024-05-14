@@ -2502,7 +2502,7 @@ void viewUpdateHudRatio(void)
     if (gPowerupDuration > 1)
         xscalepowerups = viewCalculateOffetRatio(gPowerupDuration-2);
 
-    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = gViewMap.xoffset = (gViewSize < 6) ? xscalehud : 0;
+    gPlayerMsg.xoffset = gGameMessageMgr.xoffset = gViewMap.xoffset = (gViewMode == 3 && gViewSize < 6) ? xscalehud : 0;
 
     if (gPowerupDuration)
         xscalectfhud = xscalepowerups;
@@ -2574,7 +2574,7 @@ void viewResizeView(int size)
     videoSetViewableArea(gViewX0, gViewY0, gViewX1, gViewY1);
     if (gViewMode == 4) // 2D map view
     {
-        int nOffset = bDrawFragsBg ? tilesiz[2229].y*((gNetPlayers+3)/4) : 0;
+        int nOffset = bDrawFragsBg && !VanillaMode() ? (tilesiz[2229].y*ydim*((gNetPlayers+3)/4))/200 : 0;
         nOffset = divscale16(nOffset, yscale);
         nOffset += gGameOptions.nGameType == kGameTypeSinglePlayer && !VanillaMode() ? 6 : 1;
         gGameMessageMgr.SetCoordinates(1, nOffset);
@@ -2584,7 +2584,7 @@ void viewResizeView(int size)
         int nOffset = 1;
         if ((gGameOptions.nGameType == kGameTypeTeams) && VanillaMode()) // lower text for vanilla CTF hud (v1.21 did not do this)
             nOffset = 15;
-        else if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (gViewSize < 4) && !VanillaMode()) // lower message position for single-player
+        else if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (gViewSize < 6) && !VanillaMode()) // lower message position for single-player
             nOffset = 6;
         gGameMessageMgr.SetCoordinates(gViewX0S + 1, gViewY0S + nOffset);
     }
