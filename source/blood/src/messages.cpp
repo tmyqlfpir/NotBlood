@@ -409,7 +409,11 @@ void CGameMessageMgr::Display(void)
             int initialNrOfDisplayedMsgs = numberOfDisplayedMessages;
             int initialMessagesIndex = messagesIndex;
             int shade = ClipHigh(initialNrOfDisplayedMsgs*8, 48);
-            int x = gViewX0S-xoffset;
+#if 0 // original logic - very broken
+            int x = gViewMode == 3 ? gViewX0S : 0;
+#else
+            int x = this->x - xoffset;
+#endif
             int y = (gViewMode == 3 ? this->y : 0) + (int)at9;
             for (int i = 0; i < initialNrOfDisplayedMsgs; i++)
             {
@@ -458,7 +462,7 @@ void CGameMessageMgr::Display(void)
             SortMessagesByTime(messagesToDisplay, messagesToDisplayCount);
 
             int shade = ClipHigh(messagesToDisplayCount*8, 48);
-            int x = gViewX0S-xoffset;
+            int x = this->x - xoffset;
             int y = this->y + (int)at9;
             for (int i = 0; i < messagesToDisplayCount; i++)
             {

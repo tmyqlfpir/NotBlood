@@ -186,9 +186,9 @@ void CViewMap::Draw(void)
         return;
     char tm = 0;
     int viewSize = gViewSize;
-    if (gViewSize > 4)
+    if (gViewSize > 5)
     {
-        viewResizeView(4);
+        viewResizeView(5);
         tm = 1;
     }
     videoClearScreen(0);
@@ -205,7 +205,7 @@ void CViewMap::Draw(void)
     else
         sprintf(pBuffer, "%s", pFilename);
     int nViewY;
-    if (gViewSize > 4)
+    if (gViewSize > 5)
         nViewY = gViewY1S-16;
     else
         nViewY = gViewY0S + (!VanillaMode() && (gGameOptions.nGameType == kGameTypeSinglePlayer) ? 6 : 1);
