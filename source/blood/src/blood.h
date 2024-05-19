@@ -72,6 +72,9 @@ extern int gCacheMiss;
 extern int gDoQuickSave;
 extern int gMenuPicnum;
 
+extern char bVanilla;
+extern char bDemoState;
+
 extern bool gNetRetry;
 
 extern int gMultiModeInit;
@@ -96,7 +99,14 @@ void ScanINIFiles(void);
 bool LoadArtFile(const char *pzFile);
 void LoadExtraArts(void);
 void VanillaModeUpdate(void);
-bool VanillaMode(const bool bDemoCheck = false);
+inline bool VanillaMode(const bool bDemoCheck)
+{
+    if (bVanilla == 2) // vanilla mode override
+        return true;
+    if (bDemoCheck) // only check if demo recording/playing is active
+        return bDemoState;
+    return bVanilla; // fallback on global vanilla mode settings
+}
 bool WeaponsNotBlood(void);
 bool WeaponsV10x(void);
 bool ProjectilesNotBlood(void);

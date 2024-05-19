@@ -129,6 +129,9 @@ bool gSaveGameActive;
 int gCacheMiss;
 int gMenuPicnum = 2518; // default menu picnum
 
+char bVanilla = 0;
+char bDemoState = 0;
+
 bool gNetPortOverride = false;
 char gNetMapOverride[BMAX_PATH] = "";
 bool gNetRetry = false;
@@ -3204,9 +3207,6 @@ void LoadExtraArts(void)
     }
 }
 
-static char bVanilla = 0;
-static char bDemoState = 0;
-
 void VanillaModeUpdate(void)
 {
     const bool bSinglePlayer = (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1);
@@ -3218,15 +3218,6 @@ void VanillaModeUpdate(void)
         bVanilla = bSinglePlayer ? 2 : 0;
     else  // fallback on single-player global vanilla mode settings
         bVanilla = bDemoState || (gVanilla && bSinglePlayer);
-}
-
-bool VanillaMode(const bool bDemoCheck)
-{
-    if (bVanilla == 2) // vanilla mode override
-        return true;
-    if (bDemoCheck) // only check if demo recording/playing is active
-        return bDemoState;
-    return bVanilla; // fallback on global vanilla mode settings
 }
 
 bool WeaponsNotBlood(void) {
