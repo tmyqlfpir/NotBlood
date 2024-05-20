@@ -44,7 +44,8 @@ union KEYFLAGS
     struct
     {
         unsigned int action : 1;
-        unsigned int jab : 1;
+        //unsigned int jab : 1; // unused
+        unsigned int isTyping : 1; // new to notblood
         unsigned int prevItem : 1;
         unsigned int nextItem : 1;
         unsigned int useItem : 1;

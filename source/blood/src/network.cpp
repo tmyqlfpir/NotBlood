@@ -60,6 +60,7 @@ int gSendCheckTail = 0;
 int gCheckTail = 0;
 int gInitialNetPlayers = 0;
 int gBufferJitter = 1;
+int gPlayerTyping[8];
 int gPlayerReady[8];
 bool bNoResend = true;
 bool gRobust = false;
@@ -247,6 +248,7 @@ void netResetState(void)
     gCheckTail = 0;
     bOutOfSync = 0;
     gBufferJitter = 1;
+    memset(gPlayerTyping, 0, sizeof(gPlayerTyping));
 }
 
 void CalcGameChecksum(void)
@@ -377,6 +379,7 @@ void netGetPackets(void)
                         pInput->newWeapon = GetPacketByte(pPacket);
                     if (pInput->syncFlags.mlookChange)
                         pInput->q16mlook = GetPacketDWord(pPacket);
+                    gPlayerTyping[p] = pInput->keyFlags.isTyping;
                     gNetFifoHead[p]++;
                 }
                 else
@@ -437,6 +440,7 @@ void netGetPackets(void)
                 pInput->newWeapon = GetPacketByte(pPacket);
             if (pInput->syncFlags.mlookChange)
                 pInput->q16mlook = GetPacketDWord(pPacket);
+            gPlayerTyping[nPlayer] = pInput->keyFlags.isTyping;
             gNetFifoHead[nPlayer]++;
             while (pPacket < packet+nSize)
             {
@@ -474,6 +478,7 @@ void netGetPackets(void)
                 pInput->newWeapon = GetPacketByte(pPacket);
             if (pInput->syncFlags.mlookChange)
                 pInput->q16mlook = GetPacketDWord(pPacket);
+            gPlayerTyping[nPlayer] = pInput->keyFlags.isTyping;
             gNetFifoHead[nPlayer]++;
             while (pPacket < packet+nSize)
             {
@@ -781,6 +786,7 @@ void netMasterUpdate(void)
                 PutPacketByte(pPacket, pInput->newWeapon);
             if (pInput->syncFlags.mlookChange)
                 PutPacketDWord(pPacket, pInput->q16mlook);
+            gPlayerTyping[p] = pInput->keyFlags.isTyping;
         }
         if ((gNetFifoMasterTail&15) == 0)
         {
@@ -898,6 +904,7 @@ void netGetInput(void)
             PutPacketByte(pPacket, input.newWeapon);
         if (input.syncFlags.mlookChange)
             PutPacketDWord(pPacket, input.q16mlook);
+        gPlayerTyping[myconnectindex] = input.keyFlags.isTyping;
         while (gSendCheckTail != gCheckHead[myconnectindex])
         {
             unsigned int *checkSum = gCheckFifo[gSendCheckTail&255][myconnectindex];
@@ -935,6 +942,7 @@ void netGetInput(void)
             PutPacketByte(pPacket, input.newWeapon);
         if (input.syncFlags.mlookChange)
             PutPacketDWord(pPacket, input.q16mlook);
+        gPlayerTyping[myconnectindex] = input.keyFlags.isTyping;
         if (((gNetFifoHead[myconnectindex]-1)&15) == 0)
         {
             int t = myMinLag[connecthead]-otherMinLag;
