@@ -99,7 +99,7 @@ void ScanINIFiles(void);
 bool LoadArtFile(const char *pzFile);
 void LoadExtraArts(void);
 void VanillaModeUpdate(void);
-inline bool VanillaMode(const bool bDemoCheck)
+inline bool VanillaMode(const bool bDemoCheck = false)
 {
     if (bVanilla == 2) // vanilla mode override
         return true;
