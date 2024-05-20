@@ -803,7 +803,8 @@ void CDemo::FlushInput(int nCount)
         bitWriter.writeBit(pInput->buttonFlags.lookDown);
         bitWriter.skipBits(26);
         bitWriter.writeBit(pInput->keyFlags.action);
-        bitWriter.writeBit(pInput->keyFlags.jab);
+        //bitWriter.writeBit(pInput->keyFlags.jab); // unused
+        bitWriter.skipBits(1);
         bitWriter.writeBit(pInput->keyFlags.prevItem);
         bitWriter.writeBit(pInput->keyFlags.nextItem);
         bitWriter.writeBit(pInput->keyFlags.useItem);
@@ -855,7 +856,9 @@ void CDemo::ReadInput(int nCount)
         pInput->buttonFlags.lookDown = bitReader.readBit();
         bitReader.skipBits(26);
         pInput->keyFlags.action = bitReader.readBit();
-        pInput->keyFlags.jab = bitReader.readBit();
+        //pInput->keyFlags.jab = bitReader.readBit(); // unused
+        pInput->keyFlags.isTyping = 0;
+        bitReader.skipBits(1);
         pInput->keyFlags.prevItem = bitReader.readBit();
         pInput->keyFlags.nextItem = bitReader.readBit();
         pInput->keyFlags.useItem = bitReader.readBit();

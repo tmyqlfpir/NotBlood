@@ -155,6 +155,7 @@ void LoadSave::LoadGame(char *pzFile)
     {
         netWaitForEveryone(0);
         memset(gPlayerReady, 0, sizeof(gPlayerReady));
+        memset(gPlayerTyping, 0, sizeof(gPlayerTyping));
     }
     gFrameTicks = 0;
     gFrame = 0;
