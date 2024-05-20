@@ -34,11 +34,11 @@ enum BLOOD_IRC_STATE {
     BLOOD_IRC_STATE_MAX
 };
 
-char gWanIp4[16] = "127.0.0.1";
-char gIRCState = BLOOD_IRC_DISCONNECTED;
-const char *kIRCServ = "irc.libera.chat";
-const int kIRCPort = 6667; // clearnet irc
-const char *kIRCChan = "##notbloodserv";
+static char gWanIp4[16] = "127.0.0.1";
+static char gIRCState = BLOOD_IRC_DISCONNECTED;
+static const char *kIRCServ = "irc.libera.chat";
+static const int kIRCPort = 6667; // clearnet irc
+static const char *kIRCChan = "##notbloodserv";
 
 static int netIRCAppend(char *buf, const char *sep, const char *key)
 {
@@ -70,14 +70,15 @@ static void netIRCSend(int sock, char *text, const char *cmd, const char *opt)
 
 static void ircd_parse(ircd_t *cl, char *buf, int len)
 {
-    char opt[IRC_BUF_SIZE];
-    char from[IRC_BUF_SIZE];
-    char mask[IRC_BUF_SIZE];
-    char dest[IRC_BUF_SIZE];
-    char cmd[IRC_BUF_SIZE];
-    char text[IRC_BUF_SIZE];
-    int code;
+    static char opt[IRC_BUF_SIZE] = "";
+    static char from[IRC_BUF_SIZE] = "";
+    static char mask[IRC_BUF_SIZE] = "";
+    static char dest[IRC_BUF_SIZE] = "";
+    static char cmd[IRC_BUF_SIZE] = "";
+    static char text[IRC_BUF_SIZE] = "";
+    opt[0] = from[0] = mask[0] = dest[0] = cmd[0] = text[0] = '\0';
 
+    int code;
     int sock = cl->sock;
 
     if (cl->state == 0)
@@ -218,7 +219,7 @@ static int ircd_update(ircd_t *cl)
     return 1;
 }
 
-int netGetWanIp4(void)
+static int netGetWanIp4(void)
 {
     struct sockaddr_in server;
     char server_reply[2048];
