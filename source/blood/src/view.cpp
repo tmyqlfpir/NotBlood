@@ -3783,15 +3783,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                         }
                     }
                 }
-                if (gPlayerTyping[pPlayer->nPlayer] && !VanillaMode()) {
-                    auto pNTSprite = viewAddEffect(nTSprite, kViewEffectFlag);
-                    if (pNTSprite) {
-                        pNTSprite->picnum = 30456; // use typing indicator icon tile from notblood.pk3/TILES099.ART
-                        pNTSprite->x += mulscale30(Cos((gCameraAng + kAng90) & kAngMask), 96); // offset to the right
-                        pNTSprite->y += mulscale30(Sin((gCameraAng + kAng90) & kAngMask), 96);
-                        pNTSprite->z -= 12<<8; // offset up
-                    }
-                }
             }
             
             if (nSprite != gView->pSprite->index || gViewPos != VIEWPOS_0) {

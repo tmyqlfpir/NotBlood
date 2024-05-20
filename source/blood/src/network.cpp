@@ -62,7 +62,6 @@ int gInitialNetPlayers = 0;
 int gBufferJitter = 1;
 int gPlayerTyping[8];
 int gPlayerReady[8];
-int gPlayerTyping[8];
 bool bNoResend = true;
 bool gRobust = false;
 bool bOutOfSync = false;
@@ -979,7 +978,6 @@ void netInitialize(bool bConsole, bool bAnnounce)
 {
     netDeinitialize();
     memset(gPlayerReady, 0, sizeof(gPlayerReady));
-    memset(gPlayerTyping, 0, sizeof(gPlayerTyping));
     netResetState();
 #ifndef NETCODE_DISABLE
     char buffer[128];
