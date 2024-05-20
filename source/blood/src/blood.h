@@ -99,12 +99,10 @@ void ScanINIFiles(void);
 bool LoadArtFile(const char *pzFile);
 void LoadExtraArts(void);
 void VanillaModeUpdate(void);
-inline bool VanillaMode(const bool bDemoCheck)
+inline bool VanillaMode(const bool bDemoCheck = false)
 {
-    if (bVanilla == 2) // vanilla mode override
-        return true;
-    if (bDemoCheck) // only check if demo recording/playing is active
-        return bDemoState;
+    if (bDemoCheck) // only check if demo recording/playing is active (or if vanilla mode is set to DOS mode)
+        return (bVanilla == 2) || bDemoState;
     return bVanilla; // fallback on global vanilla mode settings
 }
 bool WeaponsNotBlood(void);
