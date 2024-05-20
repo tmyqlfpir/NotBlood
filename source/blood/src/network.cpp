@@ -60,6 +60,7 @@ int gSendCheckTail = 0;
 int gCheckTail = 0;
 int gInitialNetPlayers = 0;
 int gBufferJitter = 1;
+int gPlayerTyping[8];
 int gPlayerReady[8];
 int gPlayerTyping[8];
 bool bNoResend = true;
@@ -248,6 +249,7 @@ void netResetState(void)
     gCheckTail = 0;
     bOutOfSync = 0;
     gBufferJitter = 1;
+    memset(gPlayerTyping, 0, sizeof(gPlayerTyping));
 }
 
 void CalcGameChecksum(void)

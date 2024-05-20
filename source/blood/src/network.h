@@ -59,6 +59,7 @@ extern int gSendCheckTail;
 extern int gCheckTail;
 extern int gInitialNetPlayers;
 extern int gBufferJitter;
+extern int gPlayerTyping[8];
 extern int gPlayerReady[8];
 extern int gPlayerTyping[8];
 extern bool bNoResend;

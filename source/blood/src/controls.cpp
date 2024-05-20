@@ -153,6 +153,7 @@ void ctrlGetInput(void)
     if (!gGameStarted || gInputMode != INPUT_MODE_0)
     {
         gInput = {};
+        gInput.keyFlags.isTyping = (gInputMode == INPUT_MODE_2) && gGameStarted && !VanillaMode(); // only show typing indicator for non-vanilla mode
         CONTROL_GetInput(&info);
         if ((gInputMode == INPUT_MODE_2) && gGameStarted && !VanillaMode()) // only show typing indicator for non-vanilla mode
             gInput.keyFlags.isTyping = 1;
