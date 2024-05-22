@@ -1912,14 +1912,14 @@ void viewDrawKillMsg(ClockTicks arg)
     char buffer[128] = "";
     if (bShowVictimMsg)
     {
-        nPal = gColorMsg ? playerColorPalMessage(gPlayer[gPlayerLastKiller].teamId) : 0;
+        nPal = playerColorPalMessage(gPlayer[gPlayerLastKiller].teamId);
         sprintf(buffer, "Killed by %s", gProfile[gPlayerLastKiller].name);
         COLORSTR colorStr = {nPal, 0, {10, 127}, {-1, -1}};
         viewDrawText(0, buffer, 160, 137, -128, 0, 1, 1, 0, 0, &colorStr);
     }
     else if (bShowKillerMsg)
     {
-        nPal = gColorMsg ? playerColorPalMessage(gPlayer[gPlayerLastVictim].teamId) : 0;
+        nPal = playerColorPalMessage(gPlayer[gPlayerLastVictim].teamId);
         sprintf(buffer, "Killed %s", gProfile[gPlayerLastVictim].name);
         COLORSTR colorStr = {nPal, 0, {7, 127}, {-1, -1}};
         viewDrawText(0, buffer, 160, 137, -128, 0, 1, 1, 0, 0, &colorStr);
@@ -1945,7 +1945,7 @@ void viewDrawMultiKill(ClockTicks arg)
     const char bShowMultiKill = (gFrameClock - gMultiKillsTicks[gMe->nPlayer]) < (int)(kTicRate * 1.5); // show multi kill message for 1.5 seconds
     if (bShowMultiKill)
     {
-        const int nPalette = gColorMsg ? playerColorPalMultiKill(gMe->teamId) : 0;
+        const int nPalette = playerColorPalMultiKill(gMe->teamId);
         if ((int)totalclock & 16) // flash multi kill message
             return;
         switch (gMultiKillsFrags[gMe->nPlayer])
@@ -1969,7 +1969,7 @@ void viewDrawMultiKill(ClockTicks arg)
     }
     else if ((gAnnounceKillingSpreeTicks > 0) && (gAnnounceKillingSpreePlayer < kMaxPlayers)) // announce player's kill streak
     {
-        const int nPalette = gColorMsg ? playerColorPalMultiKill(gPlayer[gAnnounceKillingSpreePlayer].teamId) : 0;
+        const int nPalette = playerColorPalMultiKill(gPlayer[gAnnounceKillingSpreePlayer].teamId);
         char buffer[128] = "";
         switch (gMultiKillsFrags[gAnnounceKillingSpreePlayer])
         {
@@ -2050,17 +2050,10 @@ void viewDrawWinner(const char *pString, int nPal)
             }
         }
 
-        if (gColorMsg)
-        {
-            if ((nColorPart != 2) && (nColorPart != 4)) // something went very wrong, don't color message
-                nColorOffsets[0] = nColorOffsets[1] = nColorOffsets[2] = nColorOffsets[3] = -1;
+        if ((nColorPart != 2) && (nColorPart != 4)) // something went very wrong, don't color message
+            nColorOffsets[0] = nColorOffsets[1] = nColorOffsets[2] = nColorOffsets[3] = -1;
 
-            colorStr = {nPal, 0, {nColorOffsets[0], nColorOffsets[1]}, {nColorOffsets[2], nColorOffsets[3]}}; // set info for coloring sub-strings within string
-        }
-        else // no colors
-        {
-            Bmemset((void *)&colorStr, 0, sizeof(colorStr));
-        }
+        colorStr = {nPal, 0, {nColorOffsets[0], nColorOffsets[1]}, {nColorOffsets[2], nColorOffsets[3]}}; // set info for coloring sub-strings within string
     }
 
     if (!gPlayerRoundEnding)
@@ -5106,7 +5099,7 @@ RORHACK:
     else if (gView != gMe)
     {
         sprintf(gTempStr, "] %s [", gProfile[gView->nPlayer].name);
-        if (gColorMsg && !VanillaMode()) // color player name
+        if (!VanillaMode()) // color player name
         {
             COLORSTR colorStr = {playerColorPalMessage(gPlayer[gView->nPlayer].teamId), 0, {2, 2+(int)strlen(gProfile[gView->nPlayer].name)}, {-1, -1}};
             viewDrawText(0, gTempStr, 160, 10, 0, 0, 1, 0, 0, 0, &colorStr);

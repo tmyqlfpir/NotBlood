@@ -884,6 +884,7 @@ void dbRandomizerMode(spritetype *pSprite)
 #endif
         if ((type >= kDudeCultistTommy) && (type <= kDudeBurningBeast) && !(type >= kDudePlayer1 && type <= kDudePlayer8) && (type != kDudeCultistReserved) && (type != kDudeBeast) && (type != kDudeCultistBeast) && (type != kDudeGargoyleStone) && (type != kDudeTchernobog) && (type != kDudeCerberusTwoHead) && (type != kDudeCerberusOneHead) && (type != kDudeSpiderMother)) // filter problematic enemy types
         {
+            pSprite->flags |= kPhysGravity;
             switch (gGameOptions.nRandomizerCheat) // replace enemy according to cheat type
             {
             case  0: // "AAAAAAAA" - phantoms only
@@ -903,6 +904,7 @@ void dbRandomizerMode(spritetype *pSprite)
             }
             case  4: // "GARGOYLE" - gargoyles only
                 pSprite->type = dbRandomizerRNGDudes(20) ? kDudeGargoyleFlesh : kDudeGargoyleStone;
+                pSprite->flags &= ~kPhysGravity;
                 break;
             case  5: // "FLAMEDOG" - hell hounds only
                 pSprite->type = dbRandomizerRNGDudes(20) ? kDudeHellHound : kDudeCerberusOneHead;
@@ -1113,6 +1115,10 @@ void dbRandomizerMode(spritetype *pSprite)
         default:
             break;
         }
+        if (pSprite->type == kDudeGargoyleFlesh || pSprite->type == kDudeGargoyleStone || pSprite->type == kDudeBat) // set the correct flags needed for flying enemies
+            pSprite->flags &= ~kPhysGravity;
+        else
+            pSprite->flags |= kPhysGravity;
     }
     if (gGameOptions.nRandomizerMode >= 2) // if pickups or enemies+pickups mode, randomize pickup
     {
