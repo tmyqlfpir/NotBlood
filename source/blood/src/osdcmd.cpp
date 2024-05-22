@@ -460,6 +460,20 @@ static int osdcmd_notarget(osdcmdptr_t UNUSED(parm))
     return OSDCMD_OK;
 }
 
+static int osdcmd_fly(osdcmdptr_t UNUSED(parm))
+{
+    UNREFERENCED_CONST_PARAMETER(parm);
+    if (numplayers == 1 && gGameStarted && !gDemo.bPlaying && !gDemo.bRecording)
+    {
+        SetFlyMode(!gFlyMode);
+        gCheatMgr.m_bPlayerCheated = true;
+    }
+    else
+        OSD_Printf("fly: Not in a single-player game.\n");
+
+    return OSDCMD_OK;
+}
+
 static int osdcmd_restartsound(osdcmdptr_t UNUSED(parm))
 {
     UNREFERENCED_CONST_PARAMETER(parm);
@@ -1229,6 +1243,7 @@ int32_t registerosdcommands(void)
         OSD_RegisterFunction(t, Xstrdup(buffer), osdcmd_button);
     }
 
+    OSD_RegisterFunction("fly","fly: toggles fly mode", osdcmd_fly);
     OSD_RegisterFunction("give","give <all|health|weapons|ammo|armor|keys|inventory>: gives requested item", osdcmd_give);
     OSD_RegisterFunction("god","god: toggles god mode", osdcmd_god);
 //    OSD_RegisterFunction("activatecheat","activatecheat <id>: activates a cheat code", osdcmd_activatecheat);

@@ -90,6 +90,15 @@ void SetTargetMode(bool notarget)
         viewSetMessage("Notarget off.");
 }
 
+void SetFlyMode(bool fly)
+{
+    gFlyMode = fly;
+    if (gFlyMode)
+        viewSetMessage("Flymode on.");
+    else
+        viewSetMessage("Flymode off.");
+}
+
 void packStuff(PLAYER *pPlayer)
 {
     for (int i = 0; i < kPackMax; i++)
@@ -1009,6 +1018,7 @@ void CCheatMgr::ResetCheats(void)
     playerSetGodMode(gMe, 0);
     gNoClip = 0;
     gNoTarget = 0;
+    gFlyMode = 0;
     packClear(gMe);
     gInfiniteAmmo = 0;
     gFullMap = 0;

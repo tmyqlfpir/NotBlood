@@ -107,6 +107,7 @@ extern int32_t gMouseAimingFlipped;
 extern int32_t gRunKeyMode;
 extern bool gNoClip;
 extern bool gNoTarget;
+extern bool gFlyMode;
 extern bool gInfiniteAmmo;
 extern bool gLifeleechRnd;
 extern bool gAlphaPitchfork;

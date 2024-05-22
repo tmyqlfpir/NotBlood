@@ -4663,6 +4663,13 @@ void MoveDude(spritetype *pSprite)
             vx <<= 1; // double player velocity
             vy <<= 1;
         }
+        if (pPlayer && gFlyMode)
+        {
+            if (pPlayer->input.buttonFlags.jump)
+                pSprite->z -= 0x5b05>>3;
+            if (pPlayer->input.buttonFlags.crouch)
+                pSprite->z += 0x5b05>>3;
+        }
         if (pPlayer && gNoClip)
         {
             pSprite->x += vx;
@@ -4799,7 +4806,19 @@ void MoveDude(spritetype *pSprite)
         bDepth = 1;
     if (pPlayer)
         wd += 16;
-    if (zvel[nSprite])
+    if (pPlayer && gFlyMode)
+    {
+        pPlayer->underwaterTime = 1200;
+        pPlayer->chokeEffect = 0;
+        pSprite->flags |= 2;
+        if (!bUnderwater)
+        {
+            xvel[nSprite] -= mulscale16r(xvel[nSprite], 3696)<<1;
+            yvel[nSprite] -= mulscale16r(yvel[nSprite], 3696)<<1;
+        }
+        bUnderwater = 1;
+    }
+    else if (zvel[nSprite])
         pSprite->z += zvel[nSprite]>>8;
     int ceilZ, ceilHit, floorZ, floorHit;
     GetZRange(pSprite, &ceilZ, &ceilHit, &floorZ, &floorHit, wd, CLIPMASK0, PARALLAXCLIP_CEILING|PARALLAXCLIP_FLOOR);
@@ -5193,6 +5212,12 @@ void MoveDude(spritetype *pSprite)
     GetSpriteExtents(pSprite,&top,&bottom);
 
     pXSprite->height = ClipLow(floorZ-bottom, 0)>>8;
+    if (pPlayer && gFlyMode)
+    {
+        if ((xvel[nSprite] || yvel[nSprite]) && (approxDist(xvel[nSprite], yvel[nSprite]) < 0x1000))
+            xvel[nSprite] = yvel[nSprite] = 0;
+        return;
+    }
     if (xvel[nSprite] || yvel[nSprite])
     {
         if ((floorHit & 0xc000) == 0xc000)

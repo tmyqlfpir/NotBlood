@@ -182,3 +182,4 @@ void SetKeys(bool stat);
 void SetGodMode(bool god);
 void SetClipMode(bool noclip);
 void SetTargetMode(bool notarget);
+void SetFlyMode(bool fly);
