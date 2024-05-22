@@ -746,6 +746,7 @@ CCheatMgr::CHEATINFO CCheatMgr::s_CheatInfo[] = {
     {"WVMPWJD", kCheatVulovic, 0 }, // VULOVIC (Gives feather fall)
     {"PQQFOIFJNFS", kCheatOppenheimer, 0 }, // OPPENHEIMER (Increases explosion damage by 4x)
     {"UIF!POF", kCheatMatrixNeo, 0 }, // THE ONE (Grants all weapons and infinite akimbo powerup)
+    {"LSBWJU[", kCheatKravitz, 0 }, // KRAVITZ (Fly mode)
 };
 
 bool CCheatMgr::m_bPlayerCheated = false;
@@ -757,7 +758,7 @@ bool CCheatMgr::Check(char *pzString)
     Bstrupr(buffer);
     for (size_t i = 0; i < strlen(pzString); i++)
         buffer[i]++;
-    for (int i = 0; i < 44; i++)
+    for (int i = 0; i < 45; i++)
     {
         int nCheatLen = strlen(s_CheatInfo[i].pzString);
         if (s_CheatInfo[i].flags & 1)
@@ -1005,6 +1006,12 @@ void CCheatMgr::Process(CCheatMgr::CHEATCODE nCheatCode, char* pzArgs)
         SetInfiniteAmmo(gMatrixMode);
         SetWooMode(gMatrixMode);
         viewSetMessage(gMatrixMode ? "You are the one, Caleb" : "You have taken the blue pill");
+        break;
+    case kCheatKravitz:
+        if (VanillaMode()) // not supported by vanilla mode
+            return;
+        SetFlyMode(!gFlyMode);
+        viewSetMessage(gFlyMode ? "You feel like a little dragonfly" : "You have eaten the sun");
         break;
     default:
         break;

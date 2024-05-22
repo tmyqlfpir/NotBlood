@@ -169,6 +169,7 @@ It should be noted that vanilla mode does not work with modern maps
 * VULOVIC - Activates feather fall power-up
 * OPPPENHEIMER - Increases TNT explosion damage by 4 times against enemies
 * THE ONE - Toggles infinite guns akimbo/quad damage mode, infinite ammo, and all weapons
+* KRAVITZ - Toggles fly mode
 
 ### Randomizer seed cheats
 * AAAAAAAA - Phantoms only
