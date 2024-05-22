@@ -4647,6 +4647,14 @@ void MoveDude(spritetype *pSprite)
     int nAiStateType = (pXSprite->aiState) ? pXSprite->aiState->stateType : -1;
 
     dassert(nSector >= 0 && nSector < kMaxSectors);
+    if (pPlayer && gFlyMode)
+    {
+        const char nShift = gSonicMode && !VanillaMode() ? 2 : 3;
+        if (pPlayer->input.buttonFlags.jump)
+            pSprite->z -= 0x5b05>>nShift;
+        if (pPlayer->input.buttonFlags.crouch)
+            pSprite->z += 0x5b05>>nShift;
+    }
     if (xvel[nSprite] || yvel[nSprite])
     {
         int vx = xvel[nSprite];
@@ -4658,17 +4666,10 @@ void MoveDude(spritetype *pSprite)
         }
         vx >>= 12;
         vy >>= 12;
-        if (gSonicMode && pPlayer && !VanillaMode()) // if sonic mode cheat is active
+        if (pPlayer && gSonicMode && !VanillaMode()) // if sonic mode cheat is active
         {
             vx <<= 1; // double player velocity
             vy <<= 1;
-        }
-        if (pPlayer && gFlyMode)
-        {
-            if (pPlayer->input.buttonFlags.jump)
-                pSprite->z -= 0x5b05>>3;
-            if (pPlayer->input.buttonFlags.crouch)
-                pSprite->z += 0x5b05>>3;
         }
         if (pPlayer && gNoClip)
         {
