@@ -3432,7 +3432,14 @@ void UpdatePlayerTeamPreference(CGameMenuItemZCycle *pItem)
 {
     gPlayerTeamPreference = pItem->m_nFocus % ARRAY_SIZE(pzPlayerTeamPreferenceStrings);
     if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
+    {
         netBroadcastPlayerInfoUpdate(myconnectindex);
+        if (gGameOptions.bAutoTeams && (gGameOptions.nGameType == kGameTypeTeams))
+        {
+            viewSetMessage("Auto teams is on, cannot change team.", 8, MESSAGE_PRIORITY_INI); // 8: gold
+            gNetNotifyProfileUpdate = false;
+        }
+    }
 }
 
 void UpdatePlayerColorPreference(CGameMenuItemZCycle *pItem)
