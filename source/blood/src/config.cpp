@@ -128,6 +128,7 @@ int32_t gMouseAimingFlipped;
 int32_t gRunKeyMode;
 bool gNoClip;
 bool gNoTarget;
+bool gFlyMode;
 bool gInfiniteAmmo;
 bool gLifeleechRnd;
 bool gAlphaPitchfork;

@@ -1808,7 +1808,7 @@ void ProcessInput(PLAYER *pPlayer)
         }
         return;
     }
-    if (pPlayer->posture == kPostureSwim)
+    if (pPlayer->posture == kPostureSwim || gFlyMode)
     {
         int x = Cos(pSprite->ang);
         int y = Sin(pSprite->ang);
