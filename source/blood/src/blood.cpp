@@ -1409,7 +1409,7 @@ SWITCH switches[] = {
     { "robust", 8, 0 },
     { "setupfile", 9, 1 },
     { "skill", 10, 1 },
-    //{ "nocd", 11, 0 },
+    { "s", 11, 1 },
     //{ "8250", 12, 0 },
     { "ini", 13, 1 },
     { "noaim", 14, 0 },
@@ -1705,11 +1705,7 @@ void ParseOptions(void)
         case 10:
             if (OptArgc < 1)
                 ThrowError("Missing argument");
-            gSkill = strtoul(OptArgv[0], NULL, 0);
-            if (gSkill < 0)
-                gSkill = 0;
-            else if (gSkill > 4)
-                gSkill = 4;
+            gSkill = ClipRange(strtoul(OptArgv[0], NULL, 0), 0, 4);
             break;
         case 15:
             break;
@@ -1745,7 +1741,12 @@ void ParseOptions(void)
             break;
         }
         case 11:
-            //bNoCDAudio = 1;
+            if (OptArgc < 1)
+                ThrowError("Missing argument");
+            gSkill = ClipRange(strtoul(OptArgv[0], NULL, 0), 0, 4);
+            gGameOptions.nDifficulty = gSkill;
+            gGameOptions.nEnemyQuantity = gSkill;
+            gGameOptions.nEnemyHealth = gSkill;
             break;
         case 32:
             LOG_F(INFO, "Autoload disabled");
