@@ -4009,6 +4009,7 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     gQuickLoadSlot = nSlot;
     gGameMenuMgr.Deactivate();
     viewSetMessage("Game saved");
+    viewUpdatePages();
 }
 
 void QuickSaveGame(void)
@@ -4040,6 +4041,7 @@ void QuickSaveGame(void)
     gQuickLoadSlot = kLoadSaveSlotQuick;
     gGameMenuMgr.Deactivate();
     viewSetMessage("Game saved");
+    viewUpdatePages();
 }
 
 void AutosaveGame(bool bLevelStartSave)
