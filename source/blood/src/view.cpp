@@ -2510,8 +2510,11 @@ void viewUpdateSkyRatio(void)
     psky_t *pSky = tileSetupSky(0);
     if (!pSky)
         return;
-    if (gFov >= 90)
-        pSky->yscale = divscale16(mulscale16(fix16_from_float(1), fix16_from_float(float(gFov)/90.f)), yxaspect);
+    if (gFov > 75) // using a math curve, calculate the scale using the FOV
+    {
+        const float nFov = gFov;
+        pSky->yscale = fix16_from_float((0.000177989f * nFov * nFov) - (0.0241556f * nFov) + 1.81923f);
+    }
     else
         pSky->yscale = 65536;
 }
