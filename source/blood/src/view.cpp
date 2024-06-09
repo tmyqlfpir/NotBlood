@@ -2512,8 +2512,9 @@ void viewUpdateSkyRatio(void)
         return;
     if (gFov > 75) // using a math curve, calculate the scale using the FOV
     {
-        const float nFov = gFov;
-        pSky->yscale = fix16_from_float((0.000177989f * nFov * nFov) - (0.0241556f * nFov) + 1.81923f);
+        pSky->yscale = divscale16(fix16_from_int(gFov * gFov), fix16_from_float(1 / 0.000177989));
+        pSky->yscale -= divscale16(fix16_from_int(gFov), fix16_from_float(1 / 0.0241556));
+        pSky->yscale += fix16_from_float(1.81923f);
     }
     else
         pSky->yscale = 65536;
