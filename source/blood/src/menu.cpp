@@ -420,26 +420,27 @@ CGameMenuItemZBool itemBannedMonstersHellHounds("HELL HOUNDS:", 3, 75, 96, 161, 
 CGameMenuItemZBool itemBannedMonstersRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 112, 161, false, NULL, "SHORTER", "DEFAULT");
 
 CGameMenuItemTitle itemBannedItemsTitle("SET ITEMS", 1, 160, 20, 2038);
-CGameMenuItemZBool itemBannedItemsFlare("FLARE PISTOL:", 3, 75, 36, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsShotgun("SAWED-OFF:", 3, 75, 44, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsTommyGun("TOMMY GUN:", 3, 75, 52, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsNapalm("NAPALM LAUNCHER:", 3, 75, 60, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsTNT("DYNAMITE:", 3, 75, 68, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsSpray("SPRAY CAN:", 3, 75, 76, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsTesla("TESLA CANNON:", 3, 75, 84, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsLifeLeech("LIFE LEECH:", 3, 75, 92, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsVoodoo("VOODOO DOLL:", 3, 75, 100, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsProxy("PROXIMITY TNT:", 3, 75, 108, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsRemote("REMOTE TNT:", 3, 75, 116, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsMedKit("DOCTOR'S BAG:", 3, 75, 124, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsLifeEssence("LIFE ESSENCE/MED POUCH:", 3, 75, 132, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsLifeSeed("LIFE SEED:", 3, 75, 140, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsSuperArmor("SUPER ARMOR:", 3, 75, 148, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsJumpBoots("JUMP BOOTS:", 3, 75, 156, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsCloak("INVISIBILITY CLOAK:", 3, 75, 164, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsDeathMask("INVULNERABILITY MASK:", 3, 75, 172, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsAkimbo("GUNS AKIMBO:", 3, 75, 180, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedItemsReflect("REFLECTIVE SHOTS:", 3, 75, 188, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsFlare("FLARE PISTOL:", 3, 75, 32, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsShotgun("SAWED-OFF:", 3, 75, 40, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsTommyGun("TOMMY GUN:", 3, 75, 48, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsNapalm("NAPALM LAUNCHER:", 3, 75, 56, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsTNT("DYNAMITE:", 3, 75, 64, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsSpray("SPRAY CAN:", 3, 75, 72, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsTesla("TESLA CANNON:", 3, 75, 80, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsLifeLeech("LIFE LEECH:", 3, 75, 88, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsVoodoo("VOODOO DOLL:", 3, 75, 96, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsProxy("PROXIMITY TNT:", 3, 75, 104, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsRemote("REMOTE TNT:", 3, 75, 112, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsMedKit("DOCTOR'S BAG:", 3, 75, 120, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsLifeEssence("LIFE ESSENCE/MED POUCH:", 3, 75, 128, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsLifeSeed("LIFE SEED:", 3, 75, 136, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsSuperArmor("SUPER ARMOR:", 3, 75, 144, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsCrystalBall("CRYSTAL BALL:", 3, 75, 152, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsJumpBoots("JUMP BOOTS:", 3, 75, 160, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsCloak("INVISIBILITY CLOAK:", 3, 75, 168, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsDeathMask("INVULNERABILITY MASK:", 3, 75, 176, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsAkimbo("GUNS AKIMBO:", 3, 75, 184, 161, false, NULL, "REMOVE", "KEEP");
+CGameMenuItemZBool itemBannedItemsReflect("REFLECTIVE SHOTS:", 3, 75, 192, 161, false, NULL, "REMOVE", "KEEP");
 
 CGameMenuItemTitle itemMessagesTitle("MESSAGES", 1, 160, 20, 2038);
 CGameMenuItemZBool boolMessages("MESSAGES:", 3, 66, 70, 180, 0, SetMessages, NULL, NULL);
@@ -1292,6 +1293,7 @@ void SetupDifficultyMenu(void)
     menuBannedItems.Add(&itemBannedItemsLifeEssence, false);
     menuBannedItems.Add(&itemBannedItemsLifeSeed, false);
     menuBannedItems.Add(&itemBannedItemsSuperArmor, false);
+    menuBannedItems.Add(&itemBannedItemsCrystalBall, false);
     menuBannedItems.Add(&itemBannedItemsJumpBoots, false);
     menuBannedItems.Add(&itemBannedItemsCloak, false);
     menuBannedItems.Add(&itemBannedItemsDeathMask, false);
@@ -2802,6 +2804,8 @@ inline unsigned int SetBannedSprites(char bSinglePlayer)
         uSpriteBannedFlags |= BANNED_LIFESEED;
     if (itemBannedItemsSuperArmor.at20)
         uSpriteBannedFlags |= BANNED_SUPERARMOR;
+    if (itemBannedItemsCrystalBall.at20)
+        uSpriteBannedFlags |= BANNED_CRYSTALBALL;
 
     // powerups
     if (itemBannedItemsJumpBoots.at20)
