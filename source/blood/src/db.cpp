@@ -770,6 +770,8 @@ char dbIsBannedSpriteType(int nType)
         bBanned = nType == kItemHealthLifeSeed;
     if (!bBanned && (nBannedType&BANNED_SUPERARMOR))
         bBanned = nType == kItemArmorSuper;
+    if (!bBanned && (nBannedType&BANNED_CRYSTALBALL))
+        bBanned = nType == kItemCrystalBall;
 
     // powerups
     if (!bBanned && (nBannedType&BANNED_JUMPBOOTS))
