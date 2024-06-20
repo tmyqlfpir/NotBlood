@@ -868,14 +868,6 @@ static int osdcmd_cvar_set_game(osdcmdptr_t parm)
             r_ambientlightrecip = 256.f;
         else r_ambientlightrecip = 1.f/r_ambientlight;
     }
-    else if (!Bstrcasecmp(parm->name, "in_mouse"))
-    {
-        CONTROL_MouseEnabled = (gSetup.usemouse && CONTROL_MousePresent);
-    }
-    else if (!Bstrcasecmp(parm->name, "in_joystick"))
-    {
-        CONTROL_JoystickEnabled = (gSetup.usejoystick && CONTROL_JoyPresent);
-    }
     else if (!Bstrcasecmp(parm->name, "vid_gamma"))
     {
         gBrightness = GAMMA_CALC;
@@ -1106,9 +1098,6 @@ int32_t registerosdcommands(void)
         { "deliriumblur", "enable/disable delirium blur effect(polymost)", (void *)&gDeliriumBlur, CVAR_BOOL, 0, 1 },
         { "detail", "change the detail graphics setting (0-4)", (void *)&gDetail, CVAR_INT|CVAR_FUNCPTR, 0, 4 },
         { "fov", "change the field of view", (void *)&gFov, CVAR_INT|CVAR_FUNCPTR, 75, 140 },
-        { "in_joystick","enables input from the joystick if it is present",(void *)&gSetup.usejoystick, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
-        { "in_rumble","enables rumble for joystick if it is present",(void *)&gSetup.joystickrumble, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
-        { "in_mouse","enables input from the mouse if it is present",(void *)&gSetup.usemouse, CVAR_BOOL|CVAR_FUNCPTR, 0, 1 },
 
         { "in_aimmode", "0: toggle, 1: hold to aim", (void *)&gMouseAiming, CVAR_BOOL, 0, 1 },
         { "in_centerviewondrop", "enable/disable recenter view when dropping down onto ground", (void *)&gCenterViewOnDrop, CVAR_BOOL, 0, 1 },
