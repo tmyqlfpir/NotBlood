@@ -2009,7 +2009,8 @@ void SetupOptionsMenu(void)
     menuOptionsPlayer.Add(&itemOptionsPlayerKillMsg, false);
     menuOptionsPlayer.Add(&itemOptionsPlayerMultiKill, false);
     menuOptionsPlayer.Add(&itemBloodQAV, false);
-    itemOptionsPlayerSkill.tooltip_pzTextUpper = "Set player's damage taken handicap";
+    itemOptionsPlayerSkill.tooltip_pzTextUpper = "Set player's damage scale handicap";
+    itemOptionsPlayerSkill.tooltip_pzTextLower = "(higher = more damage)";
     itemOptionsPlayerTeamPreference.tooltip_pzTextUpper = "Set player's preferred team";
     itemOptionsPlayerColorPreference.tooltip_pzTextUpper = "Set player's preferred color";
     itemOptionsPlayerColorPreference.tooltip_pzTextLower = "(for bloodbath/co-op mode)";
@@ -2026,7 +2027,7 @@ void SetupOptionsMenu(void)
     itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
     itemOptionsPlayerMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
 
-    itemOptionsPlayerSkill.m_nFocus = 4 - (gSkill % ARRAY_SSIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
+    itemOptionsPlayerSkill.m_nFocus = gSkill % ARRAY_SSIZE(pzPlayerSkillStrings); // invert because string order is reversed (lower skill == easier)
     itemOptionsPlayerTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
     itemOptionsPlayerColorPreference.m_nFocus = gPlayerColorPreference % ARRAY_SSIZE(pzPlayerColorPreferenceStrings);
     itemOptionsPlayerModel.at20 = gPlayerModel;
@@ -3427,7 +3428,7 @@ void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
 
 void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
 {
-    gSkill = 4 - (pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings)); // invert because string order is reversed (lower skill == easier)
+    gSkill = pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings); // invert because string order is reversed (lower skill == easier)
     if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         netBroadcastPlayerInfoUpdate(myconnectindex);
 }
