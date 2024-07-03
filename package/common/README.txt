@@ -283,6 +283,8 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable recenter view when dropping down onto ground
 * in_crouchmode
    - Toggles crouch button (0:hold, 1:toggle)
+* in_targetaimassist
+   - enable/disable slowing camera movement when aiming towards a target (joystick only)
 * in_turnsensitivity
    - Keyboard turning sensitivity multiplier (default: 92, range: 64-128)
 * in_turnacceleration
