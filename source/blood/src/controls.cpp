@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "globals.h"
 #include "levels.h"
 #include "map2d.h"
+#include "trig.h"
 #include "view.h"
 
 
@@ -548,6 +549,16 @@ void ctrlGetInput(void)
         }
         if (input.q16turn == 0)
             input.q16turn = fix16_sadd(input.q16mlook, fix16_sdiv(fix16_from_int(info.dyaw>>4), F16(32)));
+        if (gSetup.joysticktargetaimassist && !info.mousex && !info.mousey && gMe && gMe->pSprite)
+        {
+            const int hit = HitScan(gMe->pSprite, gMe->zView, Cos(gMe->pSprite->ang)>>16, Sin(gMe->pSprite->ang)>>16, gMe->slope, CLIPMASK0, 0);
+            if (hit == 3)
+            {
+                const spritetype* pSprite = &sprite[gHitInfo.hitsprite];
+                if (IsDudeSprite(pSprite))
+                    input.q16turn >>= 1, input.q16mlook >>= 1;
+            }
+        }
         if (gCenterViewOnDrop == 2)
         {
             gInput.keyFlags.lookCenter = 1;
