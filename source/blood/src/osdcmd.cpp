@@ -1109,6 +1109,7 @@ int32_t registerosdcommands(void)
         { "in_mousedeadzone", "amount of mouse movement to filter out", (void *)&MouseDeadZone, CVAR_INT, 0, 512 },
         { "in_mouseflip", "invert vertical mouse movement", (void *)&gMouseAimingFlipped, CVAR_BOOL, 0, 1 },
         { "in_mousemode", "toggles vertical mouse view", (void *)&gMouseAim, CVAR_BOOL, 0, 1 },
+        { "in_targetaimassist", "enable/disable slowing camera movement when aiming towards a target (joystick only)", (void *)&gTargetAimAssist, CVAR_BOOL, 0, 1 },
         { "in_turnsensitivity", "keyboard turning sensitivity multiplier", (void *)&gTurnSpeed, CVAR_INT, 64, 124 },
         { "in_turnacceleration", "set keyboard turning acceleration (0: off, 1: only when running, 2: always on)", (void *)&gTurnAcceleration, CVAR_INT, 0, 2 },
 
