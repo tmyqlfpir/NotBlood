@@ -82,6 +82,7 @@ void SetMouseSensitivity(CGameMenuItemSliderFloat *);
 void SetMouseAimFlipped(CGameMenuItemZBool *);
 void SetTurnSpeed(CGameMenuItemSlider *);
 void SetCenterView(CGameMenuItemZBool *);
+void SetJoystickTargetAimAssist(CGameMenuItemZBool *);
 void SetJoystickRumble(CGameMenuItemZBool *);
 void SetTurnAcceleration(CGameMenuItemZCycle *);
 void SetCrouchToggle(CGameMenuItemZBool *);
@@ -1209,7 +1210,8 @@ CGameMenuItemSlider *pItemOptionsControlJoystickAxisSaturate[MAXJOYAXES];
 CGameMenuItemTitle itemOptionsControlJoystickMiscTitle("JOYSTICK MISC", 1, 160, 20, 2038);
 CGameMenuItemZBool itemOptionsControlJoystickMiscCrouchToggle("CROUCH TOGGLE:", 1, 18, 70, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
 CGameMenuItemZBool itemOptionsControlJoystickMiscCenterView("CENTER VIEW ON DROP:", 1, 18, 90, 280, gCenterViewOnDrop, SetCenterView, NULL, NULL);
-CGameMenuItemZBool itemOptionsControlJoystickMiscRumble("RUMBLE CONTROLLER:", 1, 18, 110, 280, 0, SetJoystickRumble, NULL, NULL);
+CGameMenuItemZBool itemOptionsControlJoystickMiscTargetAimAssist("TARGET AIM ASSIST:", 1, 18, 110, 280, 0, SetJoystickTargetAimAssist, NULL, NULL);
+CGameMenuItemZBool itemOptionsControlJoystickMiscRumble("RUMBLE CONTROLLER:", 1, 18, 130, 280, 0, SetJoystickRumble, NULL, NULL);
 
 void SetupLoadingScreen(void)
 {
@@ -2104,11 +2106,15 @@ void SetupControlsMenu(void)
     menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscTitle, false);
     menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscCrouchToggle, true);
     menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscCenterView, false);
+    menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscTargetAimAssist, false);
     menuOptionsControlJoystickMisc.Add(&itemOptionsControlJoystickMiscRumble, false);
     menuOptionsControlJoystickMisc.Add(&itemBloodQAV, false);
+    itemOptionsControlJoystickMiscTargetAimAssist.tooltip_pzTextUpper = "Slows camera movement when";
+    itemOptionsControlJoystickMiscTargetAimAssist.tooltip_pzTextLower = "crosshair is over an enemy";
 
     itemOptionsControlJoystickMiscCrouchToggle.at20 = gCrouchToggle;
     itemOptionsControlJoystickMiscCenterView.at20 = gCenterViewOnDrop;
+    itemOptionsControlJoystickMiscTargetAimAssist.at20 = gSetup.joysticktargetaimassist;
     itemOptionsControlJoystickMiscRumble.at20 = gSetup.joystickrumble;
 
     i = 0;
@@ -2581,6 +2587,11 @@ void SetTurnSpeed(CGameMenuItemSlider *pItem)
 void SetCenterView(CGameMenuItemZBool *pItem)
 {
     gCenterViewOnDrop = pItem->at20;
+}
+
+void SetJoystickTargetAimAssist(CGameMenuItemZBool *pItem)
+{
+    gSetup.joysticktargetaimassist = pItem->at20;
 }
 
 void SetJoystickRumble(CGameMenuItemZBool *pItem)
