@@ -389,7 +389,6 @@ void CONFIG_SetDefaults(void)
     gSetup.usejoystick = 1;
 #else
     gSetup.usejoystick = 0;
-    gSetup.joysticktargetaimassist = 0;
     gSetup.joystickrumble = 0;
 #endif
 
@@ -927,7 +926,6 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Setup", "NoAutoLoad", &gSetup.noautoload);
     SCRIPT_GetNumber(scripthandle, "Setup", "QuickStart", &gSetup.quickstart);
     SCRIPT_GetNumber(scripthandle, "Setup", "InputJoystick", &gSetup.usejoystick);
-    SCRIPT_GetNumber(scripthandle, "Setup", "UseJoystickTargetAimAssist", &gSetup.joysticktargetaimassist);
     SCRIPT_GetNumber(scripthandle, "Setup", "UseJoystickRumble", &gSetup.joystickrumble);
     SCRIPT_GetNumber(scripthandle, "Setup", "InputMouse", &gSetup.usemouse);
     SCRIPT_GetString(scripthandle, "Setup", "LastINI", &gSetup.lastini[0]);
@@ -1066,7 +1064,6 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Setup", "NoAutoLoad", gSetup.noautoload, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "QuickStart", gSetup.quickstart, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "InputJoystick", gSetup.usejoystick, FALSE, FALSE);
-    SCRIPT_PutNumber(scripthandle, "Setup", "UseJoystickTargetAimAssist", gSetup.joysticktargetaimassist, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "UseJoystickRumble", gSetup.joystickrumble, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "InputMouse", gSetup.usemouse, FALSE, FALSE);
     SCRIPT_PutString(scripthandle, "Setup", "LastINI", &gSetup.lastini[0]);
