@@ -2114,7 +2114,7 @@ void SetupControlsMenu(void)
 
     itemOptionsControlJoystickMiscCrouchToggle.at20 = gCrouchToggle;
     itemOptionsControlJoystickMiscCenterView.at20 = gCenterViewOnDrop;
-    itemOptionsControlJoystickMiscTargetAimAssist.at20 = gSetup.joysticktargetaimassist;
+    itemOptionsControlJoystickMiscTargetAimAssist.at20 = gTargetAimAssist;
     itemOptionsControlJoystickMiscRumble.at20 = gSetup.joystickrumble;
 
     i = 0;
@@ -2591,7 +2591,7 @@ void SetCenterView(CGameMenuItemZBool *pItem)
 
 void SetJoystickTargetAimAssist(CGameMenuItemZBool *pItem)
 {
-    gSetup.joysticktargetaimassist = pItem->at20;
+    gTargetAimAssist = pItem->at20;
 }
 
 void SetJoystickRumble(CGameMenuItemZBool *pItem)
