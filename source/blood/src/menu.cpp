@@ -2029,7 +2029,7 @@ void SetupOptionsMenu(void)
     itemOptionsPlayerMultiKill.tooltip_pzTextUpper = "Show multi kill alerts on screen";
     itemOptionsPlayerMultiKill.tooltip_pzTextLower = "(for bloodbath/teams mode)";
 
-    itemOptionsPlayerSkill.m_nFocus = gSkill % ARRAY_SSIZE(pzPlayerSkillStrings); // invert because string order is reversed (lower skill == easier)
+    itemOptionsPlayerSkill.m_nFocus = gSkill % ARRAY_SSIZE(pzPlayerSkillStrings);
     itemOptionsPlayerTeamPreference.m_nFocus = gPlayerTeamPreference % ARRAY_SSIZE(pzPlayerTeamPreferenceStrings);
     itemOptionsPlayerColorPreference.m_nFocus = gPlayerColorPreference % ARRAY_SSIZE(pzPlayerColorPreferenceStrings);
     itemOptionsPlayerModel.at20 = gPlayerModel;
@@ -3439,7 +3439,7 @@ void UpdatePlayerName(CGameMenuItemZEdit *pItem, CGameMenuEvent *pEvent)
 
 void UpdatePlayerSkill(CGameMenuItemZCycle *pItem)
 {
-    gSkill = pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings); // invert because string order is reversed (lower skill == easier)
+    gSkill = pItem->m_nFocus % ARRAY_SIZE(pzPlayerSkillStrings);
     if ((numplayers > 1) || (gGameOptions.nGameType != kGameTypeSinglePlayer)) // if multiplayer session is active
         netBroadcastPlayerInfoUpdate(myconnectindex);
 }
