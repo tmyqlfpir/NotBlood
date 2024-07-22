@@ -1908,7 +1908,7 @@ void ProcessInput(PLAYER *pPlayer)
             pInput->newWeapon = pPlayer->curWeapon;
         if (pInput->keyFlags.action || pInput->keyFlags.useItem)
         {
-            char bAllowRespawnCoop = 1;
+            char bAllowRespawn = 1;
             if ((gGameOptions.nGameType == kGameTypeCoop) && (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags))
             {
                 bAllowRespawnCoop = gPlayerCoopLives[pPlayer->nPlayer] < gPlayerRoundLimit;
@@ -1920,7 +1920,7 @@ void ProcessInput(PLAYER *pPlayer)
                 if (pPlayer->deathTime > 360)
                     seqSpawn(pPlayer->pDudeInfo->seqStartID+14, 3, pPlayer->pSprite->extra, nPlayerSurviveClient);
             }
-            else if (!gDemo.bPlaying && (seqGetStatus(3, pPlayer->pSprite->extra) < 0) && bAllowRespawnCoop)
+            else if (!gDemo.bPlaying && (seqGetStatus(3, pPlayer->pSprite->extra) < 0) && bAllowRespawn)
             {
                 if (pPlayer->pSprite)
                 {
