@@ -1911,8 +1911,8 @@ void ProcessInput(PLAYER *pPlayer)
             char bAllowRespawn = 1;
             if ((gGameOptions.nGameType == kGameTypeCoop) && (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags))
             {
-                bAllowRespawnCoop = gPlayerCoopLives[pPlayer->nPlayer] < gPlayerRoundLimit;
-                if (!bAllowRespawnCoop && (pPlayer == gMe)) // switch to next player if attempting to respawn
+                bAllowRespawn = gPlayerCoopLives[pPlayer->nPlayer] < gPlayerRoundLimit;
+                if (!bAllowRespawn && (pPlayer == gMe)) // switch to next player if attempting to respawn
                     BUTTONSET(gamefunc_See_Coop_View, 1);
             }
             if (bSeqStat)
