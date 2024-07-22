@@ -66,6 +66,7 @@ bool gBlueFlagDropped = false;
 bool gRedFlagDropped = false;
 
 int gPlayerScores[kMaxPlayers];
+int gPlayerCoopLives[kMaxPlayers];
 ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
 int gPlayerRoundLimit = 0;
@@ -1907,12 +1908,19 @@ void ProcessInput(PLAYER *pPlayer)
             pInput->newWeapon = pPlayer->curWeapon;
         if (pInput->keyFlags.action || pInput->keyFlags.useItem)
         {
+            char bAllowRespawn = 1;
+            if ((gGameOptions.nGameType == kGameTypeCoop) && (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags))
+            {
+                bAllowRespawn = gPlayerCoopLives[pPlayer->nPlayer] < gPlayerRoundLimit;
+                if (!bAllowRespawn && (pPlayer == gMe)) // switch to next player if attempting to respawn
+                    BUTTONSET(gamefunc_See_Coop_View, 1);
+            }
             if (bSeqStat)
             {
                 if (pPlayer->deathTime > 360)
                     seqSpawn(pPlayer->pDudeInfo->seqStartID+14, 3, pPlayer->pSprite->extra, nPlayerSurviveClient);
             }
-            else if (!gDemo.bPlaying && (seqGetStatus(3, pPlayer->pSprite->extra) < 0))
+            else if (!gDemo.bPlaying && (seqGetStatus(3, pPlayer->pSprite->extra) < 0) && bAllowRespawn)
             {
                 if (pPlayer->pSprite)
                 {
@@ -2580,6 +2588,7 @@ void playerInitRoundCheck(void)
         if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) // convert to minutes
             gPlayerRoundLimit *= kTicsPerSec*60;
     }
+    memset(gPlayerCoopLives, 0, sizeof(gPlayerCoopLives));
 }
 
 void playerProcessRoundCheck(void)
@@ -2881,7 +2890,21 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         FragPlayer(pPlayer, nSource);
         trTriggerSprite(nSprite, pXSprite, kCmdOff, nSource);
 
-        if (gGameOptions.bPermaDeath && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording)
+        if ((gGameOptions.nGameType == kGameTypeCoop) && (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording)
+        {
+            gPlayerCoopLives[pPlayer->nPlayer]++;
+            char buffer[80] = "";
+            const int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
+            if (gPlayerCoopLives[pPlayer->nPlayer] >= gPlayerRoundLimit)
+                sprintf(buffer, "\r%s\r is outta lives!", gProfile[pPlayer->nPlayer].name);
+            else if (gPlayerRoundLimit - 1 == gPlayerCoopLives[pPlayer->nPlayer])
+                sprintf(buffer, "\r%s\r is on their last life!", gProfile[pPlayer->nPlayer].name);
+            else if (pPlayer == gMe)
+                sprintf(buffer, "You have %d lives left!", gPlayerRoundLimit - gPlayerCoopLives[pPlayer->nPlayer]);
+            if (buffer[0] != '\0')
+                viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 0);
+        }
+        else if (gGameOptions.bPermaDeath && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording)
             viewSetMessage("game over. press \"use\" or \"enter\" to quit");
         else if (gRestoreLastSave && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording) // if died in single-player and not playing demo
         {
