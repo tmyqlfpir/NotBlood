@@ -1938,7 +1938,7 @@ void ProcessInput(PLAYER *pPlayer)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
                     if (gRestoreLastSave)
-                        return; // return so ProcessFrame() can restart single-player and check if actiong/use was pressed
+                        return; // return so ProcessFrame() can load last save if action was pressed
                 }
                 else
                     playerStart(pPlayer->nPlayer);
