@@ -1937,7 +1937,7 @@ void ProcessInput(PLAYER *pPlayer)
                     if (gDemo.bRecording)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
-                    if (gRestoreLastSave && !gGameOptions.bPermaDeath)
+                    if (gRestoreLastSave)
                         return; // return so ProcessFrame() can restart single-player and check if actiong/use was pressed
                 }
                 else
