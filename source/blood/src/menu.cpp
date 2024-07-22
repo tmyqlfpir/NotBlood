@@ -244,6 +244,12 @@ const char *zLengthStrings[] =
     "Frags",
 };
 
+const char *zLengthStringsCoop[] =
+{
+    "Unlimited",
+    "Lives",
+};
+
 const char *pzMirrorModeStrings[] = {
     "OFF",
     "HORIZONTAL",
@@ -506,6 +512,7 @@ CGameMenuItemChain itemNetStart11("START GAME", 1, 0, 175, 320, 1, 0, -1, StartN
 CGameMenuItemTitle itemNetGameTitle("GAME SETTINGS", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemNetGameMode("GAME:", 3, 66, 35, 180, 0, SetNetGameMode, zNetGameTypes, ARRAY_SSIZE(zNetGameTypes), 0);
 CGameMenuItemZCycle itemNetGameCycleLength("LENGTH:", 3, 66, 43, 180, 0, SetNetGameMode, zLengthStrings, ARRAY_SSIZE(zLengthStrings), 0);
+CGameMenuItemZCycle itemNetGameCycleLengthCoop("LENGTH:", 3, 66, 43, 180, 0, SetNetGameMode, zLengthStringsCoop, ARRAY_SSIZE(zLengthStringsCoop), 0);
 CGameMenuItemSlider itemNetGameSliderLimit("LIMIT:", 3, 66, 51, 180, 1, 1, 255, 1, NULL, -1, -1, kMenuSliderValue);
 CGameMenuItemZBool itemNetGameBoolExit("LEVEL EXIT:", 3, 66, 65, 180, true, NULL, NULL, NULL);
 CGameMenuItemZBool itemNetGameBoolTeleFrag("TELEFRAGS:", 3, 66, 73, 180, true, NULL, NULL, NULL);
@@ -1442,6 +1449,7 @@ void SetupNetStartMenu(void)
     menuNetworkGameMode.Add(&itemNetGameTitle, false);
     menuNetworkGameMode.Add(&itemNetGameMode, true);
     menuNetworkGameMode.Add(&itemNetGameCycleLength, false);
+    menuNetworkGameMode.Add(&itemNetGameCycleLengthCoop, false);
     menuNetworkGameMode.Add(&itemNetGameSliderLimit, false);
     menuNetworkGameMode.Add(&itemNetGameBoolExit, false);
     menuNetworkGameMode.Add(&itemNetGameBoolTeleFrag, false);
@@ -1537,6 +1545,7 @@ void SetupNetStartMenu(void)
 
     itemNetGameMode.SetTextIndex(gMultiModeInit != -1 ? gMultiModeInit : 1);
     itemNetGameCycleLength.SetTextIndex(gMultiLength != -1 ? gMultiLength : 0);
+    itemNetGameCycleLengthCoop.SetTextIndex(gMultiLength != -1 ? gMultiLength : 0);
     itemNetGameSliderLimit.nValue = gMultiLimit != -1 ? gMultiLimit : itemNetGameSliderLimit.nValue;
     if (gMultiModeNoExit)
         itemNetGameBoolExit.at20 = 0;
@@ -3244,10 +3253,24 @@ void PreDrawDisplayPolymost(CGameMenuItem *pItem)
 
 void SetNetGameMode(CGameMenuItemZCycle *pItem)
 {
-    itemNetGameCycleLength.bEnable = ((itemNetGameMode.m_nFocus+1) != kGameTypeCoop); // hide game length settings when set to co-op
-    itemNetGameCycleLength.bNoDraw = !itemNetGameCycleLength.bEnable;
-    itemNetGameSliderLimit.bEnable = ((itemNetGameMode.m_nFocus+1) != kGameTypeCoop) && (itemNetGameCycleLength.m_nFocus != 0); // don't show limit option if set to unlimited/co-op
-    itemNetGameSliderLimit.bNoDraw = !itemNetGameSliderLimit.bEnable;
+    if ((itemNetGameMode.m_nFocus+1) == kGameTypeCoop) // hide multiplayer game length settings
+    {
+        itemNetGameCycleLength.bEnable = 0;
+        itemNetGameCycleLength.bNoDraw = !itemNetGameCycleLength.bEnable;
+        itemNetGameCycleLengthCoop.bEnable = 1;
+        itemNetGameCycleLengthCoop.bNoDraw = !itemNetGameCycleLengthCoop.bEnable;
+        itemNetGameSliderLimit.bEnable = itemNetGameCycleLengthCoop.m_nFocus != 0; // don't show limit option if set to unlimited
+        itemNetGameSliderLimit.bNoDraw = !itemNetGameSliderLimit.bEnable;
+    }
+    else // hide co-op game length settings
+    {
+        itemNetGameCycleLength.bEnable = 1;
+        itemNetGameCycleLength.bNoDraw = !itemNetGameCycleLength.bEnable;
+        itemNetGameCycleLengthCoop.bEnable = 0;
+        itemNetGameCycleLengthCoop.bNoDraw = !itemNetGameCycleLengthCoop.bEnable;
+        itemNetGameSliderLimit.bEnable = itemNetGameCycleLength.m_nFocus != 0; // don't show limit option if set to unlimited
+        itemNetGameSliderLimit.bNoDraw = !itemNetGameSliderLimit.bEnable;
+    }
 
     if (pItem == &itemNetGameMode)
     {
@@ -4159,9 +4182,14 @@ void StartNetGame(CGameMenuItemChain *pItem)
     if (gPacketStartGame.gameType == kGameTypeSinglePlayer)
         gPacketStartGame.gameType = kGameTypeBloodBath;
     gPacketStartGame.uNetGameFlags = kNetGameFlagNone;
-    if ((itemNetGameCycleLength.m_nFocus > 0) && (gPacketStartGame.gameType != kGameTypeCoop)) // game length is ignored for co-op mode
+    if ((itemNetGameCycleLength.m_nFocus > 0) && (gPacketStartGame.gameType != kGameTypeCoop))
     {
         gPacketStartGame.uNetGameFlags |= itemNetGameCycleLength.m_nFocus == 1 ? kNetGameFlagLimitMinutes : kNetGameFlagLimitFrags;
+        gPacketStartGame.uNetGameFlags |= (ClipRange(itemNetGameSliderLimit.nValue, 1, 255)<<kNetGameFlagLimitBase)&kNetGameFlagLimitMask;
+    }
+    else if ((itemNetGameCycleLengthCoop.m_nFocus > 0) && (gPacketStartGame.gameType == kGameTypeCoop))
+    {
+        gPacketStartGame.uNetGameFlags |= kNetGameFlagLimitFrags;
         gPacketStartGame.uNetGameFlags |= (ClipRange(itemNetGameSliderLimit.nValue, 1, 255)<<kNetGameFlagLimitBase)&kNetGameFlagLimitMask;
     }
     if (!itemNetGameBoolExit.at20 && (gPacketStartGame.gameType != kGameTypeCoop))
