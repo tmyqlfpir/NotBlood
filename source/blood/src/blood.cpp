@@ -1285,14 +1285,15 @@ void ProcessFrame(void)
         }
         if (gPlayer[i].input.keyFlags.restart) // if restart requested from ProcessInput()
         {
+            const char bSinglePlayer = (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1);
             gPlayer[i].input.keyFlags.restart = 0;
-            if (gGameOptions.bPermaDeath && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // quit to main menu
+            if (gGameOptions.bPermaDeath && bSinglePlayer) // quit to main menu
             {
                 gQuitGame = true;
                 gRestartGame = true;
                 return;
             }
-            if (gPlayer[i].input.keyFlags.action && gGameOptions.nGameType == kGameTypeSinglePlayer && numplayers == 1) // if pressed action key and not in multiplayer session
+            if (gPlayer[i].input.keyFlags.action && bSinglePlayer) // if pressed action key
             {
                 if (DoRestoreSave()) // attempt to load last save, if fail then restart current level
                     return;
