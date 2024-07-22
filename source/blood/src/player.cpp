@@ -1910,11 +1910,7 @@ void ProcessInput(PLAYER *pPlayer)
         {
             char bAllowRespawn = 1;
             if ((gGameOptions.nGameType == kGameTypeCoop) && (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags))
-            {
                 bAllowRespawn = gPlayerCoopLives[pPlayer->nPlayer] < gPlayerRoundLimit;
-                if (!bAllowRespawn && (pPlayer == gMe)) // switch to next player if attempting to respawn
-                    BUTTONSET(gamefunc_See_Coop_View, 1);
-            }
             if (bSeqStat)
             {
                 if (pPlayer->deathTime > 360)
@@ -1941,11 +1937,24 @@ void ProcessInput(PLAYER *pPlayer)
                     if (gDemo.bRecording)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
-                    if (gRestoreLastSave || gGameOptions.bPermaDeath)
-                        return; // return so ProcessFrame() can restart single-player
+                    if (gRestoreLastSave)
+                        return; // return so ProcessFrame() can load last save if action was pressed
                 }
                 else
                     playerStart(pPlayer->nPlayer);
+            }
+            else if (!gDemo.bPlaying && (seqGetStatus(3, pPlayer->pSprite->extra) < 0) && !bAllowRespawn) // all players are dead, restart level
+            {
+                char bAllPlayersDead = 1;
+                for (int i = connecthead; i >= 0 && bAllPlayersDead; i = connectpoint2[i])
+                {
+                    if (gPlayerCoopLives[i] < gPlayerRoundLimit)
+                        bAllPlayersDead = 0;
+                }
+                if (!bAllPlayersDead && (pPlayer == gMe)) // switch to next player if attempting to respawn while there are still players alive
+                    BUTTONSET(gamefunc_See_Coop_View, 1);
+                else if (bAllPlayersDead) // trigger level restart
+                    pInput->keyFlags.restart = 1;
             }
             pInput->keyFlags.useItem = 0;
             pInput->keyFlags.action = 0;
@@ -2893,7 +2902,14 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
         if ((gGameOptions.nGameType == kGameTypeCoop) && (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording)
         {
             gPlayerCoopLives[pPlayer->nPlayer]++;
-            char buffer[80] = "";
+            char buffer[80];
+            buffer[0] = '\0';
+            char bAllPlayersDead = 1;
+            for (int i = connecthead; i >= 0 && bAllPlayersDead; i = connectpoint2[i])
+            {
+                if (gPlayerCoopLives[i] < gPlayerRoundLimit)
+                    bAllPlayersDead = 0;
+            }
             const int nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
             if (gPlayerCoopLives[pPlayer->nPlayer] >= gPlayerRoundLimit)
                 sprintf(buffer, "\r%s\r is outta lives!", gProfile[pPlayer->nPlayer].name);
@@ -2903,6 +2919,8 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
                 sprintf(buffer, "You have %d lives left!", gPlayerRoundLimit - gPlayerCoopLives[pPlayer->nPlayer]);
             if (buffer[0] != '\0')
                 viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, 0);
+            if (bAllPlayersDead)
+                viewSetMessage("press \"use\" or \"enter\" to restart level");
         }
         else if (gGameOptions.bPermaDeath && (gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1) && (pPlayer->pXSprite->health <= 0) && !gDemo.bPlaying && !gDemo.bRecording)
             viewSetMessage("game over. press \"use\" or \"enter\" to quit");
