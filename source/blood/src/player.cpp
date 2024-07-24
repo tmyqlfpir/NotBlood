@@ -1937,7 +1937,7 @@ void ProcessInput(PLAYER *pPlayer)
                     if (gDemo.bRecording)
                         gDemo.Close();
                     pInput->keyFlags.restart = 1;
-                    if (gRestoreLastSave)
+                    if (gRestoreLastSave && pInput->keyFlags.action)
                         return; // return so ProcessFrame() can load last save if action was pressed
                 }
                 else
@@ -1951,10 +1951,13 @@ void ProcessInput(PLAYER *pPlayer)
                     if (gPlayerCoopLives[i] < gPlayerRoundLimit)
                         bAllPlayersDead = 0;
                 }
-                if (!bAllPlayersDead && (pPlayer == gMe)) // switch to next player if attempting to respawn while there are still players alive
-                    BUTTONSET(gamefunc_See_Coop_View, 1);
-                else if (bAllPlayersDead) // trigger level restart
+                if (bAllPlayersDead) // trigger level restart
+                {
                     pInput->keyFlags.restart = 1;
+                    gGameOptions.uGameFlags |= kGameFlagContinuing; // required so restarting won't put players at the first level of the current episode
+                }
+                else if (pPlayer == gMe) // switch to next player if attempting to respawn while there are still players alive
+                    BUTTONSET(gamefunc_See_Coop_View, 1);
             }
             pInput->keyFlags.useItem = 0;
             pInput->keyFlags.action = 0;
