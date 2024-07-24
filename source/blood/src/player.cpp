@@ -1953,8 +1953,9 @@ void ProcessInput(PLAYER *pPlayer)
                 }
                 if (bAllPlayersDead) // trigger level restart
                 {
-                    pInput->keyFlags.restart = 1;
-                    gGameOptions.uGameFlags |= kGameFlagContinuing; // required so restarting won't put players at the first level of the current episode
+                    levelRestart();
+                    gPacketStartGame.episodeId = gGameOptions.nEpisode; // copy level info to packet struct so StartLevel() won't put us back to the start of episode
+                    gPacketStartGame.levelId = gGameOptions.nLevel;
                 }
                 else if (pPlayer == gMe) // switch to next player if attempting to respawn while there are still players alive
                     BUTTONSET(gamefunc_See_Coop_View, 1);
