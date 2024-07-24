@@ -909,65 +909,6 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         AutosaveGame(true); // create autosave at start of the new level
 }
 
-void StartNetworkLevel(void)
-{
-    if (gDemo.bRecording)
-        gDemo.Close();
-    VanillaModeUpdate();
-    if (!(gGameOptions.uGameFlags&kGameFlagContinuing))
-    {
-        gGameOptions.nEpisode = gPacketStartGame.episodeId;
-        gGameOptions.nLevel = gPacketStartGame.levelId;
-        gGameOptions.nGameType = gPacketStartGame.gameType;
-        gGameOptions.uNetGameFlags = gPacketStartGame.uNetGameFlags;
-        gGameOptions.nDifficulty = gPacketStartGame.difficulty;
-        gGameOptions.nMonsterSettings = ClipRange(gPacketStartGame.monsterSettings, 0, 2);
-        if (gPacketStartGame.monsterSettings <= 1)
-            gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
-        else if (gPacketStartGame.monsterSettings == 2)
-            gGameOptions.nMonsterRespawnTime = 15 * kTicRate; // 15 secs
-        else
-            gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 2) * 30 * kTicRate;
-        gGameOptions.nEnemyQuantity = gPacketStartGame.monsterQuantity;
-        gGameOptions.nEnemyHealth = gPacketStartGame.monsterHealth;
-        gGameOptions.nEnemySpeed = gPacketStartGame.monsterSpeed;
-        gGameOptions.nWeaponSettings = gPacketStartGame.weaponSettings;
-        gGameOptions.nItemSettings = gPacketStartGame.itemSettings;
-        gGameOptions.nRespawnSettings = gPacketStartGame.respawnSettings;
-        gGameOptions.bFriendlyFire = gPacketStartGame.bFriendlyFire;
-        gGameOptions.nKeySettings = gPacketStartGame.keySettings;
-        gGameOptions.bItemWeaponSettings = gPacketStartGame.itemWeaponSettings;
-        gGameOptions.bAutoTeams = gPacketStartGame.bAutoTeams;
-        gGameOptions.nSpawnProtection = gPacketStartGame.nSpawnProtection;
-        gGameOptions.nSpawnWeapon = gPacketStartGame.nSpawnWeapon;
-        if (gPacketStartGame.userMap)
-            levelAddUserMap(gNetMapOverride[0] != '\0' ? gNetMapOverride : gPacketStartGame.userMapName);
-        else
-            levelSetupOptions(gGameOptions.nEpisode, gGameOptions.nLevel);
-        
-        ///////
-        gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
-        gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
-        gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
-        gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
-        gGameOptions.bNapalmFalloff = gPacketStartGame.bNapalmFalloff;
-        gGameOptions.nEnemyBehavior = gPacketStartGame.nEnemyBehavior;
-        gGameOptions.bEnemyRandomTNT = gPacketStartGame.bEnemyRandomTNT;
-        gGameOptions.nWeaponsVer = gPacketStartGame.nWeaponsVer;
-        gGameOptions.bSectorBehavior = gPacketStartGame.bSectorBehavior;
-        gGameOptions.nHitscanProjectiles = gPacketStartGame.nHitscanProjectiles;
-        gGameOptions.nRandomizerMode = gPacketStartGame.randomizerMode;
-        Bstrncpyz(gGameOptions.szRandomizerSeed, gPacketStartGame.szRandomizerSeed, sizeof(gGameOptions.szRandomizerSeed));
-        gGameOptions.nRandomizerCheat = -1;
-        gGameOptions.bEnemyShuffle = false;
-        gGameOptions.bPitchforkOnly = false;
-        gGameOptions.bPermaDeath = false;
-        gGameOptions.uSpriteBannedFlags = gPacketStartGame.uSpriteBannedFlags;
-        ///////
-    }
-    StartLevel(&gGameOptions);
-}
-
 static void DoQuickLoad(void)
 {
     if (!gGameMenuMgr.m_bActive)
