@@ -980,49 +980,59 @@ void joyScanDevices()
                         joystick.hasRumble = 1;
                     else DVLOG_F(LOG_INPUT, "Couldn't init controller rumble: %s.", SDL_GetError());
                 }
+                else
+#endif
+#if SDL_VERSION_ATLEAST(2, 0, 9)
+                if (EDUKE32_SDL_LINKED_PREREQ(linked, 2, 0, 9))
+                {
+                    if (!SDL_GameControllerRumble(controller, 1, 1, 1))
+                        joystick.hasRumble = 1;
+                    else DVLOG_F(LOG_INPUT, "Couldn't init controller rumble: %s.", SDL_GetError());
+                }
 #endif
                 return;
             }
         }
 #endif
-
         for (int i = 0; i < numjoysticks; i++)
         {
             if ((joydev = SDL_JoystickOpen(i)))
             {
                 VLOG_F(LOG_INPUT, "Using joystick: %s", SDL_JoystickNameForIndex(i));
-
                 // KEEPINSYNC duke3d/src/gamedefs.h, mact/include/_control.h
                 joystick.flags      = 0;
                 joystick.numAxes    = min(9, SDL_JoystickNumAxes(joydev));
                 joystick.numBalls   = SDL_JoystickNumBalls(joydev);
                 joystick.numButtons = min(32, SDL_JoystickNumButtons(joydev));
                 joystick.numHats    = min((36 - joystick.numButtons) / 4, SDL_JoystickNumHats(joydev));
-
                 joystick.validButtons = UINT32_MAX;
                 joystick.isGameController = 0;
-
                 VLOG_F(LOG_INPUT, "Joystick %d has %d axes, %d buttons, %d hats, and %d balls.", i+1, joystick.numAxes, joystick.numButtons, joystick.numHats, joystick.numBalls);
-
                 Xfree(joystick.pAxis);
                 joystick.pAxis = (int32_t *)Xcalloc(joystick.numAxes, sizeof(int32_t));
-
                 Xfree(joystick.pHat);
                 if (joystick.numHats)
                     joystick.pHat = (int32_t *)Xcalloc(joystick.numHats, sizeof(int32_t));
                 else
                     joystick.pHat = nullptr;
-
                 for (int j = 0; j < joystick.numHats; j++)
                     joystick.pHat[j] = -1; // center
-
                 SDL_JoystickEventState(SDL_ENABLE);
                 inputdevices |= DEV_JOYSTICK;
 
+#if SDL_VERSION_ATLEAST(2, 0, 18)
+                if (EDUKE32_SDL_LINKED_PREREQ(linked, 2, 0, 18))
+                {
+                    if (SDL_JoystickHasRumble(joydev))
+                        joystick.hasRumble = 1;
+                    else DVLOG_F(LOG_INPUT, "Couldn't init joystick rumble: %s.", SDL_GetError());
+                }
+                else
+#endif
 #if SDL_VERSION_ATLEAST(2, 0, 9)
                 if (EDUKE32_SDL_LINKED_PREREQ(linked, 2, 0, 9))
                 {
-                    if (!SDL_JoystickRumble(joydev, 0xffff, 0xffff, 200))
+                    if (!SDL_JoystickRumble(joydev, 1, 1, 1))
                         joystick.hasRumble = 1;
                     else DVLOG_F(LOG_INPUT, "Couldn't init joystick rumble: %s.", SDL_GetError());
                 }
