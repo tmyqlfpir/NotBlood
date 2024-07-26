@@ -2529,6 +2529,7 @@ void actInit(bool bSaveLoad) {
         }
     }
 
+    dudeInfo[kDudeSpiderMother-kDudeBase].startHealth = gGameOptions.uSpriteBannedFlags&BANNED_SHIALS_HP ? 50 : 100;
     for (int nSprite = headspritestat[kStatThing]; nSprite >= 0; nSprite = nextspritestat[nSprite]) {
         if (sprite[nSprite].extra <= 0 || sprite[nSprite].extra >= kMaxXSprites) continue;
         spritetype* pSprite = &sprite[nSprite]; XSPRITE *pXSprite = &xsprite[pSprite->extra];
