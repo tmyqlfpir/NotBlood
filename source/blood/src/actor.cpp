@@ -2570,6 +2570,8 @@ void actInit(bool bSaveLoad) {
         }
     }
     
+    const char bHalfMotherSpiderHp = gGameOptions.uSpriteBannedFlags&BANNED_MSPIDERS_HP && !(!Bstrcmp(BloodIniFile, "BLOOD.INI") && (gGameOptions.nEpisode == 1 && gGameOptions.nLevel == 7)); // do not lower HP for E2M8
+    dudeInfo[kDudeSpiderMother-kDudeBase].startHealth = bHalfMotherSpiderHp ? 50 : 100;
     if (gGameOptions.nMonsterSettings == 0)
     {
         gKillMgr.SetCount(0);
