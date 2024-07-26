@@ -424,7 +424,7 @@ CGameMenuItemZBool itemBannedMonstersGhosts("GHOSTS:", 3, 75, 72, 161, false, NU
 CGameMenuItemZBool itemBannedMonstersSpiders("SPIDERS:", 3, 75, 80, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedMonstersTinyCaleb("TINY CALEBS:", 3, 75, 88, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedMonstersHellHounds("HELL HOUNDS:", 3, 75, 96, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemBannedMonstersRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 112, 161, false, NULL, "SHORTER", "DEFAULT");
+CGameMenuItemZBool itemBannedMonstersRatsAttack("RAT BITE DISTANCE:", 3, 75, 112, 161, false, NULL, "SHORTER", "DEFAULT");
 CGameMenuItemZBool itemBannedMonstersMotherSpiderHealth("MOTHER SPIDER HEALTH:", 3, 75, 120, 161, false, NULL, "HALF", "DEFAULT");
 
 CGameMenuItemTitle itemBannedItemsTitle("SET ITEMS", 1, 160, 20, 2038);
@@ -544,7 +544,7 @@ CGameMenuItemZBool itemNetMonsterGhosts("GHOSTS:", 3, 75, 122, 161, false, NULL,
 CGameMenuItemZBool itemNetMonsterSpiders("SPIDERS:", 3, 75, 130, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemNetMonsterTinyCaleb("TINY CALEBS:", 3, 75, 138, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemNetMonsterHellHounds("HELL HOUNDS:", 3, 75, 146, 161, false, NULL, "REMOVE", "KEEP");
-CGameMenuItemZBool itemNetMonsterRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 162, 161, false, NULL, "SHORTER", "DEFAULT");
+CGameMenuItemZBool itemNetMonsterRatsAttack("RAT BITE DISTANCE:", 3, 75, 162, 161, false, NULL, "SHORTER", "DEFAULT");
 CGameMenuItemZBool itemNetMonsterMotherSpiderHealth("MOTHER SPIDER HEALTH:", 3, 75, 170, 161, false, NULL, "HALF", "DEFAULT");
 
 ///////////////
