@@ -794,6 +794,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
     }
     if (gGameOptions.bEnemyShuffle)
         dbShuffleEnemy();
+    dudeInfo[kDudeSpiderMother-kDudeBase].startHealth = gGameOptions.uSpriteBannedFlags&BANNED_SHIALS_HP ? 50 : 100;
 
     #ifdef NOONE_EXTENSIONS
     if (!gModernMap)
