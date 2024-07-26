@@ -621,5 +621,6 @@ void ctrlJoystickRumble(int nTime)
     nTime = ClipLow(nTime, 28)<<3;
     joystick.rumbleHigh = UINT16_MAX > joystick.rumbleHigh + nRumble ? joystick.rumbleHigh + nRumble : UINT16_MAX;
     joystick.rumbleLow  = UINT16_MAX > joystick.rumbleHigh + nRumble ? joystick.rumbleLow  + nRumble : UINT16_MAX;
+    joystick.rumbleHigh >>= 1;
     joystick.rumbleTime = nTime      > joystick.rumbleTime ? nTime : joystick.rumbleTime;
 }
