@@ -736,9 +736,6 @@ CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 140, 180, 
 CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 150, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
 CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 160, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
 CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 170, 180, &gFov, 75, 140, 1, SetFOV, -1, -1, kMenuSliderValue);
-#ifdef USE_OPENGL
-CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 180, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
-#endif
 
 const char *pzRendererStrings[] = {
     "CLASSIC",
@@ -802,10 +799,13 @@ void PreDrawVideoModeMenu(CGameMenuItem *);
 CGameMenuItemTitle itemOptionsDisplayModeTitle("VIDEO MODE", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemOptionsDisplayModeResolution("RESOLUTION:", 3, 66, 60, 180, 0, NULL, NULL, 0, 0, true);
 CGameMenuItemZCycle itemOptionsDisplayModeRenderer("RENDERER:", 3, 66, 70, 180, 0, NULL, pzRendererStrings, 2, 0);
-CGameMenuItemZBool itemOptionsDisplayModeFullscreen("FULLSCREEN:", 3, 66, 80, 180, 0, NULL, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayModeVSync("VSYNC:", 3, 66, 90, 180, 0, NULL, pzVSyncStrings, ARRAY_SSIZE(pzVSyncStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayModeFrameLimit("FRAMERATE LIMIT:", 3, 66, 100, 180, 0, UpdateVideoModeMenuFrameLimit, pzFrameLimitStrings, 8, 0);
-CGameMenuItemChain itemOptionsDisplayModeApply("APPLY CHANGES", 3, 66, 115, 180, 0, NULL, 0, SetVideoMode, 0);
+#ifdef USE_OPENGL
+CGameMenuItemChain itemOptionsDisplayModePolymost("POLYMOST SETUP", 3, 66, 80, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
+#endif
+CGameMenuItemZBool itemOptionsDisplayModeFullscreen("FULLSCREEN:", 3, 66, 90, 180, 0, NULL, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayModeVSync("VSYNC:", 3, 66, 100, 180, 0, NULL, pzVSyncStrings, ARRAY_SSIZE(pzVSyncStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayModeFrameLimit("FRAMERATE LIMIT:", 3, 66, 110, 180, 0, UpdateVideoModeMenuFrameLimit, pzFrameLimitStrings, 8, 0);
+CGameMenuItemChain itemOptionsDisplayModeApply("APPLY CHANGES", 3, 66, 125, 180, 0, NULL, 0, SetVideoMode, 0);
 
 void PreDrawDisplayColor(CGameMenuItem *);
 
@@ -1836,9 +1836,6 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolWidescreen, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayWeaponSelect, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayFOV, false);
-#ifdef USE_OPENGL
-    menuOptionsDisplay.Add(&itemOptionsDisplayPolymost, false);
-#endif
     menuOptionsDisplay.Add(&itemBloodQAV, false);
     itemOptionsDisplayBoolVoxels.at20 = usevoxels;
     itemOptionsDisplayCrosshair.m_nFocus = gAimReticle % ARRAY_SSIZE(pzCrosshairStrings);
@@ -1883,6 +1880,7 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayModeResolution.SetTextArray(gResolutionName, gResolutionNum, 0);
 #ifdef USE_OPENGL
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeRenderer, false);
+    menuOptionsDisplayMode.Add(&itemOptionsDisplayModePolymost, false);
 #endif
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeFullscreen, false);
 #ifdef USE_OPENGL
@@ -1894,6 +1892,7 @@ void SetupOptionsMenu(void)
 
 #ifdef USE_OPENGL
     itemOptionsDisplayModeRenderer.pPreDrawCallback = PreDrawVideoModeMenu;
+    itemOptionsDisplayModePolymost.bEnable = videoGetRenderMode() == REND_POLYMOST;
 #endif
     itemOptionsDisplayModeFullscreen.pPreDrawCallback = PreDrawVideoModeMenu;
 
@@ -2956,6 +2955,10 @@ void SetVideoMode(CGameMenuItemChain *pItem)
     gSetup.xdim = xres;
     gSetup.ydim = yres;
     gSetup.bpp = bpp;
+
+#ifdef USE_OPENGL
+    itemOptionsDisplayModePolymost.bEnable = videoGetRenderMode() == REND_POLYMOST;
+#endif
 }
 
 void SetWidescreen(CGameMenuItemZBool *pItem)
