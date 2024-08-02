@@ -736,9 +736,6 @@ CGameMenuItemZBool itemOptionsDisplayBoolMessages("MESSAGES:", 3, 66, 140, 180, 
 CGameMenuItemZBool itemOptionsDisplayBoolWidescreen("WIDESCREEN:", 3, 66, 150, 180, r_usenewaspect, SetWidescreen, NULL, NULL);
 CGameMenuItemZCycle itemOptionsDisplayWeaponSelect("SHOW WEAPON SELECT:", 3, 66, 160, 180, 0, SetWeaponSelectMode, pzWeaponSelectStrings, ARRAY_SSIZE(pzWeaponSelectStrings), 0);
 CGameMenuItemSlider itemOptionsDisplayFOV("FOV:", 3, 66, 170, 180, &gFov, 75, 140, 1, SetFOV, -1, -1, kMenuSliderValue);
-#ifdef USE_OPENGL
-CGameMenuItemChain itemOptionsDisplayPolymost("POLYMOST SETUP", 3, 66, 180, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
-#endif
 
 const char *pzRendererStrings[] = {
     "CLASSIC",
@@ -802,11 +799,13 @@ void PreDrawVideoModeMenu(CGameMenuItem *);
 CGameMenuItemTitle itemOptionsDisplayModeTitle("VIDEO MODE", 1, 160, 20, 2038);
 CGameMenuItemZCycle itemOptionsDisplayModeResolution("RESOLUTION:", 3, 66, 60, 180, 0, NULL, NULL, 0, 0, true);
 CGameMenuItemZCycle itemOptionsDisplayModeRenderer("RENDERER:", 3, 66, 70, 180, 0, NULL, pzRendererStrings, 2, 0);
-CGameMenuItemZBool itemOptionsDisplayModeFullscreen("FULLSCREEN:", 3, 66, 80, 180, 0, NULL, NULL, NULL);
-CGameMenuItemZCycle itemOptionsDisplayModeVSync("VSYNC:", 3, 66, 90, 180, 0, NULL, pzVSyncStrings, ARRAY_SSIZE(pzVSyncStrings), 0);
-CGameMenuItemZCycle itemOptionsDisplayModeFrameLimit("FRAMERATE LIMIT:", 3, 66, 100, 180, 0, UpdateVideoModeMenuFrameLimit, pzFrameLimitStrings, 8, 0);
-// CGameMenuItemSlider itemOptionsDisplayModeFPSOffset("FPS OFFSET:", 3, 66, 110, 180, 0, -10, 10, 1, UpdateVideoModeMenuFPSOffset, -1, -1, kMenuSliderValue);
-CGameMenuItemChain itemOptionsDisplayModeApply("APPLY CHANGES", 3, 66, 115, 180, 0, NULL, 0, SetVideoMode, 0);
+#ifdef USE_OPENGL
+CGameMenuItemChain itemOptionsDisplayModePolymost("POLYMOST SETUP", 3, 66, 80, 180, 0, &menuOptionsDisplayPolymost, -1, SetupVideoPolymostMenu, 0);
+#endif
+CGameMenuItemZBool itemOptionsDisplayModeFullscreen("FULLSCREEN:", 3, 66, 90, 180, 0, NULL, NULL, NULL);
+CGameMenuItemZCycle itemOptionsDisplayModeVSync("VSYNC:", 3, 66, 100, 180, 0, NULL, pzVSyncStrings, ARRAY_SSIZE(pzVSyncStrings), 0);
+CGameMenuItemZCycle itemOptionsDisplayModeFrameLimit("FRAMERATE LIMIT:", 3, 66, 110, 180, 0, UpdateVideoModeMenuFrameLimit, pzFrameLimitStrings, 8, 0);
+CGameMenuItemChain itemOptionsDisplayModeApply("APPLY CHANGES", 3, 66, 125, 180, 0, NULL, 0, SetVideoMode, 0);
 
 void PreDrawDisplayColor(CGameMenuItem *);
 
@@ -905,8 +904,8 @@ CGameMenuItemZBool itemOptionsDisplayPolymostDetailTex("DETAIL TEXTURES:", 3, 66
 CGameMenuItemZBool itemOptionsDisplayPolymostGlowTex("GLOW TEXTURES:", 3, 66, 110, 180, 0, UpdateGlowTex, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayPolymost3DModels("3D MODELS:", 3, 66, 120, 180, 0, Update3DModels, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayPolymostDeliriumBlur("DELIRIUM EFFECT BLUR:", 3, 66, 130, 180, 0, UpdateDeliriumBlur, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayPolymostUseColorIndexedTex("RENDER WITH COLOR INDEXING:", 3, 66, 140, 180, 0, UpdateTexColorIndex, NULL, NULL);
-CGameMenuItemZBool itemOptionsDisplayPolymostShadeInterpolation("FOG SMOOTHING:", 3, 66, 150, 180, 0, UpdateShadeInterpolation, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayPolymostUseColorIndexedTex("PALETTE EMULATON:", 3, 66, 140, 180, 0, UpdateTexColorIndex, NULL, NULL);
+CGameMenuItemZBool itemOptionsDisplayPolymostShadeInterpolation("PALETTE INTERPOLATION:", 3, 66, 150, 180, 0, UpdateShadeInterpolation, NULL, NULL);
 CGameMenuItemZBool itemOptionsDisplayPolymostYShearing("Y-SHEARING:", 3, 66, 160, 180, 0, UpdateYShrearing, NULL, NULL);
 CGameMenuItemSlider itemOptionsDisplayPolymostRollAngle("VIEW ROLLING:", 3, 66, 170, 180, &gRollAngle, 0, 5, 1, UpdateRollAngle, -1, -1, kMenuSliderValue);
 #endif
@@ -1837,9 +1836,6 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolWidescreen, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayWeaponSelect, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayFOV, false);
-#ifdef USE_OPENGL
-    menuOptionsDisplay.Add(&itemOptionsDisplayPolymost, false);
-#endif
     menuOptionsDisplay.Add(&itemBloodQAV, false);
     itemOptionsDisplayBoolVoxels.at20 = usevoxels;
     itemOptionsDisplayCrosshair.m_nFocus = gAimReticle % ARRAY_SSIZE(pzCrosshairStrings);
@@ -1884,21 +1880,21 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayModeResolution.SetTextArray(gResolutionName, gResolutionNum, 0);
 #ifdef USE_OPENGL
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeRenderer, false);
+    menuOptionsDisplayMode.Add(&itemOptionsDisplayModePolymost, false);
 #endif
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeFullscreen, false);
 #ifdef USE_OPENGL
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeVSync, false);
 #endif
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeFrameLimit, false);
-    //menuOptionsDisplayMode.Add(&itemOptionsDisplayModeFPSOffset, false);
     menuOptionsDisplayMode.Add(&itemOptionsDisplayModeApply, false);
     menuOptionsDisplayMode.Add(&itemBloodQAV, false);
 
 #ifdef USE_OPENGL
     itemOptionsDisplayModeRenderer.pPreDrawCallback = PreDrawVideoModeMenu;
+    itemOptionsDisplayModePolymost.bEnable = videoGetRenderMode() == REND_POLYMOST;
 #endif
     itemOptionsDisplayModeFullscreen.pPreDrawCallback = PreDrawVideoModeMenu;
-    //itemOptionsDisplayModeFPSOffset.pPreDrawCallback = PreDrawVideoModeMenu;
 
     menuOptionsDisplayColor.Add(&itemOptionsDisplayColorTitle, false);
     menuOptionsDisplayColor.Add(&itemOptionsDisplayColorPaletteCustom, true);
@@ -2959,6 +2955,8 @@ void SetVideoMode(CGameMenuItemChain *pItem)
     gSetup.xdim = xres;
     gSetup.ydim = yres;
     gSetup.bpp = bpp;
+
+    itemOptionsDisplayModePolymost.bEnable = videoGetRenderMode() == REND_POLYMOST;
 }
 
 void SetWidescreen(CGameMenuItemZBool *pItem)
@@ -3020,7 +3018,6 @@ void SetupVideoModeMenu(CGameMenuItemChain *pItem)
             break;
         }
     }
-    // itemOptionsDisplayModeFPSOffset.nValue = r_maxfpsoffset;
 }
 
 void PreDrawVideoModeMenu(CGameMenuItem *pItem)
@@ -3038,12 +3035,6 @@ void UpdateVideoModeMenuFrameLimit(CGameMenuItemZCycle *pItem)
     r_maxfps = nFrameLimitValues[pItem->m_nFocus];
     g_frameDelay = calcFrameDelay(r_maxfps);
 }
-
-//void UpdateVideoModeMenuFPSOffset(CGameMenuItemSlider *pItem)
-//{
-//    r_maxfpsoffset = pItem->nValue;
-//    g_frameDelay = calcFrameDelay(r_maxfps);
-//}
 
 void UpdateVideoColorMenu(CGameMenuItemSliderFloat *pItem)
 {
