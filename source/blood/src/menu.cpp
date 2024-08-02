@@ -2956,7 +2956,9 @@ void SetVideoMode(CGameMenuItemChain *pItem)
     gSetup.ydim = yres;
     gSetup.bpp = bpp;
 
+#ifdef USE_OPENGL
     itemOptionsDisplayModePolymost.bEnable = videoGetRenderMode() == REND_POLYMOST;
+#endif
 }
 
 void SetWidescreen(CGameMenuItemZBool *pItem)
