@@ -1043,6 +1043,7 @@ void CGameMenuItemKeyList::Draw(void)
 
 bool CGameMenuItemKeyList::Event(CGameMenuEvent &event)
 {
+    const char nBannedKeys[] = {sc_Escape, sc_F1, sc_F2, sc_F3, sc_F4, sc_F5, sc_F6, sc_F8, sc_F9, sc_F10, sc_F12}; // these keys have existing hardcoded operations, do not allow any input to use these
     if (bScan)
     {
         if (KB_LastScan && KB_LastScan != sc_Pause)
@@ -1058,6 +1059,18 @@ bool CGameMenuItemKeyList::Event(CGameMenuEvent &event)
             key1 = KB_LastScan;
             if (key1 == key2)
                 key2 = 0;
+            for (int i = 0; i < ARRAY_SIZE(nBannedKeys); i++)
+            {
+                if (key1 != nBannedKeys[i] && key2 != nBannedKeys[i])
+                    continue;
+                KB_FlushKeyboardQueue();
+                KB_FlushKeyboardQueueScans();
+                KB_ClearKeysDown();
+                keyFlushScans();
+                keyFlushChars();
+                bScan = 0;
+                return 0;
+            }
             uint8_t oldKey[2];
             oldKey[0] = KeyboardKeys[nFocus][0];
             oldKey[1] = KeyboardKeys[nFocus][1];
