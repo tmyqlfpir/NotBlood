@@ -104,7 +104,6 @@ void SetDetail(CGameMenuItemSlider *);
 void SetVoxels(CGameMenuItemZBool *);
 void SetFOV(CGameMenuItemSlider *);
 void UpdateVideoModeMenuFrameLimit(CGameMenuItemZCycle *pItem);
-//void UpdateVideoModeMenuFPSOffset(CGameMenuItemSlider *pItem);
 void UpdateVideoColorMenu(CGameMenuItemSliderFloat *);
 void UpdateVideoPaletteCycleMenu(CGameMenuItemZCycle *);
 void UpdateVideoPaletteBoolMenu(CGameMenuItemZBool *);
