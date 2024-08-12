@@ -115,6 +115,7 @@ It should be noted that vanilla mode does not work with modern maps
    - Cheogh blasting/attacking can now hit prone players (only for well done and above difficulties)
    - Fix Beast state when leaving water sector
    - Restore unused fall animations for cultists
+   - Shotgun/tommy gun cultists spawn spent shells (disabled in modern maps)
 * Random cultist TNT
    - This will make cultists use a variety of random thrown sprites such as:
    - Napalm balls, proxy bundles, armed spray cans or pod projectiles

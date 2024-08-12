@@ -128,6 +128,12 @@ static void TommySeqCallback(int, int nXSprite)
         actFireVector(pSprite, 0, 0, dx, dy, dz, kVectorBullet);
     else // projectile
         actFireMissile(pSprite, 0, 0, dx, dy, dz, kMissileBullet);
+#ifdef NOONE_EXTENSIONS
+    if (!gModernMap && EnemiesNotBlood() && !VanillaMode())
+#else
+    if (EnemiesNotBlood() && !VanillaMode())
+#endif
+        fxSpawnEjectingBrass(pSprite, pSprite->z, 25, 35);
     sfxPlay3DSound(pSprite, 4001, -1, 0);
 }
 
@@ -187,6 +193,12 @@ static void ShotSeqCallback(int, int nXSprite)
         else // projectile
             actFireMissile(pSprite, 0, 0, dx+r3, dy+r2, dz+r1, kMissileShell);
     }
+#ifdef NOONE_EXTENSIONS
+    if (!gModernMap && EnemiesNotBlood() && !VanillaMode())
+#else
+    if (EnemiesNotBlood() && !VanillaMode())
+#endif
+        fxSpawnEjectingShell(pSprite, pSprite->z, 25, 35);
     if (Chance(0x8000))
         sfxPlay3DSound(pSprite, 1001, -1, 0);
     else
