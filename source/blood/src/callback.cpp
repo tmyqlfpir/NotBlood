@@ -512,6 +512,8 @@ int sawedOffSleeveSnd[] = { 610, 612 };
 
 void fxBouncingSleeve(int nSprite) // 16
 {
+    if ((sprite[nSprite].cstat&kPhysFalling) && !VanillaMode() && EnemiesNotBlood()) // cultist spawned shell, remove when it hits the floor
+        return gFX.fxFree(nSprite);
     spritetype* pSprite = &sprite[nSprite]; int ceilZ, ceilHit, floorZ, floorHit;
     GetZRange(pSprite, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist, CLIPMASK0);
     int top, bottom; GetSpriteExtents(pSprite, &top, &bottom);

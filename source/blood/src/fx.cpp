@@ -407,7 +407,13 @@ void fxSpawnEjectingBrass(spritetype *pSprite, int z, int a3, int a4)
     if (pBrass)
     {
         if (!VanillaMode())
+        {
             pBrass->ang = Random(2047);
+            const int nType = pSprite->type;
+            const char bCultistType = (nType == kDudeCultistTommy) || (nType == kDudeCultistShotgun) || (nType == kDudeCultistTommyProne) || (nType == kDudeCultistShotgunProne);
+            if (EnemiesNotBlood() && bCultistType) // used to flag if shells should be removed when touching grass (like you 'ought to, nerd)
+                pBrass->cstat |= kPhysFalling;
+        }
         int nDist = (a4<<18)/120+Random2(((a4/4)<<18)/120);
         int nAngle = pSprite->ang+Random2(56)+512;
         xvel[pBrass->index] = mulscale30(nDist, Cos(nAngle));
@@ -438,7 +444,13 @@ void fxSpawnEjectingShell(spritetype *pSprite, int z, int a3, int a4)
     if (pShell)
     {
         if (!VanillaMode())
+        {
             pShell->ang = Random(2047);
+            const int nType = pSprite->type;
+            const char bCultistType = (nType == kDudeCultistTommy) || (nType == kDudeCultistShotgun) || (nType == kDudeCultistTommyProne) || (nType == kDudeCultistShotgunProne);
+            if (EnemiesNotBlood() && bCultistType) // used to flag if shells should be removed when touching grass (like you 'ought to, nerd)
+                pShell->cstat |= kPhysFalling;
+        }
         int nDist = (a4<<18)/120+Random2(((a4/4)<<18)/120);
         int nAngle = pSprite->ang+Random2(56)+512;
         xvel[pShell->index] = mulscale30(nDist, Cos(nAngle));
