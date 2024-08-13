@@ -149,7 +149,6 @@ extern int32_t gFMPianoFix;
 
 ///////
 extern int gVanilla;
-extern int gMonsterSettings;
 extern int gQuadDamagePowerup;
 extern int gDamageInvul;
 extern int gExplosionBehavior;

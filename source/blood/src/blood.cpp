@@ -632,16 +632,6 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             levelPlayIntroScene(gGameOptions.nEpisode);
 
         ///////
-        if (!VanillaMode())
-        {
-            gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
-            if (gMonsterSettings <= 1)
-                gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
-            else if (gMonsterSettings == 2)
-                gGameOptions.nMonsterRespawnTime = 15 * kTicRate; // 15 secs
-            else
-                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 2) * 30 * kTicRate;
-        }
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
         gGameOptions.bDamageInvul = gDamageInvul;
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
@@ -664,13 +654,13 @@ void StartLevel(GAMEOPTIONS *gameOptions)
         gGameOptions.nGameType = gPacketStartGame.gameType;
         gGameOptions.uNetGameFlags = gPacketStartGame.uNetGameFlags;
         gGameOptions.nDifficulty = gPacketStartGame.difficulty;
-        gGameOptions.nMonsterSettings = ClipRange(gPacketStartGame.monsterSettings, 0, 2);
-        if (gPacketStartGame.monsterSettings <= 1)
+        gGameOptions.nMonsterSettings = gPacketStartGame.monsterSettings;
+        if (gGameOptions.nMonsterSettings <= 1)
             gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
-        else if (gPacketStartGame.monsterSettings == 2)
+        else if (gGameOptions.nMonsterSettings == 2)
             gGameOptions.nMonsterRespawnTime = 15 * kTicRate; // 15 secs
         else
-            gGameOptions.nMonsterRespawnTime = (gPacketStartGame.monsterSettings - 2) * 30 * kTicRate;
+            gGameOptions.nMonsterRespawnTime = (gGameOptions.nMonsterSettings - 2) * 30 * kTicRate, gGameOptions.nMonsterSettings = ClipRange(gGameOptions.nMonsterSettings, 0, 2);
         gGameOptions.nEnemyQuantity = gPacketStartGame.monsterQuantity;
         gGameOptions.nEnemyHealth = gPacketStartGame.monsterHealth;
         gGameOptions.nEnemySpeed = gPacketStartGame.monsterSpeed;

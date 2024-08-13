@@ -1059,7 +1059,7 @@ bool CGameMenuItemKeyList::Event(CGameMenuEvent &event)
             key1 = KB_LastScan;
             if (key1 == key2)
                 key2 = 0;
-            for (int i = 0; i < ARRAY_SIZE(nBannedKeys); i++)
+            for (int i = 0; i < (int)ARRAY_SIZE(nBannedKeys); i++)
             {
                 if (key1 != nBannedKeys[i] && key2 != nBannedKeys[i])
                     continue;
