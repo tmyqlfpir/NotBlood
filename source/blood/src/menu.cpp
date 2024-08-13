@@ -3311,11 +3311,11 @@ void SetNetMonsterMenu(CGameMenuItemZCycle *pItem)
 
     for (int i = 0; i < menuNetworkGameMonsters.m_nItems; i++)
     {
+        if (menuNetworkGameMonsters.pItemList[i] == &itemNetMonsterTitle)
+            continue;
         if (menuNetworkGameMonsters.pItemList[i] == &itemNetMonsterSettings)
             continue;
         if (menuNetworkGameMonsters.pItemList[i] == &itemBloodQAV)
-            continue;
-        if (menuNetworkGameMonsters.pItemList[i] == &itemCustomDifficultyTitle)
             continue;
         menuNetworkGameMonsters.pItemList[i]->bEnable = itemNetMonsterSettings.m_nFocus != 0;
     }
