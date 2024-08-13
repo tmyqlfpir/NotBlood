@@ -45,6 +45,7 @@ void SaveGame(CGameMenuItemZEditBitmap *, CGameMenuEvent *);
 void SaveGameProcess(CGameMenuItemChain *);
 void ShowDifficulties();
 void SetDifficultyAndStart(CGameMenuItemChain *);
+void SetMonsters(CGameMenuItemZCycle *);
 void SetCustomDifficultyAndStart(CGameMenuItemChain *);
 void SetMusicVol(CGameMenuItemSlider *);
 void SetSoundVol(CGameMenuItemSlider *);
@@ -52,7 +53,6 @@ void SetCDVol(CGameMenuItemSlider *);
 void SetMonoStereo(CGameMenuItemZBool *);
 void SetCrosshair(CGameMenuItemZCycle *);
 
-void SetMonsters(CGameMenuItemZCycle*);
 void SetQuadDamagePowerup(CGameMenuItemZBool*);
 void SetDamageInvul(CGameMenuItemZBool*);
 void SetExplosionBehavior(CGameMenuItemZCycle*);
@@ -402,17 +402,18 @@ CGameMenuItemChain itemDifficulty5("EXTRA CRISPY", 1, 0, 135, 320, 1, 0, -1, Set
 CGameMenuItemChain itemDifficulty6("< CUSTOM >", 1, 0, 155, 320, 1, &menuCustomDifficulty, -1, NULL, 0, 8);
 
 CGameMenuItemTitle itemCustomDifficultyTitle("CUSTOM", 1, 160, 20, 2038);
-CGameMenuItemSlider itemCustomDifficultyEnemyQuantity("ENEMIES QUANTITY:", 3, 66, 40, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 50, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemSlider itemCustomDifficultyPlayerDamage("PLAYER DAMAGE TAKEN:", 3, 66, 70, 180, 2, 0, 4, 1, NULL, -1, -1);
-CGameMenuItemZCycle itemCustomDifficultyEnemySpeed("ENEMIES SPEED:", 3, 66, 80, 180, 0, 0, pzEnemySpeeds, ARRAY_SSIZE(pzEnemySpeeds), 0);
-CGameMenuItemZBool itemCustomDifficultyEnemyShuffle("RANDOMIZE ENEMY POSITIONS:", 3, 66, 90, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 100, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemCustomDifficultyPermaDeath("PERMANENT DEATH:", 3, 66, 110, 180, false, NULL, NULL, NULL);
-CGameMenuItemChain itemCustomDifficultyBannedMonsters("SET MONSTERS", 3, 66, 123, 180, 1, &menuBannedMonsters, -1, NULL, 0);
-CGameMenuItemChain itemCustomDifficultyBannedItems("SET ITEMS", 3, 66, 134, 180, 1, &menuBannedItems, -1, NULL, 0);
-CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 150, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
+CGameMenuItemZCycle itemCustomDifficultyMonsterSettings("MONSTERS:", 3, 66, 40, 180, 0, SetMonsters, pzMonsterStrings, ARRAY_SSIZE(pzMonsterStrings), 1);
+CGameMenuItemSlider itemCustomDifficultyEnemyQuantity("ENEMIES QUANTITY:", 3, 66, 50, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 70, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemSlider itemCustomDifficultyPlayerDamage("PLAYER DAMAGE TAKEN:", 3, 66, 80, 180, 2, 0, 4, 1, NULL, -1, -1);
+CGameMenuItemZCycle itemCustomDifficultyEnemySpeed("ENEMIES SPEED:", 3, 66, 90, 180, 0, 0, pzEnemySpeeds, ARRAY_SSIZE(pzEnemySpeeds), 0);
+CGameMenuItemZBool itemCustomDifficultyEnemyShuffle("RANDOMIZE ENEMY POSITIONS:", 3, 66, 100, 180, false, NULL, NULL, NULL);
+CGameMenuItemZBool itemCustomDifficultyPitchfork("PITCHFORK START:", 3, 66, 110, 180, false, NULL, NULL, NULL);
+CGameMenuItemZBool itemCustomDifficultyPermaDeath("PERMANENT DEATH:", 3, 66, 120, 180, false, NULL, NULL, NULL);
+CGameMenuItemChain itemCustomDifficultyBannedMonsters("SET MONSTERS", 3, 66, 132, 180, 1, &menuBannedMonsters, -1, NULL, 0);
+CGameMenuItemChain itemCustomDifficultyBannedItems("SET ITEMS", 3, 66, 143, 180, 1, &menuBannedItems, -1, NULL, 0);
+CGameMenuItemChain itemCustomDifficultyStart("START GAME", 1, 0, 156, 320, 1, NULL, -1, SetCustomDifficultyAndStart, 0);
 
 CGameMenuItemTitle itemBannedMonstersTitle("SET MONSTERS", 1, 160, 20, 2038);
 CGameMenuItemZBool itemBannedMonstersBats("BATS:", 3, 75, 40, 161, false, NULL, "REMOVE", "KEEP");
@@ -697,7 +698,6 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem);
 
 ///////////////
 CGameMenuItemTitle itemGameMutatorsTitle("MUTATORS", 1, 160, 20, 2038);
-CGameMenuItemZCycle itemMutatorMonsterSettings("MONSTERS:", 3, 66, 35, 180, 0, SetMonsters, pzMonsterStrings, ARRAY_SSIZE(pzMonsterStrings), 0);
 CGameMenuItemZBool itemMutatorBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, false, SetQuadDamagePowerup, NULL, NULL);
 CGameMenuItemZBool itemMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 55, 180, false, SetDamageInvul, NULL, NULL);
 CGameMenuItemZCycle itemMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
@@ -1251,7 +1251,8 @@ void SetupDifficultyMenu(void)
     menuDifficulty.Add(&itemBloodQAV, false);
 
     menuCustomDifficulty.Add(&itemCustomDifficultyTitle, false);
-    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyQuantity, true);
+    menuCustomDifficulty.Add(&itemCustomDifficultyMonsterSettings, true);
+    menuCustomDifficulty.Add(&itemCustomDifficultyEnemyQuantity, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyHealth, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyEnemyDifficulty, false);
     menuCustomDifficulty.Add(&itemCustomDifficultyPlayerDamage, false);
@@ -1754,8 +1755,7 @@ void SetupOptionsMenu(void)
 
     //////////////////////
     menuOptionsGameMutators.Add(&itemGameMutatorsTitle, false);
-    menuOptionsGameMutators.Add(&itemMutatorMonsterSettings, true);
-    menuOptionsGameMutators.Add(&itemMutatorBoolQuadDamagePowerup, false);
+    menuOptionsGameMutators.Add(&itemMutatorBoolQuadDamagePowerup, true);
     menuOptionsGameMutators.Add(&itemMutatorBoolDamageInvul, false);
     menuOptionsGameMutators.Add(&itemMutatorExplosionBehavior, false);
     menuOptionsGameMutators.Add(&itemMutatorProjectileBehavior, false);
@@ -1769,8 +1769,6 @@ void SetupOptionsMenu(void)
     menuOptionsGameMutators.Add(&itemMutatorRandomizerSeed, false);
     menuOptionsGameMutators.Add(&itemBloodQAV, false);
     itemOptionsChainMutators.bDisableForNet = 1;
-    itemMutatorMonsterSettings.tooltip_pzTextUpper = "Set the monster settings";
-    itemMutatorMonsterSettings.tooltip_pzTextLower = "for single-player mode";
     itemMutatorBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
     itemMutatorBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
     itemMutatorBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
@@ -1806,7 +1804,6 @@ void SetupOptionsMenu(void)
     SetGameVanillaMode(gVanilla); // enable/disable menu items depending on current vanilla mode state
 
     ///////
-    itemMutatorMonsterSettings.m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
     itemMutatorBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
     itemMutatorBoolDamageInvul.at20 = !!gDamageInvul;
     itemMutatorExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
@@ -2339,29 +2336,6 @@ void ResetKeysClassic(CGameMenuItemChain *)
 }
 
 ////
-void SetMonsters(CGameMenuItemZCycle *pItem)
-{
-    if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
-        gMonsterSettings = pItem->m_nFocus % ARRAY_SSIZE(pzMonsterStrings);
-        if (VanillaMode())
-        {
-            gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
-        }
-        else
-        {
-            gGameOptions.nMonsterSettings = ClipRange(gMonsterSettings, 0, 2);
-            if (gMonsterSettings <= 1)
-                gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
-            else if (gMonsterSettings == 2)
-                gGameOptions.nMonsterRespawnTime = 15 * kTicRate; // 15 secs
-            else
-                gGameOptions.nMonsterRespawnTime = (gMonsterSettings - 2) * 30 * kTicRate;
-        }
-    } else {
-        pItem->m_nFocus = gMonsterSettings % ARRAY_SSIZE(pzMonsterStrings);
-    }
-}
-
 void SetQuadDamagePowerup(CGameMenuItemZBool* pItem)
 {
     if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
@@ -2852,9 +2826,23 @@ void ShowDifficulties()
     gGameMenuMgr.Push(&menuDifficulty, 3);
 }
 
+void SetMonsters(CGameMenuItemZCycle *pItem)
+{
+    UNREFERENCED_PARAMETER(pItem);
+    const char bEnable = itemCustomDifficultyMonsterSettings.m_nFocus > 0;
+    itemCustomDifficultyEnemyDifficulty.bEnable = bEnable;
+    itemCustomDifficultyEnemyQuantity.bEnable = bEnable;
+    itemCustomDifficultyEnemyHealth.bEnable = bEnable;
+    itemCustomDifficultyEnemySpeed.bEnable = bEnable;
+    itemCustomDifficultyEnemyShuffle.bEnable = bEnable;
+    itemCustomDifficultyBannedMonsters.bEnable = bEnable;
+}
+
 void SetDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     gGameOptions.nDifficulty = pItem->at30;
+    gGameOptions.nMonsterSettings = 1;
+    gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
     gGameOptions.nEnemyQuantity = gGameOptions.nDifficulty;
     gGameOptions.nEnemyHealth = gGameOptions.nDifficulty;
     playerSetSkill(gGameOptions.nDifficulty); // set skill to same value as current difficulty
@@ -2889,6 +2877,13 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
     gGameOptions.nDifficulty = ClipRange(itemCustomDifficultyEnemyDifficulty.nValue, 0, 4);
+    gGameOptions.nMonsterSettings = ClipRange(itemCustomDifficultyMonsterSettings.m_nFocus, 0, ARRAY_SSIZE(pzMonsterStrings)-1);
+    if (gGameOptions.nMonsterSettings <= 1)
+        gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
+    else if (gGameOptions.nMonsterSettings == 2)
+        gGameOptions.nMonsterRespawnTime = 15 * kTicRate; // 15 secs
+    else
+        gGameOptions.nMonsterRespawnTime = (gGameOptions.nMonsterSettings - 2) * 30 * kTicRate, gGameOptions.nMonsterSettings = ClipRange(gGameOptions.nMonsterSettings, 0, 2);
     gGameOptions.nEnemyQuantity = ClipRange(itemCustomDifficultyEnemyQuantity.nValue, 0, 4);
     gGameOptions.nEnemyHealth = ClipRange(itemCustomDifficultyEnemyHealth.nValue, 0, 4);
     playerSetSkill(itemCustomDifficultyPlayerDamage.nValue);
