@@ -2406,6 +2406,9 @@ void viewPrecacheTiles(void)
         tilePrecacheTile(2220 + i, 0);
         tilePrecacheTile(2552 + i, 0);
     }
+    // pre-cache all notblood.pk3/TILES099.ART
+    for (int i = 30456; i <= 30463; i++)
+        tilePrecacheTile(i, 0);
 }
 
 int *lensTable;
