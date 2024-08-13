@@ -265,17 +265,6 @@ const char *zDiffStrings[] =
     "EXTRA CRISPY",
 };
 
-const char *pzMonsterStrings[] =
-{
-    "None",
-    "Default",
-    "Respawn (15 Secs)",
-    "Respawn (30 Secs)",
-    "Respawn (60 Secs)",
-    "Respawn (90 Secs)",
-    "Respawn (120 Secs)",
-};
-
 const char *pzExplosionBehaviorStrings[] = {
     "Original",
     "NotBlood",
@@ -402,7 +391,7 @@ CGameMenuItemChain itemDifficulty5("EXTRA CRISPY", 1, 0, 135, 320, 1, 0, -1, Set
 CGameMenuItemChain itemDifficulty6("< CUSTOM >", 1, 0, 155, 320, 1, &menuCustomDifficulty, -1, NULL, 0, 8);
 
 CGameMenuItemTitle itemCustomDifficultyTitle("CUSTOM", 1, 160, 20, 2038);
-CGameMenuItemZCycle itemCustomDifficultyMonsterSettings("MONSTERS:", 3, 66, 40, 180, 0, SetMonsters, pzMonsterStrings, ARRAY_SSIZE(pzMonsterStrings), 1);
+CGameMenuItemZCycle itemCustomDifficultyMonsterSettings("MONSTERS:", 3, 66, 40, 180, 0, SetMonsters, zMonsterStrings, ARRAY_SSIZE(zMonsterStrings), 1);
 CGameMenuItemSlider itemCustomDifficultyEnemyQuantity("ENEMIES QUANTITY:", 3, 66, 50, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemCustomDifficultyEnemyHealth("ENEMIES HEALTH:", 3, 66, 60, 180, 2, 0, 4, 1, NULL, -1, -1);
 CGameMenuItemSlider itemCustomDifficultyEnemyDifficulty("ENEMIES DIFFICULTY:", 3, 66, 70, 180, 2, 0, 4, 1, NULL, -1, -1);
@@ -2877,7 +2866,7 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
 {
     UNREFERENCED_PARAMETER(pItem);
     gGameOptions.nDifficulty = ClipRange(itemCustomDifficultyEnemyDifficulty.nValue, 0, 4);
-    gGameOptions.nMonsterSettings = ClipRange(itemCustomDifficultyMonsterSettings.m_nFocus, 0, ARRAY_SSIZE(pzMonsterStrings)-1);
+    gGameOptions.nMonsterSettings = ClipRange(itemCustomDifficultyMonsterSettings.m_nFocus, 0, ARRAY_SSIZE(zMonsterStrings)-1);
     if (gGameOptions.nMonsterSettings <= 1)
         gGameOptions.nMonsterRespawnTime = 3600; // default (30 secs)
     else if (gGameOptions.nMonsterSettings == 2)
