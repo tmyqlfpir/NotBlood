@@ -244,7 +244,9 @@ void PrecacheDude(spritetype *pSprite)
     switch (pSprite->type)
     {
     case kDudeCultistTommy:
+    case kDudeCultistTommyProne:
     case kDudeCultistShotgun:
+    case kDudeCultistShotgunProne:
     case kDudeCultistTesla:
     case kDudeCultistTNT:
         seqPrecacheId(pDudeInfo->seqStartID+6);
