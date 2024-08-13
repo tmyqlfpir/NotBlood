@@ -256,6 +256,13 @@ void PrecacheDude(spritetype *pSprite)
         seqPrecacheId(pDudeInfo->seqStartID+13);
         seqPrecacheId(pDudeInfo->seqStartID+14);
         seqPrecacheId(pDudeInfo->seqStartID+15);
+        // Cultist falling tiles
+        for (int i = 0; i < 5; i++)
+        {
+            tilePrecacheTile(2890+i, 0);
+            tilePrecacheTile(2895+i, 0);
+            tilePrecacheTile(2900+i, 0);
+        }
         break;
     case kDudeZombieButcher:
     case kDudeGillBeast:
@@ -416,6 +423,29 @@ void PreloadTiles(void)
     seqPrecacheId(dudeInfo[31].seqStartID+16);
     seqPrecacheId(dudeInfo[31].seqStartID+17);
     seqPrecacheId(dudeInfo[31].seqStartID+18);
+
+    // Player cultist model for bloodbath
+    if (gGameOptions.nGameType != kGameTypeSinglePlayer)
+    {
+        DUDEINFO *pDudeInfo = getDudeInfo(kDudeCultistTommy);
+        seqPrecacheId(pDudeInfo->seqStartID);
+        seqPrecacheId(pDudeInfo->seqStartID+5);
+        seqPrecacheId(pDudeInfo->seqStartID+1);
+        seqPrecacheId(pDudeInfo->seqStartID+2);
+        seqPrecacheId(pDudeInfo->seqStartID+6);
+        seqPrecacheId(pDudeInfo->seqStartID+7);
+        seqPrecacheId(pDudeInfo->seqStartID+8);
+        seqPrecacheId(pDudeInfo->seqStartID+9);
+        seqPrecacheId(pDudeInfo->seqStartID+13);
+        seqPrecacheId(pDudeInfo->seqStartID+14);
+        seqPrecacheId(pDudeInfo->seqStartID+15);
+        for (int i = 0; i < 5; i++)
+        {
+            tilePrecacheTile(2890+i, 0);
+            tilePrecacheTile(2895+i, 0);
+            tilePrecacheTile(2900+i, 0);
+        }
+    }
 
     if (skyTile > -1 && skyTile < kMaxTiles)
     {
