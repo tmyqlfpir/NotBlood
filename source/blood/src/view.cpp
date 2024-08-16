@@ -4043,7 +4043,7 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
     int q16SlopeTilt = fix16_from_float(0.82f);
     int cX = 160;
     int cY = defaultHoriz;
-    if (!gCenterHoriz && (MIRRORMODE & 1)) // offset crosshair if mirror mode is set to vertical mode
+    if (!gCenterHoriz && (MIRRORMODE & 2)) // offset crosshair if mirror mode is set to vertical mode
         cY += 19;
     cX <<= 16;
     cY <<= 16;
@@ -4054,9 +4054,9 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
         const int q16hfov = divscale16(90, gFov);
         const int q16vfov = Blrintf(float(fix16_one) * fFov);
         int cZ = pPlayer->relAim.dy * 160 / pPlayer->relAim.dx; // calculate aiming target offset from center
-        if (MIRRORMODE & 1) // mirror mode flip
+        cX += mulscale16(cZ<<16, q16hfov) * (MIRRORMODE & 1 ? -1 : 1); // scale to current fov
+        if (MIRRORMODE & 2) // mirror mode flip
             cZ = -cZ;
-        cX += mulscale16(cZ<<16, q16hfov); // scale to current fov
         cZ = mulscale16((8<<4)<<16, q16vfov)>>16; // calculate vertical fov scale
         cZ = (pPlayer->relAim.dz / cZ)<<16; // convert target z to on screen units
         if (MIRRORMODE & 2) // mirror mode flip
@@ -4066,6 +4066,8 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
         if (gSlopeTilting) // scale tilt with fov
             q16SlopeTilt = mulscale16(q16SlopeTilt, q16hfov);
     }
+    if (gAimReticleOffsetY)
+        cY += ((MIRRORMODE & 2) ? -gAimReticleOffsetY : gAimReticleOffsetY)<<15;
 
     if (!bPaused && gViewInterpolate && ((cXOld != cX) || (cY != cYOld)))
     {

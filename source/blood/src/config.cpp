@@ -111,6 +111,7 @@ int32_t gFollowMap;
 int32_t gOverlayMap;
 int32_t gRotateMap;
 int32_t gAimReticle;
+int32_t gAimReticleOffsetY;
 int32_t gSlopeTilting;
 int32_t gSlopeReticle;
 int32_t gMessageState;
@@ -528,6 +529,7 @@ void CONFIG_SetDefaults(void)
     gOverlayMap = 0;
     gRotateMap = 0;
     gAimReticle = 1;
+    gAimReticleOffsetY = 0;
     gSlopeTilting = 0;
     gSlopeReticle = 0;
     gMessageState = 1;
