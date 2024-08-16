@@ -89,6 +89,7 @@ extern int32_t gFollowMap;
 extern int32_t gOverlayMap;
 extern int32_t gRotateMap;
 extern int32_t gAimReticle;
+extern int32_t gAimReticleOffsetY;
 extern int32_t gSlopeTilting;
 extern int32_t gSlopeReticle;
 extern int32_t gMessageState;

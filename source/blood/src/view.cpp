@@ -4066,6 +4066,8 @@ inline void viewAimReticle(PLAYER *pPlayer, int defaultHoriz, fix16_t q16slopeho
         if (gSlopeTilting) // scale tilt with fov
             q16SlopeTilt = mulscale16(q16SlopeTilt, q16hfov);
     }
+    if (gAimReticleOffsetY)
+        cY += ((MIRRORMODE & 2) ? -gAimReticleOffsetY : gAimReticleOffsetY)<<15;
 
     if (!bPaused && gViewInterpolate && ((cXOld != cX) || (cY != cYOld)))
     {
