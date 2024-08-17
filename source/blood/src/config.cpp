@@ -397,6 +397,7 @@ void CONFIG_SetDefaults(void)
     gSetup.quickstart       = 0;
     gSetup.fullscreen       = 1;
     gSetup.usemouse         = 1;
+    gSetup.firstlaunch      = 1;
     Bstrcpy(gSetup.lastini, BloodIniFile);
 
     //ud.config.AmbienceToggle  = 1;
@@ -927,6 +928,7 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Setup", "InputJoystick", &gSetup.usejoystick);
     SCRIPT_GetNumber(scripthandle, "Setup", "UseJoystickRumble", &gSetup.joystickrumble);
     SCRIPT_GetNumber(scripthandle, "Setup", "InputMouse", &gSetup.usemouse);
+    SCRIPT_GetString(scripthandle, "Setup", "FirstLaunch", &gSetup.firstlaunch);
     SCRIPT_GetString(scripthandle, "Setup", "LastINI", &gSetup.lastini[0]);
     gSetup.lastini[BMAX_PATH-1] = '\0';
 
@@ -1065,6 +1067,7 @@ void CONFIG_WriteSetup(uint32_t flags)
     SCRIPT_PutNumber(scripthandle, "Setup", "InputJoystick", gSetup.usejoystick, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "UseJoystickRumble", gSetup.joystickrumble, FALSE, FALSE);
     SCRIPT_PutNumber(scripthandle, "Setup", "InputMouse", gSetup.usemouse, FALSE, FALSE);
+    SCRIPT_PutNumber(scripthandle, "Setup", "FirstLaunch", gSetup.firstlaunch, FALSE, FALSE);
     SCRIPT_PutString(scripthandle, "Setup", "LastINI", &gSetup.lastini[0]);
 
 #ifdef POLYMER

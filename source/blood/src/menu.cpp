@@ -47,6 +47,7 @@ void ShowDifficulties();
 void SetDifficultyAndStart(CGameMenuItemChain *);
 void SetMonsters(CGameMenuItemZCycle *);
 void SetCustomDifficultyAndStart(CGameMenuItemChain *);
+void SetFirstLaunchOptions(CGameMenuItemChain *);
 void SetMusicVol(CGameMenuItemSlider *);
 void SetSoundVol(CGameMenuItemSlider *);
 void SetCDVol(CGameMenuItemSlider *);
@@ -324,6 +325,7 @@ static int nGamefuncsNum;
 
 CGameMenu menuMain;
 CGameMenu menuMainWithSave;
+CGameMenu menuFirstLaunch;
 CGameMenu menuNetMain;
 CGameMenu menuNetStart;
 CGameMenu menuEpisode;
@@ -373,6 +375,12 @@ CGameMenuItemChain itemMainSave5("HELP", 1, 0, 105, 320, 1, &menuHelp, -1, NULL,
 CGameMenuItemChain itemMainSave6("CREDITS", 1, 0, 120, 320, 1, &menuCredits, -1, NULL, 0);
 CGameMenuItemChain itemMainSave7("END GAME", 1, 0, 135, 320, 1, &menuRestart, -1, NULL, 0);
 CGameMenuItemChain itemMainSave8("QUIT", 1, 0, 150, 320, 1, &menuQuit, -1, NULL, 0);
+
+CGameMenuItemTitle itemFirstLaunchInfo1("THIS IS YOUR FIRST TIME LAUNCHING NOTBLOOD", 1, 160, 45, -1);
+CGameMenuItemTitle itemFirstLaunchInfo2("PLEASE SELECT YOUR PREFERRED EXPERIENCE", 1, 160, 65, -1);
+CGameMenuItemChain itemFirstLaunchVanilla("DOS BLOOD", 1, 0, 90, 320, 1, NULL, -1, SetFirstLaunchOptions, 0);
+CGameMenuItemChain itemFirstLaunchNBlood("NBLOOD", 1, 0, 110, 320, 1, NULL, -1, SetFirstLaunchOptions, 0);
+CGameMenuItemChain itemFirstLaunchNotBlood("NOTBLOOD", 1, 0, 130, 320, 1, NULL, -1, SetFirstLaunchOptions, 0);
 
 CGameMenuItemTitle itemEpisodesTitle("EPISODES", 1, 160, 20, 2038);
 CGameMenuItemChain7F2F0 itemEpisodes[kMaxEpisodes-1];
@@ -1413,6 +1421,15 @@ void SetupMainMenuWithSave(void)
     itemMainSave5.bDisableForNet = 1;
     itemMainSave6.bDisableForNet = 1;
     itemMainSave3.bEnable = !gLockManualSaving; // disable save option in main menu if lock saving mode is set
+
+    menuFirstLaunch.Add(&itemFirstLaunchInfo1, false);
+    menuFirstLaunch.Add(&itemFirstLaunchInfo2, false);
+    menuFirstLaunch.Add(&itemFirstLaunchVanilla, true);
+    menuFirstLaunch.Add(&itemFirstLaunchNBlood, false);
+    menuFirstLaunch.Add(&itemFirstLaunchNotBlood, false);
+    itemFirstLaunchVanilla.tooltip_pzTextUpper = "Set options to match v1.21 DOS Blood and use vanilla mode";
+    itemFirstLaunchNBlood.tooltip_pzTextUpper = "Set options to match NBlood";
+    itemFirstLaunchNotBlood.tooltip_pzTextUpper = "Do not change any settings";
 }
 
 void SetupNetStartMenu(void)
@@ -2912,6 +2929,58 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
         viewResizeView(gViewSize);
     }
     gGameMenuMgr.Deactivate();
+}
+
+void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
+{
+    gSetup.firstlaunch = 0;
+    if (pItem == &itemFirstLaunchVanilla)
+    {
+        gSlopeTilting = 1;
+        gAimReticle = 0;
+        gAutoAim = 1;
+        gWeaponSwitch = 1;
+        SetGameVanillaMode(1);
+        gAutosave = 0;
+        gRestoreLastSave = 0;
+        gPowerupDuration = 0;
+        gPowerupStyle = 0;
+        gShowCompleteTime = 0;
+        gHudRatio = 1;
+        gViewSize = 5;
+        viewResizeView(gViewSize);
+        gShowMapTitle = 0;
+        gWeaponInterpolate = 0;
+    }
+    else if (pItem == &itemFirstLaunchNBlood)
+    {
+        gAimReticle = 0;
+        gAutoAim = 1;
+        gWeaponSwitch = 1;
+        gAutosave = 0;
+        gRestoreLastSave = 0;
+        gPowerupStyle = 0;
+        gShowCompleteTime = 0;
+        gHudRatio = 0;
+        gViewSize = 2;
+        viewResizeView(gViewSize);
+    }
+    else
+        return gGameMenuMgr.Pop(); // close menu
+    itemOptionsDisplayViewBoolSlopeTilting.at20 = gSlopeTilting;
+    itemOptionsDisplayCrosshair.m_nFocus = gAimReticle;
+    itemOptionsGameBoolAutoAim.m_nFocus = gAutoAim;
+    itemOptionsGameWeaponSwitch.m_nFocus = gWeaponSwitch;
+    itemOptionsGameAutosaveMode.m_nFocus = gAutosave;
+    itemOptionsGameRestoreLastSave.at20 = gRestoreLastSave;
+    itemOptionsDisplayPowerupDuration.m_nFocus = gPowerupDuration;
+    itemOptionsDisplayViewBoolPowerupStyle.at20 = gPowerupStyle;
+    itemOptionsDisplayViewBoolLevelCompleteTime.at20 = gShowCompleteTime;
+    itemOptionsDisplayViewHudRatio.m_nFocus = gHudRatio;
+    itemOptionsDisplayViewHudSize.nValue = gViewSize;
+    itemOptionsDisplayBoolShowMapTitle.at20 = gShowMapTitle;
+    itemOptionsDisplayViewWeaponInterpolation.m_nFocus = gWeaponInterpolate;
+    gGameMenuMgr.Pop(); // close menu
 }
 
 void SetVideoMode(CGameMenuItemChain *pItem)
