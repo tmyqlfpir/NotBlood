@@ -2011,6 +2011,8 @@ int app_main(int argc, char const * const * argv)
         }
         Bstrcpy(gSetup.lastini, pINISelected->zName);
     }
+    if (readSetup >= 0)
+        gSetup.firstlaunch = 0;
 #endif
 
 #if defined(_WIN32)

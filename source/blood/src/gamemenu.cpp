@@ -123,6 +123,8 @@ bool CGameMenuMgr::Push(CGameMenu *pMenu, int nItem)
     m_mousecaught = 1;
     if (pGameMenuItemZEdit) // deselect last actively edited item
         pGameMenuItemZEdit->at30 = 0, pGameMenuItemZEdit = NULL;
+    if ((nMenuPointer == 1) && gSetup.firstlaunch)
+        Push(&menuFirstLaunch, -1);
     return true;
 }
 
