@@ -1421,7 +1421,10 @@ void SetupMainMenuWithSave(void)
     itemMainSave5.bDisableForNet = 1;
     itemMainSave6.bDisableForNet = 1;
     itemMainSave3.bEnable = !gLockManualSaving; // disable save option in main menu if lock saving mode is set
+}
 
+void SetupFirstLaunchMenu(void)
+{
     menuFirstLaunch.Add(&itemFirstLaunchInfo1, false);
     menuFirstLaunch.Add(&itemFirstLaunchInfo2, false);
     menuFirstLaunch.Add(&itemFirstLaunchVanilla, true);
@@ -2288,6 +2291,7 @@ void SetupMenus(void)
     SetupEpisodeMenu();
     SetupMainMenu();
     SetupMainMenuWithSave();
+    SetupFirstLaunchMenu();
     SetupNetStartMenu();
     SetupQuitMenu();
 
@@ -2951,6 +2955,7 @@ void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
         viewResizeView(gViewSize);
         gShowMapTitle = 0;
         gWeaponInterpolate = 0;
+        gCenterHoriz = 0;
     }
     else if (pItem == &itemFirstLaunchNBlood)
     {
@@ -2964,6 +2969,7 @@ void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
         gHudRatio = 0;
         gViewSize = 2;
         viewResizeView(gViewSize);
+        gCenterHoriz = 0;
     }
     else
         return gGameMenuMgr.Pop(); // close menu
@@ -2980,6 +2986,7 @@ void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
     itemOptionsDisplayViewHudSize.nValue = gViewSize;
     itemOptionsDisplayBoolShowMapTitle.at20 = gShowMapTitle;
     itemOptionsDisplayViewWeaponInterpolation.m_nFocus = gWeaponInterpolate;
+    itemOptionsDisplayViewBoolCenterHoriz.at20 = gCenterHoriz;
     gGameMenuMgr.Pop(); // close menu
 }
 
