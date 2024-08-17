@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 extern CGameMenu menuMain;
 extern CGameMenu menuMainWithSave;
+extern CGameMenu menuFirstLaunch;
 extern CGameMenu menuNetMain;
 extern CGameMenu menuNetStart;
 extern CGameMenu menuEpisode;
