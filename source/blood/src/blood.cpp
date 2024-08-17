@@ -2232,8 +2232,6 @@ RESTART:
         else if (gSetup.firstlaunch)
             gGameMenuMgr.Push(&menuFirstLaunch, -1);
     }
-    if (gSetup.firstlaunch)
-        gGameMenuMgr.Push(&menuFirstLaunch, -1);
     ready2send = 1;
     static bool frameJustDrawn;
     static int nGammaMenu = !gSetup.quickstart ? 0 : 40;
