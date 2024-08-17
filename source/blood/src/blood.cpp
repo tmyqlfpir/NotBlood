@@ -2229,6 +2229,8 @@ RESTART:
         gGameMenuMgr.Push(&menuMain, -1);
         if (gGameOptions.nGameType != kGameTypeSinglePlayer)
             gGameMenuMgr.Push(&menuNetStart, 1);
+        else if (gSetup.firstlaunch)
+            gGameMenuMgr.Push(&menuFirstLaunch, -1);
     }
     if (gSetup.firstlaunch)
         gGameMenuMgr.Push(&menuFirstLaunch, -1);
