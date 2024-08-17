@@ -2011,6 +2011,8 @@ int app_main(int argc, char const * const * argv)
         }
         Bstrcpy(gSetup.lastini, pINISelected->zName);
     }
+    if (readSetup >= 0)
+        gSetup.firstlaunch = 0;
 #endif
 
 #if defined(_WIN32)
@@ -2227,6 +2229,8 @@ RESTART:
         gGameMenuMgr.Push(&menuMain, -1);
         if (gGameOptions.nGameType != kGameTypeSinglePlayer)
             gGameMenuMgr.Push(&menuNetStart, 1);
+        else if (gSetup.firstlaunch)
+            gGameMenuMgr.Push(&menuFirstLaunch, -1);
     }
     ready2send = 1;
     static bool frameJustDrawn;

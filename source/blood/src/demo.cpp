@@ -553,6 +553,8 @@ void CDemo::Playback(void)
     if (!CGameMenuMgr::m_bActive)
     {
         gGameMenuMgr.Push(&menuMain, -1);
+        if (gSetup.firstlaunch)
+            gGameMenuMgr.Push(&menuFirstLaunch, -1);
         at2 = 1;
     }
     gNetFifoClock = totalclock;
