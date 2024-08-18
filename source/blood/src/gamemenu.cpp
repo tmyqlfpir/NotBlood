@@ -302,6 +302,8 @@ void CGameMenuMgr::Process(void)
         }
         joyold = joy;
     }
+    if ((event.at0 == kMenuEventEscape) && (gSetup.firstlaunch && (pActiveMenu == &menuFirstLaunch))) // do not allow launch menu to close
+        event.at0 = 0;
     if (pActiveMenu->Event(event))
         Pop();
 
