@@ -1432,7 +1432,7 @@ void SetupFirstLaunchMenu(void)
     menuFirstLaunch.Add(&itemFirstLaunchNotBlood, false);
     itemFirstLaunchVanilla.tooltip_pzTextUpper = "Set options to match v1.21 DOS Blood and use vanilla mode";
     itemFirstLaunchNBlood.tooltip_pzTextUpper = "Set options to match NBlood";
-    itemFirstLaunchNotBlood.tooltip_pzTextUpper = "Do not change any settings";
+    itemFirstLaunchNotBlood.tooltip_pzTextUpper = "Keep default NotBlood options";
 }
 
 void SetupNetStartMenu(void)
@@ -2938,7 +2938,12 @@ void SetCustomDifficultyAndStart(CGameMenuItemChain *pItem)
 void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
 {
     gSetup.firstlaunch = 0;
-    if (pItem == &itemFirstLaunchVanilla)
+    if (pItem == &itemFirstLaunchNotBlood)
+    {
+        gGameMenuMgr.Pop(); // close menu
+        return;
+    }
+    else if (pItem == &itemFirstLaunchVanilla)
     {
         gSlopeTilting = 1;
         gAimReticle = 0;
@@ -2971,8 +2976,6 @@ void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
         viewResizeView(gViewSize);
         gCenterHoriz = 0;
     }
-    else
-        return gGameMenuMgr.Pop(); // close menu
     itemOptionsDisplayViewBoolSlopeTilting.at20 = gSlopeTilting;
     itemOptionsDisplayCrosshair.m_nFocus = gAimReticle;
     itemOptionsGameBoolAutoAim.m_nFocus = gAutoAim;
