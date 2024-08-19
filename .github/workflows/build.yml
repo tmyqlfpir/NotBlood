@@ -112,7 +112,7 @@ jobs:
             opt: CLANG=1
             zipname: clang
     name: Linux ${{matrix.name}}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - name: install-prerequisites
@@ -149,7 +149,7 @@ jobs:
             pkg: libsdl2-dev clang
             opt: CLANG=1 POLYMER=0
     name: Linux ${{matrix.name}}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - name: install-prerequisites
