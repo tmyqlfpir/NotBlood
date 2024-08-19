@@ -119,6 +119,10 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get -y upgrade
+        sudo apt-get -y full-upgrade
+        sudo apt-get -y autoremove
+        sudo apt-get -y clean
+        sudo apt-get -y autoclean
         sudo apt-get -y install libvorbis-dev libflac-dev libglu1-mesa-dev libgtk2.0-dev ${{matrix.pkg}}
     - name: build
       run: make -j$(nproc) blood tools ${{matrix.opt}}
@@ -156,7 +160,11 @@ jobs:
     - name: install-prerequisites
       run: |
         sudo apt-get update
-        sudo apt-get upgrade
+        sudo apt-get -y upgrade
+        sudo apt-get -y full-upgrade
+        sudo apt-get -y autoremove
+        sudo apt-get -y clean
+        sudo apt-get -y autoclean
         sudo apt-get -y install libflac-dev libgtk2.0-dev ${{matrix.pkg}}
     - name: build
       run: make -j$(nproc) blood tools ${{matrix.opt}}
