@@ -409,7 +409,7 @@ void fxSpawnEjectingBrass(spritetype *pSprite, int z, int a3, int a4)
         if (!VanillaMode())
         {
             pBrass->ang = Random(2047);
-            if (EnemiesNotBlood() && IsPlayerSprite(pSprite)) // used to flag if shells should be removed when touching grass (like you 'ought to, nerd)
+            if (EnemiesNotBlood() && !IsPlayerSprite(pSprite)) // used to flag if shells should be removed when touching grass (like you 'ought to, nerd)
                 pBrass->cstat |= kPhysFalling;
         }
         int nDist = (a4<<18)/120+Random2(((a4/4)<<18)/120);
@@ -444,7 +444,7 @@ void fxSpawnEjectingShell(spritetype *pSprite, int z, int a3, int a4)
         if (!VanillaMode())
         {
             pShell->ang = Random(2047);
-            if (EnemiesNotBlood() && IsPlayerSprite(pSprite)) // used to flag if shells should be removed when touching grass (like you 'ought to, nerd)
+            if (EnemiesNotBlood() && !IsPlayerSprite(pSprite)) // used to flag if shells should be removed when touching grass (like you 'ought to, nerd)
                 pShell->cstat |= kPhysFalling;
         }
         int nDist = (a4<<18)/120+Random2(((a4/4)<<18)/120);
