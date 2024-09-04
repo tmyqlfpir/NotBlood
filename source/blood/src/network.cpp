@@ -78,8 +78,6 @@ const short kNetVersion = 0x22C;
 
 PKT_STARTGAME gPacketStartGame;
 
-#include "networkirc.cpp" // master list broadcasting logic
-
 #ifndef NETCODE_DISABLE
 ENetAddress gNetENetAddress;
 ENetAddress gNetENetAddressLocal;
@@ -962,7 +960,7 @@ void netGetInput(void)
     netMasterUpdate();
 }
 
-void netInitialize(bool bConsole, bool bAnnounce)
+void netInitialize(bool bConsole)
 {
     netDeinitialize();
     memset(gPlayerReady, 0, sizeof(gPlayerReady));
@@ -985,7 +983,6 @@ void netInitialize(bool bConsole, bool bAnnounce)
     }
     if (gNetMode == NETWORK_SERVER)
     {
-        int nIRCState = 0;
         memset(gNetPlayerPeer, 0, sizeof(gNetPlayerPeer));
         ENetEvent event;
         gNetENetAddress.host = ENET_HOST_ANY;
@@ -1005,15 +1002,7 @@ void netInitialize(bool bConsole, bool bAnnounce)
         {
             char buffer[128];
             sprintf(buffer, "Waiting for players (%i\\%i)", numplayers, gNetPlayers);
-            if (bAnnounce)
-            {
-                nIRCState = netIRCIinitialize();
-                viewLoadingScreen(gMenuPicnum, "Network Game", buffer, nIRCState ? "Broadcasting..." : "Broadcast failed");
-            }
-            else
-            {
-                viewLoadingScreen(gMenuPicnum, "Network Game", NULL, buffer);
-            }
+            viewLoadingScreen(gMenuPicnum, "Network Game", NULL, buffer);
             videoNextPage();
         }
         while (numplayers < gNetPlayers)
@@ -1022,13 +1011,11 @@ void netInitialize(bool bConsole, bool bAnnounce)
             if (quitevent)
             {
                 netServerDisconnect();
-                netIRCDeinitialize();
                 QuitGame();
             }
             if (!bConsole && KB_KeyPressed(sc_Escape))
             {
                 netServerDisconnect();
-                netIRCDeinitialize();
                 netDeinitialize();
                 netResetToSinglePlayer();
                 return;
@@ -1096,18 +1083,6 @@ void netInitialize(bool bConsole, bool bAnnounce)
                 }
                 default:
                     break;
-                }
-            }
-            if (bAnnounce)
-            {
-                const int curIRCState = netIRCProcess();
-                if (nIRCState != curIRCState)
-                {
-                    nIRCState = curIRCState;
-                    char buffer[128];
-                    sprintf(buffer, "Waiting for players (%i\\%i)", numplayers, gNetPlayers);
-                    viewLoadingScreen(gMenuPicnum, "Network Game", buffer, nIRCState ? (nIRCState > 1 ? "Broadcasting to public" : "Broadcasting...") : "Broadcast failed");
-                    videoNextPage();
                 }
             }
             enet_host_service(gNetENetServer, NULL, 0);
@@ -1196,7 +1171,7 @@ void netInitialize(bool bConsole, bool bAnnounce)
             if (gNetRetry && !KB_KeyPressed(sc_Escape))
             {
                 gNetMode = NETWORK_CLIENT;
-                return netInitialize(bConsole, bAnnounce);
+                return netInitialize(bConsole);
             }
             return;
         }

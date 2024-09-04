@@ -705,10 +705,6 @@ _DEMOPLAYBACK:
             {
                 if (gGameStarted) // dim background
                     viewDimScreen();
-                if (gGameMenuMgr.pActiveMenu == &menuNetworkBrowser) // search for servers
-                    netIRCProcess();
-                else // exited server browser, gracefully disconnect from master list
-                    netIRCDeinitialize();
                 gGameMenuMgr.Draw();
             }
             else if (gDemoRunValidation) // keep game locked
