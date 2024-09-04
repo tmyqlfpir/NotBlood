@@ -345,7 +345,6 @@ CGameMenu menuHelp;
 CGameMenu menuNetwork;
 CGameMenu menuNetworkHost;
 CGameMenu menuNetworkJoin;
-CGameMenu menuNetworkBrowser;
 CGameMenu menuNetworkGameMode;
 CGameMenu menuNetworkGameMonsters;
 CGameMenu menuNetworkGameMutators;
@@ -1114,13 +1113,9 @@ void SetupNetworkHostMenu(CGameMenuItemChain *pItem);
 void SetupNetworkJoinMenu(CGameMenuItemChain *pItem);
 void NetworkHostGame(CGameMenuItemChain *pItem);
 void NetworkJoinGame(CGameMenuItemChain *pItem);
-void NetworkBrowserReset(CGameMenuItemChain *pItem);
-void NetworkBrowserJoin(CGameMenuItemChain *pItem);
 
 char zNetAddressBuffer[16] = "localhost";
 char zNetPortBuffer[6] = "23513";
-char zNetBrowserGame[8][64] = {{'\0'}};
-char zNetBrowserState[32] = "SEARCHING...";
 
 CGameMenuItemTitle itemNetworkTitle("MULTIPLAYER", 1, 160, 20, 2038);
 CGameMenuItemChain itemNetworkHost("HOST A GAME", 1, 0, 70, 320, 1, &menuNetworkHost, -1, SetupNetworkHostMenu, 0);
@@ -1130,18 +1125,12 @@ CGameMenuItemChain itemNetworkPlayer("PLAYER SETUP", 1, 0, 110, 320, 1, &menuOpt
 CGameMenuItemTitle itemNetworkHostTitle("HOST A GAME", 1, 160, 20, 2038);
 CGameMenuItemSlider itemNetworkHostPlayerNum("PLAYER NUMBER:", 3, 66, 70, 180, 1, 2, kMaxPlayers, 1, NULL, -1, -1, kMenuSliderValue);
 CGameMenuItemZEdit itemNetworkHostPort("NETWORK PORT:", 3, 66, 80, 180, zNetPortBuffer, 6, 0, NULL, 0);
-CGameMenuItemZBool itemNetworkHostBroadcast("ANNOUNCE ON INTERNET:", 3, 66, 90, 180, 0, 0, NULL, NULL);
-CGameMenuItemChain itemNetworkHostHost("HOST A GAME", 3, 66, 110, 180, 1, NULL, -1, NetworkHostGame, 0);
+CGameMenuItemChain itemNetworkHostHost("HOST A GAME", 3, 66, 100, 180, 1, NULL, -1, NetworkHostGame, 0);
 
 CGameMenuItemTitle itemNetworkJoinTitle("JOIN A GAME", 1, 160, 20, 2038);
-CGameMenuItemChain itemNetworkJoinBrowse("BROWSE PUBLIC SERVERS", 3, 66, 70, 180, 0, &menuNetworkBrowser, 0, NetworkBrowserReset, 0);
-CGameMenuItemZEdit itemNetworkJoinAddress("NETWORK ADDRESS:", 3, 66, 80, 180, zNetAddressBuffer, 16, 0, NULL, 0);
-CGameMenuItemZEdit itemNetworkJoinPort("NETWORK PORT:", 3, 66, 90, 180, zNetPortBuffer, 6, 0, NULL, 0);
-CGameMenuItemChain itemNetworkJoinJoin("JOIN A GAME", 3, 66, 110, 180, 1, NULL, -1, NetworkJoinGame, 0);
-
-CGameMenuItemTitle itemNetworkBrowserTitle("SERVER BROWSER", 1, 160, 20, 2038);
-CGameMenuItemChain itemNetworkBrowserState(zNetBrowserState, 1, 0, 50, 320, 1, NULL, -1, NULL, 0);
-CGameMenuItemChain *pItemNetworkBrowserGame[8];
+CGameMenuItemZEdit itemNetworkJoinAddress("NETWORK ADDRESS:", 3, 66, 70, 180, zNetAddressBuffer, 16, 0, NULL, 0);
+CGameMenuItemZEdit itemNetworkJoinPort("NETWORK PORT:", 3, 66, 80, 180, zNetPortBuffer, 6, 0, NULL, 0);
+CGameMenuItemChain itemNetworkJoinJoin("JOIN A GAME", 3, 66, 100, 180, 1, NULL, -1, NetworkJoinGame, 0);
 
 // There is no better way to do this than manually.
 
@@ -3905,33 +3894,14 @@ void SetupNetworkMenu(void)
     menuNetworkHost.Add(&itemNetworkHostTitle, false);
     menuNetworkHost.Add(&itemNetworkHostPlayerNum, true);
     menuNetworkHost.Add(&itemNetworkHostPort, false);
-    menuNetworkHost.Add(&itemNetworkHostBroadcast, false);
     menuNetworkHost.Add(&itemNetworkHostHost, false);
     menuNetworkHost.Add(&itemBloodQAV, false);
-    itemNetworkHostBroadcast.tooltip_pzTextUpper = "Announces public IP on server browser";
-    itemNetworkHostBroadcast.tooltip_pzTextLower = "(can take up to 20 seconds to appear on server browser)";
 
     menuNetworkJoin.Add(&itemNetworkJoinTitle, false);
-    menuNetworkJoin.Add(&itemNetworkJoinBrowse, false);
     menuNetworkJoin.Add(&itemNetworkJoinAddress, true);
     menuNetworkJoin.Add(&itemNetworkJoinPort, false);
     menuNetworkJoin.Add(&itemNetworkJoinJoin, false);
     menuNetworkJoin.Add(&itemBloodQAV, false);
-
-    menuNetworkBrowser.Add(&itemNetworkBrowserTitle, false);
-    menuNetworkBrowser.Add(&itemNetworkBrowserState, true);
-    for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++) // create list of possible available server items
-    {
-        pItemNetworkBrowserGame[nSlot] = new CGameMenuItemChain(zNetBrowserGame[nSlot], 3, 66, 70+(nSlot*10), 180, 1, NULL, -1, NetworkBrowserJoin, 0);
-        dassert(pItemNetworkBrowserGame[nSlot] != NULL);
-        menuNetworkBrowser.Add(pItemNetworkBrowserGame[nSlot], false);
-    }
-    menuNetworkBrowser.Add(&itemBloodQAV, false);
-    for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
-    {
-        pItemNetworkBrowserGame[nSlot]->bCanSelect = 0;
-        pItemNetworkBrowserGame[nSlot]->bEnable = 0;
-    }
 }
 
 void SetupNetworkHostMenu(CGameMenuItemChain *pItem)
@@ -3955,7 +3925,7 @@ void NetworkHostGame(CGameMenuItemChain *pItem)
     if (!gNetPort)
         gNetPort = kNetDefaultPort;
     gNetMode = NETWORK_SERVER;
-    netInitialize(false, itemNetworkHostBroadcast.at20);
+    netInitialize(false);
     gGameMenuMgr.Deactivate();
     gQuitGame = gRestartGame = true;
 }
@@ -3974,76 +3944,6 @@ void NetworkJoinGame(CGameMenuItemChain *pItem)
     netInitialize(false);
     gGameMenuMgr.Deactivate();
     gQuitGame = gRestartGame = true;
-}
-
-void NetworkBrowserAdd(const char *pString, int nPort, const char *pHost, int nClientsCur, int nClientsMax)
-{
-    char szTemp[64];
-    char szAddr[32];
-    int nSlotEmpty = -1;
-
-    Bsnprintf(szAddr, sizeof(szAddr), "%s %d", pString, nPort);
-    for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
-    {
-        if (!Bstrncmp(szAddr, zNetBrowserGame[nSlot], Bstrlen(szAddr))) // already exists, update server listing
-        {
-            nSlotEmpty = nSlot;
-            break;
-        }
-        else if (zNetBrowserGame[nSlot][0] == '\0') // listing is new, add to empty slot
-        {
-            nSlotEmpty = nSlot;
-            break;
-        }
-    }
-    if (nSlotEmpty < 0) // server list is full, return (WTF!? NOBODY KNOWS ABOUT THIS OBSCURE FORK)
-        return;
-
-    Bsnprintf(szTemp, sizeof(szTemp), "%s (Host: %s, Players: %01d\\%01d)", szAddr, pHost, nClientsCur, nClientsMax);
-    Bstrncpyz(zNetBrowserGame[nSlotEmpty], szTemp, sizeof(zNetBrowserGame[nSlotEmpty]));
-    pItemNetworkBrowserGame[nSlotEmpty]->bCanSelect = 1;
-    pItemNetworkBrowserGame[nSlotEmpty]->bEnable = 1;
-}
-
-void NetworkBrowserState(const char *pString)
-{
-    Bstrncpyz(zNetBrowserState, pString, sizeof(zNetBrowserState));
-    itemNetworkBrowserState.bCanSelect = 0;
-    itemNetworkBrowserState.bEnable = 0;
-    menuNetworkBrowser.m_nFocus = menuNetworkBrowser.at8 = 0; // unfocus state item
-}
-
-void NetworkBrowserReset(CGameMenuItemChain *pItem)
-{
-    UNREFERENCED_PARAMETER(pItem);
-    extern int netIRCIinitialize(void);
-
-    for (int nSlot = 0; (unsigned)nSlot < ARRAY_SIZE(pItemNetworkBrowserGame); nSlot++)
-    {
-        zNetBrowserGame[nSlot][0] = '\0';
-        pItemNetworkBrowserGame[nSlot]->bCanSelect = 0;
-        pItemNetworkBrowserGame[nSlot]->bEnable = 0;
-    }
-
-    if (!netIRCIinitialize())
-        Bstrncpyz(zNetBrowserState, "CANNOT CONNECT TO MASTER LIST", sizeof(zNetBrowserState));
-    else
-        Bstrncpyz(zNetBrowserState, "SEARCHING...", sizeof(zNetBrowserState));
-    menuNetworkBrowser.m_nFocus = menuNetworkBrowser.at8 = 1; // set focus on state item element
-}
-
-void NetworkBrowserJoin(CGameMenuItemChain *pItem)
-{
-    sndStopSong();
-    FX_StopAllSounds();
-    UpdateDacs(0, true);
-    Bsscanf(pItem->m_pzText, "%s %d (", gNetAddress, &gNetPort);
-    gNetMode = NETWORK_CLIENT;
-    netIRCDeinitialize();
-    netInitialize(false);
-    gGameMenuMgr.Deactivate();
-    gQuitGame = gRestartGame = true;
-    NetworkBrowserReset(NULL);
 }
 
 void SaveGameProcess(CGameMenuItemChain *pItem)

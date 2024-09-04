@@ -2360,10 +2360,6 @@ RESTART:
                             bQuickNetStart = false;
                         }
                     }
-                    if (gGameMenuMgr.pActiveMenu == &menuNetworkBrowser) // search for servers
-                        netIRCProcess();
-                    else // exited server browser, gracefully disconnect from master list
-                        netIRCDeinitialize();
                 }
                 break;
             case INPUT_MODE_2:
