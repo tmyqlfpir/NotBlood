@@ -71,10 +71,6 @@ extern char gNetAddress[32];
 extern int gNetPort;
 extern int gNetPortLocal;
 
-extern void netIRCDeinitialize(void);
-extern int netIRCIinitialize(void);
-extern int netIRCProcess(void);
-
 
 struct PKT_STARTGAME {
     short version;
@@ -168,7 +164,7 @@ void netBroadcastTauntRandom(int nPlayer);
 void CalcGameChecksum(void);
 void netBroadcastPlayerLogoff(int nPlayer);
 void netBroadcastMyLogoff(bool bRestart);
-void netInitialize(bool bConsole, bool bAnnounce = false);
+void netInitialize(bool bConsole);
 void netBroadcastPlayerInfo(int nPlayer);
 void netBroadcastPlayerInfoUpdate(int nPlayer);
 void netCheckSync(void);
