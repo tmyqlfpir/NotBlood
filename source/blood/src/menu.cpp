@@ -87,7 +87,6 @@ void SetJoystickTargetAimAssist(CGameMenuItemZBool *);
 void SetJoystickRumble(CGameMenuItemZBool *);
 void SetTurnAcceleration(CGameMenuItemZCycle *);
 void SetCrouchToggle(CGameMenuItemZBool *);
-void SetAutoRun(CGameMenuItemZBool *);
 void ResetKeys(CGameMenuItemChain *);
 void ResetKeysClassic(CGameMenuItemChain *);
 void SetMessages(CGameMenuItemZBool *);
@@ -681,6 +680,7 @@ const char *pzWeaponInterpolateStrings[] = {
 };
 
 void SetAutoAim(CGameMenuItemZCycle *pItem);
+void SetAutoRun(CGameMenuItemZBool *pItem);
 void SetLevelStats(CGameMenuItemZCycle *pItem);
 void SetLevelStatsOnAutomap(CGameMenuItemZBool *pItem);
 void SetPowerupDuration(CGameMenuItemZCycle *pItem);
@@ -710,13 +710,14 @@ CGameMenuItemZEdit itemMutatorRandomizerSeed("RANDOMIZER SEED:", 3, 66, 155, 180
 ///////////////////
 
 CGameMenuItemTitle itemOptionsGameTitle("GAME SETUP", 1, 160, 20, 2038);
-CGameMenuItemZCycle itemOptionsGameBoolAutoAim("AUTO AIM:", 3, 66, 60, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
-CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 70, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
-CGameMenuItemZBool itemOptionsGameWeaponFastSwitch("FAST WEAPON SWITCH:", 3, 66, 80, 180, 0, SetWeaponFastSwitch, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE TRIGGER:", 3, 66, 100, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
-CGameMenuItemZBool itemOptionsGameLockSaving("LOCK MANUAL SAVING:", 3, 66, 110, 180, 0, SetLockSaving, "AUTOSAVES ONLY", "NEVER");
-CGameMenuItemZBool itemOptionsGameRestoreLastSave("ASK TO RESTORE LAST SAVE:", 3, 66, 120, 180, 0, SetRestoreLastSave, NULL, NULL);
-CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 130, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
+CGameMenuItemZCycle itemOptionsGameCycleAutoAim("AUTO AIM:", 3, 66, 60, 180, 0, SetAutoAim, pzAutoAimStrings, ARRAY_SSIZE(pzAutoAimStrings), 0);
+CGameMenuItemZBool itemOptionsGameBoolAutoRun("AUTO RUN:", 3, 66, 70, 180, 0, SetAutoRun, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameWeaponSwitch("EQUIP PICKUPS:", 3, 66, 80, 180, 0, SetWeaponSwitch, pzWeaponSwitchStrings, ARRAY_SSIZE(pzWeaponSwitchStrings), 0);
+CGameMenuItemZBool itemOptionsGameWeaponFastSwitch("FAST WEAPON SWITCH:", 3, 66, 90, 180, 0, SetWeaponFastSwitch, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameAutosaveMode("AUTOSAVE TRIGGER:", 3, 66, 110, 180, 0, SetAutosaveMode, pzAutosaveModeStrings, ARRAY_SSIZE(pzAutosaveModeStrings), 0);
+CGameMenuItemZBool itemOptionsGameLockSaving("LOCK MANUAL SAVING:", 3, 66, 120, 180, 0, SetLockSaving, "AUTOSAVES ONLY", "NEVER");
+CGameMenuItemZBool itemOptionsGameRestoreLastSave("ASK TO RESTORE LAST SAVE:", 3, 66, 130, 180, 0, SetRestoreLastSave, NULL, NULL);
+CGameMenuItemZCycle itemOptionsGameBoolVanillaMode("VANILLA MODE:", 3, 66, 140, 180, 0, SetVanillaMode, pzVanillaModeStrings, ARRAY_SSIZE(pzVanillaModeStrings), 0);
 
 CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
@@ -1080,10 +1081,9 @@ CGameMenuItemTitle itemOptionsControlKeyboardTitle("KEYBOARD SETUP", 1, 160, 20,
 CGameMenuItemSlider itemOptionsControlKeyboardSliderTurnSpeed("Key Turn Speed:", 1, 18, 50, 280, &gTurnSpeed, 64, 128, 4, SetTurnSpeed, -1, -1);
 CGameMenuItemZCycle itemOptionsControlKeyboardCycleTurnAcceleration("Key Turn Acceleration:", 1, 18, 70, 280, 0, SetTurnAcceleration, pzTurnAccelerationStrings, ARRAY_SIZE(pzTurnAccelerationStrings), 0);
 CGameMenuItemZBool itemOptionsControlKeyboardBoolCrouchToggle("Crouch Toggle:", 1, 18, 90, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
-CGameMenuItemZBool itemOptionsControlKeyboardBoolAutoRun("Always Run:", 1, 18, 110, 280, gAutoRun, SetAutoRun, NULL, NULL);
-CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 135, 320, 1, &menuKeys, -1, NULL, 0);
-CGameMenuItemChain itemOptionsControlKeyboardReset("Reset Keys (default)...", 1, 0, 155, 320, 1, &menuKeys, -1, ResetKeys, 0);
-CGameMenuItemChain itemOptionsControlKeyboardResetClassic("Reset Keys (classic)...", 1, 0, 175, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
+CGameMenuItemChain itemOptionsControlKeyboardList("Configure Keys...", 1, 0, 110, 320, 1, &menuKeys, -1, NULL, 0);
+CGameMenuItemChain itemOptionsControlKeyboardReset("Reset Keys (default)...", 1, 0, 135, 320, 1, &menuKeys, -1, ResetKeys, 0);
+CGameMenuItemChain itemOptionsControlKeyboardResetClassic("Reset Keys (classic)...", 1, 0, 155, 320, 1, &menuKeys, -1, ResetKeysClassic, 0);
 
 CGameMenuItemTitle itemKeysTitle("KEY SETUP", 1, 160, 20, 2038);
 CGameMenuItemKeyList itemKeyList("", 3, 56, 40, 200, 16, NUMGAMEFUNCTIONS, 0);
@@ -1736,7 +1736,8 @@ void SetupOptionsMenu(void)
     menuOptions.Add(&itemBloodQAV, false);
 
     menuOptionsGame.Add(&itemOptionsGameTitle, false);
-    menuOptionsGame.Add(&itemOptionsGameBoolAutoAim, true);
+    menuOptionsGame.Add(&itemOptionsGameCycleAutoAim, true);
+    menuOptionsGame.Add(&itemOptionsGameBoolAutoRun, false);
     menuOptionsGame.Add(&itemOptionsGameWeaponSwitch, false);
     menuOptionsGame.Add(&itemOptionsGameWeaponFastSwitch, false);
     menuOptionsGame.Add(&itemOptionsGameAutosaveMode, false);
@@ -1792,9 +1793,9 @@ void SetupOptionsMenu(void)
     itemMutatorRandomizerSeed.tooltip_pzTextLower = "No seed = always use a random seed";
     /////////////////////
 
-    //menuOptionsGame.Add(&itemOptionsGameChainParentalLock, false);
     menuOptionsGame.Add(&itemBloodQAV, false);
-    itemOptionsGameBoolAutoAim.m_nFocus = gAutoAim;
+    itemOptionsGameCycleAutoAim.m_nFocus = gAutoAim;
+    itemOptionsGameBoolAutoRun.at20 = !!gAutoRun;
     itemOptionsGameWeaponSwitch.m_nFocus = gWeaponSwitch % ARRAY_SSIZE(pzWeaponSwitchStrings);
     itemOptionsGameWeaponFastSwitch.at20 = !!gWeaponFastSwitch;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave % ARRAY_SSIZE(pzAutosaveModeStrings);
@@ -2063,7 +2064,6 @@ void SetupControlsMenu(void)
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardSliderTurnSpeed, true);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardCycleTurnAcceleration, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardBoolCrouchToggle, false);
-    menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardBoolAutoRun, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardList, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardReset, false);
     menuOptionsControlKeyboard.Add(&itemOptionsControlKeyboardResetClassic, false);
@@ -2072,7 +2072,6 @@ void SetupControlsMenu(void)
     itemOptionsControlKeyboardSliderTurnSpeed.nValue = gTurnSpeed;
     itemOptionsControlKeyboardCycleTurnAcceleration.m_nFocus = gTurnAcceleration % ARRAY_SSIZE(pzTurnAccelerationStrings);
     itemOptionsControlKeyboardBoolCrouchToggle.at20 = gCrouchToggle;
-    itemOptionsControlKeyboardBoolAutoRun.at20 = gAutoRun;
 
     menuKeys.Add(&itemKeysTitle, false);
     menuKeys.Add(&itemKeyList, true);
@@ -2091,9 +2090,7 @@ void SetupControlsMenu(void)
     itemOptionsControlMouseVerticalAim.pPreDrawCallback = PreDrawControlMouse;
 
     menuOptionsControlMouseButtonAssignment.Add(&itemOptionsControlMouseTitle, false);
-    int i;
-    int y = 60;
-    for (i = 0; i < MENUMOUSEFUNCTIONS; i++)
+    for (int i = 0, y = 60; i < MENUMOUSEFUNCTIONS; i++)
     {
         pItemOptionsControlMouseButton[i] = new CGameMenuItemZCycle(MenuMouseNames[i], 3, 66, y, 180, 0, SetMouseButton, pzGamefuncsStrings, NUMGAMEFUNCTIONS+1, 0, true);
         dassert(pItemOptionsControlMouseButton[i] != NULL);
@@ -2101,7 +2098,10 @@ void SetupControlsMenu(void)
         y += 10;
     }
     menuOptionsControlMouseButtonAssignment.Add(&itemBloodQAV, false);
+}
 
+void SetupJoysticksMenu(void)
+{
     if (!CONTROL_JoystickEnabled) // joystick disabled, don't bother populating joystick menus
     {
         itemOptionsControlJoystickButtons.bEnable = 0;
@@ -2124,7 +2124,7 @@ void SetupControlsMenu(void)
     itemOptionsControlJoystickMiscTargetAimAssist.at20 = gTargetAimAssist;
     itemOptionsControlJoystickMiscRumble.at20 = gSetup.joystickrumble;
 
-    i = 0;
+    int i = 0, y = 0;
     for (int nButton = 0; nButton < joystick.numButtons; nButton++) // store every joystick button/hat name for button list at launch
     {
         const char *pzButtonName = joyGetName(1, nButton);
@@ -2286,6 +2286,7 @@ void SetupMenus(void)
 
     SetupOptionsMenu();
     SetupControlsMenu();
+    SetupJoysticksMenu();
     SetupNetworkMenu();
 }
 
@@ -2594,11 +2595,6 @@ void SetCrouchToggle(CGameMenuItemZBool *pItem)
     gCrouchToggle = itemOptionsControlKeyboardBoolCrouchToggle.at20 = itemOptionsControlJoystickMiscCrouchToggle.at20 = pItem->at20;
 }
 
-void SetAutoRun(CGameMenuItemZBool *pItem)
-{
-    gAutoRun = pItem->at20;
-}
-
 void SetAutoAim(CGameMenuItemZCycle *pItem)
 {
     gAutoAim = pItem->m_nFocus;
@@ -2612,6 +2608,11 @@ void SetAutoAim(CGameMenuItemZCycle *pItem)
         gProfile[myconnectindex].nAutoAim = gAutoAim;
         netBroadcastPlayerInfo(myconnectindex);
     }
+}
+
+void SetAutoRun(CGameMenuItemZBool *pItem)
+{
+    gAutoRun = pItem->at20;
 }
 
 void SetLevelStats(CGameMenuItemZCycle *pItem)
@@ -2937,6 +2938,8 @@ void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
         gSlopeTilting = 1;
         gAimReticle = 0;
         gAutoAim = 1;
+        gAutoRun = 0;
+        gShowWeapon = 0;
         gWeaponSwitch = 1;
         SetGameVanillaMode(1);
         gAutosave = 0;
@@ -2955,6 +2958,8 @@ void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
     {
         gAimReticle = 0;
         gAutoAim = 1;
+        gAutoRun = 0;
+        gShowWeapon = 0;
         gWeaponSwitch = 1;
         gAutosave = 0;
         gRestoreLastSave = 0;
@@ -2967,7 +2972,7 @@ void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
     }
     itemOptionsDisplayViewBoolSlopeTilting.at20 = gSlopeTilting;
     itemOptionsDisplayCrosshair.m_nFocus = gAimReticle;
-    itemOptionsGameBoolAutoAim.m_nFocus = gAutoAim;
+    itemOptionsGameCycleAutoAim.m_nFocus = gAutoAim;
     itemOptionsGameWeaponSwitch.m_nFocus = gWeaponSwitch;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave;
     itemOptionsGameRestoreLastSave.at20 = gRestoreLastSave;
