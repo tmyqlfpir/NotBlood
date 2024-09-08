@@ -309,7 +309,7 @@ static const char * joystickdefaults[MAXJOYBUTTONSANDHATS] =
     "Jump",
     "Crouch",
     "Open",
-    "",
+    "Last_Weapon",
     "",
     "",
     "",
@@ -317,7 +317,7 @@ static const char * joystickdefaults[MAXJOYBUTTONSANDHATS] =
     "Turn_Around",
     "Previous_Weapon",
     "Next_Weapon",
-    "",
+    "Last_Weapon",
     "Inventory_Use",
     "Inventory_Left",
     "Inventory_Right"
