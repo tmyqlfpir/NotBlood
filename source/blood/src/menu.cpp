@@ -82,10 +82,10 @@ void SetSlowRoomFlicker(CGameMenuItemZBool *);
 void SetMouseSensitivity(CGameMenuItemSliderFloat *);
 void SetMouseAimFlipped(CGameMenuItemZBool *);
 void SetTurnSpeed(CGameMenuItemSlider *);
+void SetTurnAcceleration(CGameMenuItemZCycle *);
 void SetCenterView(CGameMenuItemZBool *);
 void SetJoystickTargetAimAssist(CGameMenuItemZBool *);
 void SetJoystickRumble(CGameMenuItemZBool *);
-void SetTurnAcceleration(CGameMenuItemZCycle *);
 void SetCrouchToggle(CGameMenuItemZBool *);
 void ResetKeys(CGameMenuItemChain *);
 void ResetKeysClassic(CGameMenuItemChain *);
@@ -2570,6 +2570,11 @@ void SetTurnSpeed(CGameMenuItemSlider *pItem)
     gTurnSpeed = pItem->nValue;
 }
 
+void SetTurnAcceleration(CGameMenuItemZCycle *pItem)
+{
+    gTurnAcceleration = pItem->m_nFocus % ARRAY_SSIZE(pzTurnAccelerationStrings);
+}
+
 void SetCenterView(CGameMenuItemZBool *pItem)
 {
     gCenterViewOnDrop = pItem->at20;
@@ -2583,11 +2588,6 @@ void SetJoystickTargetAimAssist(CGameMenuItemZBool *pItem)
 void SetJoystickRumble(CGameMenuItemZBool *pItem)
 {
     gSetup.joystickrumble = pItem->at20;
-}
-
-void SetTurnAcceleration(CGameMenuItemZCycle *pItem)
-{
-    gTurnAcceleration = pItem->m_nFocus % ARRAY_SSIZE(pzTurnAccelerationStrings);
 }
 
 void SetCrouchToggle(CGameMenuItemZBool *pItem)
