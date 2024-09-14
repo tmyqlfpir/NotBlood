@@ -1285,6 +1285,8 @@ void SetupDifficultyMenu(void)
     menuBannedMonsters.Add(&itemBannedMonstersRatsAttack, false);
     menuBannedMonsters.Add(&itemBannedMonstersMotherSpiderHealth, false);
     menuBannedMonsters.Add(&itemBloodQAV, false);
+    itemBannedMonstersSpiders.tooltip_pzTextUpper = "";
+    itemBannedMonstersSpiders.tooltip_pzTextLower = "Mother spiders are not removed to avoid boss softlocks";
 
     menuBannedItems.Add(&itemBannedItemsTitle, false);
     menuBannedItems.Add(&itemBannedItemsFlare, true);
@@ -1510,6 +1512,8 @@ void SetupNetStartMenu(void)
     menuNetworkGameMonsters.Add(&itemNetMonsterRatsAttack, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterMotherSpiderHealth, false);
     menuNetworkGameMonsters.Add(&itemBloodQAV, false);
+    itemNetMonsterSpiders.tooltip_pzTextUpper = "";
+    itemNetMonsterSpiders.tooltip_pzTextLower = "Mother spiders are not removed to avoid boss softlocks";
 
     //////////////////////
     menuNetworkGameMutators.Add(&itemGameMutatorsTitle, false);
