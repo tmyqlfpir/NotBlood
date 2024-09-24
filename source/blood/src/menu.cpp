@@ -2991,6 +2991,7 @@ void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
     itemOptionsDisplayViewBoolSlopeTilting.at20 = gSlopeTilting;
     itemOptionsDisplayCrosshair.m_nFocus = gAimReticle;
     itemOptionsGameCycleAutoAim.m_nFocus = gAutoAim;
+    itemOptionsGameBoolAutoRun.at20 = !!gAutoRun;
     itemOptionsGameWeaponSwitch.m_nFocus = gWeaponSwitch;
     itemOptionsGameAutosaveMode.m_nFocus = gAutosave;
     itemOptionsGameRestoreLastSave.at20 = gRestoreLastSave;
