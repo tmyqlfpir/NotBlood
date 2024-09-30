@@ -1765,7 +1765,7 @@ void AILoadSave::Load(void)
 {
     Read(cumulDamage, sizeof(cumulDamage));
     Read(gDudeSlope, sizeof(gDudeSlope));
-    Read(&gDudeExtra, sizeof(gDudeExtra));
+    Read(gDudeExtra, sizeof(gDudeExtra));
     memset(gSpriteStuckage, 0, sizeof(gSpriteStuckage));
     memset((void *)&gSpritePrevLoc, 0, sizeof(gSpritePrevLoc));
     memset(gSpritePrevSect, -1, sizeof(gSpritePrevSect));
@@ -1775,7 +1775,7 @@ void AILoadSave::Save(void)
 {
     Write(cumulDamage, sizeof(cumulDamage));
     Write(gDudeSlope, sizeof(gDudeSlope));
-    Write(&gDudeExtra, sizeof(gDudeExtra));
+    Write(gDudeExtra, sizeof(gDudeExtra));
 }
 
 static AILoadSave *myLoadSave;
