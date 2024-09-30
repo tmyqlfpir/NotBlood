@@ -30,4 +30,3 @@ unsigned int qrand(void);
 void ChangeExtension(char *pzFile, const char *pzExt);
 void SplitPath(const char *pzPath, char *pzDirectory, char *pzFile, char *pzType);
 void ConcatPath(const char* pzPath1, const char* pzPath2, char* pzConcatPath);
-int Bstrcicmp(char const *pzStrA, char const *pzStrB);

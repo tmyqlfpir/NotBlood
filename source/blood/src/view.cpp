@@ -2724,33 +2724,50 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         int top, bottom;
         GetSpriteExtents(pTSprite, &top, &bottom);
 
-        auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
-        auto pNSprite2 = viewInsertTSprite(pTSprite->sectnum, 32766, pTSprite);
-        if (!pNSprite || !pNSprite2)
-            break;
-        pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT_INVERT | CSTAT_SPRITE_TRANSLUCENT;
+        if (videoGetRenderMode() != REND_CLASSIC) {
+            
+            auto pNSprite2 = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
+            if (!pNSprite2)
+                break;
 
-        pNSprite->picnum = 2229;
-        pNSprite2->picnum = 2203;
+            pNSprite2->picnum = 2203;
 
-        pNSprite->xoffset = -1;
-        pNSprite->xrepeat = 40;
-        pNSprite->yrepeat = 64;
-        pNSprite->pal = 5;
+            pNSprite2->xrepeat = width;
+            pNSprite2->yrepeat = 20;
+            pNSprite2->pal = 10;
+            if (perc >= 75) pNSprite2->pal = 0;
+            else if (perc >= 50) pNSprite2->pal = 6;
+            
+            pNSprite2->z = top - 2048;
+            pNSprite2->shade = -128;
 
-        pNSprite2->xrepeat = width;
-        pNSprite2->yrepeat = 34;
-        pNSprite2->pal = 10;
-        if (perc >= 75) pNSprite2->pal = 0;
-        else if (perc >= 50) pNSprite2->pal = 6;
 
-        pNSprite->z = pNSprite2->z = top - 2048;
-        pNSprite->shade = pNSprite2->shade = -128;
+        } else {
+            
 
-        if (videoGetRenderMode() != REND_CLASSIC) { // move border sprite back a touch so it doesn't z-fight with bar
-            pNSprite->x += mulscale30(4, Cos(gCameraAng));
-            pNSprite->y += mulscale30(4, Sin(gCameraAng));
-            pNSprite->z -= 3<<5; // align so from ground level the bar looks correct
+            auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
+            auto pNSprite2 = viewInsertTSprite(pTSprite->sectnum, 32766, pTSprite);
+            if (!pNSprite || !pNSprite2)
+                break;
+            pNSprite->cstat |= CSTAT_SPRITE_TRANSLUCENT_INVERT | CSTAT_SPRITE_TRANSLUCENT;
+
+            pNSprite->picnum = 2229;
+            pNSprite2->picnum = 2203;
+
+            pNSprite->xoffset = -1;
+            pNSprite->xrepeat = 40;
+            pNSprite->yrepeat = 64;
+            pNSprite->pal = 5;
+
+            pNSprite2->xrepeat = width;
+            pNSprite2->yrepeat = 34;
+            pNSprite2->pal = 10;
+            if (perc >= 75) pNSprite2->pal = 0;
+            else if (perc >= 50) pNSprite2->pal = 6;
+
+            pNSprite->z = pNSprite2->z = top - 2048;
+            pNSprite->shade = pNSprite2->shade = -128;
+
         }
         break;
     }
@@ -2965,7 +2982,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         if (!pNSprite)
             break;
         pNSprite->z = getflorzofslope(pTSprite->sectnum, pNSprite->x, pNSprite->y);
-        if (gGameOptions.bSectorBehavior && !VanillaMode()) // support better floor detection for shadows (detect fake floors/allows ROR traversal)
+        if (!VanillaMode()) // support better floor detection for shadows (detect fake floors/allows ROR traversal)
         {
             int ceilZ, ceilHit, floorZ, floorHit;
             GetZRangeAtXYZ(pTSprite->x, pTSprite->y, pTSprite->z, pTSprite->sectnum, &ceilZ, &ceilHit, &floorZ, &floorHit, pTSprite->clipdist<<2, CLIPMASK0, PARALLAXCLIP_CEILING|PARALLAXCLIP_FLOOR);
@@ -3035,7 +3052,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     case kViewEffectCeilGlow:
     {
         sectortype *pSector = &sector[pTSprite->sectnum];
-        if (gGameOptions.bSectorBehavior && !VanillaMode()) // if ceiling has ror, don't render effect
+        if (!VanillaMode()) // if ceiling has ror, don't render effect
         {
             if ((pSector->ceilingpicnum >= 4080) && (pSector->ceilingpicnum <= 4095))
                 break;
@@ -3043,7 +3060,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
-        char bCalcSlope = gGameOptions.bSectorBehavior && !VanillaMode();
+        const char bCalcSlope = gGameOptions.bSectorBehavior && !VanillaMode();
         int zDiff = bCalcSlope ? getceilzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) : pSector->ceilingz;
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;
@@ -3069,7 +3086,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
     case kViewEffectFloorGlow:
     {
         sectortype *pSector = &sector[pTSprite->sectnum];
-        if (gGameOptions.bSectorBehavior && !VanillaMode()) // if floor has ror, don't render effect
+        if (!VanillaMode()) // if floor has ror, don't render effect
         {
             if ((pSector->floorpicnum >= 4080) && (pSector->floorpicnum <= 4095))
                 break;
@@ -3077,7 +3094,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         auto pNSprite = viewInsertTSprite(pTSprite->sectnum, 32767, pTSprite);
         if (!pNSprite)
             break;
-        char bCalcSlope = gGameOptions.bSectorBehavior && !VanillaMode();
+        const char bCalcSlope = gGameOptions.bSectorBehavior && !VanillaMode();
         int zDiff = bCalcSlope ? getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) : pSector->floorz;
         pNSprite->x = pTSprite->x;
         pNSprite->y = pTSprite->y;

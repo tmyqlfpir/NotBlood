@@ -267,7 +267,6 @@ int initgroupfile(const char *filename);
 void	uninitgroupfile(void);
 buildvfs_kfd	kopen4load(const char *filename, char searchfirst);	// searchfirst: 0 = anywhere, 1 = first group, 2 = any group
 buildvfs_kfd	kopen4loadfrommod(const char* filename, char searchfirst);
-buildvfs_kfd	kopen4loadfrommodinsensitive(const char* filename, char searchfirst);
 int32_t	kread(buildvfs_kfd handle, void *buffer, int32_t leng);
 #define kread_and_test(handle, buffer, leng) EDUKE32_PREDICT_FALSE(kread((handle), (buffer), (leng)) != (int32_t)(leng))
 int32_t	klseek(buildvfs_kfd handle, int32_t offset, int32_t whence);

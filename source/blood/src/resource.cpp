@@ -282,8 +282,8 @@ DICTNODE **Resource::Probe(const char *fname, const char *type)
         {
             return &indexName[i];
         }
-        if (!Bstrcicmp((*indexName[i]).type, type)
-            && !Bstrcicmp((*indexName[i]).name, fname))
+        if (!strcmp((*indexName[i]).type, type)
+            && !strcmp((*indexName[i]).name, fname))
         {
             return &indexName[i];
         }
@@ -384,7 +384,7 @@ void Resource::AddExternalResource(const char *name, const char *type, int id, i
     else
         Bstrncpy(path, filename, BMAX_PATH-1);
 
-    int fhandle = kopen4loadfrommodinsensitive(filename, 0);
+    int fhandle = kopen4loadfrommod(filename, 0);
     if (fhandle == -1)
         return;
     int size = kfilelength(fhandle);
@@ -683,7 +683,7 @@ void Resource::Read(DICTNODE *n, void *p)
             Bstrncpy(filename, n->path, BMAX_PATH-1);
         else
             Bsnprintf(filename, BMAX_PATH-1, "%s.%s", n->name, n->type);
-        int fhandle = kopen4loadfrommodinsensitive(filename, 0);
+        int fhandle = kopen4loadfrommod(filename, 0);
         if (fhandle == -1 || (uint32_t)kread(fhandle, p, n->size) != n->size)
         {
             ThrowError("Error reading external resource (%i)", errno);

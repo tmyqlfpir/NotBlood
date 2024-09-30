@@ -197,12 +197,4 @@ void ConcatPath(const char *pzPath1, const char *pzPath2, char *pzConcatPath)
     Bstrcat(pzConcatPath, pzPath2+j);
 }
 
-int Bstrcicmp(char const *pzStrA, char const *pzStrB)
-{
-    for (int i = 0;; i++)
-    {
-        int const diff = Btolower((unsigned char)pzStrA[i]) - Btolower((unsigned char)pzStrB[i]);
-        if ((diff != 0) || (pzStrA[i] == '\0'))
-            return diff;
-    }
-}
+
