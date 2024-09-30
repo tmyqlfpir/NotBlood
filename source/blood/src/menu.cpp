@@ -4135,12 +4135,17 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     int nSlot = pItem->at28;
     if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         return;
+    int const bakpathsearchmode = pathsearchmode;
+    pathsearchmode = 1;
     if (nSlot <= kLoadSaveSlot10)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot);
     else
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot == kLoadSaveSlotSpawn ? 0 : 1);
     if (!testkopen(strLoadGameName, 0))
+    {
+        pathsearchmode = bakpathsearchmode;
         return;
+    }
     if (!gGameStarted || LoadSavedInCurrentSession(nSlot)) // if save slot is from a different session, set autosave state to false
         gAutosaveInCurLevel = false;
     if (gShowLoadingSavingBackground)
@@ -4151,6 +4156,7 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();
     gQuickLoadSlot = nSlot;
+    pathsearchmode = bakpathsearchmode;
 }
 
 void QuickLoadGame(void)
@@ -4158,12 +4164,17 @@ void QuickLoadGame(void)
     char strLoadGameName[BMAX_PATH];
     if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         return;
+    int const bakpathsearchmode = pathsearchmode;
+    pathsearchmode = 1;
     if (gQuickLoadSlot < kLoadSaveSlotAutosave)
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot);
     else
         G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", gQuickLoadSlot == kLoadSaveSlotSpawn ? 0 : 1);
     if (!testkopen(strLoadGameName, 0))
+    {
+        pathsearchmode = bakpathsearchmode;
         return;
+    }
     if (!LoadSavedInCurrentSession(gQuickLoadSlot)) // if save slot is from a different session, set autosave state to false
         gAutosaveInCurLevel = false;
     if (gShowLoadingSavingBackground)
@@ -4173,6 +4184,7 @@ void QuickLoadGame(void)
     }
     LoadSave::LoadGame(strLoadGameName);
     gGameMenuMgr.Deactivate();
+    pathsearchmode = bakpathsearchmode;
 }
 
 void SetupLevelMenuItem(int nEpisode)
