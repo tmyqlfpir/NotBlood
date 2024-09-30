@@ -145,8 +145,6 @@ It should be noted that vanilla mode does not work with modern maps
    - Lower gravity of bullet casings and gibs underwater
    - Add player's velocity to spawned bullet casings
    - Make blood splatter/flare gun glow effect slope on sloped surfaces
-   - Prevent glow effects from rendering over room over room surfaces
-   - Add room over room sector transversal for shadow rendering
    - Support wall sprites moving along with elevators
    - Fix bullet hole being placed across sky tile walls
    - Use Raze phase calculation for smoother elevator rides

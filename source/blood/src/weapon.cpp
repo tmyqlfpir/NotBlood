@@ -681,8 +681,8 @@ void WeaponLower(PLAYER *pPlayer)
     if (checkLitSprayOrTNT(pPlayer))
         return;
     pPlayer->throwPower = pPlayer->throwPowerOld = 0;
-    const int prevWeapon = pPlayer->curWeapon;
     const int prevState = pPlayer->weaponState;
+    const int prevWeapon = pPlayer->curWeapon;
     switch (pPlayer->curWeapon)
     {
     case kWeaponPitchfork:
@@ -764,7 +764,7 @@ void WeaponLower(PLAYER *pPlayer)
         switch (prevState)
         {
         case 1:
-            if ((pPlayer->input.newWeapon == kWeaponSprayCan) && !VanillaMode()) // do not put away lighter if switched to spray can
+            if (!VanillaMode() && (pPlayer->input.newWeapon == kWeaponSprayCan)) // do not put away lighter if switched to spray can
             {
                 pPlayer->weaponState = 2;
                 StartQAV(pPlayer, 11, -1, 0);
