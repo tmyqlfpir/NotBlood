@@ -481,7 +481,7 @@ void MyLoadSave::Save(void)
 void LoadSavedInfo(void)
 {
     const int nNameMin = strlen("##.sav"); // length offset for string numbers
-    auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "game00*.sav", BUILDVFS_FIND_FILE);
+    auto pList = klistpath("./", "game00*.sav", BUILDVFS_FIND_FILE);
     for (auto pIterator = pList; pIterator != NULL; pIterator = pIterator->next)
     {
         int hFile = kopen4loadfrommod(pIterator->name, 0);
@@ -530,7 +530,7 @@ void LoadSavedInfo(void)
 void LoadAutosavedInfo(void)
 {
     const int nNameMin = strlen("#.sav"); // length offset for string numbers
-    auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "gameautosave*.sav", BUILDVFS_FIND_FILE);
+    auto pList = klistpath("./", "gameautosave*.sav", BUILDVFS_FIND_FILE);
     for (auto pIterator = pList; pIterator != NULL; pIterator = pIterator->next)
     {
         int hFile = kopen4loadfrommod(pIterator->name, 0);
