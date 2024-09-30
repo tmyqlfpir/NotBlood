@@ -197,7 +197,7 @@ void ConcatPath(const char *pzPath1, const char *pzPath2, char *pzConcatPath)
     Bstrcat(pzConcatPath, pzPath2+j);
 }
 
-int Bstrcicmp(char const *pzStrA, char const *pzStrB)
+int strcicmp(char const *pzStrA, char const *pzStrB)
 {
     for (int i = 0;; i++)
     {

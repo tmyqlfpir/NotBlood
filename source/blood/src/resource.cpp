@@ -282,8 +282,8 @@ DICTNODE **Resource::Probe(const char *fname, const char *type)
         {
             return &indexName[i];
         }
-        if (!Bstrcicmp((*indexName[i]).type, type)
-            && !Bstrcicmp((*indexName[i]).name, fname))
+        if (!strcicmp((*indexName[i]).type, type)
+            && !strcicmp((*indexName[i]).name, fname))
         {
             return &indexName[i];
         }
