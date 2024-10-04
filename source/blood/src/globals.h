@@ -36,7 +36,7 @@ typedef struct {
     int32_t forcesetup;
     int32_t noautoload;
     int32_t quickstart;
-    char firstlaunch;
+    int32_t firstlaunch;
     char lastini[BMAX_PATH];
 } ud_setup_t;
 

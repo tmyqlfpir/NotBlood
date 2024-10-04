@@ -924,7 +924,7 @@ int CONFIG_ReadSetup(void)
     SCRIPT_GetNumber(scripthandle, "Setup", "InputJoystick", &gSetup.usejoystick);
     SCRIPT_GetNumber(scripthandle, "Setup", "UseJoystickRumble", &gSetup.joystickrumble);
     SCRIPT_GetNumber(scripthandle, "Setup", "InputMouse", &gSetup.usemouse);
-    SCRIPT_GetString(scripthandle, "Setup", "FirstLaunch", &gSetup.firstlaunch);
+    SCRIPT_GetNumber(scripthandle, "Setup", "FirstLaunch", &gSetup.firstlaunch);
     SCRIPT_GetString(scripthandle, "Setup", "LastINI", &gSetup.lastini[0]);
     gSetup.lastini[BMAX_PATH-1] = '\0';
 
