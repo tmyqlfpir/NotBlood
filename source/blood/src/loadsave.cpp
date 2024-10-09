@@ -480,8 +480,10 @@ void MyLoadSave::Save(void)
 
 void LoadSavedInfo(void)
 {
+    int const bakpathsearchmode = pathsearchmode;
+    pathsearchmode = 1;
     const int nNameMin = strlen("##.sav"); // length offset for string numbers
-    auto pList = klistpath("./", "game00*.sav", BUILDVFS_FIND_FILE);
+    auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "game00*.sav", BUILDVFS_FIND_FILE);
     for (auto pIterator = pList; pIterator != NULL; pIterator = pIterator->next)
     {
         int hFile = kopen4loadfrommod(pIterator->name, 0);
@@ -525,12 +527,15 @@ void LoadSavedInfo(void)
         kclose(hFile);
     }
     klistfree(pList);
+    pathsearchmode = bakpathsearchmode;
 }
 
 void LoadAutosavedInfo(void)
 {
+    int const bakpathsearchmode = pathsearchmode;
+    pathsearchmode = 1;
     const int nNameMin = strlen("#.sav"); // length offset for string numbers
-    auto pList = klistpath("./", "gameautosave*.sav", BUILDVFS_FIND_FILE);
+    auto pList = klistpath((g_modDir[0] != '/') ? g_modDir : "./", "gameautosave*.sav", BUILDVFS_FIND_FILE);
     for (auto pIterator = pList; pIterator != NULL; pIterator = pIterator->next)
     {
         int hFile = kopen4loadfrommod(pIterator->name, 0);
@@ -574,6 +579,7 @@ void LoadAutosavedInfo(void)
         kclose(hFile);
     }
     klistfree(pList);
+    pathsearchmode = bakpathsearchmode;
 }
 
 bool LoadSavedInCurrentSession(int nSlot)
