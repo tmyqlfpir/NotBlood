@@ -8,7 +8,7 @@
 </p><h1></h1>
 
 ### Overview
-**NotBlood** is a fork of [NBlood](https://github.com/nukeykt/NBlood) with gameplay options, optional mutators and expanded multiplayer features
+**NotBlood** is a fork of [NBlood](https://github.com/nukeykt/NBlood) with gameplay options, optional mutators and multiplayer features, while retaining NBlood mod support
 
 ### Downloads
 Download for Windows/Linux/MacOS can be found on [https://github.com/clipmove/NotBlood/releases](https://github.com/clipmove/NotBlood/releases)
