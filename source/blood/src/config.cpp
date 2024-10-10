@@ -833,7 +833,7 @@ void CONFIG_SetupJoystick(void)
         SCRIPT_GetNumber(scripthandle, "Controls", str,&scale);
         JoystickAnalogueInvert[i] = scale;
 
-        Bsprintf(str,"JoystickAnalogueAxisSoloDeadZone%d",i);
+        Bsprintf(str,"JoystickAnalogAxisSoloDeadZone%d",i);
         scale = JoystickAnalogueAxisSoloDeadZone[i];
         SCRIPT_GetNumber(scripthandle, "Controls", str,&scale);
         JoystickAnalogueAxisSoloDeadZone[i] = scale;
@@ -1180,7 +1180,7 @@ void CONFIG_WriteSetup(uint32_t flags)
             Bsprintf(buf, "JoystickAnalogInvert%d", dummy);
             SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueInvert[dummy], FALSE, FALSE);
 
-            Bsprintf(buf, "JoystickAnalogueAxisSoloDeadZone%d", dummy);
+            Bsprintf(buf, "JoystickAnalogAxisSoloDeadZone%d", dummy);
             SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueAxisSoloDeadZone[dummy], FALSE, FALSE);
         }
     }
