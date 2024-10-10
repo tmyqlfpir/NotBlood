@@ -126,7 +126,7 @@ typedef struct ControllerAxis
     uint16_t deadzone;
     uint16_t saturation;
     bool invert;
-    bool isolateddeadzone;
+    bool solodeadzone;
 } ControllerAxis_t;
 
 typedef struct UserInputState
