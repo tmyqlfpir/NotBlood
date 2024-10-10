@@ -1073,7 +1073,7 @@ void SetJoystickDigitalPos(CGameMenuItemZCycle* pItem);
 void SetJoystickDigitalNeg(CGameMenuItemZCycle* pItem);
 void SetJoystickDeadzone(CGameMenuItemSlider* pItem);
 void SetJoystickSaturate(CGameMenuItemSlider* pItem);
-void SetJoystickIsolatedDeadzone(CGameMenuItemZBool* pItem);
+void SetJoystickSoloDeadzone(CGameMenuItemZBool* pItem);
 
 const char *pzTurnAccelerationStrings[] = {
     "OFF",
@@ -1212,7 +1212,7 @@ CGameMenuItemZCycle *pItemOptionsControlJoystickAxisDigitalPos[MAXJOYAXES];
 CGameMenuItemZCycle *pItemOptionsControlJoystickAxisDigitalNeg[MAXJOYAXES];
 CGameMenuItemSlider *pItemOptionsControlJoystickAxisDeadzone[MAXJOYAXES];
 CGameMenuItemSlider *pItemOptionsControlJoystickAxisSaturate[MAXJOYAXES];
-CGameMenuItemZBool *pItemOptionsControlJoystickAxisIsolatedDeadzone[MAXJOYAXES];
+CGameMenuItemZBool *pItemOptionsControlJoystickAxisSoloDeadzone[MAXJOYAXES];
 
 CGameMenuItemTitle itemOptionsControlJoystickMiscTitle("JOYSTICK MISC", 1, 160, 20, 2038);
 CGameMenuItemZBool itemOptionsControlJoystickMiscCrouchToggle("CROUCH TOGGLE:", 1, 18, 70, 280, gCrouchToggle, SetCrouchToggle, NULL, NULL);
@@ -2263,9 +2263,9 @@ void SetupJoysticksMenu(void)
         dassert(pItemOptionsControlJoystickAxisSaturate[nAxis] != NULL);
         menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisSaturate[nAxis], false);
         y += 17;
-        pItemOptionsControlJoystickAxisIsolatedDeadzone[nAxis] = new CGameMenuItemZBool("ISOLATED DEAD ZONE:", 1, 18, y, 280, false, SetJoystickIsolatedDeadzone, NULL, NULL); // get isolated dead
-        dassert(pItemOptionsControlJoystickAxisIsolatedDeadzone[nAxis] != NULL);
-        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisIsolatedDeadzone[nAxis], false);
+        pItemOptionsControlJoystickAxisSoloDeadzone[nAxis] = new CGameMenuItemZBool("SINGLE AXIS DEAD ZONE:", 1, 18, y, 280, false, SetJoystickSoloDeadzone, NULL, NULL); // get isolated dead
+        dassert(pItemOptionsControlJoystickAxisSoloDeadzone[nAxis] != NULL);
+        menuOptionsControlJoystickAxis[nAxis].Add(pItemOptionsControlJoystickAxisSoloDeadzone[nAxis], false);
         menuOptionsControlJoystickAxis[nAxis].Add(&itemBloodQAV, false);
     }
 }
@@ -3749,7 +3749,7 @@ void SetupJoystickAxesMenu(CGameMenuItemChain *pItem)
         }
         pItemOptionsControlJoystickAxisDeadzone[nAxis]->nValue = JoystickAnalogueDead[nAxis];
         pItemOptionsControlJoystickAxisSaturate[nAxis]->nValue = JoystickAnalogueSaturate[nAxis];
-        pItemOptionsControlJoystickAxisIsolatedDeadzone[nAxis]->at20 = JoystickAnalogueIsolatedDeadZone[nAxis];
+        pItemOptionsControlJoystickAxisSoloDeadzone[nAxis]->at20 = JoystickAnalogueAxisSoloDeadZone[nAxis];
     }
 }
 
@@ -3876,14 +3876,14 @@ void SetJoystickSaturate(CGameMenuItemSlider* pItem)
     }
 }
 
-void SetJoystickIsolatedDeadzone(CGameMenuItemZBool* pItem)
+void SetJoystickSoloDeadzone(CGameMenuItemZBool* pItem)
 {
     for (int nAxis = 0; nAxis < MAXJOYAXES; nAxis++)
     {
-        if (pItem == pItemOptionsControlJoystickAxisIsolatedDeadzone[nAxis])
+        if (pItem == pItemOptionsControlJoystickAxisSoloDeadzone[nAxis])
         {
-            JoystickAnalogueIsolatedDeadZone[nAxis] = pItem->at20;
-            JOYSTICK_SetAxisIsolatedDeadZone(nAxis, JoystickAnalogueIsolatedDeadZone[nAxis]);
+            JoystickAnalogueAxisSoloDeadZone[nAxis] = pItem->at20;
+            JOYSTICK_SetAxisSoloDeadZone(nAxis, JoystickAnalogueAxisSoloDeadZone[nAxis]);
             break;
         }
     }
