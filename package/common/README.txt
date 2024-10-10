@@ -1,5 +1,5 @@
 ### NotBlood
-An fork of NBlood with gameplay options, optional mutators and expanded multiplayer features
+NotBlood is a fork of NBlood with gameplay options, optional mutators and multiplayer features, while retaining NBlood mod support
 
 ### Features
 * Switch to last active weapon if TNT/spray can is active when entering water
