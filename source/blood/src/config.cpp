@@ -424,11 +424,7 @@ void CONFIG_SetDefaults(void)
     CDAudioToggle = 0;
     CDAudioFallback = 0;
     DopplerToggle = 1;
-#if defined(_WIN32)
-    MusicDevice = ASS_WinMM,
-#else
     MusicDevice = ASS_SF2;
-#endif
     Bstrcpy(SF2_BankFile, "notblood.sf2");
     gFMPianoFix = 1;
     //ud.config.VoiceToggle     = 5;  // bitfield, 1 = local, 2 = dummy, 4 = other players in DM
@@ -833,10 +829,10 @@ void CONFIG_SetupJoystick(void)
         SCRIPT_GetNumber(scripthandle, "Controls", str,&scale);
         JoystickAnalogueInvert[i] = scale;
 
-        Bsprintf(str,"JoystickAnalogueIsolatedDeadZone%d",i);
-        scale = JoystickAnalogueIsolatedDeadZone[i];
+        Bsprintf(str,"JoystickAnalogueAxisSoloDeadZone%d",i);
+        scale = JoystickAnalogueAxisSoloDeadZone[i];
         SCRIPT_GetNumber(scripthandle, "Controls", str,&scale);
-        JoystickAnalogueIsolatedDeadZone[i] = scale;
+        JoystickAnalogueAxisSoloDeadZone[i] = scale;
     }
 
     for (i=0; i<MAXJOYBUTTONSANDHATS; i++)
@@ -852,7 +848,7 @@ void CONFIG_SetupJoystick(void)
         CONTROL_SetAnalogAxisScale(i, JoystickAnalogueScale[i], controldevice_joystick);
         JOYSTICK_SetDeadZone(i, JoystickAnalogueDead[i], JoystickAnalogueSaturate[i]);
         CONTROL_SetAnalogAxisInvert(i, JoystickAnalogueInvert[i]);
-        JOYSTICK_SetAxisSoloDeadZone(i, JoystickAnalogueIsolatedDeadZone[i]);
+        JOYSTICK_SetAxisSoloDeadZone(i, JoystickAnalogueAxisSoloDeadZone[i]);
     }
 }
 
@@ -1180,8 +1176,8 @@ void CONFIG_WriteSetup(uint32_t flags)
             Bsprintf(buf, "JoystickAnalogInvert%d", dummy);
             SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueInvert[dummy], FALSE, FALSE);
 
-            Bsprintf(buf, "JoystickAnalogueIsolatedDeadZone%d", dummy);
-            SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueIsolatedDeadZone[dummy], FALSE, FALSE);
+            Bsprintf(buf, "JoystickAnalogueAxisSoloDeadZone%d", dummy);
+            SCRIPT_PutNumber(scripthandle, "Controls", buf, JoystickAnalogueAxisSoloDeadZone[dummy], FALSE, FALSE);
         }
     }
 
