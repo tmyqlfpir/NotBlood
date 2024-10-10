@@ -66,7 +66,7 @@ int32_t JoystickAnalogueScale[MAXJOYAXES];
 int32_t JoystickAnalogueDead[MAXJOYAXES];
 int32_t JoystickAnalogueSaturate[MAXJOYAXES];
 int32_t JoystickAnalogueInvert[MAXJOYAXES];
-int32_t JoystickAnalogueIsolatedDeadZone[MAXJOYAXES];
+int32_t JoystickAnalogueAxisSoloDeadZone[MAXJOYAXES];
 uint8_t KeyboardKeys[NUMGAMEFUNCTIONS][2];
 int32_t scripthandle;
 int32_t setupread;
@@ -424,11 +424,7 @@ void CONFIG_SetDefaults(void)
     CDAudioToggle = 0;
     CDAudioFallback = 0;
     DopplerToggle = 1;
-#if defined(_WIN32)
-    MusicDevice = ASS_WinMM,
-#else
     MusicDevice = ASS_SF2;
-#endif
     Bstrcpy(SF2_BankFile, "notblood.sf2");
     gFMPianoFix = 1;
     //ud.config.VoiceToggle     = 5;  // bitfield, 1 = local, 2 = dummy, 4 = other players in DM
