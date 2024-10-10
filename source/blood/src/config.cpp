@@ -638,8 +638,8 @@ void CONFIG_SetDefaults(void)
         JoystickAnalogueInvert[i] = 0;
         CONTROL_SetAnalogAxisInvert(i, JoystickAnalogueInvert[i]);
 
-        JoystickAnalogueIsolatedDeadZone[i] = 0;
-        JOYSTICK_SetAxisIsolatedDeadZone(i, JoystickAnalogueIsolatedDeadZone[i]);
+        JoystickAnalogueAxisSoloDeadZone[i] = 0;
+        JOYSTICK_SetAxisSoloDeadZone(i, JoystickAnalogueAxisSoloDeadZone[i]);
     }
 #else
     for (int i=0; i<MAXJOYBUTTONSANDHATS; i++)
@@ -852,7 +852,7 @@ void CONFIG_SetupJoystick(void)
         CONTROL_SetAnalogAxisScale(i, JoystickAnalogueScale[i], controldevice_joystick);
         JOYSTICK_SetDeadZone(i, JoystickAnalogueDead[i], JoystickAnalogueSaturate[i]);
         CONTROL_SetAnalogAxisInvert(i, JoystickAnalogueInvert[i]);
-        JOYSTICK_SetAxisIsolatedDeadZone(i, JoystickAnalogueIsolatedDeadZone[i]);
+        JOYSTICK_SetAxisSoloDeadZone(i, JoystickAnalogueIsolatedDeadZone[i]);
     }
 }
 
