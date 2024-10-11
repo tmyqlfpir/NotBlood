@@ -1010,6 +1010,8 @@ void dbRandomizerMode(spritetype *pSprite)
                 break;
             }
             }
+            if (gGameOptions.nRandomizerCheat != 12)
+                pSprite->pal = 0;
             return;
         }
     }
@@ -1159,6 +1161,7 @@ void dbRandomizerMode(spritetype *pSprite)
             pSprite->flags &= ~kPhysGravity;
         else
             pSprite->flags |= kPhysGravity;
+        pSprite->pal = 0;
     }
     if (gGameOptions.nRandomizerMode >= 2) // if pickups or enemies+pickups mode, randomize pickup
     {
