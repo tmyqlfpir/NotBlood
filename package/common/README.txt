@@ -190,6 +190,8 @@ It should be noted that vanilla mode does not work with modern maps
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
 
 ### New console variables for NotBlood
+* crosshairoffsetx
+   - Set X axis offset for crosshair (-32 to 32)
 * crosshairoffsety
    - Set Y axis offset for crosshair (-32 to 32)
 * cl_autodivingsuit
