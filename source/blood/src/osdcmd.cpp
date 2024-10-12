@@ -975,7 +975,7 @@ int32_t registerosdcommands(void)
     static osdcvardata_t cvars_game[] =
     {
         { "crosshair", "enable/disable crosshair (0: off, 1: on, 2: on [autoaim])", (void *)&gAimReticle, CVAR_INT, 0, 2 },
-        { "crosshairoffset", "set Y axis offset for crosshair (-32 to 32)", (void *)&gAimReticleOffsetY, CVAR_INT, -32, 32 },
+        { "crosshairoffsety", "set Y axis offset for crosshair (-32 to 32)", (void *)&gAimReticleOffsetY, CVAR_INT, -32, 32 },
 
         { "cl_autoaim", "enable/disable weapon autoaim", (void *)&gAutoAim, CVAR_INT|CVAR_MULTI, 0, 3 },
 //        { "cl_automsg", "enable/disable automatically sending messages to all players", (void *)&ud.automsg, CVAR_BOOL, 0, 1 },
