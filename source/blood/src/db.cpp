@@ -1012,6 +1012,7 @@ void dbRandomizerMode(spritetype *pSprite)
             }
             if (gGameOptions.nRandomizerCheat != 12)
                 pSprite->pal = 0;
+            pSprite->cstat &= ~CSTAT_SPRITE_YFLIP;
             return;
         }
     }
@@ -1032,6 +1033,7 @@ void dbRandomizerMode(spritetype *pSprite)
         {
             const int enemiesrng[] = {kDudeRat, kDudeZombieAxeLaying, kDudeHand, kDudeInnocent, kDudeCultistTNT, kDudePhantasm};
             pSprite->type = enemiesrng[dbRandomizerRNGDudes(ARRAY_SSIZE(enemiesrng))];
+            pSprite->cstat &= ~CSTAT_SPRITE_YFLIP;
             break;
         }
         case kDudeRat:
