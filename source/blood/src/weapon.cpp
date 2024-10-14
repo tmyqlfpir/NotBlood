@@ -2225,6 +2225,11 @@ void processLifeLeech(PLAYER *pPlayer)
         AltFireLifeLeech(1, pPlayer);
         pPlayer->weaponState = -1;
         pPlayer->throwPower = pPlayer->throwPowerOld = 0;
+        if (gInfiniteAmmo && !VanillaMode()) // keep lifeleech after dropping
+        {
+            pPlayer->hasWeapon[kWeaponLifeLeech] = 1;
+            pPlayer->weaponState = 2;
+        }
     }
 }
 
@@ -3001,6 +3006,11 @@ void WeaponProcess(PLAYER *pPlayer) {
                 StartQAV(pPlayer, 119, -1, 0);
                 AltFireLifeLeech(1, pPlayer);
                 pPlayer->weaponState = -1;
+                if (gInfiniteAmmo && !VanillaMode()) // keep lifeleech after dropping
+                {
+                    pPlayer->hasWeapon[kWeaponLifeLeech] = 1;
+                    pPlayer->weaponState = 2;
+                }
             }
             return;
         }
