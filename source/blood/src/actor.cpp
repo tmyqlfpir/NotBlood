@@ -1688,8 +1688,8 @@ MissileType missileInfo[] = {
         30458, // use bullet sprite from notblood.pk3/TILES099.ART
         (625)<<12,
         0,
-        32,
-        32,
+        18,
+        18,
         (char)-128,
         8,
     },
@@ -1698,8 +1698,8 @@ MissileType missileInfo[] = {
         30458, // use bullet sprite from notblood.pk3/TILES099.ART
         (625)<<12,
         0,
-        32,
-        32,
+        18,
+        18,
         (char)-128,
         8,
     }
