@@ -5776,7 +5776,7 @@ void MoveMissileBullet(spritetype *pSprite)
             pOwner = NULL;
     }
     const bool underwaterSector = (sector[pSprite->sectnum].extra >= 0 && xsector[sector[pSprite->sectnum].extra].Underwater);
-    const bool bulletIsUnderwater = underwaterSector; // bullet is underwater and difficulty isn't extra crispy
+    const bool bulletIsUnderwater = underwaterSector; // bullet is underwater
     const int nSprite = pSprite->index;
     const int bakX = pSprite->x;
     const int bakY = pSprite->y;
