@@ -203,9 +203,9 @@ const char *zKeepItemWeaponStrings[] =
 const char *zSpawnProtectStrings[] =
 {
     "OFF",
-    "ON (1 SEC)",
-    "ON (2 SEC)",
-    "ON (3 SEC)",
+    "1 SEC",
+    "2 SECS",
+    "3 SECS",
 };
 
 const char *zShowWeapon[] =
@@ -295,9 +295,9 @@ const char *pzWeaponsVersionStrings[] = {
 
 const char *pzHitscanProjectilesStrings[] = {
     "Off",
-    "On (Slow)",
-    "On (Normal)",
-    "On (Fast)",
+    "Slow",
+    "Medium",
+    "Fast",
 };
 
 const char *pzRandomizerModeStrings[] = {
