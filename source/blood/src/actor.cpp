@@ -5776,7 +5776,6 @@ void MoveMissileBullet(spritetype *pSprite)
             pOwner = NULL;
     }
     const bool underwaterSector = (sector[pSprite->sectnum].extra >= 0 && xsector[sector[pSprite->sectnum].extra].Underwater);
-    const bool bulletIsUnderwater = underwaterSector; // bullet is underwater
     const int nSprite = pSprite->index;
     const int bakX = pSprite->x;
     const int bakY = pSprite->y;
@@ -5790,7 +5789,7 @@ void MoveMissileBullet(spritetype *pSprite)
         speed = (speed>>1) + (speed>>2);
     else if (gGameOptions.nHitscanProjectiles == 3) // if hitscan projectile speed is 125%, adjust hitscan range
         speed += (speed>>2);
-    if (bulletIsUnderwater) // if bullet is underwater, adjust hitscan range by 50%
+    if (underwaterSector) // if bullet is underwater, adjust hitscan range by 50%
         speed >>= 1;
     bool weHitSomething = MoveMissileBulletVectorTest(pSprite, pOwner, 0, 0, dx, dy, dz, nType, (speed>>12) + (speed>>13));
     while (!weHitSomething) // move missile and test for ceiling/floor
@@ -5799,7 +5798,7 @@ void MoveMissileBullet(spritetype *pSprite)
         int vy = yvel[nSprite]>>12;
         int vz = zvel[nSprite]>>8;
         int nSector = pSprite->sectnum;
-        if (bulletIsUnderwater) // if bullet is underwater, slow down by 50%
+        if (underwaterSector) // if bullet is underwater, slow down by 50%
         {
             vx >>= 1;
             vy >>= 1;
