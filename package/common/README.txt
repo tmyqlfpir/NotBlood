@@ -232,8 +232,6 @@ It should be noted that vanilla mode does not work with modern maps
    - Enable/disable 3D projection for fake sprite shadows
 * cl_smoketrail3d
    - Enable/disable 3D smoke trail positioning for tnt/spray can (single-player only)
-* cl_hitscantransparent
-   - Enable/disable transparent bullet sprites for hitscan projectiles option
 * cl_particlesduration
    - Enable/disable extended particle duration modification (single-player only - turned off for modern maps)
 * cl_weaponfastswitch
