@@ -6,7 +6,6 @@ NotBlood is a fork of NBlood with gameplay options, optional mutators and multip
 * Basic room over room support for positional audio
 * Autosaving support for collecting keys and start of level
 * New last weapon key binding (default Q)
-* Vanilla mode (v1.21) with optional DOS mouse handling
 * BloodGDX style difficulty options for singleplayer
 * Set item box selection to activated item
 * Ability to record DOS compatible demos
@@ -72,11 +71,6 @@ If you have the GOG version of the game, do the following:
    - mount the `.cue` as a virtual CD (for example with `WinCDEmu`)
    - copy the `movie` folder from the mounted CD into NotBlood's folder
 5. Launch NotBlood (on Linux, to play Cryptic Passage, launch with the `-ini CRYPTIC.INI` parameter)
-
-### Vanilla Mode
-This feature sets the game to match v1.21 DOS compatibility, and removes any bugs fixes that come with NBlood/NotBlood
-The vanilla mode option can be found within game settings, and is only available for single-player
-It should be noted that vanilla mode does not work with modern maps
 
 ### Mutator Options
 * Replace guns akimbo with quad damage
