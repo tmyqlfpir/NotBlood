@@ -384,6 +384,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
     case kDudeCultistTNT:
     case kDudeCultistBeast:
     {
+        const int nChannel = !VanillaMode() ? 16384+pSprite->index : -1;
         DUDEEXTRA_STATS *pDudeExtraE = &gDudeExtra[pSprite->extra].stats;
         pDudeExtraE->active = 1;
         if (pXSprite->target == -1) {
@@ -391,7 +392,6 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
                 case kMediumNormal:
                     aiNewState(pSprite, pXSprite, &cultistSearch);
                     if (Chance(0x8000)) {
-                        const int nChannel = !VanillaMode() ? 16384+pSprite->index : -1;
                         if (pSprite->type == kDudeCultistTommy) aiPlay3DSound(pSprite, 4008+Random(5), AI_SFX_PRIORITY_1, nChannel);
                         else aiPlay3DSound(pSprite, 1008+Random(5), AI_SFX_PRIORITY_1, nChannel);
                     }
@@ -403,7 +403,6 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
             }
         } else {
             if (Chance(0x8000)) {
-                const int nChannel = !VanillaMode() ? 16384+pSprite->index : -1;
                 if (pSprite->type == kDudeCultistTommy) aiPlay3DSound(pSprite, 4003+Random(4), AI_SFX_PRIORITY_1, nChannel);
                 else aiPlay3DSound(pSprite, 1003+Random(4), AI_SFX_PRIORITY_1, nChannel);
             }
