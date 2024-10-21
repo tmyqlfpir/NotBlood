@@ -384,6 +384,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
     case kDudeCultistTNT:
     case kDudeCultistBeast:
     {
+        const int nChannel = !VanillaMode() ? kMaxSprites+pSprite->index : -1; // use kMaxSprites+sprite index as channel, so cultist alerts can be muted on death/hurt state
         DUDEEXTRA_STATS *pDudeExtraE = &gDudeExtra[pSprite->extra].stats;
         pDudeExtraE->active = 1;
         if (pXSprite->target == -1) {
@@ -391,8 +392,8 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
                 case kMediumNormal:
                     aiNewState(pSprite, pXSprite, &cultistSearch);
                     if (Chance(0x8000)) {
-                        if (pSprite->type == kDudeCultistTommy) aiPlay3DSound(pSprite, 4008+Random(5), AI_SFX_PRIORITY_1, -1);
-                        else aiPlay3DSound(pSprite, 1008+Random(5), AI_SFX_PRIORITY_1, -1);
+                        if (pSprite->type == kDudeCultistTommy) aiPlay3DSound(pSprite, 4008+Random(5), AI_SFX_PRIORITY_1, nChannel);
+                        else aiPlay3DSound(pSprite, 1008+Random(5), AI_SFX_PRIORITY_1, nChannel);
                     }
                     break;
                 case kMediumWater:
@@ -402,8 +403,8 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
             }
         } else {
             if (Chance(0x8000)) {
-                if (pSprite->type == kDudeCultistTommy) aiPlay3DSound(pSprite, 4003+Random(4), AI_SFX_PRIORITY_1, -1);
-                else aiPlay3DSound(pSprite, 1003+Random(4), AI_SFX_PRIORITY_1, -1);
+                if (pSprite->type == kDudeCultistTommy) aiPlay3DSound(pSprite, 4003+Random(4), AI_SFX_PRIORITY_1, nChannel);
+                else aiPlay3DSound(pSprite, 1003+Random(4), AI_SFX_PRIORITY_1, nChannel);
             }
             switch (pXSprite->medium) {
                 case kMediumNormal:
@@ -424,6 +425,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
         return;
 #endif
     case kDudeCultistTommyProne: {
+        const int nChannel = !VanillaMode() ? kMaxSprites+pSprite->index : -1; // use kMaxSprites+sprite index as channel, so cultist alerts can be muted on death/hurt state
         DUDEEXTRA_STATS *pDudeExtraE = &gDudeExtra[pSprite->extra].stats;
         pDudeExtraE->active = 1;
         pSprite->type = kDudeCultistTommy;
@@ -432,7 +434,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
                 case 0:
                     aiNewState(pSprite, pXSprite, &cultistSearch);
                     if (Chance(0x8000))
-                        aiPlay3DSound(pSprite, 4008+Random(5), AI_SFX_PRIORITY_1, -1);
+                        aiPlay3DSound(pSprite, 4008+Random(5), AI_SFX_PRIORITY_1, nChannel);
                     break;
                 case kMediumWater:
                 case kMediumGoo:
@@ -441,8 +443,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
             }
         } else {
             if (Chance(0x8000))
-                aiPlay3DSound(pSprite, 4008+Random(5), AI_SFX_PRIORITY_1, -1);
-            
+                aiPlay3DSound(pSprite, 4008+Random(5), AI_SFX_PRIORITY_1, nChannel);
             switch (pXSprite->medium) {
                 case kMediumNormal:
                     aiNewState(pSprite, pXSprite, &cultistProneChase);
@@ -457,6 +458,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
     }
     case kDudeCultistShotgunProne:
     {
+        const int nChannel = !VanillaMode() ? kMaxSprites+pSprite->index : -1; // use kMaxSprites+sprite index as channel, so cultist alerts can be muted on death/hurt state
         DUDEEXTRA_STATS *pDudeExtraE = &gDudeExtra[pSprite->extra].stats;
         pDudeExtraE->active = 1;
         pSprite->type = kDudeCultistShotgun;
@@ -467,7 +469,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
             case kMediumNormal:
                 aiNewState(pSprite, pXSprite, &cultistSearch);
                 if (Chance(0x8000))
-                    aiPlay3DSound(pSprite, 1008+Random(5), AI_SFX_PRIORITY_1, -1);
+                    aiPlay3DSound(pSprite, 1008+Random(5), AI_SFX_PRIORITY_1, nChannel);
                 break;
             case kMediumWater:
             case kMediumGoo:
@@ -478,7 +480,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
         else
         {
             if (Chance(0x8000))
-                aiPlay3DSound(pSprite, 1003+Random(4), AI_SFX_PRIORITY_1, -1);
+                aiPlay3DSound(pSprite, 1003+Random(4), AI_SFX_PRIORITY_1, nChannel);
             switch (pXSprite->medium)
             {
             case kMediumNormal:
