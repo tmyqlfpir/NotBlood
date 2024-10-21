@@ -607,7 +607,6 @@ ifneq (0,$(MICROPROFILE))
   COMPILERFLAGS += -DMICROPROFILE_ENABLED=1
 endif
 
-
 ##### Recipes
 
 games := \
