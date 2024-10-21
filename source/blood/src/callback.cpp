@@ -460,11 +460,9 @@ void fxBloodBits(int nSprite) // 14
     gFX.fxSpawn(FX_48, nSector, x, y, pSprite->z);
     if (pSprite->ang == 1024)
     {
-        const char bDudeNotScreaming = !spriRangeIsFine(pSprite->owner) || (sprite[pSprite->owner].statnum != kStatThing) || !(xvel[pSprite->owner]>>10 || yvel[pSprite->owner]>>10);
         int nChannel = 28+(pSprite->index&2);
         dassert(nChannel < 32);
-        if (VanillaMode() || bDudeNotScreaming) // only trigger splat sfx if enemy is alive, or dead and stopped moving (prevents enemy sfx cutoff)
-            sfxPlay3DSound(pSprite, 385, nChannel, 1);
+        sfxPlay3DSound(pSprite, 385, nChannel, !VanillaMode() ? 1|4 : 1);
     }
     if (Chance(0x5000))
     {
