@@ -2902,11 +2902,6 @@ spritetype *actDropItem(spritetype *pSprite, int nType)
         pSprite2->shade = pItem->shade;
         pSprite2->xrepeat = pItem->xrepeat;
         pSprite2->yrepeat = pItem->yrepeat;
-        if (gGameOptions.bQuadDamagePowerup && (nType == kItemTwoGuns) && !VanillaMode()) // if quad damage is enabled
-        {
-            if (pSprite2->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) // replace guns akimbo icon with quad damage icon from notblood.pk3/TILES099.ART
-                pSprite2->picnum = 30463;
-        }
     }
     return pSprite2;
 }

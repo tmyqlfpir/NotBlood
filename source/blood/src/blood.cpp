@@ -805,8 +805,6 @@ void StartLevel(GAMEOPTIONS *gameOptions)
             }
             else if (bRandomItem) // randomize pickups
                 dbRandomizerMode(pSprite);
-            if (gGameOptions.bQuadDamagePowerup && (pSprite->picnum == gPowerUpInfo[kPwUpTwoGuns].picnum) && (pSprite->type == kItemTwoGuns)) // if quad damage is enabled, use new quad damage voxel from notblood.pk3
-                pSprite->picnum = 30463;
         }
         if (dbIsBannedSprite(pSprite, pXSprite)) // if sprite is banned type, remove sprite
         {
