@@ -100,6 +100,8 @@ If you have the GOG version of the game, do the following:
    - Cerberus spinning uselessly on lava
    - Check if enemy is alive before setting target for AI
    - Fixes tesla cultists bugged prone attack sequence
+   - Fixes enemy death sound effects getting cut off by blood splatter sound effects
+   - Fixes cultist's alert sound effct not getting cut on death
 * Enemy behavior (NotBlood)
    - All of the above fixes and including:
    - Improved beast stomp attack sector scanning
