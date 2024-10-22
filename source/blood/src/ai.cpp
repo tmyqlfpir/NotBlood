@@ -384,7 +384,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
     case kDudeCultistTNT:
     case kDudeCultistBeast:
     {
-        const int nChannel = !VanillaMode() ? kMaxSprites+pSprite->index : -1; // use kMaxSprites+sprite index as channel, so cultist alerts can be muted on death/hurt state
+        const int nChannel = EnemiesNBlood() && !VanillaMode() ? kMaxSprites+pSprite->index : -1; // use kMaxSprites+sprite index as channel, so cultist alerts can be muted on death/hurt state
         DUDEEXTRA_STATS *pDudeExtraE = &gDudeExtra[pSprite->extra].stats;
         pDudeExtraE->active = 1;
         if (pXSprite->target == -1) {
@@ -425,7 +425,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
         return;
 #endif
     case kDudeCultistTommyProne: {
-        const int nChannel = !VanillaMode() ? kMaxSprites+pSprite->index : -1; // use kMaxSprites+sprite index as channel, so cultist alerts can be muted on death/hurt state
+        const int nChannel = EnemiesNBlood() && !VanillaMode() ? kMaxSprites+pSprite->index : -1; // use kMaxSprites+sprite index as channel, so cultist alerts can be muted on death/hurt state
         DUDEEXTRA_STATS *pDudeExtraE = &gDudeExtra[pSprite->extra].stats;
         pDudeExtraE->active = 1;
         pSprite->type = kDudeCultistTommy;
@@ -458,7 +458,7 @@ void aiActivateDude(spritetype *pSprite, XSPRITE *pXSprite)
     }
     case kDudeCultistShotgunProne:
     {
-        const int nChannel = !VanillaMode() ? kMaxSprites+pSprite->index : -1; // use kMaxSprites+sprite index as channel, so cultist alerts can be muted on death/hurt state
+        const int nChannel = EnemiesNBlood() && !VanillaMode() ? kMaxSprites+pSprite->index : -1; // use kMaxSprites+sprite index as channel, so cultist alerts can be muted on death/hurt state
         DUDEEXTRA_STATS *pDudeExtraE = &gDudeExtra[pSprite->extra].stats;
         pDudeExtraE->active = 1;
         pSprite->type = kDudeCultistShotgun;
