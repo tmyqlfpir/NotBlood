@@ -418,6 +418,21 @@ int powerupCheck(PLAYER *pPlayer, int nPowerUp)
     return pPlayer->pwUpTime[nPowerUp];
 }
 
+char powerupAkimboWeapons(int nWeapon)
+{
+    switch (nWeapon)
+    {
+    case kWeaponFlare:
+    case kWeaponShotgun:
+    case kWeaponTommy:
+    case kWeaponNapalm:
+    case kWeaponTesla:
+        return 1;
+    default:
+        break;
+    }
+    return 0;
+}
 
 char powerupActivate(PLAYER *pPlayer, int nPowerUp)
 {
@@ -496,7 +511,7 @@ char powerupActivate(PLAYER *pPlayer, int nPowerUp)
                     }
                     return 1;
                 }
-                if ((pPlayer->curWeapon == kWeaponPitchfork) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponSprayCan) || (pPlayer->curWeapon >= kWeaponLifeLeech)) // if weapon doesn't have a akimbo state, don't raise weapon
+                if (!powerupAkimboWeapons(pPlayer->curWeapon)) // if weapon doesn't have a akimbo state, don't raise weapon
                     break;
             }
             pPlayer->input.newWeapon = pPlayer->curWeapon;
@@ -554,7 +569,7 @@ void powerupDeactivate(PLAYER *pPlayer, int nPowerUp)
             {
                 if (gGameOptions.bQuadDamagePowerup) // if quad damage is active, do not switch weapon
                     break;
-                if ((pPlayer->curWeapon == kWeaponPitchfork) || (pPlayer->curWeapon == kWeaponTNT) || (pPlayer->curWeapon == kWeaponSprayCan) || (pPlayer->curWeapon >= kWeaponLifeLeech)) // if weapon doesn't have a akimbo state, don't raise weapon
+                if (!powerupAkimboWeapons(pPlayer->curWeapon)) // if weapon doesn't have a akimbo state, don't raise weapon
                     break;
             }
             pPlayer->input.newWeapon = pPlayer->curWeapon;
