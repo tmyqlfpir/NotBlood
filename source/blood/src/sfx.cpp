@@ -326,7 +326,7 @@ void sfxPlay3DSound(spritetype *pSprite, int soundId, int chanId, int nFlags)
                 return;
             pBonkle = BonkleCache[nBonkles++];
         }
-        pBonkle->pSndSpr = pSprite;
+        pBonkle->pSndSpr = !(nFlags & 8) ? pSprite : NULL;
         pBonkle->chanId = chanId;
     }
     else
@@ -442,7 +442,7 @@ void sfxPlay3DSoundCP(spritetype* pSprite, int soundId, int chanId, int nFlags, 
                 return;
             pBonkle = BonkleCache[nBonkles++];
         }
-        pBonkle->pSndSpr = pSprite;
+        pBonkle->pSndSpr = !(nFlags & 8) ? pSprite : NULL;
         pBonkle->chanId = chanId;
     }
     else
