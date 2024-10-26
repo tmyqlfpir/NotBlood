@@ -2089,7 +2089,7 @@ void ProcessInput(PLAYER *pPlayer)
             pPlayer->cantJump = 1;
         }
 
-        if (pInput->buttonFlags.crouch)
+        if (pInput->buttonFlags.crouch && !gFlyMode)
             pPlayer->posture = kPostureCrouch;
         break;
     }
