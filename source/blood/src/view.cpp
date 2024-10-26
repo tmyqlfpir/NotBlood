@@ -370,7 +370,7 @@ void fakeProcessInput(PLAYER *pPlayer, GINPUT *pInput)
 
     predict.at70 = (gProfile[pPlayer->nPlayer].nWeaponHBobbing == 2) || VanillaMode() ? pInput->syncFlags.run : 0; // v1.0x weapon swaying (vanilla 1.21 multiplayer hardcoded this)
     predict.at71 = pInput->buttonFlags.jump;
-    if (predict.at48 == 1)
+    if (predict.at48 == 1 || gFlyMode)
     {
         int x = Cos(fix16_to_int(predict.at30));
         int y = Sin(fix16_to_int(predict.at30));
@@ -461,7 +461,7 @@ void fakeProcessInput(PLAYER *pPlayer, GINPUT *pInput)
             else predict.at64 = pPosture->normalJumpZ;//-0xbaaaa;
             predict.at6f = 1;
         }
-        if (pInput->buttonFlags.crouch)
+        if (pInput->buttonFlags.crouch && !gFlyMode)
             predict.at48 = 2;
         break;
     }
