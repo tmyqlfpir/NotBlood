@@ -86,7 +86,7 @@ short voxelIndex[kMaxTiles];
 
 const char *pzBaseFileName = "TILES%03i.ART"; //"TILES%03i.ART";
 
-int32_t MAXCACHE1DSIZE = (96*1024*1024);
+int32_t MAXCACHE1DSIZE = (48*1024*1024);
 
 int tileInit(char a1, const char *a2)
 {
