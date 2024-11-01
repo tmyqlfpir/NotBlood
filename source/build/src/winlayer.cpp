@@ -1746,22 +1746,18 @@ void videoBeginDrawing(void)
 //
 // mirrorTile() -- mirror input tile buffer
 //
-static uint8_t mirroredLine[1920*4] = {0};
-
 void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
 {
-    const size_t nSize = nWidth;
-    uint8_t *pBuff = mirroredLine;
-    const char bAllocBuff = nSize > sizeof(mirroredLine); // if bigger than static mirrored line, allocate from memory (very slow!)
-
-    if (!MIRRORMODE || !pTile || !nSize)
+    if (!MIRRORMODE || !pTile || nWidth <= 1)
         return;
-    if (bAllocBuff)
-    {
-        pBuff = (uint8_t *)Xmalloc(nSize);
-        if (!pBuff)
-            return;
-    }
+
+    const uint32_t kMirrorTile = MAXTILES-1;
+    if (walock[kMirrorTile] != 0)
+        return;
+
+    walock[kMirrorTile] = CACHE1D_UNLOCKED;
+    g_cache.allocateBlock(&waloff[kMirrorTile], nWidth, &walock[kMirrorTile]);
+    uint8_t *pBuff = (uint8_t *)waloff[kMirrorTile];
 
     if (MIRRORMODE & 1) // mirror mode (horiz)
     {
@@ -1782,8 +1778,9 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
             Bmemcpy(pHigh, pBuff, nWidth);
         }
     }
-    if (bAllocBuff)
-        Bfree(pBuff);
+
+    walock[kMirrorTile] = 0;
+    waloff[kMirrorTile] = 0;
 }
 
 
