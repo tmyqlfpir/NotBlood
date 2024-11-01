@@ -59,7 +59,7 @@ void SetMonoStereo(CGameMenuItemZBool *);
 void SetCrosshair(CGameMenuItemZCycle *);
 
 void SetQuadDamagePowerup(CGameMenuItemZBool*);
-void SetDamageInvul(CGameMenuItemZBool*);
+void SetDamageInvul(CGameMenuItemZCycle*);
 void SetExplosionBehavior(CGameMenuItemZCycle*);
 void SetProjectileBehavior(CGameMenuItemZCycle*);
 void SetNapalmFalloff(CGameMenuItemZBool*);
@@ -267,6 +267,15 @@ const char *zDiffStrings[] =
     "LIGHTLY BROILED",
     "WELL DONE",
     "EXTRA CRISPY",
+};
+
+const char *pzDamageInvulBehaviorStrings[] = {
+    "Off",
+    "Shortest",
+    "Short",
+    "Medium",
+    "Long",
+    "Longest",
 };
 
 const char *pzExplosionBehaviorStrings[] = {
@@ -548,7 +557,7 @@ CGameMenuItemZBool itemNetMonsterMotherSpiderHealth("MOTHER SPIDER HEALTH:", 3, 
 
 ///////////////
 CGameMenuItemZBool itemNetMutatorBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, false, NULL, NULL, NULL);
-CGameMenuItemZBool itemNetMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 55, 180, false, NULL, NULL, NULL);
+CGameMenuItemZCycle itemNetMutatorDamageInvul("INVULNERABILITY DURATION:", 3, 66, 55, 180, 0, NULL, pzDamageInvulBehaviorStrings, ARRAY_SSIZE(pzDamageInvulBehaviorStrings), 0);
 CGameMenuItemZCycle itemNetMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, NULL, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
 CGameMenuItemZCycle itemNetMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, 0, NULL, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
 CGameMenuItemZBool itemNetMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 85, 180, false, NULL, NULL, NULL);
@@ -700,7 +709,7 @@ void SetVanillaMode(CGameMenuItemZCycle *pItem);
 ///////////////
 CGameMenuItemTitle itemGameMutatorsTitle("MUTATORS", 1, 160, 20, 2038);
 CGameMenuItemZBool itemMutatorBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, false, SetQuadDamagePowerup, NULL, NULL);
-CGameMenuItemZBool itemMutatorBoolDamageInvul("HITSCAN DAMAGE INVULNERABILITY:", 3, 66, 55, 180, false, SetDamageInvul, NULL, NULL);
+CGameMenuItemZCycle itemMutatorDamageInvul("INVULNERABILITY DURATION:", 3, 66, 55, 180, 0, SetDamageInvul, pzDamageInvulBehaviorStrings, ARRAY_SSIZE(pzDamageInvulBehaviorStrings), 0);
 CGameMenuItemZCycle itemMutatorExplosionBehavior("EXPLOSIONS BEHAVIOR:", 3, 66, 65, 180, 0, SetExplosionBehavior, pzExplosionBehaviorStrings, ARRAY_SSIZE(pzExplosionBehaviorStrings), 0);
 CGameMenuItemZCycle itemMutatorProjectileBehavior("PROJECTILES BEHAVIOR:", 3, 66, 75, 180, 0, SetProjectileBehavior, pzProjectileBehaviorStrings, ARRAY_SSIZE(pzProjectileBehaviorStrings), 0);
 CGameMenuItemZBool itemMutatorNapalmFalloff("NAPALM GRAVITY FALLOFF:", 3, 66, 85, 180, false, SetNapalmFalloff, NULL, NULL);
@@ -1520,7 +1529,7 @@ void SetupNetStartMenu(void)
     //////////////////////
     menuNetworkGameMutators.Add(&itemGameMutatorsTitle, false);
     menuNetworkGameMutators.Add(&itemNetMutatorBoolQuadDamagePowerup, true);
-    menuNetworkGameMutators.Add(&itemNetMutatorBoolDamageInvul, false);
+    menuNetworkGameMutators.Add(&itemNetMutatorDamageInvul, false);
     menuNetworkGameMutators.Add(&itemNetMutatorExplosionBehavior, false);
     menuNetworkGameMutators.Add(&itemNetMutatorProjectileBehavior, false);
     menuNetworkGameMutators.Add(&itemNetMutatorNapalmFalloff, false);
@@ -1534,8 +1543,8 @@ void SetupNetStartMenu(void)
     menuNetworkGameMutators.Add(&itemBloodQAV, false);
     itemNetMutatorBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
     itemNetMutatorBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
-    itemNetMutatorBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
-    itemNetMutatorBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
+    itemNetMutatorDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
+    itemNetMutatorDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
     itemNetMutatorExplosionBehavior.tooltip_pzTextUpper = "Uses enhanced explosion calculation";
     itemNetMutatorProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
     itemNetMutatorProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
@@ -1580,7 +1589,7 @@ void SetupNetStartMenu(void)
 
     ///////
     itemNetMutatorBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
-    itemNetMutatorBoolDamageInvul.at20 = !!gDamageInvul;
+    itemNetMutatorDamageInvul.m_nFocus = gDamageInvul % ARRAY_SSIZE(pzDamageInvulBehaviorStrings);
     itemNetMutatorExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     itemNetMutatorProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     itemNetMutatorNapalmFalloff.at20 = !!gNapalmFalloff;
@@ -1773,7 +1782,7 @@ void SetupOptionsMenu(void)
     //////////////////////
     menuOptionsGameMutators.Add(&itemGameMutatorsTitle, false);
     menuOptionsGameMutators.Add(&itemMutatorBoolQuadDamagePowerup, true);
-    menuOptionsGameMutators.Add(&itemMutatorBoolDamageInvul, false);
+    menuOptionsGameMutators.Add(&itemMutatorDamageInvul, false);
     menuOptionsGameMutators.Add(&itemMutatorExplosionBehavior, false);
     menuOptionsGameMutators.Add(&itemMutatorProjectileBehavior, false);
     menuOptionsGameMutators.Add(&itemMutatorNapalmFalloff, false);
@@ -1788,8 +1797,8 @@ void SetupOptionsMenu(void)
     itemOptionsChainMutators.bDisableForNet = 1;
     itemMutatorBoolQuadDamagePowerup.tooltip_pzTextUpper = "Replaces guns akimbo powerup";
     itemMutatorBoolQuadDamagePowerup.tooltip_pzTextLower = "with Quake's quad damage";
-    itemMutatorBoolDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
-    itemMutatorBoolDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
+    itemMutatorDamageInvul.tooltip_pzTextUpper = "Apply a short invulnerability state";
+    itemMutatorDamageInvul.tooltip_pzTextLower = "on bullet/spirit/tesla damage";
     itemMutatorExplosionBehavior.tooltip_pzTextUpper = "Uses enhanced explosion calculation";
     itemMutatorProjectileBehavior.tooltip_pzTextUpper = "Use smaller hitboxes and improve collision";
     itemMutatorProjectileBehavior.tooltip_pzTextLower = "accuracy for player projectiles";
@@ -1822,7 +1831,7 @@ void SetupOptionsMenu(void)
 
     ///////
     itemMutatorBoolQuadDamagePowerup.at20 = !!gQuadDamagePowerup;
-    itemMutatorBoolDamageInvul.at20 = !!gDamageInvul;
+    itemMutatorDamageInvul.m_nFocus = gDamageInvul % ARRAY_SSIZE(pzDamageInvulBehaviorStrings);
     itemMutatorExplosionBehavior.m_nFocus = gExplosionBehavior % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     itemMutatorProjectileBehavior.m_nFocus = gProjectileBehavior % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     itemMutatorNapalmFalloff.at20 = !!gNapalmFalloff;
@@ -2375,13 +2384,13 @@ void SetQuadDamagePowerup(CGameMenuItemZBool* pItem)
     }
 }
 
-void SetDamageInvul(CGameMenuItemZBool* pItem)
+void SetDamageInvul(CGameMenuItemZCycle* pItem)
 {
     if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) {
-        gDamageInvul = pItem->at20;
-        gGameOptions.bDamageInvul = gDamageInvul;
+        gDamageInvul = pItem->m_nFocus % ARRAY_SSIZE(pzDamageInvulBehaviorStrings);
+        gGameOptions.nDamageInvul = gDamageInvul;
     } else {
-        pItem->at20 = !!gDamageInvul;
+        pItem->m_nFocus = gDamageInvul % ARRAY_SSIZE(pzDamageInvulBehaviorStrings);
     }
 }
 
@@ -4285,7 +4294,7 @@ void StartNetGame(CGameMenuItemChain *pItem)
     ////
     SetGameVanillaMode(0); // turn off vanilla mode for multiplayer so menus don't get bugged
     gPacketStartGame.bQuadDamagePowerup = itemNetMutatorBoolQuadDamagePowerup.at20;
-    gPacketStartGame.bDamageInvul = itemNetMutatorBoolDamageInvul.at20;
+    gPacketStartGame.nDamageInvul = itemNetMutatorDamageInvul.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     gPacketStartGame.nExplosionBehavior = itemNetMutatorExplosionBehavior.m_nFocus % ARRAY_SSIZE(pzExplosionBehaviorStrings);
     gPacketStartGame.nProjectileBehavior = itemNetMutatorProjectileBehavior.m_nFocus % ARRAY_SSIZE(pzProjectileBehaviorStrings);
     gPacketStartGame.bNapalmFalloff = itemNetMutatorNapalmFalloff.at20;

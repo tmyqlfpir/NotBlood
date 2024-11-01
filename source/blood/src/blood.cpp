@@ -665,7 +665,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
-        gGameOptions.bDamageInvul = gDamageInvul;
+        gGameOptions.nDamageInvul = gDamageInvul;
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
         gGameOptions.nProjectileBehavior = gProjectileBehavior;
         gGameOptions.bNapalmFalloff = gNapalmFalloff;
@@ -712,7 +712,7 @@ void StartLevel(GAMEOPTIONS *gameOptions)
 
         ///////
         gGameOptions.bQuadDamagePowerup = gPacketStartGame.bQuadDamagePowerup;
-        gGameOptions.bDamageInvul = gPacketStartGame.bDamageInvul;
+        gGameOptions.nDamageInvul = gPacketStartGame.nDamageInvul;
         gGameOptions.nExplosionBehavior = gPacketStartGame.nExplosionBehavior;
         gGameOptions.nProjectileBehavior = gPacketStartGame.nProjectileBehavior;
         gGameOptions.bNapalmFalloff = gPacketStartGame.bNapalmFalloff;

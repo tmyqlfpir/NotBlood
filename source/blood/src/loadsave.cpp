@@ -218,7 +218,7 @@ void LoadSave::LoadGame(char *pzFile)
     if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // if single-player, update the game options/player profile by loading the current set settings
     {
         gGameOptions.bQuadDamagePowerup = gQuadDamagePowerup;
-        gGameOptions.bDamageInvul = gDamageInvul;
+        gGameOptions.nDamageInvul = gDamageInvul;
         gGameOptions.nExplosionBehavior = gExplosionBehavior;
         gGameOptions.nProjectileBehavior = gProjectileBehavior;
         gGameOptions.bNapalmFalloff = gNapalmFalloff;
