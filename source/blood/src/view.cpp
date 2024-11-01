@@ -5306,6 +5306,8 @@ void viewSetRenderScale(char bShowRes)
     {
         if (bShowRes)
             OSD_Printf("Render resolution set to native res\n");
+        walock[DOWNSCALEBUFFER] = CACHE1D_FREE;
+        waloff[DOWNSCALEBUFFER] = 0;
         return;
     }
 
