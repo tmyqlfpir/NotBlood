@@ -1748,16 +1748,26 @@ void videoBeginDrawing(void)
 //
 void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
 {
-    if (!MIRRORMODE || !pTile || nWidth <= 1)
+    if (!MIRRORMODE || !pTile || nWidth <= 0)
         return;
 
+    static uint8_t buffMirroredLine[1920*4] = {0};
     const uint32_t kMirrorTile = MAXTILES-1;
-    if (walock[kMirrorTile] != 0)
+    const char bAllocBuff = (size_t)nWidth > sizeof(buffMirroredLine); // if bigger than static mirrored line, allocate from cache
+    if (bAllocBuff && walock[kMirrorTile] != 0)
         return;
 
-    walock[kMirrorTile] = CACHE1D_UNLOCKED;
-    g_cache.allocateBlock(&waloff[kMirrorTile], nWidth, &walock[kMirrorTile]);
-    uint8_t *pBuff = (uint8_t *)waloff[kMirrorTile];
+    uint8_t *pBuff;
+    if (bAllocBuff)
+    {
+        walock[kMirrorTile] = CACHE1D_UNLOCKED;
+        g_cache.allocateBlock(&waloff[kMirrorTile], nWidth, &walock[kMirrorTile]);
+        pBuff = (uint8_t *)waloff[kMirrorTile];
+    }
+    else
+    {
+        pBuff = buffMirroredLine;
+    }
 
     if (MIRRORMODE & 1) // mirror mode (horiz)
     {
@@ -1778,9 +1788,11 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
             Bmemcpy(pHigh, pBuff, nWidth);
         }
     }
-
-    walock[kMirrorTile] = 0;
-    waloff[kMirrorTile] = 0;
+    if (bAllocBuff)
+    {
+        walock[kMirrorTile] = 0;
+        waloff[kMirrorTile] = 0;
+    }
 }
 
 
