@@ -2766,15 +2766,15 @@ int playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, in
     dassert(pPlayer != NULL);
     if (pPlayer->damageControl[nDamageType])
         return 0;
-    if (gGameOptions.bDamageInvul && !VanillaMode()) // if invul timer option is active
+    if (gGameOptions.nDamageInvul && !VanillaMode()) // if invul timer option is active
     {
         if ((nDamageType == kDamageBullet) || (nDamageType == kDamageSpirit) || (nDamageType == kDamageTesla)) // only apply invulnerability for bullet/spirit/tesla damage
         {
             const DUDEINFO *pDudeInfo = getDudeInfo(pPlayer->pSprite->type);
             const XSPRITE *pXSprite = pPlayer->pXSprite;
             const int nHealth = clamp(pXSprite->health / ((pDudeInfo->startHealth<<4)>>3), 0, kInvulSteps-1); // divide health into invul array range (0-7)
-            const int nSkill = !(gGameOptions.uNetGameFlags&kNetGameFlagSkillIssue) ? gProfile[pPlayer->nPlayer].skill : gGameOptions.nDifficulty;
-            const int nInvulTicks = ((invulTimers[nHealth]/4) * (4-nSkill+1))>>1; // scale invul ticks depending on current difficulty
+            const int nSkill = gGameOptions.nDamageInvul-1;
+            const int nInvulTicks = ((invulTimers[nHealth]/4) * (nSkill+1))>>1; // scale invul ticks depending on current difficulty
             const char bInvulState = pPlayer->invulTime > (gFrameClock - nInvulTicks);
             if ((pPlayer->invulTime != gFrameClock) && bInvulState) // if invulnerability timer has not lapsed for difficulty, bypass damage calculation
                 return 0;

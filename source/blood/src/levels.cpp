@@ -69,7 +69,7 @@ GAMEOPTIONS gSingleGameOptions = {
     1800,  // int nItemRespawnTime;
     7200,  // int nSpecialRespawnTime;
     0,     // bool bQuadDamagePowerup;
-    0,     // bool bDamageInvul;
+    0,     // int nDamageInvul;
     0,     // int nExplosionBehavior;
     0,     // int nProjectileBehavior;
     0,     // bool bNapalmFalloff;
