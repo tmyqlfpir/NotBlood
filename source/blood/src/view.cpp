@@ -1373,6 +1373,59 @@ void viewDrawStats(PLAYER *pPlayer, int x, int y)
     }
 }
 
+#define kMaxBurnFlames 9
+
+const struct BURNTABLE {
+    short nTile;
+    unsigned char nStat;
+    unsigned char nPal;
+    int nScale;
+    short nX, nY;
+} gBurnTable[kMaxBurnFlames] = {
+    {2101, RS_AUTO, 0, 118784,  10, 220},
+    {2101, RS_AUTO, 0, 110592,  40, 220},
+    {2101, RS_AUTO, 0,  81920,  85, 220},
+    {2101, RS_AUTO, 0,  69632, 120, 220},
+    {2101, RS_AUTO, 0,  61440, 160, 220},
+    {2101, RS_AUTO, 0,  73728, 200, 220},
+    {2101, RS_AUTO, 0,  77824, 235, 220},
+    {2101, RS_AUTO, 0, 110592, 275, 220},
+    {2101, RS_AUTO, 0, 122880, 310, 220}
+};
+
+int gBurnTableAspectOffset[kMaxBurnFlames] = {0};
+
+void viewBurnTimeInit(void)
+{
+    if (!r_usenewaspect) return;
+
+    for (int i = 0; i < kMaxBurnFlames; i++)
+    {
+        int nX = gBurnTable[i].nX;
+        nX = scale(nX-(320>>1), 320>>1, 266>>1); // scale flame position
+        nX = scale(nX<<16, xscale, yscale); // multiply by window ratio
+        nX += (320>>1)<<16; // offset to center
+        gBurnTableAspectOffset[i] = nX;
+    }
+}
+
+void viewBurnTime(int gScale)
+{
+    if (!gScale) return;
+
+    for (int i = 0; i < kMaxBurnFlames; i++)
+    {
+        const BURNTABLE *pBurnTable = &gBurnTable[i];
+        const int nTile = gBurnTable[i].nTile+qanimateoffs(pBurnTable->nTile,32768+i);
+        int nScale = pBurnTable->nScale;
+        if (gScale < 600)
+            nScale = scale(nScale, gScale, 600);
+        const int nX = r_usenewaspect ? gBurnTableAspectOffset[i] : pBurnTable->nX<<16;
+        rotatesprite(nX, pBurnTable->nY<<16, nScale, 0, nTile,
+            0, pBurnTable->nPal, pBurnTable->nStat, windowxy1.x, windowxy1.y, windowxy2.x, windowxy2.y);
+    }
+}
+
 #define kPowerUps 12
 
 const struct POWERUPDISPLAY {
@@ -2590,6 +2643,7 @@ void viewResizeView(int size)
     }
     gGameMessageMgr.maxNumberOfMessagesToDisplay = !VanillaMode() && (gGameOptions.nGameType != kGameTypeSinglePlayer) ? 3 : 4; // set max displayed messages to 3 for multiplayer (reduces on screen clutter)
     viewSetCrosshairColor(CrosshairColors.r, CrosshairColors.g, CrosshairColors.b);
+    viewBurnTimeInit();
     viewSetRenderScale(0);
     viewUpdateHudRatio();
     viewUpdateSkyRatio();
@@ -4009,50 +4063,6 @@ void CalcPosition(spritetype *pSprite, int *pX, int *pY, int *pZ, int *vsectnum,
     dassert(*vsectnum >= 0 && *vsectnum < kMaxSectors);
     FindSector(*pX, *pY, *pZ, vsectnum);
     pSprite->cstat = bakCstat;
-}
-
-struct {
-    short nTile;
-    unsigned char nStat;
-    unsigned char nPal;
-    int nScale;
-    short nX, nY;
-} burnTable[9] = {
-     { 2101, RS_AUTO, 0, 118784, 10, 220 },
-     { 2101, RS_AUTO, 0, 110592, 40, 220 },
-     { 2101, RS_AUTO, 0, 81920, 85, 220 },
-     { 2101, RS_AUTO, 0, 69632, 120, 220 },
-     { 2101, RS_AUTO, 0, 61440, 160, 220 },
-     { 2101, RS_AUTO, 0, 73728, 200, 220 },
-     { 2101, RS_AUTO, 0, 77824, 235, 220 },
-     { 2101, RS_AUTO, 0, 110592, 275, 220 },
-     { 2101, RS_AUTO, 0, 122880, 310, 220 }
-};
-
-void viewBurnTime(int gScale)
-{
-    if (!gScale) return;
-
-    for (int i = 0; i < 9; i++)
-    {
-        const int nTile = burnTable[i].nTile+qanimateoffs(burnTable[i].nTile,32768+i);
-        int nScale = burnTable[i].nScale;
-        if (gScale < 600)
-        {
-            nScale = scale(nScale, gScale, 600);
-        }
-        int xoffset = burnTable[i].nX;
-        if (r_usenewaspect)
-        {
-            xoffset = scale(xoffset-(320>>1), 320>>1, 266>>1); // scale flame position
-            xoffset = scale(xoffset<<16, xscale, yscale); // multiply by window ratio
-            xoffset += (320>>1)<<16; // offset to center
-        }
-        else
-            xoffset <<= 16;
-        rotatesprite(xoffset, burnTable[i].nY<<16, nScale, 0, nTile,
-            0, burnTable[i].nPal, burnTable[i].nStat, windowxy1.x, windowxy1.y, windowxy2.x, windowxy2.y);
-    }
 }
 
 inline bool viewPaused(void)
