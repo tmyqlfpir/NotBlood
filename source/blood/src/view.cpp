@@ -4973,17 +4973,15 @@ RORHACK:
                 viewAimReticle(gView, defaultHoriz, q16slopehoriz, fFov);
             if (gProfile[gView->nPlayer].nWeaponHBobbing == 0) // disable weapon sway
                 v4c = 0;
-            if (!gWeaponInterpolate) // if position interpolate weapon is off, quantize the weapon positions
-            {
-                cX = (v4c>>8)+160;
-                cY = (v48>>8)+220+(zDelta>>7);
-                cX <<= 16;
-                cY <<= 16;
-            }
-            else // default
+            if (gWeaponInterpolate) // smooth motion
             {
                 cX = (v4c<<8)+(160<<16);
                 cY = (v48<<8)+(220<<16)+(zDelta<<9);
+            }
+            else // quantize like vanilla v1.21
+            {
+                cX = ((v4c>>8)+160)<<16;
+                cY = ((v48>>8)+220+(zDelta>>7))<<16;
             }
             int nShade = sector[nSectnum].floorshade; int nPalette = 0;
             if (sector[gView->pSprite->sectnum].extra > 0) {
