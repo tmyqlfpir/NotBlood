@@ -581,7 +581,7 @@ void OperateSprite(int nSprite, XSPRITE *pXSprite, const EVENT &event)
                 evPost(nSprite, 3, 18, kCmdOff, causerID);
             }
         }
-        break;    
+        break;
     case kThingArmedProxBomb:
         if (pSprite->statnum != kStatRespawn) {
             switch (event.cmd) {
