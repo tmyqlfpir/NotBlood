@@ -6735,7 +6735,6 @@ spritetype * actSpawnSprite(spritetype *pSource, int nStat);
 
 spritetype *actSpawnDude(spritetype *pSource, short nType, int a3, int a4)
 {
-    XSPRITE* pXSource = &xsprite[pSource->extra];
     spritetype *pSprite2 = actSpawnSprite(pSource, kStatDude);
     if (!pSprite2) return NULL;
     XSPRITE *pXSprite2 = &xsprite[pSprite2->extra];
@@ -6771,6 +6770,7 @@ spritetype *actSpawnDude(spritetype *pSource, short nType, int a3, int a4)
     // add a way to inherit some values of spawner type 18 by dude.
     // This way designer can count enemies via switches and do many other interesting things.
     if (gModernMap && pSource->flags & kModernTypeFlag1) {
+        XSPRITE* pXSource = &xsprite[pSource->extra];
         switch (pSource->type) { // allow inheriting only for selected source types
             case kMarkerDudeSpawn:
                 //inherit pal?
