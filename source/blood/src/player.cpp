@@ -2690,9 +2690,8 @@ void playerProcessRoundCheck(void)
     }
     viewDrawWinner(buffer, nPal);
     viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
-    evPost(kLevelExitNormal, 3, kTicRate * 15, kCallbackEndRound); // trigger level end in 15 seconds
+    evPost(kLevelExitNormal, 3, kTicRate * 5, kCallbackEndRound); // trigger level end in 5 seconds
     gPlayerRoundEnding = 1;
-    viewSetMessageColor("Exiting map in 15 seconds.", 8, MESSAGE_PRIORITY_NORMAL);
 }
 
 int playerDamageArmor(PLAYER *pPlayer, DAMAGE_TYPE nType, int nDamage)

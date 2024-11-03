@@ -416,17 +416,17 @@ void evSend(int nIndex, int nType, int rxId, COMMAND_ID command, int causerID)
         else viewSetSystemMessage("Invalid TextOver command by xobject #%d (object type %d)", nIndex, nType);
         return;
     case kChannelLevelExitNormal:
-        if (gGameOptions.uNetGameFlags&kNetGameFlagNoLevelExit || gPlayerRoundEnding) return;
+        if (gGameOptions.uNetGameFlags&kNetGameFlagNoLevelExit) return;
         levelEndLevel(kLevelExitNormal);
         return;
     case kChannelLevelExitSecret:
-        if (gGameOptions.uNetGameFlags&kNetGameFlagNoLevelExit || gPlayerRoundEnding) return;
+        if (gGameOptions.uNetGameFlags&kNetGameFlagNoLevelExit) return;
         levelEndLevel(kLevelExitSecret);
         return;
     #ifdef NOONE_EXTENSIONS
     // finished level and load custom level ¹ via numbered command.
     case kChannelModernEndLevelCustom:
-        if (gGameOptions.uNetGameFlags&kNetGameFlagNoLevelExit || gPlayerRoundEnding) return;
+        if (gGameOptions.uNetGameFlags&kNetGameFlagNoLevelExit) return;
         if (command >= kCmdNumberic) levelEndLevelCustom(command - kCmdNumberic);
         else viewSetSystemMessage("Invalid Level-Exit# command by xobject #%d (object type %d)", nIndex, nType);
         return;
