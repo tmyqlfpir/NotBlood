@@ -3061,7 +3061,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
                 pNSprite->z = top;
                 pNSprite->z--; // offset from fake floor so it isn't z-fighting when being rendered
             }
-            else if ((sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095)) // if floor has ror, find actual floor
+            else if (pSprite && (sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095)) // if floor has ror, find actual floor
             {
                 int cX = pNSprite->x, cY = pNSprite->y, cZ = pNSprite->z, cZrel = pNSprite->z, nSectnum = pNSprite->sectnum;
                 for (int i = 0; i < 16; i++) // scan through max stacked sectors
