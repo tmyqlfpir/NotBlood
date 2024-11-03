@@ -3038,16 +3038,30 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->z = getflorzofslope(pTSprite->sectnum, pNSprite->x, pNSprite->y);
         if (!VanillaMode()) // support better floor detection for shadows (detect fake floors/allows ROR traversal)
         {
-            int ceilZ, ceilHit, floorZ, floorHit;
-            GetZRangeAtXYZ(pTSprite->x, pTSprite->y, pTSprite->z, pTSprite->sectnum, &ceilZ, &ceilHit, &floorZ, &floorHit, pTSprite->clipdist<<2, CLIPMASK0, PARALLAXCLIP_CEILING|PARALLAXCLIP_FLOOR);
-            if (((floorHit&0xc000) == 0xc000) && spriRangeIsFine(floorHit&0x3fff) && ((sprite[floorHit&0x3fff].cstat & (CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_ALIGNMENT_FLOOR|CSTAT_SPRITE_INVISIBLE)) == (CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_ALIGNMENT_FLOOR))) // if there is a fake floor under us, use fake floor as the shadow position
+            spritetype *pSprite = spriRangeIsFine(pTSprite->owner) ? &sprite[pTSprite->owner] : NULL;
+            char bHitFakeFloor = 0;
+            short nFakeFloorSprite;
+            if (pSprite)
+            {
+                int bakCstat = pSprite->cstat;
+                pSprite->cstat &= ~256;
+                hitscangoal.x = hitscangoal.y = 0x1fffffff;
+                vec3_t pos = {pSprite->x, pSprite->y, pSprite->z};
+                hitdata_t hitdata;
+                hitscan(&pos, pSprite->sectnum, 0, 0, 0x1fffffff, &hitdata, CLIPMASK0); // hitscan below sprite to detect fake floors
+                nFakeFloorSprite = hitdata.sprite;
+                if (spriRangeIsFine(nFakeFloorSprite))
+                    bHitFakeFloor = (sprite[nFakeFloorSprite].cstat & (CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_ALIGNMENT_FLOOR|CSTAT_SPRITE_INVISIBLE)) == (CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_ALIGNMENT_FLOOR);
+                pSprite->cstat = bakCstat;
+            }
+            if (bHitFakeFloor) // if there is a fake floor under us, use fake floor as the shadow position
             {
                 int top, bottom;
-                GetSpriteExtents(&sprite[floorHit&0x3fff], &top, &bottom);
+                GetSpriteExtents(&sprite[nFakeFloorSprite], &top, &bottom);
                 pNSprite->z = top;
                 pNSprite->z--; // offset from fake floor so it isn't z-fighting when being rendered
             }
-            else if ((sector[pNSprite->sectnum].floorpicnum >= 4080) && (sector[pNSprite->sectnum].floorpicnum <= 4095)) // if floor has ror, find actual floor
+            else if (pSprite && (sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095)) // if floor has ror, find actual floor
             {
                 int cX = pNSprite->x, cY = pNSprite->y, cZ = pNSprite->z, cZrel = pNSprite->z, nSectnum = pNSprite->sectnum;
                 for (int i = 0; i < 16; i++) // scan through max stacked sectors
