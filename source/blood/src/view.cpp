@@ -3040,7 +3040,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         {
             char bHitFakeFloor = 0;
             short nFakeFloorSprite;
-            if (spriRangeIsFine(pTSprite->owner) && (numsectors+1 < kMaxSectors))
+            if (spriRangeIsFine(pTSprite->owner) && (numsectors < kMaxSectors-1))
             {
                 spritetype *pSprite = &sprite[pTSprite->owner];
                 int bakCstat = pSprite->cstat;

@@ -359,6 +359,9 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
         if (TestBitString(gotpic, nTile))
         {
             ClearBitString(gotpic, nTile);
+            const int bakNumsectors = numsectors;
+            if (numsectors < kMaxSectors-1)
+                numsectors++; // needed for rendering else operations like getzrange will crash when checking mirror sector
             switch (mirror[i].at0)
             {
             case 0:
@@ -496,6 +499,8 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                 break;
             }
             }
+            numsectors = bakNumsectors;
+            return;
         }
     }
     numsectors = bakNumsectors;
