@@ -350,7 +350,9 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
 {
     if (videoGetRenderMode() == REND_POLYMER)
         return;
-    numsectors++; // needed for rendering else operations like getzrange will crash when checking mirror sector
+    const int bakNumsectors = numsectors;
+    if (numsectors < kMaxSectors-1)
+        numsectors++; // needed for rendering else operations like getzrange will crash when checking mirror sector
     for (int i = mirrorcnt - 1; i >= 0; i--)
     {
         int nTile = 4080+i;
@@ -496,7 +498,7 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
             }
         }
     }
-    numsectors--;
+    numsectors = bakNumsectors;
 }
 
 class MirrorLoadSave : public LoadSave {
