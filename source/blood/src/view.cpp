@@ -3038,11 +3038,11 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->z = getflorzofslope(pTSprite->sectnum, pNSprite->x, pNSprite->y);
         if (!VanillaMode()) // support better floor detection for shadows (detect fake floors/allows ROR traversal)
         {
-            spritetype *pSprite = spriRangeIsFine(pTSprite->owner) ? &sprite[pTSprite->owner] : NULL;
             char bHitFakeFloor = 0;
             short nFakeFloorSprite;
-            if (pSprite)
+            if (spriRangeIsFine(pTSprite->owner))
             {
+                spritetype *pSprite = &sprite[pTSprite->owner];
                 int bakCstat = pSprite->cstat;
                 pSprite->cstat &= ~256;
                 hitscangoal.x = hitscangoal.y = 0x1fffffff;
@@ -3061,7 +3061,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
                 pNSprite->z = top;
                 pNSprite->z--; // offset from fake floor so it isn't z-fighting when being rendered
             }
-            else if (pSprite && (sector[pSprite->sectnum].floorpicnum >= 4080) && (sector[pSprite->sectnum].floorpicnum <= 4095)) // if floor has ror, find actual floor
+            else if ((sector[pNSprite->sectnum].floorpicnum >= 4080) && (sector[pNSprite->sectnum].floorpicnum <= 4095)) // if floor has ror, find actual floor
             {
                 int cX = pNSprite->x, cY = pNSprite->y, cZ = pNSprite->z, cZrel = pNSprite->z, nSectnum = pNSprite->sectnum;
                 for (int i = 0; i < 16; i++) // scan through max stacked sectors
