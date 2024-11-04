@@ -3038,7 +3038,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         pNSprite->z = getflorzofslope(pTSprite->sectnum, pNSprite->x, pNSprite->y);
         if (!VanillaMode()) // support better floor detection for shadows (detect fake floors/allows ROR traversal)
         {
-            spritetype *pSprite = pTSprite->owner > 0 ? &sprite[pTSprite->owner] : NULL;
+            spritetype *pSprite = spriRangeIsFine(pTSprite->owner) ? &sprite[pTSprite->owner] : NULL;
             char bHitFakeFloor = 0;
             short nFakeFloorSprite;
             if (pSprite)
