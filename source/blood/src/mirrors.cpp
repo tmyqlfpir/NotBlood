@@ -356,6 +356,9 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
         if (TestBitString(gotpic, nTile))
         {
             ClearBitString(gotpic, nTile);
+            const int bakNumsectors = numsectors;
+            if (numsectors < kMaxSectors-1)
+                numsectors++; // needed for rendering else operations like getzrange will crash when checking mirror sector
             switch (mirror[i].at0)
             {
             case 0:
@@ -406,7 +409,7 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                     TranslateMirrorColors(wall[nWall].shade, wall[nWall].pal);
                 pWall->nextwall = nNextWall;
                 pWall->nextsector = nNextSector;
-                return;
+                break;
             }
             case 1:
             {
@@ -448,7 +451,7 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
 #ifdef USE_OPENGL
                 r_rorphase = 0;
 #endif
-                return;
+                break;
             }
             case 2:
             {
@@ -490,9 +493,11 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
 #ifdef USE_OPENGL
                 r_rorphase = 0;
 #endif
-                return;
+                break;
             }
             }
+            numsectors = bakNumsectors;
+            return;
         }
     }
 }
