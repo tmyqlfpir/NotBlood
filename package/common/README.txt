@@ -135,7 +135,7 @@ If you have the GOG version of the game, do the following:
    - Fix water/blood droplets transitioning through underwater (e.g: the cave secret in CP01.MAP)
    - Fixes blood splatter not using closest sector
    - Improves FX sprite handling regarding room over room transitioning
-   - Check wall collision for spent bullet casings movement
+   - Check wall collision for spent bullet casings movement (disabled for modern maps)
    - Allow spent bullet casings to use water sector links
    - Support spent bullet casings and blood splatter for moving sectors
    - Lower gravity of bullet casings and gibs underwater

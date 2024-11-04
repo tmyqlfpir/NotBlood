@@ -265,7 +265,11 @@ void CFX::fxProcess(void)
         if (zvel[nSprite])
             pSprite->z += zvel[nSprite]>>8;
         const bool bCasingType = (pSprite->type >= FX_37) && (pSprite->type <= FX_42);
+#ifdef NOONE_EXTENSIONS
+        if (bCasingType && gGameOptions.bSectorBehavior && !gModernMap && !VanillaMode()) // check if new xy position is within a wall
+#else
         if (bCasingType && gGameOptions.bSectorBehavior && !VanillaMode()) // check if new xy position is within a wall
+#endif
         {
             if (!cansee(oldPos.x, oldPos.y, oldPos.z, pSprite->sectnum, pSprite->x, pSprite->y, oldPos.z, pSprite->sectnum)) // if new position has clipped into wall, invert velocity and continue
             {
