@@ -3040,17 +3040,15 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         {
             char bHitFakeFloor = 0;
             short nFakeFloorSprite;
-            if (spriRangeIsFine(pTSprite->owner))
+            if (spriRangeIsFine(pTSprite->owner) && !gMirrorDrawing) // don't attempt to check for fake floors if we hit max sectors for mirror sector
             {
                 spritetype *pSprite = &sprite[pTSprite->owner];
                 int bakCstat = pSprite->cstat;
-                pSprite->cstat &= ~256;
-                hitscangoal.x = hitscangoal.y = 0x1fffffff;
-                vec3_t pos = {pSprite->x, pSprite->y, pSprite->z};
-                hitdata_t hitdata;
-                hitscan(&pos, pSprite->sectnum, 0, 0, 0x1fffffff, &hitdata, CLIPMASK0); // hitscan below sprite to detect fake floors
-                nFakeFloorSprite = hitdata.sprite;
-                if (spriRangeIsFine(nFakeFloorSprite))
+                pSprite->cstat &= ~257;
+                int ceilZ, ceilHit, floorZ, floorHit;
+                GetZRangeAtXYZ(pSprite->x, pSprite->y, pSprite->z, pSprite->sectnum, &ceilZ, &ceilHit, &floorZ, &floorHit, pSprite->clipdist<<2, CLIPMASK0, PARALLAXCLIP_CEILING|PARALLAXCLIP_FLOOR);
+                nFakeFloorSprite = floorHit&0x3fff;
+                if ((floorHit&0xc000) == 0xc000)
                     bHitFakeFloor = (sprite[nFakeFloorSprite].cstat & (CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_ALIGNMENT_FLOOR|CSTAT_SPRITE_INVISIBLE)) == (CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_ALIGNMENT_FLOOR);
                 pSprite->cstat = bakCstat;
             }
