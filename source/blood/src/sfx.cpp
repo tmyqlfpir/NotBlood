@@ -200,6 +200,18 @@ void Calc3DValues(BONKLE *pBonkle)
     lVol = Vol3d(angle - (gMe->pSprite->ang - nEarAngle), nVol);
     rVol = Vol3d(angle - (gMe->pSprite->ang + nEarAngle), nVol);
 
+    if (MIRRORMODE & 1)
+    {
+        int nTemp;
+        nTemp = lPhase;
+        lPhase = rPhase;
+        rPhase = nTemp;
+
+        nTemp = lVol;
+        lVol = rVol;
+        rVol = nTemp;
+    }
+
     if (!DopplerToggle)
     {
         lPitch = rPitch = ClipRange(pBonkle->pitch, 5000, 50000);
@@ -218,6 +230,13 @@ void Calc3DValues(BONKLE *pBonkle)
     rPitch = scale(pBonkle->pitch, dmulscale30r(cosVal, earVR.dx, sinVal, earVR.dy) + nSoundSpeed, nPitch);
     lPitch = ClipRange(lPitch, 5000, 50000);
     rPitch = ClipRange(rPitch, 5000, 50000);
+    if (MIRRORMODE & 1)
+    {
+        int nTemp;
+        nTemp = lPitch;
+        lPitch = rPitch;
+        rPitch = nTemp;
+    }
 }
 
 void sfxPlay3DSound(int x, int y, int z, int soundId, int nSector)
