@@ -364,9 +364,6 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
             case 0:
             {
                 gMirrorDrawing = true;
-                const int bakNumsectors = numsectors;
-                if ((numsectors < kMaxSectors-1) && !VanillaMode())
-                    numsectors++; // needed for rendering else operations like getzrange will crash when checking mirror sector
                 int nWall = mirror[i].at4;
                 int nSector = sectorofwall(nWall);
                 walltype *pWall = &wall[nWall];
@@ -413,7 +410,6 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                     TranslateMirrorColors(wall[nWall].shade, wall[nWall].pal);
                 pWall->nextwall = nNextWall;
                 pWall->nextsector = nNextSector;
-                numsectors = bakNumsectors;
                 gMirrorDrawing = false;
                 return;
             }
