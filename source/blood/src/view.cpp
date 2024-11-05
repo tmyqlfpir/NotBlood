@@ -3040,7 +3040,7 @@ tspritetype *viewAddEffect(int nTSprite, VIEW_EFFECT nViewEffect)
         {
             char bHitFakeFloor = 0;
             short nFakeFloorSprite;
-            if (spriRangeIsFine(pTSprite->owner) && (numsectors < kMaxSectors-1))
+            if (spriRangeIsFine(pTSprite->owner) && (!gMirrorDrawing || numsectors < kMaxSectors-1)) // don't attempt to check for fake floors if we hit max sectors for mirror sector
             {
                 spritetype *pSprite = &sprite[pTSprite->owner];
                 int bakCstat = pSprite->cstat;

@@ -35,6 +35,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "view.h"
 #include "warp.h"
 
+bool gMirrorDrawing;
+
 int mirrorcnt, mirrorsector, mirrorwall[4];
 
 typedef struct
@@ -85,6 +87,7 @@ void InitMirrors(void)
 #endif //  POLYMER
 
 #endif
+    gMirrorDrawing = false;
     mirrorcnt = 0;
     tilesiz[504].x = 0;
     tilesiz[504].y = 0;
@@ -356,13 +359,14 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
         if (TestBitString(gotpic, nTile))
         {
             ClearBitString(gotpic, nTile);
-            const int bakNumsectors = numsectors;
-            if (numsectors < kMaxSectors-1)
-                numsectors++; // needed for rendering else operations like getzrange will crash when checking mirror sector
             switch (mirror[i].at0)
             {
             case 0:
             {
+                gMirrorDrawing = true;
+                const int bakNumsectors = numsectors;
+                if (numsectors < kMaxSectors-1)
+                    numsectors++; // needed for rendering else operations like getzrange will crash when checking mirror sector
                 int nWall = mirror[i].at4;
                 int nSector = sectorofwall(nWall);
                 walltype *pWall = &wall[nWall];
@@ -409,7 +413,9 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
                     TranslateMirrorColors(wall[nWall].shade, wall[nWall].pal);
                 pWall->nextwall = nNextWall;
                 pWall->nextsector = nNextSector;
-                break;
+                numsectors = bakNumsectors;
+                gMirrorDrawing = false;
+                return;
             }
             case 1:
             {
@@ -451,7 +457,7 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
 #ifdef USE_OPENGL
                 r_rorphase = 0;
 #endif
-                break;
+                return;
             }
             case 2:
             {
@@ -493,11 +499,9 @@ void DrawMirrors(int x, int y, int z, fix16_t a, fix16_t horiz, int smooth, int 
 #ifdef USE_OPENGL
                 r_rorphase = 0;
 #endif
-                break;
+                return;
             }
             }
-            numsectors = bakNumsectors;
-            return;
         }
     }
 }
@@ -524,6 +528,7 @@ void MirrorLoadSave::Load(void)
     Read(&mirrorsector,sizeof(mirrorsector));
     Read(mirror, sizeof(mirror));
     Read(mirrorwall, sizeof(mirrorwall));
+    gMirrorDrawing = false;
     tilesiz[504].x = 0;
     tilesiz[504].y = 0;
 
