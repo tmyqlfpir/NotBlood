@@ -5094,7 +5094,7 @@ RORHACK:
         gViewMap.Process(cX, cY, nAng);
     }
     viewDrawInterface(delta);
-    if (gView->hand == 1)
+    if (IsPlayerSprite(gView->pSprite) && (gView->hand == 1))
     {
         int zn = ((gView->zWeapon-gView->zView-(12<<8))>>7)+220;
         gChoke.Draw(160, zn);
