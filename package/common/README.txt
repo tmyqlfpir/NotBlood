@@ -102,6 +102,7 @@ If you have the GOG version of the game, do the following:
    - Fixes tesla cultists bugged prone attack sequence
    - Fixes enemy death sound effects getting cut off by blood splatter sound effects
    - Fixes cultist's alert sound effct not getting cut on death
+   - Fixes hands choking attack working in multiplayer
 * Enemy behavior (NotBlood)
    - All of the above fixes and including:
    - Improved beast stomp attack sector scanning
