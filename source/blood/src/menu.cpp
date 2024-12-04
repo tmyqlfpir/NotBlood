@@ -1960,6 +1960,8 @@ void SetupOptionsMenu(void)
     itemOptionsDisplayViewBoolSlopeTilting.tooltip_pzTextLower = "Tilt view when looking towards slope";
     itemOptionsDisplayViewWeaponInterpolation.tooltip_pzTextUpper = "";
     itemOptionsDisplayViewWeaponInterpolation.tooltip_pzTextLower = "Interpolate QAV weapon animations (experimental)";
+    itemOptionsDisplayViewWeaponSwaying.tooltip_pzTextUpper = "";
+    itemOptionsDisplayViewWeaponSwaying.tooltip_pzTextLower = "Set weapon sway (v1.0x alters tommy cultist behavior)";
     itemOptionsDisplayViewBoolInterpolation.tooltip_pzTextUpper = "";
     itemOptionsDisplayViewBoolInterpolation.tooltip_pzTextLower = "Set interpolation method (original/integer or modern/float)";
     itemOptionsDisplayViewBoolPowerupStyle.tooltip_pzTextUpper = "";
