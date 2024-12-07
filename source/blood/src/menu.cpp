@@ -434,6 +434,7 @@ CGameMenuItemZBool itemBannedMonstersTinyCaleb("TINY CALEBS:", 3, 75, 88, 161, f
 CGameMenuItemZBool itemBannedMonstersHellHounds("HELL HOUNDS:", 3, 75, 96, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemBannedMonstersRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 112, 161, false, NULL, "SHORTER", "DEFAULT");
 CGameMenuItemZBool itemBannedMonstersMotherSpiderHealth("MOTHER SPIDER HEALTH:", 3, 75, 120, 161, false, NULL, "HALF", "DEFAULT");
+CGameMenuItemZBool itemBannedMonstersTchernobogHealth("TCHERNOBOG HEALTH:", 3, 75, 128, 161, false, NULL, "FULL", "DEFAULT");
 
 CGameMenuItemTitle itemBannedItemsTitle("SET ITEMS", 1, 160, 20, 2038);
 CGameMenuItemZBool itemBannedItemsFlare("FLARE PISTOL:", 3, 75, 32, 161, false, NULL, "REMOVE", "KEEP");
@@ -554,6 +555,7 @@ CGameMenuItemZBool itemNetMonsterTinyCaleb("TINY CALEBS:", 3, 75, 138, 161, fals
 CGameMenuItemZBool itemNetMonsterHellHounds("HELL HOUNDS:", 3, 75, 146, 161, false, NULL, "REMOVE", "KEEP");
 CGameMenuItemZBool itemNetMonsterRatsAttack("RAT ATTACK DISTANCE:", 3, 75, 162, 161, false, NULL, "SHORTER", "DEFAULT");
 CGameMenuItemZBool itemNetMonsterMotherSpiderHealth("MOTHER SPIDER HEALTH:", 3, 75, 170, 161, false, NULL, "HALF", "DEFAULT");
+CGameMenuItemZBool itemNetMonsterTchernobogHealth("TCHERNOBOG HEALTH:", 3, 75, 178, 161, false, NULL, "FULL", "DEFAULT");
 
 ///////////////
 CGameMenuItemZBool itemNetMutatorBoolQuadDamagePowerup("REPLACE AKIMBO WITH 4X DAMAGE:", 3, 66, 45, 180, false, NULL, NULL, NULL);
@@ -1295,9 +1297,12 @@ void SetupDifficultyMenu(void)
     menuBannedMonsters.Add(&itemBannedMonstersHellHounds, false);
     menuBannedMonsters.Add(&itemBannedMonstersRatsAttack, false);
     menuBannedMonsters.Add(&itemBannedMonstersMotherSpiderHealth, false);
+    menuBannedMonsters.Add(&itemBannedMonstersTchernobogHealth, false);
     menuBannedMonsters.Add(&itemBloodQAV, false);
     itemBannedMonstersSpiders.tooltip_pzTextUpper = "";
     itemBannedMonstersSpiders.tooltip_pzTextLower = "Mother spiders are not removed to avoid boss softlocks";
+    itemBannedMonstersTchernobogHealth.tooltip_pzTextUpper = "";
+    itemBannedMonstersTchernobogHealth.tooltip_pzTextLower = "Fix overflow health bug for Tchernobog";
 
     menuBannedItems.Add(&itemBannedItemsTitle, false);
     menuBannedItems.Add(&itemBannedItemsFlare, true);
@@ -1522,9 +1527,8 @@ void SetupNetStartMenu(void)
     menuNetworkGameMonsters.Add(&itemNetMonsterHellHounds, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterRatsAttack, false);
     menuNetworkGameMonsters.Add(&itemNetMonsterMotherSpiderHealth, false);
+    menuNetworkGameMonsters.Add(&itemNetMonsterTchernobogHealth, false);
     menuNetworkGameMonsters.Add(&itemBloodQAV, false);
-    itemNetMonsterSpiders.tooltip_pzTextUpper = "";
-    itemNetMonsterSpiders.tooltip_pzTextLower = "Mother spiders are not removed to avoid boss softlocks";
 
     //////////////////////
     menuNetworkGameMutators.Add(&itemGameMutatorsTitle, false);
@@ -2786,6 +2790,8 @@ inline unsigned int SetBannedSprites(char bSinglePlayer)
             uSpriteBannedFlags |= BANNED_RATS_BITE;
         if (itemBannedMonstersMotherSpiderHealth.at20)
             uSpriteBannedFlags |= BANNED_MSPIDERS_HP;
+        if (itemBannedMonstersTchernobogHealth.at20)
+            uSpriteBannedFlags |= BANNED_TCHERNOBOG_HP;
     }
     else // load from network monster menu
     {
@@ -2812,6 +2818,8 @@ inline unsigned int SetBannedSprites(char bSinglePlayer)
             uSpriteBannedFlags |= BANNED_RATS_BITE;
         if (itemNetMonsterMotherSpiderHealth.at20)
             uSpriteBannedFlags |= BANNED_MSPIDERS_HP;
+        if (itemNetMonsterTchernobogHealth.at20)
+            uSpriteBannedFlags |= BANNED_TCHERNOBOG_HP;
     }
 
     // weapons
