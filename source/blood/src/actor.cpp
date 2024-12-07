@@ -2571,7 +2571,9 @@ void actInit(bool bSaveLoad) {
     }
     
     const char bHalfMotherSpiderHp = gGameOptions.uSpriteBannedFlags&BANNED_MSPIDERS_HP && !(!Bstrcmp(BloodIniFile, "BLOOD.INI") && (gGameOptions.nEpisode == 1 && gGameOptions.nLevel == 7)); // do not lower HP for E2M8
+    const char bMaxTchernobogHp = gGameOptions.uSpriteBannedFlags&BANNED_TCHERNOBOG_HP; // max tchernobog HP
     dudeInfo[kDudeSpiderMother-kDudeBase].startHealth = bHalfMotherSpiderHp ? 50 : 100;
+    dudeInfo[kDudeTchernobog-kDudeBase].startHealth = bMaxTchernobogHp ? 255 : 32;
     if (gGameOptions.nMonsterSettings == 0)
     {
         gKillMgr.SetCount(0);
