@@ -2136,7 +2136,7 @@ void SetupControlsMenu(void)
     menuOptionsControlMouseButtonAssignment.Add(&itemBloodQAV, false);
 }
 
-void SetupJoysticksMenu(void)
+void SetupJoystickMenu(void)
 {
     if (!CONTROL_JoystickEnabled) // joystick disabled, don't bother populating joystick menus
     {
@@ -2326,7 +2326,7 @@ void SetupMenus(void)
 
     SetupOptionsMenu();
     SetupControlsMenu();
-    SetupJoysticksMenu();
+    SetupJoystickMenu();
     SetupNetworkMenu();
 }
 
@@ -3595,7 +3595,7 @@ void SetupPollJoystick(CGameMenuItemChain *pItem)
         itemOptionsControlJoystickButtons.bEnable = 1;
         itemOptionsControlJoystickAxes.bEnable = 1;
         itemOptionsControlJoystickMisc.bEnable = 1;
-        SetupJoysticksMenu();
+        SetupJoystickMenu();
     }
 }
 
