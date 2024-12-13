@@ -4651,11 +4651,14 @@ void MoveDude(spritetype *pSprite)
     dassert(nSector >= 0 && nSector < kMaxSectors);
     if (pPlayer && gFlyMode)
     {
+        static int nSpeed = 0;
         const char nShift = gSonicMode && !VanillaMode() ? 2 : 3;
+        nSpeed = !pPlayer->input.buttonFlags.crouch && !pPlayer->input.buttonFlags.jump ? 0 : ClipHigh(nSpeed+(pPlayer->input.buttonFlags.crouch ? 0x1553>>1 : 0x1553), 0x5b05);
+
         if (pPlayer->input.buttonFlags.jump)
-            pSprite->z -= 0x5b05>>nShift;
+            pSprite->z -= nSpeed>>nShift;
         if (pPlayer->input.buttonFlags.crouch)
-            pSprite->z += 0x5b05>>nShift;
+            pSprite->z += nSpeed>>nShift;
     }
     if (xvel[nSprite] || yvel[nSprite])
     {
