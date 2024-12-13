@@ -2063,7 +2063,9 @@ void ProcessInput(PLAYER *pPlayer)
     }
     pPlayer->q16ang = (pPlayer->q16ang+fix16_from_int(pSprite->ang-pPlayer->angold))&0x7ffffff;
     pPlayer->angold = pSprite->ang = fix16_to_int(pPlayer->q16ang);
-    if (!pInput->buttonFlags.jump)
+    if (gFlyMode)
+        pPlayer->cantJump = 1;
+    else if (!pInput->buttonFlags.jump)
         pPlayer->cantJump = 0;
 
     switch (pPlayer->posture) {
