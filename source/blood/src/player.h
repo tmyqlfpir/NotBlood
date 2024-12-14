@@ -483,7 +483,7 @@ spritetype *playerFireThing(PLAYER *pPlayer, int a2, int a3, int thingType, int 
 void        playerFrag(PLAYER *pKiller, PLAYER *pVictim);
 void        FragPlayer(PLAYER *pPlayer, int nSprite);
 void        playerInitRoundCheck(void);
-void        playerProcessRoundCheck(void);
+void        playerProcessRoundCheck(PLAYER *pPlayer);
 int         playerDamageArmor(PLAYER *pPlayer, DAMAGE_TYPE nType, int nDamage);
 spritetype *playerDropFlag(PLAYER *pPlayer, int a2);
 int         playerDamageSprite(int nSource, PLAYER *pPlayer, DAMAGE_TYPE nDamageType, int nDamage);
