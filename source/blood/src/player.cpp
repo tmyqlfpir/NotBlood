@@ -71,6 +71,7 @@ ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
 int gPlayerRoundLimit = 0;
 char gPlayerRoundEnding = 0;
+char gPlayerRoundLimitAnnounce = -1;
 
 int gPlayerLastKiller;
 int gPlayerLastVictim;
@@ -2614,6 +2615,7 @@ void FragPlayer(PLAYER *pPlayer, int nSprite)
 void playerInitRoundCheck(void)
 {
     gPlayerRoundLimit = gPlayerRoundEnding = 0;
+    gPlayerRoundLimitAnnounce = -1;
     if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMask)
     {
         gPlayerRoundLimit = (gGameOptions.uNetGameFlags&kNetGameFlagLimitMask)>>kNetGameFlagLimitBase;
@@ -2662,7 +2664,10 @@ void playerProcessRoundCheck(void)
             default:
                 return;
             }
+            if (nMessage == gPlayerRoundLimitAnnounce) // avoid triggering this multiple times per tick
+                return;
             viewSetMessage(pzTimeMessage[nMessage], 8, MESSAGE_PRIORITY_NORMAL);
+            gPlayerRoundLimitAnnounce = nMessage;
             return;
         }
     }
