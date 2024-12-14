@@ -2081,6 +2081,8 @@ void ProcessInput(PLAYER *pPlayer)
             pPlayer->posture = kPostureStand;
         break;
     default:
+        if (gFlyMode)
+            break;
         if (!pPlayer->cantJump && pInput->buttonFlags.jump && pXSprite->height == 0) {
             #ifdef NOONE_EXTENSIONS
             if ((packItemActive(pPlayer, kPackJumpBoots) && pPosture->pwupJumpZ != 0) || pPosture->normalJumpZ != 0)
@@ -2092,7 +2094,7 @@ void ProcessInput(PLAYER *pPlayer)
             pPlayer->cantJump = 1;
         }
 
-        if (pInput->buttonFlags.crouch && !gFlyMode)
+        if (pInput->buttonFlags.crouch)
             pPlayer->posture = kPostureCrouch;
         break;
     }
