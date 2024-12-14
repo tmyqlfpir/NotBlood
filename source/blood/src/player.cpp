@@ -2726,25 +2726,20 @@ void playerProcessRoundCheck(PLAYER *pPlayer)
             viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
             return;
         }
-        if (pPlayer != gMe) // don't spam message log with other player's progression
-            return;
-        switch (nScoreRemaining)
+        if (pPlayer == gMe) // only report current player's progress
         {
-        case 50:
-            break;
-        case 25:
-            break;
-        case 10:
-            break;
-        case 5:
-            break;
-        case 1:
-            break;
-        default:
-            return;
+            switch (nScoreRemaining)
+            {
+            case 50:
+            case 25:
+            case 10:
+            case 5:
+            case 1:
+                sprintf(buffer, "%d %s%s left", nScoreRemaining, gGameOptions.nGameType == kGameTypeBloodBath ? "frag" : "point", nScoreRemaining > 1 ? "s" : "");
+                viewSetMessage(buffer, 8, MESSAGE_PRIORITY_NORMAL);
+                break;
+            }
         }
-        sprintf(buffer, "%d %s%s left", nScoreRemaining, gGameOptions.nGameType == kGameTypeBloodBath ? "frag" : "point", nScoreRemaining > 1 ? "s" : "");
-        viewSetMessage(buffer, 8, MESSAGE_PRIORITY_NORMAL);
         return;
     }
 
