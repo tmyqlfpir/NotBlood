@@ -71,6 +71,7 @@ ClockTicks gPlayerScoreTicks[kMaxPlayers];
 
 int gPlayerRoundLimit = 0;
 char gPlayerRoundEnding = 0;
+char gPlayerRoundLimitAnnounce = -1;
 
 int gPlayerLastKiller;
 int gPlayerLastVictim;
@@ -2614,6 +2615,7 @@ void FragPlayer(PLAYER *pPlayer, int nSprite)
 void playerInitRoundCheck(void)
 {
     gPlayerRoundLimit = gPlayerRoundEnding = 0;
+    gPlayerRoundLimitAnnounce = -1;
     if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMask)
     {
         gPlayerRoundLimit = (gGameOptions.uNetGameFlags&kNetGameFlagLimitMask)>>kNetGameFlagLimitBase;
@@ -2633,7 +2635,41 @@ void playerProcessRoundCheck(void)
     if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes)
     {
         if (gLevelTime <= gPlayerRoundLimit) // if time limit has not been reached
+        {
+            const char *pzTimeMessage[7] = {"20 minutes left", "10 minutes left", "5 minutes left", "2 minutes left", "1 minute left", "30 seconds left", "10 seconds left"};
+            char nMessage;
+            switch (gPlayerRoundLimit-gLevelTime-1)
+            {
+            case kTicsPerSec*60*20:
+                nMessage = 0;
+                break;
+            case kTicsPerSec*60*10:
+                nMessage = 1;
+                break;
+            case kTicsPerSec*60*5:
+                nMessage = 2;
+                break;
+            case kTicsPerSec*60*2:
+                nMessage = 3;
+                break;
+            case kTicsPerSec*60:
+                nMessage = 4;
+                break;
+            case kTicsPerSec*30:
+                nMessage = 5;
+                break;
+            case kTicsPerSec*10:
+                nMessage = 6;
+                break;
+            default:
+                return;
+            }
+            if (nMessage == gPlayerRoundLimitAnnounce) // avoid triggering this multiple times per tick
+                return;
+            viewSetMessage(pzTimeMessage[nMessage], 8, MESSAGE_PRIORITY_NORMAL);
+            gPlayerRoundLimitAnnounce = nMessage;
             return;
+        }
     }
 
     int nWinner = 0, nWinners = 0;
