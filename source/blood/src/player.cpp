@@ -1489,7 +1489,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         sndStartSample(8001, 255, 2, 0);
                         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagRedPal);
                         if (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags)
-                            playerProcessRoundCheck();
+                            playerProcessRoundCheck(pPlayer);
 #if 0
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
@@ -1535,7 +1535,7 @@ char PickupItem(PLAYER *pPlayer, spritetype *pItem) {
                         sndStartSample(8000, 255, 2, 0);
                         viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal, kFlagBluePal);
                         if (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags)
-                            playerProcessRoundCheck();
+                            playerProcessRoundCheck(pPlayer);
 #if 0
                         if (dword_28E3D4 == 3 && myconnectindex == connecthead)
                         {
@@ -2437,7 +2437,7 @@ void playerProcess(PLAYER *pPlayer)
         break;
     }
     if (gGameOptions.uNetGameFlags&kNetGameFlagLimitMinutes) // check every tick
-        playerProcessRoundCheck();
+        playerProcessRoundCheck(NULL);
 }
 
 spritetype *playerFireMissile(PLAYER *pPlayer, int a2, int a3, int a4, int a5, int a6)
@@ -2609,7 +2609,7 @@ void FragPlayer(PLAYER *pPlayer, int nSprite)
         }
     }
     if (gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags)
-        playerProcessRoundCheck();
+        playerProcessRoundCheck(pSprite && IsPlayerSprite(pSprite) ? &gPlayer[pSprite->type - kDudePlayer1] : pPlayer);
 }
 
 void playerInitRoundCheck(void)
@@ -2625,7 +2625,7 @@ void playerInitRoundCheck(void)
     memset(gPlayerCoopLives, 0, sizeof(gPlayerCoopLives));
 }
 
-void playerProcessRoundCheck(void)
+void playerProcessRoundCheck(PLAYER *pPlayer)
 {
     if (gGameOptions.nGameType <= kGameTypeCoop) // frag limits do not apply here, return
         return;
@@ -2706,11 +2706,48 @@ void playerProcessRoundCheck(void)
         }
     }
 
-    if ((gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags) && (nScoreMax < gPlayerRoundLimit))
-        return;
-
     char buffer[80] = "Ending round...";
     int nPal = 0;
+    if ((gGameOptions.uNetGameFlags&kNetGameFlagLimitFrags) && (nScoreMax < gPlayerRoundLimit)) // if frag/score limit has not been reached
+    {
+        if (!pPlayer)
+            return;
+        const int nPlayerScore = gGameOptions.nGameType == kGameTypeBloodBath ? pPlayer->fragCount : gPlayerScores[pPlayer->teamId];
+        const int nScoreRemaining = gPlayerRoundLimit-nPlayerScore;
+        if (nPlayerScore < 0)
+            return;
+        if (nScoreRemaining == 1 && pPlayer != gMe) // announce player's last point to all players
+        {
+            if (gGameOptions.nGameType == kGameTypeBloodBath)
+                sprintf(buffer, "\r%s\r is on their last frag!", gProfile[pPlayer->nPlayer].name);
+            else
+                sprintf(buffer, "\r%s\r is on their last score!", pPlayer->teamId ? "Red Team" : "Blue Team");
+            nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
+            viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
+            return;
+        }
+        if (pPlayer != gMe) // don't spam message log with other player's progression
+            return;
+        switch (nScoreRemaining)
+        {
+        case 50:
+            break;
+        case 25:
+            break;
+        case 10:
+            break;
+        case 5:
+            break;
+        case 1:
+            break;
+        default:
+            return;
+        }
+        sprintf(buffer, "%d %s%s left", nScoreRemaining, gGameOptions.nGameType == kGameTypeBloodBath ? "frag" : "point", nScoreRemaining > 1 ? "s" : "");
+        viewSetMessage(buffer, 8, MESSAGE_PRIORITY_NORMAL);
+        return;
+    }
+
     if (nWinners > 1) // if there is more than one winner, count as tie
     {
         if (gGameOptions.nGameType == kGameTypeTeams)
