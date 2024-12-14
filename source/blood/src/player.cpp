@@ -2724,9 +2724,8 @@ void playerProcessRoundCheck(PLAYER *pPlayer)
                 sprintf(buffer, "\r%s\r is on their last score!", pPlayer->teamId ? "Red Team" : "Blue Team");
             nPal = gColorMsg && !VanillaMode() ? playerColorPalMessage(pPlayer->teamId) : 0;
             viewSetMessageColor(buffer, 0, MESSAGE_PRIORITY_NORMAL, nPal);
-            return;
         }
-        if (pPlayer == gMe) // only report current player's progress
+        else if (pPlayer == gMe) // only report current player's progress
         {
             switch (nScoreRemaining)
             {
