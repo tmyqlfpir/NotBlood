@@ -207,7 +207,7 @@ public:
     int nTopDelta;
     int nFocus;
     int nGameFuncs;
-    int nConflictKeys[2];
+    int nConflictKeys[3];
     bool bCheckConflict;
     bool bScan;
     CGameMenuItemKeyList();
