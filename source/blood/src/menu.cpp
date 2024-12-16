@@ -326,7 +326,7 @@ const char *pzEnemySpeeds[] = {
 
 char zUserMapName[BMAX_PATH] = "";
 const char *zEpisodeNames[6];
-const char *zLevelNames[6][16];
+const char *zLevelNames[6][kMaxLevels];
 static char szRandomizerSeedMenu[9];
 
 static char MenuGameFuncs[NUMGAMEFUNCTIONS][MAXGAMEFUNCLEN];
@@ -4373,7 +4373,7 @@ void MenuSetupEpisodeInfo(void)
         {
             EPISODEINFO *pEpisode = &gEpisodeInfo[i];
             zEpisodeNames[i] = pEpisode->title;
-            for (int j = 0; j < 16; j++)
+            for (int j = 0; j < kMaxLevels; j++)
             {
                 if (j < pEpisode->nLevels)
                 {
