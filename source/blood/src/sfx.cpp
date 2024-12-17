@@ -661,7 +661,7 @@ void sfxResetListener(void)
     earVL = earVR = {0, 0}; // reset ear velocity
 }
 
-static void sfxUpdateSpeedOfSound(void)
+void sfxUpdateSpeedOfSound(void)
 {
     if (gSoundSpeed != oldSoundSpeed) // if speed of sound setting has been changed, convert real world meters to build engine units
     {
@@ -670,7 +670,7 @@ static void sfxUpdateSpeedOfSound(void)
     }
 }
 
-static void sfxUpdateEarAng(void)
+void sfxUpdateEarAng(void)
 {
     if (gSoundEarAng != oldEarAng) // if ear angle setting has been changed, convert degrees to build engine degrees
     {
@@ -679,7 +679,7 @@ static void sfxUpdateEarAng(void)
     }
 }
 
-inline int ClampScale(int nVal, int nInMin, int nInMax, int nOutMin, int nOutMax)
+int ClampScale(int nVal, int nInMin, int nInMax, int nOutMin, int nOutMax)
 {
 	if (nInMin == nInMax)
 		return (nVal - nInMax) >= 0 ? nOutMax : nOutMin;
@@ -689,7 +689,7 @@ inline int ClampScale(int nVal, int nInMin, int nInMax, int nOutMin, int nOutMax
 	return nOutMin + int(float(nOutMax - nOutMin) * cVal);
 }
 
-static void sfxPlayerDamageFeedback(void)
+void sfxPlayerDamageFeedback(void)
 {
     const int kMinDam = 50, kMaxDam = 1500, kDelayTicks = 7;
     for (int i = 0; i < 4; i++)
