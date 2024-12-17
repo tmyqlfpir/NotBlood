@@ -301,7 +301,7 @@ void CFX::fxProcess(void)
                         {
                             ChangeSpriteSect(nSprite, nSectnum);
                             viewCorrectSpriteInterpolateOffsets(nSprite, pSprite, &oldPos); // if sprite is set to be interpolated, update previous position
-                            sfxUpdateSpritePos(pSprite, &oldPos); // update any assigned sfx to new sprite position
+                            sfxUpdateSpritePos(pSprite, (vec3_t const*)&oldPos); // update any assigned sfx to new sprite position
                             continue;
                         }
                         else if (bOpenAirROR) // something went terribly wrong, free sprite

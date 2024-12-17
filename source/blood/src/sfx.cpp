@@ -597,7 +597,7 @@ void sfxKillSpriteSounds(spritetype *pSprite)
     }
 }
 
-void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *pOldPos)
+void sfxUpdateSpritePos(spritetype *pSprite, vec3_t const *pOldPos)
 {
     dassert(pSprite != NULL);
     for (int i = nBonkles - 1; i >= 0; i--) // update all attached sprite sfx to new position

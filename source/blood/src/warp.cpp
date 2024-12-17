@@ -201,7 +201,7 @@ int CheckLink(spritetype *pSprite)
             spritetype *pLower = &sprite[nLower];
             dassert(pLower->sectnum >= 0 && pLower->sectnum < kMaxSectors);
             ChangeSpriteSect(pSprite->index, pLower->sectnum);
-            vec3_t oldPos = {pSprite->x, pSprite->y, pSprite->z};
+            vec3_t const oldPos = {pSprite->x, pSprite->y, pSprite->z};
             pSprite->x += pLower->x-pUpper->x;
             pSprite->y += pLower->y-pUpper->y;
             int z2;
@@ -234,7 +234,7 @@ int CheckLink(spritetype *pSprite)
             spritetype *pUpper = &sprite[nUpper];
             dassert(pUpper->sectnum >= 0 && pUpper->sectnum < kMaxSectors);
             ChangeSpriteSect(pSprite->index, pUpper->sectnum);
-            vec3_t oldPos = {pSprite->x, pSprite->y, pSprite->z};
+            vec3_t const oldPos = {pSprite->x, pSprite->y, pSprite->z};
             pSprite->x += pUpper->x-pLower->x;
             pSprite->y += pUpper->y-pLower->y;
             int z2;
