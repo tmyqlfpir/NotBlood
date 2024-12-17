@@ -739,7 +739,7 @@ CGameMenuItemTitle itemOptionsDisplayTitle("DISPLAY SETUP", 1, 160, 20, 2038);
 CGameMenuItemChain itemOptionsDisplayColor("COLOR CORRECTION", 3, 66, 40, 180, 0, &menuOptionsDisplayColor, -1, NULL, 0);
 CGameMenuItemChain itemOptionsDisplayMode("VIDEO MODE", 3, 66, 50, 180, 0, &menuOptionsDisplayMode, -1, SetupVideoModeMenu, 0);
 CGameMenuItemChain itemOptionsDisplayView("VIEW SETUP", 3, 66, 60, 180, 0, &menuOptionsDisplayView, -1, NULL, 0);
-CGameMenuItemSlider itemOptionsDisplayDetail("DETAIL:", 3, 66, 80, 180, &gDetail, 0, 4, 1, SetDetail, -1, -1);
+CGameMenuItemSlider itemOptionsDisplaySliderDetail("DETAIL:", 3, 66, 80, 180, &gDetail, 0, 4, 1, SetDetail, -1, -1);
 CGameMenuItemZBool itemOptionsDisplayBoolVoxels("VOXELS:", 3, 66, 90, 180, 0, SetVoxels, NULL, NULL);
 CGameMenuItemZCycle itemOptionsDisplayCrosshair("CROSSHAIR:", 3, 66, 100, 180, 0, SetCrosshair, pzCrosshairStrings, ARRAY_SSIZE(pzCrosshairStrings), 0);
 CGameMenuItemZCycle itemOptionsDisplayLevelStats("LEVEL STATS:", 3, 66, 110, 180, 0, SetLevelStats, pzStatsPowerupRatioStrings, ARRAY_SSIZE(pzStatsPowerupRatioStrings), 0);
@@ -1853,7 +1853,7 @@ void SetupOptionsMenu(void)
     menuOptionsDisplay.Add(&itemOptionsDisplayColor, true);
     menuOptionsDisplay.Add(&itemOptionsDisplayMode, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayView, false);
-    menuOptionsDisplay.Add(&itemOptionsDisplayDetail, false);
+    menuOptionsDisplay.Add(&itemOptionsDisplaySliderDetail, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayBoolVoxels, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayCrosshair, false);
     menuOptionsDisplay.Add(&itemOptionsDisplayLevelStats, false);
