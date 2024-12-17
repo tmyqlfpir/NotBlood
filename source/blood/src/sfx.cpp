@@ -627,7 +627,7 @@ void sfxUpdateSpritePos(spritetype *pSprite, vec3_t const *pOldPos)
     }
 }
 
-void sfxUpdateListenerPos(void)
+inline void sfxUpdateListenerPos(void)
 {
     const int dx = mulscale30(Cos(gMe->pSprite->ang + kAng90), kEarDist>>1);
     const int dy = mulscale30(Sin(gMe->pSprite->ang + kAng90), kEarDist>>1);
@@ -637,7 +637,7 @@ void sfxUpdateListenerPos(void)
     earR = {gMe->pSprite->x + dx, gMe->pSprite->y + dy};
 }
 
-void sfxUpdateListenerVel(void)
+inline void sfxUpdateListenerVel(void)
 {
     earVL = {earL.x - earL0.x, earL.y - earL0.y};
     earVR = {earR.x - earR0.x, earR.y - earR0.y};
