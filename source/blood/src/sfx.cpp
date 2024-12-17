@@ -598,7 +598,7 @@ void sfxKillSpriteSounds(spritetype *pSprite)
     }
 }
 
-void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *pOffsetPos)
+void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *pOldPos)
 {
     dassert(pSprite != NULL);
     for (int i = nBonkles - 1; i >= 0; i--) // update all attached sprite sfx to new position
@@ -609,13 +609,13 @@ void sfxUpdateSpritePos(spritetype *pSprite, vec3_t *pOffsetPos)
             pBonkle->curPos.x = pSprite->x;
             pBonkle->curPos.y = pSprite->y;
             pBonkle->curPos.z = pSprite->z;
-            if (pOffsetPos)
+            if (pOldPos)
             {
-                pBonkle->oldPos.x = pSprite->x+(pBonkle->oldPos.x-pOffsetPos->x);
-                pBonkle->oldPos.y = pSprite->y+(pBonkle->oldPos.y-pOffsetPos->y);
-                pBonkle->oldPos.z = pSprite->z+(pBonkle->oldPos.z-pOffsetPos->z);
+                pBonkle->oldPos.x = pSprite->x+(pBonkle->oldPos.x-pOldPos->x);
+                pBonkle->oldPos.y = pSprite->y+(pBonkle->oldPos.y-pOldPos->y);
+                pBonkle->oldPos.z = pSprite->z+(pBonkle->oldPos.z-pOldPos->z);
             }
-            else
+            else // no old position given, reset current velocity
             {
                 pBonkle->oldPos = pBonkle->curPos;
             }
