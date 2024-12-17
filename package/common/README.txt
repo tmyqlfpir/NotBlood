@@ -318,7 +318,5 @@ If you have the GOG version of the game, do the following:
    - Set the speed of sound m/s used for doppler calculation (default: 343, range: 10-1000)
 * snd_occlusion
    - Enable/disable lowering sound volume by 50% for occluded sound sources
-* snd_underwaterpitch
-   - Enable/disable lowering sound pitch by 7% while underwater
 * team
    - Set preferred team in multiplayer (0: none, 1: blue, 2: red)

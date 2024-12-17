@@ -51,7 +51,6 @@ struct DMGFEEDBACK
 extern int gSoundSpeed;
 extern int gSoundEarAng;
 extern int gSoundOcclusion;
-extern int gSoundUnderwaterPitch;
 
 extern BONKLE Bonkle[256];
 extern BONKLE* BonkleCache[256];

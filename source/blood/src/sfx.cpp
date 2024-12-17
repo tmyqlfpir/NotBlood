@@ -49,7 +49,6 @@ static int oldEarAng = gSoundEarAng;
 static int nEarAng = kAng15;
 
 int gSoundOcclusion = 0; // adjust 3D sound sources volume if they don't have clear line of sight to player
-int gSoundUnderwaterPitch = 0; // modify pitch when underwater
 
 BONKLE Bonkle[256];
 BONKLE *BonkleCache[256];
@@ -711,14 +710,6 @@ void sfxPlayerDamageFeedback(void)
     }
 }
 
-static void sfxModifyPitchUnderwater(spritetype *pSndSpr, int *nPitch)
-{
-    if (pSndSpr && (pSndSpr == gMe->pSprite)) // if sound is assigned to player sprite, don't modify pitch
-        return;
-    *nPitch -= (int)(((32<<4) * 25) / kTicsPerSec);
-    *nPitch = ClipRange(*nPitch, 5000, 50000);
-}
-
 void sfxUpdate3DSounds(void)
 {
     sfxUpdateListenerPos();
@@ -727,7 +718,6 @@ void sfxUpdate3DSounds(void)
     sfxUpdateEarAng();
     if (gSoundDing)
         sfxPlayerDamageFeedback();
-    const char bUnderwater = gSoundUnderwaterPitch && !VanillaMode() && gMe->pSprite && sectRangeIsFine(gMe->pSprite->sectnum) && IsUnderwaterSector(gMe->pSprite->sectnum); // if underwater, lower audio pitch
     for (int i = nBonkles - 1; i >= 0; i--)
     {
         BONKLE *pBonkle = BonkleCache[i];
@@ -747,8 +737,6 @@ void sfxUpdate3DSounds(void)
             {
                 if (pBonkle->rChan > 0)
                 {
-                    if (bUnderwater)
-                        sfxModifyPitchUnderwater(pBonkle->pSndSpr, &lPitch);
                     FX_SetPan(pBonkle->lChan, lVol, lVol, 0);
                     FX_SetFrequency(pBonkle->lChan, lPitch);
                 }
@@ -757,8 +745,6 @@ void sfxUpdate3DSounds(void)
             }
             if (pBonkle->rChan > 0)
             {
-                if (bUnderwater)
-                    sfxModifyPitchUnderwater(pBonkle->pSndSpr, &rPitch);
                 FX_SetPan(pBonkle->rChan, rVol, 0, rVol);
                 FX_SetFrequency(pBonkle->rChan, rPitch);
             }
