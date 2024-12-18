@@ -201,7 +201,7 @@ int CheckLink(spritetype *pSprite)
             spritetype *pLower = &sprite[nLower];
             dassert(pLower->sectnum >= 0 && pLower->sectnum < kMaxSectors);
             ChangeSpriteSect(pSprite->index, pLower->sectnum);
-            vec3_t const oldPos = {pSprite->x, pSprite->y, pSprite->z};
+            vec3_t const oldpos = pSprite->xyz;
             pSprite->x += pLower->x-pUpper->x;
             pSprite->y += pLower->y-pUpper->y;
             int z2;
@@ -211,11 +211,11 @@ int CheckLink(spritetype *pSprite)
                 z2 = getceilzofslope(pSprite->sectnum, pSprite->x, pSprite->y);
             pSprite->z += z2-z;
             if (!VanillaMode()) // if sprite is set to be interpolated, update previous position
-                viewCorrectSpriteInterpolateOffsets(pSprite->index, pSprite, &oldPos);
+                viewCorrectSpriteInterpolateOffsets(pSprite->index, pSprite, &oldpos);
             else
                 ClearBitString(gInterpolateSprite, pSprite->index);
             if (!VanillaMode())
-                sfxUpdateSpritePos(pSprite, &oldPos); // update any assigned sfx to new sprite position
+                sfxUpdateSpritePos(pSprite, &oldpos); // update any assigned sfx to new sprite position
             return pUpper->type;
         }
     }
@@ -234,7 +234,7 @@ int CheckLink(spritetype *pSprite)
             spritetype *pUpper = &sprite[nUpper];
             dassert(pUpper->sectnum >= 0 && pUpper->sectnum < kMaxSectors);
             ChangeSpriteSect(pSprite->index, pUpper->sectnum);
-            vec3_t const oldPos = {pSprite->x, pSprite->y, pSprite->z};
+            vec3_t const oldpos = pSprite->xyz;
             pSprite->x += pUpper->x-pLower->x;
             pSprite->y += pUpper->y-pLower->y;
             int z2;
@@ -244,11 +244,11 @@ int CheckLink(spritetype *pSprite)
                 z2 = getflorzofslope(pSprite->sectnum, pSprite->x, pSprite->y);
             pSprite->z += z2-z;
             if (!VanillaMode()) // if sprite is set to be interpolated, update previous position
-                viewCorrectSpriteInterpolateOffsets(pSprite->index, pSprite, &oldPos);
+                viewCorrectSpriteInterpolateOffsets(pSprite->index, pSprite, &oldpos);
             else
                 ClearBitString(gInterpolateSprite, pSprite->index);
             if (!VanillaMode())
-                sfxUpdateSpritePos(pSprite, &oldPos); // update any assigned sfx to new sprite position
+                sfxUpdateSpritePos(pSprite, &oldpos); // update any assigned sfx to new sprite position
             return pLower->type;
         }
     }
