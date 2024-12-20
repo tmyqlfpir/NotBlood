@@ -517,7 +517,7 @@ void CONFIG_SetDefaults(void)
     gViewInterpolate = 1;
     gViewInterpolateMethod = 0;
     gPanningInterpolate = 1;
-    gWeaponInterpolate = 1;
+    gWeaponInterpolate = 2;
     gViewHBobbing = 1;
     gViewVBobbing = 1;
     gWeaponHBobbing = 1;

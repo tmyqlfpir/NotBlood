@@ -2977,7 +2977,7 @@ void SetFirstLaunchOptions(CGameMenuItemChain *pItem)
         gGameMenuMgr.Pop(); // close menu
         return;
     }
-    else if (pItem == &itemFirstLaunchVanilla)
+    if (pItem == &itemFirstLaunchVanilla)
     {
         gSlopeTilting = 1;
         gAimReticle = 0;
