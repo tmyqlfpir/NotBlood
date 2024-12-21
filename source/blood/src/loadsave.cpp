@@ -232,33 +232,9 @@ void LoadSave::LoadGame(char *pzFile)
     }
 }
 
-// TODO: when starting to use buildvfs in SaveGame(), remove this function and use buildvfs_exists() instead
-static int file_exists(char const* path)
-{
-#ifdef _WIN32
-    return GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
-#else
-    struct Bstat st;
-    return !Bstat(path, &st);
-#endif
-}
-
 void LoadSave::SaveGame(char *pzFile)
 {
-    // TODO: use buildvfs_open_write() etc (probably in the whole file?)
-    char fileNameTmp[BMAX_PATH+4];
-    const char* saveFileName = pzFile;
-    bool saveFileExists = file_exists(saveFileName);
-    if (saveFileExists)
-    {
-        // write to a different file first, so in case the game crashes while saving
-        // (which would result in a corrupted savegame) at least the old savegame is preserved
-        strcpy(fileNameTmp, pzFile);
-        strcat(fileNameTmp, "_tmp");
-        saveFileName = fileNameTmp;
-    }
-
-    hSFile = fopen(saveFileName, "wb");
+    hSFile = fopen(pzFile, "wb");
     if (hSFile == NULL)
         ThrowError("File error #%d creating save file.", errno);
     LoadSave *rover = head.next;
@@ -269,18 +245,6 @@ void LoadSave::SaveGame(char *pzFile)
     }
     fclose(hSFile);
     hSFile = NULL;
-    if (saveFileExists)
-    {
-        // I'd like to have a backup of the old savegame, just in case I regret the last save :-p
-        char fileNameBk[BMAX_PATH+3];
-        strcpy(fileNameBk, pzFile);
-        strcat(fileNameBk, "_bk");
-        rename(pzFile, fileNameBk);
-
-        // the savegame was written successfully, so we can rename the saved file
-        // to the requested name (from gameXXX.sav_tmp to gameXXX.sav)
-        rename(saveFileName, pzFile);
-    }
 }
 
 class MyLoadSave : public LoadSave
