@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "config.h"
 #include "controls.h"
 #include "demo.h"
+#include "endgame.h"
 #include "eventq.h"
 #include "fx.h"
 #include "gib.h"
@@ -2159,7 +2160,7 @@ void ProcessInput(PLAYER *pPlayer)
         }
         if (pPlayer->handTime > 0)
             pPlayer->handTime = ClipLow(pPlayer->handTime-kTicsPerFrame*(6-gGameOptions.nDifficulty), 0);
-        if (pPlayer->handTime <= 0 && pPlayer->hand)
+        if (pPlayer->handTime <= 0 && pPlayer->hand) // if hand enemy successfully thrown off
         {
             spritetype *pSprite2 = actSpawnDude(pPlayer->pSprite, kDudeHand, pPlayer->pSprite->clipdist<<1, 0);
             pSprite2->ang = (pPlayer->pSprite->ang+1024)&2047;
@@ -2170,6 +2171,7 @@ void ProcessInput(PLAYER *pPlayer)
             yvel[pSprite2->index] = yvel[nSprite] + mulscale14(0x155555, y);
             zvel[pSprite2->index] = zvel[nSprite];
             pPlayer->hand = 0;
+            gKillMgr.AddCount(1); // respawn hand, and readd to total enemies
         }
         pInput->keyFlags.action = 0;
     }

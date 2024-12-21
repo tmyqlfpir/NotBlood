@@ -32,6 +32,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "blood.h"
 #include "db.h"
 #include "dude.h"
+#include "endgame.h"
 #include "eventq.h"
 #include "levels.h"
 #include "player.h"
@@ -67,6 +68,8 @@ static void HandJumpSeqCallback(int, int nXSprite)
         {
             pPlayer->hand = 1;
             actPostSprite(pSprite->index, kStatFree);
+            if (gGameOptions.nGameType != kGameTypeSinglePlayer && EnemiesNBlood() && !VanillaMode())
+                gKillMgr.AddCount(-1); // hand now 'attached' to player (removed from map), so lower total enemies
         }
     }
 }
