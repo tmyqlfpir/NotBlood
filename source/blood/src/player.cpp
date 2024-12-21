@@ -2172,7 +2172,7 @@ void ProcessInput(PLAYER *pPlayer)
         }
         if (pPlayer->handTime > 0)
             pPlayer->handTime = ClipLow(pPlayer->handTime-kTicsPerFrame*(6-gGameOptions.nDifficulty), 0);
-        if (pPlayer->handTime <= 0 && pPlayer->hand)
+        if (pPlayer->handTime <= 0 && pPlayer->hand) // if hand enemy successfully thrown off
             playerDropHand(pPlayer);
         pInput->keyFlags.action = 0;
     }
@@ -2400,7 +2400,7 @@ void playerProcess(PLAYER *pPlayer)
     pPlayer->pickupEffect = ClipLow(pPlayer->pickupEffect-kTicsPerFrame, 0);
     if (!pXSprite->health)
     {
-        if (pPlayer->hand && EnemiesNBlood() && !VanillaMode())
+        if (pPlayer->hand && EnemiesNBlood() && gGameOptions.nGameType != kGameTypeSinglePlayer && !VanillaMode())
             playerDropHand(pPlayer);
         if (!VanillaMode() || pPlayer == gMe)
             pPlayer->hand = 0;
