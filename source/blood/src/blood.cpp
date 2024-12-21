@@ -1314,8 +1314,6 @@ void ProcessFrame(void)
                 gChokeCounter[i] -= kTicsPerSec;
             }
         }
-        else // reset gChokeCounter
-            gChokeCounter[i] = 0;
     }
     trProcessBusy();
     evProcess((int)gFrameClock);
