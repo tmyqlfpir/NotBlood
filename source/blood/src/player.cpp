@@ -2171,7 +2171,8 @@ void ProcessInput(PLAYER *pPlayer)
             yvel[pSprite2->index] = yvel[nSprite] + mulscale14(0x155555, y);
             zvel[pSprite2->index] = zvel[nSprite];
             pPlayer->hand = 0;
-            gKillMgr.AddCount(1); // respawn hand, and readd to total enemies
+            if (gGameOptions.nGameType != kGameTypeSinglePlayer && EnemiesNBlood() && !VanillaMode())
+                gKillMgr.AddCount(1); // respawn hand, and readd to total enemies
         }
         pInput->keyFlags.action = 0;
     }
