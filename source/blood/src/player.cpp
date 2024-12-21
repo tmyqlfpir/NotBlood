@@ -2402,7 +2402,7 @@ void playerProcess(PLAYER *pPlayer)
     {
         if (pPlayer->hand && EnemiesNBlood() && gGameOptions.nGameType != kGameTypeSinglePlayer && !VanillaMode())
             playerDropHand(pPlayer);
-        if (!VanillaMode() || pPlayer == gMe)
+        else if (!VanillaMode() || pPlayer == gMe)
             pPlayer->hand = 0;
         return;
     }
