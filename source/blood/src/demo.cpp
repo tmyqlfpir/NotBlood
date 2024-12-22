@@ -398,7 +398,7 @@ void CDemo::Write(GINPUT *pPlayerInputs)
     {
         memcpy(&at1aa[nInputTicks&1023], &pPlayerInputs[p], sizeof(GINPUT));
         nInputTicks++;
-        if((nInputTicks&(kInputBufferSize-1))==0)
+        if ((nInputTicks&(kInputBufferSize-1))==0)
             FlushInput(kInputBufferSize);
     }
 }
