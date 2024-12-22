@@ -91,6 +91,9 @@ void CEndGameMgr::ProcessKeys(void)
     //}
     //else
     {
+#ifdef NORENDER
+        SDL_Delay(2500);
+#else
         char ch = keyGetScan();
         if (CONTROL_JoystickEnabled && !ch)
         {
@@ -100,6 +103,7 @@ void CEndGameMgr::ProcessKeys(void)
         }
         if (!ch)
             return;
+#endif
         if (gGameOptions.nGameType != kGameTypeSinglePlayer || numplayers > 1)
             netWaitForEveryone(0);
         Finish();

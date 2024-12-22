@@ -433,6 +433,9 @@ void sndKillAllSounds(void)
 
 void sndProcess(void)
 {
+#ifdef NORENDER
+    return;
+#endif
     for (int i = 0; i < kChannelMax; i++)
     {
         if (Channel[i].hVoice <= 0 && Channel[i].at5)
@@ -543,6 +546,11 @@ void sndTerm(void)
 extern char *pUserSoundRFF;
 void sndInit(void)
 {
+#ifdef NORENDER
+    SoundToggle = 0;
+    MusicToggle = 0;
+    return;
+#endif
     memset(Channel, 0, sizeof(Channel));
     pSongPtr = NULL;
     nSongSize = 0;

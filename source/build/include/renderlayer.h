@@ -17,3 +17,8 @@
 #if defined _WIN32 || defined EDUKE32_OSX || defined HAVE_GTK2 || (defined RENDERTYPESDL && SDL_MAJOR_VERSION >= 2)
 # define WM_MSGBOX_WINDOW
 #endif
+
+#ifdef NORENDER
+#undef STARTUP_SETUP_WINDOW
+#undef WM_MSGBOX_WINDOW
+#endif

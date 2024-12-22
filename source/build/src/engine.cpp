@@ -12114,6 +12114,9 @@ int32_t videoSetGameMode(char davidoption, int32_t daupscaledxdim, int32_t daups
 //
 void videoNextPage(void)
 {
+#ifdef NORENDER
+    return;
+#endif
     MICROPROFILE_SCOPEI("Engine", EDUKE32_FUNCTION, MP_AUTO);
 
     permfifotype *per;

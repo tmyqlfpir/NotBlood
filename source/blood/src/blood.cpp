@@ -1604,6 +1604,10 @@ void ParseOptions(void)
             if (OptArgc < 1)
                 ThrowError("Missing argument");
             gNetPlayers = ClipRange(atoi(OptArgv[0]), 1, kMaxPlayers);
+#ifdef NORENDER
+            if (gNetPlayers < 2)
+                QuitGame();
+#endif
             gNetMode = NETWORK_SERVER;
             break;
         case 31:
@@ -1876,6 +1880,14 @@ void ParseOptions(void)
         strcpy(gUserMapFilename, zFName);
     }
 #endif
+#ifdef NORENDER
+    gNoSetup = true;
+    gCommandSetup = false;
+    bQuickStart = true;
+    bNoDemo = true;
+    if (gNetMode != NETWORK_SERVER)
+        ThrowError("You must start with '-server x' where x is the number of players.");
+#endif
 }
 
 #if defined(_WIN32) && defined(DEBUGGINGAIDS)
@@ -1892,7 +1904,8 @@ int app_main(int argc, char const * const * argv)
     margc = argc;
     margv = argv;
 #ifdef _WIN32
-#ifndef DEBUGGINGAIDS
+//#ifndef DEBUGGINGAIDS
+#if !defined(DEBUGGINGAIDS) && !defined(NORENDER)
     if (!G_CheckCmdSwitch(argc, argv, "-noinstancechecking") && !windowsCheckAlreadyRunning())
     {
 #ifdef EDUKE32_STANDALONE
@@ -1927,7 +1940,11 @@ int app_main(int argc, char const * const * argv)
     }
     else
 #endif
+#ifndef NORENDER
     OSD_SetLogFile(APPBASENAME ".log");
+#else
+    OSD_SetLogFile("server.log");
+#endif
 
     OSD_SetFunctions(NULL,
                      NULL,
@@ -2295,13 +2312,22 @@ RESTART:
                 netCheckSync();
                 if (bDraw)
                 {
+#ifdef NORENDER
+                    int fpslimit = r_maxfps;
+                    if (fpslimit != 0)
+                        SDL_Delay(1000/fpslimit);
+#else
                     viewDrawScreen();
+#endif
                     g_gameUpdateAndDrawTime = timerGetFractionalTicks() - gameUpdateStartTime;
                 }
             }
         }
         else
         {
+#ifdef NORENDER
+            SDL_Delay(10);
+#endif
             bDraw = engineFPSLimit() != 0;
             if (bDraw)
             {
@@ -2351,6 +2377,7 @@ RESTART:
             switch (gInputMode)
             {
             case INPUT_MODE_1:
+#ifndef NORENDER
                 if (gGameMenuMgr.m_bActive)
                 {
                     if (gGameStarted) // dim background
@@ -2365,6 +2392,7 @@ RESTART:
                         }
                     }
                 }
+#endif
                 break;
             case INPUT_MODE_2:
                 gPlayerMsg.ProcessKeys();
@@ -2372,7 +2400,9 @@ RESTART:
                 break;
             case INPUT_MODE_3:
                 gEndGameMgr.ProcessKeys();
+#ifndef NORENDER
                 gEndGameMgr.Draw();
+#endif
                 break;
             default:
                 break;

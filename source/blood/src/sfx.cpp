@@ -712,6 +712,9 @@ void sfxPlayerDamageFeedback(void)
 
 void sfxUpdate3DSounds(void)
 {
+#ifdef NORENDER
+    return;
+#endif
     sfxUpdateListenerPos();
     sfxUpdateListenerVel();
     sfxUpdateSpeedOfSound();
