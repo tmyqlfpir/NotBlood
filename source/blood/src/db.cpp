@@ -43,6 +43,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "view.h"
 #endif
 
+#define kMapHeaderNew 0x7474614D // 'ttaM' signature
+#define kMapHeaderOld 0x4D617474 // 'Matt' signature
+
 #ifdef NOONE_EXTENSIONS
 uint8_t gModernMap = false;
 #endif // !NOONE_EXTENSIONS
@@ -1691,8 +1694,8 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
 
     MAPHEADER mapHeader;
     IOBuffer1.Read(&mapHeader,37/* sizeof(mapHeader)*/);
-    if (mapHeader.at16 != 0 && mapHeader.at16 != 0x7474614d && mapHeader.at16 != 0x4d617474) {
-        dbCrypt((char*)&mapHeader, sizeof(mapHeader), 0x7474614d);
+    if (mapHeader.at16 != 0 && mapHeader.at16 != kMapHeaderNew && mapHeader.at16 != kMapHeaderOld) {
+        dbCrypt((char*)&mapHeader, sizeof(mapHeader), kMapHeaderNew);
         byte_1A76C7 = 1;
     }
 
@@ -1724,7 +1727,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
     gSongId = mapHeader.at16;
     if (byte_1A76C8)
     {
-        if (mapHeader.at16 == 0x7474614d || mapHeader.at16 == 0x4d617474)
+        if (mapHeader.at16 == kMapHeaderNew || mapHeader.at16 == kMapHeaderOld)
         {
             byte_1A76C6 = 1;
         }
@@ -1909,7 +1912,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         IOBuffer1.Read(pWall, sizeof(walltype));
         if (byte_1A76C8)
         {
-            dbCrypt((char*)pWall, sizeof(walltype), (gMapRev*sizeof(sectortype)) | 0x7474614d);
+            dbCrypt((char*)pWall, sizeof(walltype), (gMapRev*sizeof(sectortype)) | kMapHeaderNew);
         }
 #if B_BIG_ENDIAN == 1
         pWall->x = B_LITTLE32(pWall->x);
@@ -1986,7 +1989,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
         IOBuffer1.Read(pSprite, sizeof(spritetype));
         if (byte_1A76C8)
         {
-            dbCrypt((char*)pSprite, sizeof(spritetype), (gMapRev*sizeof(spritetype)) | 0x7474614d);
+            dbCrypt((char*)pSprite, sizeof(spritetype), (gMapRev*sizeof(spritetype)) | kMapHeaderNew);
         }
 #if B_BIG_ENDIAN == 1
         pSprite->x = B_LITTLE32(pSprite->x);
@@ -2138,7 +2141,7 @@ int dbLoadMap(const char *pPath, int *pX, int *pY, int *pZ, short *pAngle, short
     PropagateMarkerReferences();
     if (byte_1A76C8)
     {
-        if (gSongId == 0x7474614d || gSongId == 0x4d617474)
+        if (gSongId == kMapHeaderNew || gSongId == kMapHeaderOld)
         {
             byte_1A76C6 = 1;
         }
@@ -2306,7 +2309,7 @@ int dbSaveMap(const char *pPath, int nX, int nY, int nZ, short nAngle, short nSe
     mapheader.at12 = B_LITTLE32(gVisibility);
     if (byte_1A76C6)
     {
-        gSongId = 0x7474614d;
+        gSongId = kMapHeaderNew;
     }
     else
     {
@@ -2320,7 +2323,7 @@ int dbSaveMap(const char *pPath, int nX, int nY, int nZ, short nAngle, short nSe
     mapheader.at23 = B_LITTLE16(nSpriteNum);
     if (byte_1A76C7)
     {
-        dbCrypt((char*)&mapheader, sizeof(MAPHEADER), 'ttaM');
+        dbCrypt((char*)&mapheader, sizeof(MAPHEADER), kMapHeaderNew);
     }
     IOBuffer1.Write(&mapheader, sizeof(MAPHEADER));
     if (byte_1A76C8)
@@ -2442,12 +2445,12 @@ int dbSaveMap(const char *pPath, int nX, int nY, int nZ, short nAngle, short nSe
     {
         if (byte_1A76C8)
         {
-            dbCrypt((char*)&wall[i], sizeof(walltype), gMapRev*sizeof(sectortype) | 0x7474614d);
+            dbCrypt((char*)&wall[i], sizeof(walltype), gMapRev*sizeof(sectortype) | kMapHeaderNew);
         }
         IOBuffer1.Write(&wall[i], sizeof(walltype));
         if (byte_1A76C8)
         {
-            dbCrypt((char*)&wall[i], sizeof(walltype), gMapRev*sizeof(sectortype) | 0x7474614d);
+            dbCrypt((char*)&wall[i], sizeof(walltype), gMapRev*sizeof(sectortype) | kMapHeaderNew);
         }
         if (wall[i].extra > 0)
         {
@@ -2494,12 +2497,12 @@ int dbSaveMap(const char *pPath, int nX, int nY, int nZ, short nAngle, short nSe
         {
             if (byte_1A76C8)
             {
-                dbCrypt((char*)&sprite[i], sizeof(spritetype), gMapRev*sizeof(spritetype) | 'ttaM');
+                dbCrypt((char*)&sprite[i], sizeof(spritetype), gMapRev*sizeof(spritetype) | kMapHeaderNew);
             }
             IOBuffer1.Write(&sprite[i], sizeof(spritetype));
             if (byte_1A76C8)
             {
-                dbCrypt((char*)&sprite[i], sizeof(spritetype), gMapRev*sizeof(spritetype) | 'ttaM');
+                dbCrypt((char*)&sprite[i], sizeof(spritetype), gMapRev*sizeof(spritetype) | kMapHeaderNew);
             }
             if (sprite[i].extra > 0)
             {
