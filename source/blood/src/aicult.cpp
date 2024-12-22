@@ -221,15 +221,15 @@ static void ThrowSeqCallback(int, int nXSprite)
     {
         if (!Random(20))
             nMissile = kThingNapalmBall;
-        else if(!Random(15))
+        else if (!Random(15))
             nMissile = kThingArmedSpray;
-        else if(!Random(5))
+        else if (!Random(5))
             nMissile = kThingArmedProxBomb;
-        else if(!Random(25))
+        else if (!Random(25))
             nMissile = kThingZombieHead;
-        else if(!Random(10))
+        else if (!Random(10))
             nMissile = kThingPodFireBall;
-        else if(!Random(15))
+        else if (!Random(15))
             nMissile = kThingPodGreenBall;
     }
     char v4 = Chance(0x6000);
