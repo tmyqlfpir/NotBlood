@@ -96,7 +96,7 @@ static bool ChatPipe_ParseJSON(const char* data)
     }
 
 #ifdef DEBUGGINGAIDS
-    if(success)
+    if (success)
         LOG_F(INFO, "%s: JSON parse succeded!", __func__);
     else
         LOG_F(INFO, "%s: JSON parse failed, or unknown message!", __func__);
