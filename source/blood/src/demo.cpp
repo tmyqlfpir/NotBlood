@@ -339,7 +339,8 @@ bool CDemo::Create(const char *pzFile)
     }
     else
     {
-        G_ModDirSnprintfLite(buffer, BMAX_PATH, pzFile);
+        if (G_ModDirSnprintfLite(buffer, BMAX_PATH, pzFile))
+            return false;
         hRFile = fopen(buffer, "wb");
         if (hRFile == NULL)
             return false;
