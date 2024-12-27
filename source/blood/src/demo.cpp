@@ -325,7 +325,8 @@ bool CDemo::Create(const char *pzFile)
     {
         for (int i = 0; i < 8 && !vc; i++)
         {
-            G_ModDirSnprintf(buffer, BMAX_PATH, "%s0%02d.dem", BloodIniPre, i);
+            if (G_ModDirSnprintf(buffer, BMAX_PATH, "%s0%02d.dem", BloodIniPre, i))
+                return false;
             if (access(buffer, F_OK) != -1)
                 vc = 1;
         }
@@ -338,7 +339,8 @@ bool CDemo::Create(const char *pzFile)
     }
     else
     {
-        G_ModDirSnprintfLite(buffer, BMAX_PATH, pzFile);
+        if (G_ModDirSnprintfLite(buffer, BMAX_PATH, pzFile))
+            return false;
         hRFile = fopen(buffer, "wb");
         if (hRFile == NULL)
             return false;

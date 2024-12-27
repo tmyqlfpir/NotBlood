@@ -4100,7 +4100,8 @@ void SaveGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
         gGameMenuMgr.Deactivate();
         return;
     }
-    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", nSlot);
+    if (G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", nSlot))
+        return;
     memset(gGameOptions.szUserGameName, 0, sizeof(gGameOptions.szSaveGameName));
     strcpy(gGameOptions.szUserGameName, strRestoreGameStrings[nSlot]);
     memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
@@ -4132,7 +4133,8 @@ void QuickSaveGame(void)
         gGameMenuMgr.Deactivate();
         return;
     }*/
-    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", kLoadSaveSlotQuick);
+    if (G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "game00%02d.sav", kLoadSaveSlotQuick))
+        return;
     memset(gGameOptions.szUserGameName, 0, sizeof(gGameOptions.szSaveGameName));
     snprintf(gGameOptions.szUserGameName, sizeof(gGameOptions.szUserGameName), "%s quick", gGameOptions.zLevelName);
     memset(gGameOptions.szSaveGameName, 0, sizeof(gGameOptions.szSaveGameName));
@@ -4159,7 +4161,8 @@ void AutosaveGame(bool bLevelStartSave)
     int nSlot = bLevelStartSave ? kLoadSaveSlotSpawn : kLoadSaveSlotKey;
     if (gGameOptions.nGameType != kGameTypeSinglePlayer || !gGameStarted)
         return;
-    G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot - kLoadSaveSlotSpawn);
+    if (G_ModDirSnprintf(strSaveGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot - kLoadSaveSlotSpawn))
+        return;
     snprintf(gGameOptions.szUserGameName, sizeof(gGameOptions.szUserGameName), "%s %s", gGameOptions.zLevelName, nSlot == kLoadSaveSlotSpawn ? "start": "key");
     snprintf(gGameOptions.szSaveGameName, sizeof(gGameOptions.szSaveGameName), "%s", strSaveGameName);
     gGameOptions.nSaveGameSlot = nSlot;
@@ -4187,12 +4190,20 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     int nSlot = pItem->at28;
     if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         return;
+    if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot))
+        return;
     int const bakpathsearchmode = pathsearchmode;
     pathsearchmode = 1;
     if (nSlot <= kLoadSaveSlot10)
-        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot);
+    {
+        if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot))
+            return;
+    }
     else
-        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot == kLoadSaveSlotSpawn ? 0 : 1);
+    {
+        if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot == kLoadSaveSlotSpawn ? 0 : 1))
+            return;
+    }
     if (!testkopen(strLoadGameName, 0))
     {
         pathsearchmode = bakpathsearchmode;
@@ -4216,12 +4227,20 @@ void QuickLoadGame(void)
     char strLoadGameName[BMAX_PATH];
     if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         return;
+    if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot))
+        return;
     int const bakpathsearchmode = pathsearchmode;
     pathsearchmode = 1;
     if (gQuickLoadSlot < kLoadSaveSlotAutosave)
-        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot);
+    {
+        if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot))
+            return;
+    }
     else
-        G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", gQuickLoadSlot == kLoadSaveSlotSpawn ? 0 : 1);
+    {
+        if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", gQuickLoadSlot == kLoadSaveSlotSpawn ? 0 : 1))
+            return;
+    }
     if (!testkopen(strLoadGameName, 0))
     {
         pathsearchmode = bakpathsearchmode;
