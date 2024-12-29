@@ -4192,8 +4192,6 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
         return;
     if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot))
         return;
-    int const bakpathsearchmode = pathsearchmode;
-    pathsearchmode = 1;
     if (nSlot <= kLoadSaveSlot10)
     {
         if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot))
@@ -4204,6 +4202,8 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
         if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", nSlot == kLoadSaveSlotSpawn ? 0 : 1))
             return;
     }
+    int const bakpathsearchmode = pathsearchmode;
+    pathsearchmode = 1;
     if (!testkopen(strLoadGameName, 0))
     {
         pathsearchmode = bakpathsearchmode;
@@ -4229,8 +4229,6 @@ void QuickLoadGame(void)
         return;
     if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot))
         return;
-    int const bakpathsearchmode = pathsearchmode;
-    pathsearchmode = 1;
     if (gQuickLoadSlot < kLoadSaveSlotAutosave)
     {
         if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot))
@@ -4241,6 +4239,8 @@ void QuickLoadGame(void)
         if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "gameautosave%1d.sav", gQuickLoadSlot == kLoadSaveSlotSpawn ? 0 : 1))
             return;
     }
+    int const bakpathsearchmode = pathsearchmode;
+    pathsearchmode = 1;
     if (!testkopen(strLoadGameName, 0))
     {
         pathsearchmode = bakpathsearchmode;
