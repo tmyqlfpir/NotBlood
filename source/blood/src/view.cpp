@@ -3760,9 +3760,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
             }
 
-
-            
-
             if (pXSector && pXSector->color) pTSprite->pal = pSector->floorpal;
             if (powerupCheck(gView, kPwUpBeastVision) > 0)
             {
@@ -3900,7 +3897,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             break;
         }
         case kStatThing: {
-            if (pXSector && pXSector->color) pTSprite->pal = pSector->floorpal;
+            if (pXSector && pXSector->color)
+                pTSprite->pal = pSector->floorpal;
 
             if (pTSprite->type < kThingBase || pTSprite->type >= kThingMax || !gSpriteHit[nXSprite].florhit) {
                 if ((pTSprite->flags & kPhysMove) && getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) >= cZ)
