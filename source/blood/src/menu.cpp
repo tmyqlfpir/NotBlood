@@ -4190,8 +4190,6 @@ void LoadGame(CGameMenuItemZEditBitmap *pItem, CGameMenuEvent *event)
     int nSlot = pItem->at28;
     if (gGameOptions.nGameType != kGameTypeSinglePlayer)
         return;
-    if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot))
-        return;
     if (nSlot <= kLoadSaveSlot10)
     {
         if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", nSlot))
@@ -4226,8 +4224,6 @@ void QuickLoadGame(void)
 {
     char strLoadGameName[BMAX_PATH];
     if (gGameOptions.nGameType != kGameTypeSinglePlayer)
-        return;
-    if (G_ModDirSnprintf(strLoadGameName, BMAX_PATH, "game00%02d.sav", gQuickLoadSlot))
         return;
     if (gQuickLoadSlot < kLoadSaveSlotAutosave)
     {
