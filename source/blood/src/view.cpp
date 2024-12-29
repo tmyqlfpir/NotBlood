@@ -3342,16 +3342,6 @@ inline char viewApplyPlayerAsCultist(int *nTile)
 LOCATION gPrevSpriteLoc[kMaxSprites];
 static LOCATION gViewSpritePredictLoc;
 
-static void viewApplyDefaultPal(tspritetype *pTSprite, sectortype const *pSector)
-{
-    int const nXSector = pSector->extra;
-    XSECTOR const *pXSector = nXSector >= 0 ? &xsector[nXSector] : NULL;
-    if (pXSector && pXSector->color && (VanillaMode() || pSector->floorpal != 0))
-    {
-        pTSprite->pal = pSector->floorpal;
-    }
-}
-
 void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t smooth)
 {
     UNREFERENCED_PARAMETER(smooth);
@@ -3652,7 +3642,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                     }
                     break;
                 default:
-                    viewApplyDefaultPal(pTSprite, pSector);
+                    if (pXSector && pXSector->color)
+                        pTSprite->pal = pSector->floorpal;
                     break;
             }
         }
@@ -3682,8 +3673,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 default:
                     if (pTSprite->type >= kItemKeySkull && pTSprite->type < kItemKeyMax)
                         pTSprite->shade = -128;
-
-                    viewApplyDefaultPal(pTSprite, pSector);
+                    if (pXSector && pXSector->color)
+                        pTSprite->pal = pSector->floorpal;
                     break;
             }
         }
@@ -3769,9 +3760,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
                 }
             }
 
-
-            
-
             if (pXSector && pXSector->color) pTSprite->pal = pSector->floorpal;
             if (powerupCheck(gView, kPwUpBeastVision) > 0)
             {
@@ -3796,8 +3784,6 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             }
 
             if (IsPlayerSprite(pTSprite)) {
-                viewApplyDefaultPal(pTSprite, pSector);
-
                 PLAYER *pPlayer = &gPlayer[pTSprite->type-kDudePlayer1];
                 const char bIsTeammate = IsTargetTeammate(gView, pPlayer->pSprite);
                 const char bIsDoppleganger = (gGameOptions.nGameType == kGameTypeTeams) && powerupCheck(pPlayer, kPwUpDoppleganger);
@@ -3911,7 +3897,8 @@ void viewProcessSprites(int32_t cX, int32_t cY, int32_t cZ, int32_t cA, int32_t 
             break;
         }
         case kStatThing: {
-            viewApplyDefaultPal(pTSprite, pSector);
+            if (pXSector && pXSector->color)
+                pTSprite->pal = pSector->floorpal;
 
             if (pTSprite->type < kThingBase || pTSprite->type >= kThingMax || !gSpriteHit[nXSprite].florhit) {
                 if ((pTSprite->flags & kPhysMove) && getflorzofslope(pTSprite->sectnum, pTSprite->x, pTSprite->y) >= cZ)
