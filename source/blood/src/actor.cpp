@@ -7023,6 +7023,11 @@ spritetype* actFireMissile(spritetype *pSprite, int a2, int a3, int a4, int a5, 
     pMissile->cstat |= CSTAT_SPRITE_BLOCK;
     if ((nType == kMissileShell) || (nType == kMissileBullet)) // do not set collisions on for bullet projectiles (so bullets will not collide with each other)
     {
+        if (gProjectileOldSprite)
+        {
+            pMissile->picnum = 30451; // use old bullet sprite from notblood.pk3/TILES099.ART
+            pMissile->xrepeat = pMissile->yrepeat = 32;
+        }
         pMissile->cstat &= ~(CSTAT_SPRITE_BLOCK|CSTAT_SPRITE_BLOCK_HITSCAN);
         if (gGameOptions.nHitscanProjectiles == 1) // if hitscan projectile speed is 75%, adjust speed
         {
