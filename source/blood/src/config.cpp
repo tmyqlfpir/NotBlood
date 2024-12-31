@@ -166,6 +166,7 @@ int32_t gShowWeaponSelectScale;
 int32_t gShadowsFake3D;
 int32_t gSmokeTrail3D;
 int32_t gParticlesDuration;
+int32_t gProjectileOldSprite;
 int32_t gPackSlotSwitch;
 int32_t gFMPianoFix;
 
@@ -460,6 +461,7 @@ void CONFIG_SetDefaults(void)
     gShadowsFake3D = 1;
     gSmokeTrail3D = 1;
     gParticlesDuration = 1;
+    gProjectileOldSprite = 0;
     gPackSlotSwitch = 1;
     //ud.lockout                = 0;
     //ud.m_marker               = 1;
