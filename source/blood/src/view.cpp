@@ -3342,7 +3342,7 @@ inline char viewApplyPlayerAsCultist(int *nTile)
 LOCATION gPrevSpriteLoc[kMaxSprites];
 static LOCATION gViewSpritePredictLoc;
 
-inline void viewApplyFloorPal(tspritetype *pTSprite, int nPal)
+inline void viewApplyFloorPal(tspritetype *pTSprite, uint8_t nPal)
 {
     if (nPal == 0 && !VanillaMode()) // keep original sprite's palette when floors are using default palette (fixes tommy gun cultists in E3M2)
         return;
