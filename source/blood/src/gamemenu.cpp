@@ -362,6 +362,7 @@ void CGameMenu::InitializeItems(CGameMenuEvent &event)
 
 void CGameMenu::Draw(void)
 {
+    char bFocused = 0; // don't draw multiple tooltips when more than two items are focused
     for (int i = 0; i < m_nItems; i++)
     {
         if (pItemList[i]->pPreDrawCallback)
@@ -371,7 +372,7 @@ void CGameMenu::Draw(void)
         if (i == m_nFocus || (i != m_nFocus && !pItemList[i]->bNoDraw))
         {
             pItemList[i]->Draw();
-            if ((i == m_nFocus) && (pItemList[i]->tooltip_pzTextUpper != NULL))
+            if (!bFocused && (i == m_nFocus) && (pItemList[i]->tooltip_pzTextUpper != NULL))
             {
                 const bool twoLines = pItemList[i]->tooltip_pzTextLower != NULL;
                 const int height = twoLines ? 170 : 175;
@@ -383,6 +384,7 @@ void CGameMenu::Draw(void)
                     gMenuTextMgr.GetFontInfo(3, pItemList[i]->tooltip_pzTextLower, &width, NULL);
                     viewDrawText(3, pItemList[i]->tooltip_pzTextLower, (320/2)+2-(width/2), height+10, 0, 8, 0, true);
                 }
+                bFocused = 1;
             }
         }
         pItemList[i]->bEnable = bEnableBak;
