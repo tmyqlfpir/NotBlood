@@ -187,10 +187,6 @@ If you have the GOG version of the game, do the following:
 * SNEAKYFU - Proned shotgun/tommy gun cultists only
 
 ### New console variables for NotBlood
-* crosshairoffsetx
-   - Set X axis offset for crosshair (-32 to 32)
-* crosshairoffsety
-   - Set Y axis offset for crosshair (-32 to 32)
 * cl_autodivingsuit
    - Enable/disable automatic diving suit equipping when entering water (always enabled in multiplayer)
 * cl_calebtalk
@@ -239,6 +235,10 @@ If you have the GOG version of the game, do the following:
    - Set preferred player color palette in multiplayer (0: none, 1: blue, 2: red, 3: teal, 4: gray)
 * crosshair
    - Enable/disable crosshair (0: off, 1: on, 2: on [autoaim])
+* crosshairoffsetx
+   - Set X axis offset for crosshair (-32 to 32)
+* crosshairoffsety
+   - Set Y axis offset for crosshair (-32 to 32)
 * detail
    - Change the detail graphics setting (0-4)
 * fly
