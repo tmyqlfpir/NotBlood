@@ -367,7 +367,7 @@ void UpdateAimVector(PLAYER * pPlayer)
     pPlayer->aimTargetsCount = 0;
     const char bPitchforkFireBallReady = (pPlayer->curWeapon == kWeaponPitchfork) && (pPlayer->weaponState == 4) && (pPlayer->throwPower == 65536) && gGameOptions.bQuadDamagePowerup && WeaponsNotBlood() && !VanillaMode(); // never autoaim when ready to shoot fireball
     const char bAutoAimWeapon = pPlayer->curWeapon == kWeaponVoodoo || pPlayer->curWeapon == kWeaponLifeLeech || (gProfile[pPlayer->nPlayer].nAutoAim == 4 && pPlayer->curWeapon == kWeaponPitchfork && !bPitchforkFireBallReady); // always autoaim for these weapons
-    char bAutoAim = (gProfile[pPlayer->nPlayer].nAutoAim == 1) || (gProfile[pPlayer->nPlayer].nAutoAim == 2 && !pWeaponTrack->bIsProjectile);
+    char bAutoAim = (gProfile[pPlayer->nPlayer].nAutoAim == 1) || (gProfile[pPlayer->nPlayer].nAutoAim == 2 && !pWeaponTrack->bIsProjectile && !bPitchforkFireBallReady);
     char bOnlyTargetRatsEels = (gProfile[pPlayer->nPlayer].nAutoAim == 3) && !pWeaponTrack->bIsProjectile && (pPlayer->curWeapon != kWeaponVoodoo) && (pPlayer->curWeapon != kWeaponLifeLeech);
     if (!bAutoAim && WeaponsNotBlood() && !VanillaMode()) // use autoaim for tommygun alt fire
     {
