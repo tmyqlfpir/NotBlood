@@ -119,7 +119,6 @@ If you have the GOG version of the game, do the following:
 * Weapon behavior
    - Select between original weapon behavior, NBlood's V1.X behavior or NotBlood's tweaked weapon set which include:
    - Tommy gun alt fire uses autoaim
-   - Autoaim is always enabled for pitchfork
    - Make beast vision see through nearby walls
    - Adjust pitch offset for spray/missile firing
    - Adds a charge up stab for pitchfork's alt fire
@@ -127,7 +126,7 @@ If you have the GOG version of the game, do the following:
    - Makes lifeleech throwable and increases damage while in sentry mode
    - Do double melee damage if attacking enemies from 45 degrees behind
    - Allows tesla projectiles to be reflected back with reflective shots powerup
-   - Adds a special alt fire missile attack for pitchfork's charge up while quad damage is active
+   - While quad damage is active, the pitchfork's alt fire max charge will fire a missile
    - Voodoo doll alt fire attacks all targets visible on screen (like V1.X behavior) and consumes all ammo
 * Sector behavior
    - Fixes room over room sector handling with hitscan calculations
