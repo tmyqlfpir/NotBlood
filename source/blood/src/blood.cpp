@@ -1294,10 +1294,10 @@ void ProcessFrame(void)
             gDemo.Write(gFifoInput[(gNetFifoTail-1)&255]);
         else if ((gGameOptions.nGameType == kGameTypeSinglePlayer) && (numplayers == 1)) // always use current global settings for player while in single-player
         {
-            gProfile[myconnectindex].nWeaponHBobbing = gWeaponHBobbing;
             gProfile[myconnectindex].nAutoAim = gAutoAim;
             gProfile[myconnectindex].nWeaponSwitch = gWeaponSwitch;
             gProfile[myconnectindex].bWeaponFastSwitch = gWeaponFastSwitch;
+            gProfile[myconnectindex].nWeaponHBobbing = gWeaponHBobbing;
         }
     }
     for (int i = connecthead; i >= 0; i = connectpoint2[i])
