@@ -268,6 +268,7 @@ void LoadSave::SaveGame(char *pzFile)
         rover = rover->next;
     }
     fclose(hSFile);
+    hSFile = NULL;
     if (saveFileExists)
     {
         // the savegame was written successfully, so we can rename the saved file
