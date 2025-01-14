@@ -5312,8 +5312,7 @@ void viewSetRenderScale(char bShowRes)
     {
         if (bShowRes)
             OSD_Printf("Render resolution set to native res\n");
-        walock[DOWNSCALEBUFFER] = CACHE1D_FREE;
-        waloff[DOWNSCALEBUFFER] = 0;
+        tileDelete(DOWNSCALEBUFFER);
         return;
     }
 
@@ -5321,10 +5320,11 @@ void viewSetRenderScale(char bShowRes)
     int nSizeY = ClipRange((gViewY1-gViewY0+1)/gRenderScale, 8, kMaxDownScale);
 
     if (waloff[DOWNSCALEBUFFER]) // for some reason build has a problem when changing the render scale, so we need to skip a single frame before it'll work again
+    {
         bRenderScaleRefresh = 1;
-    else
-        tileAllocTile(DOWNSCALEBUFFER, kMaxDownScale, kMaxDownScale, 0, 0);
-    walock[DOWNSCALEBUFFER] = CACHE1D_PERMANENT;
+        tileDelete(DOWNSCALEBUFFER);
+    }
+    tileAllocTile(DOWNSCALEBUFFER, nSizeY, nSizeX, 0, 0);
     tileSetSize(DOWNSCALEBUFFER, nSizeY, nSizeX);
 
     if (bShowRes)
