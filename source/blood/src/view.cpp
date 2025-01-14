@@ -5320,11 +5320,9 @@ void viewSetRenderScale(char bShowRes)
     int nSizeY = ClipRange((gViewY1-gViewY0+1)/gRenderScale, 8, kMaxDownScale);
 
     if (waloff[DOWNSCALEBUFFER]) // for some reason build has a problem when changing the render scale, so we need to skip a single frame before it'll work again
-    {
         bRenderScaleRefresh = 1;
-        tileDelete(DOWNSCALEBUFFER);
-    }
-    tileAllocTile(DOWNSCALEBUFFER, nSizeY, nSizeX, 0, 0);
+    else
+        tileAllocTile(DOWNSCALEBUFFER, kMaxDownScale, kMaxDownScale, 0, 0);
     tileSetSize(DOWNSCALEBUFFER, nSizeY, nSizeX);
 
     if (bShowRes)
