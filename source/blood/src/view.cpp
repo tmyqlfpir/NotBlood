@@ -5312,8 +5312,7 @@ void viewSetRenderScale(char bShowRes)
     {
         if (bShowRes)
             OSD_Printf("Render resolution set to native res\n");
-        walock[DOWNSCALEBUFFER] = CACHE1D_FREE;
-        waloff[DOWNSCALEBUFFER] = 0;
+        tileDelete(DOWNSCALEBUFFER);
         return;
     }
 
@@ -5324,7 +5323,6 @@ void viewSetRenderScale(char bShowRes)
         bRenderScaleRefresh = 1;
     else
         tileAllocTile(DOWNSCALEBUFFER, kMaxDownScale, kMaxDownScale, 0, 0);
-    walock[DOWNSCALEBUFFER] = CACHE1D_PERMANENT;
     tileSetSize(DOWNSCALEBUFFER, nSizeY, nSizeX);
 
     if (bShowRes)
