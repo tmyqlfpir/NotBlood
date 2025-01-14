@@ -118,4 +118,3 @@ void ctrlClearAllInput(void);
 void ctrlInit();
 void ctrlGetInput();
 void ctrlJoystickRumble(int nTime);
-

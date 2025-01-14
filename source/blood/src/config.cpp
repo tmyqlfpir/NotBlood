@@ -391,8 +391,8 @@ void CONFIG_SetDefaults(void)
     gSetup.usejoystick = 1;
 #else
     gSetup.usejoystick = 0;
-    gSetup.joystickrumble = 0;
 #endif
+    gSetup.joystickrumble = 0;
 
     gSetup.forcesetup       = 1;
     gSetup.noautoload       = 1;
