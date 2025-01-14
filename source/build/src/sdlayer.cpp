@@ -2039,22 +2039,11 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
         return;
 
     static uint8_t buffMirroredLine[1920*4] = {0};
-    const uint32_t kMirrorTile = MAXTILES-1;
     const char bAllocBuff = (size_t)nWidth > sizeof(buffMirroredLine); // if bigger than static mirrored line, allocate from cache
-    if (bAllocBuff && walock[kMirrorTile] != 0)
-        return;
 
-    uint8_t *pBuff;
-    if (bAllocBuff)
-    {
-        walock[kMirrorTile] = CACHE1D_PERMANENT;
-        g_cache.allocateBlock(&waloff[kMirrorTile], nWidth, &walock[kMirrorTile]);
-        pBuff = (uint8_t *)waloff[kMirrorTile];
-    }
-    else
-    {
-        pBuff = buffMirroredLine;
-    }
+    uint8_t *pBuff = !bAllocBuff ? buffMirroredLine : (uint8_t*)Xmalloc(nWidth);
+    if (!pBuff)
+        return;
 
     if (MIRRORMODE & 1) // mirror mode (horiz)
     {
@@ -2076,10 +2065,7 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
         }
     }
     if (bAllocBuff)
-    {
-        walock[kMirrorTile] = 0;
-        waloff[kMirrorTile] = 0;
-    }
+        Xfree(pBuff);
 }
 
 //
