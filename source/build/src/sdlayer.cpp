@@ -2047,7 +2047,7 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
     uint8_t *pBuff;
     if (bAllocBuff)
     {
-        walock[kMirrorTile] = CACHE1D_UNLOCKED;
+        walock[kMirrorTile] = CACHE1D_PERMANENT;
         g_cache.allocateBlock(&waloff[kMirrorTile], nWidth, &walock[kMirrorTile]);
         pBuff = (uint8_t *)waloff[kMirrorTile];
     }
