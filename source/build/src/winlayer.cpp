@@ -1751,7 +1751,7 @@ void videoMirrorTile(uint8_t *pTile, int nWidth, int nHeight)
     if (!MIRRORMODE || !pTile || nWidth <= 0)
         return;
 
-    static uint8_t buffMirroredLine[1920 * 4] = {0};
+    static uint8_t buffMirroredLine[1920*4] = {0};
     const char bAllocBuff = (size_t)nWidth > sizeof(buffMirroredLine); // if bigger than static mirrored line, allocate from cache
 
     uint8_t *pBuff = !bAllocBuff ? buffMirroredLine : (uint8_t*)Xmalloc(nWidth);
